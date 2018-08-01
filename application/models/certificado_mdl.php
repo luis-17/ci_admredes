@@ -213,13 +213,38 @@
 				 'idasegurado' => $data['aseg_id'],
 				 'idcertificadoasegurado' => $data['certase_id'],
 				 'idproveedor' => $data['idproveedor'],
-				 'idusuario' => 2,
+				 'idusuario' => $data['idusuario'],
 				 'idempresaadmin' => 1,
 				 'fecha_cita' => $data['fecha_cita'],
 				 'idespecialidad' => $data['idespecialidad'],
 				 'estado_cita' => $data['estado']
  				 );
 		$this->db->insert('cita',$array);
+	}
+
+	function num_orden_atencion(){
+		$this->db->select("lpad((num_orden_atencion +1),6,'0') as num_orden_atencion");
+		$this->db->from("siniestro");
+		$this->db->order_by("idsiniestro","desc");
+		$this->db->limit(1);
+		$num = $this->db->get();
+		return $num->result();
+	}
+
+	function savePreOrden($data){
+		$array = array(
+			'idasegurado' => $data['aseg_id'],
+			'idcertificado' => $data['cert_id'],
+			'idproveedor' => $data['idproveedor'],
+			'fecha_atencion' => $data['fecha_cita'],
+			'idespecialidad' => $data['idespecialidad'],
+			'idcita' => $data['idcita'],
+			'idareahospitalaria' =>1,
+			'estado_atencion' => 'P',
+			'num_orden_atencion' => $data['num'],
+			'fase_atencion' => 0
+			);
+		$this->db->insert('siniestro',$array);
 	}
 }
 ?>

@@ -128,7 +128,7 @@ $route['certificado2/(:any)'] = 'certificado_cnt/index2/$1';
 $route['consulta_certificado'] = 'certificado_cnt/consulta_certificado';
 $route['activar_certificado/(:any)/(:any)'] = 'certificadodetalle_cnt/activar_certificado/$1/$2';
 $route['cancelar_certificado/(:any)/(:any)'] = 'certificadodetalle_cnt/cancelar_certificado/$1/$2';
-$route['reservar_cita/(:any)/(:any)/(:any)'] = 'certificadodetalle_cnt/reservar_cita/$1/$2/$3';
+$route['reservar_cita/(:any)/(:any)/(:any)/(:any)'] = 'certificadodetalle_cnt/reservar_cita/$1/$2/$3/$4';
 $route['save_cita'] ='certificadodetalle_cnt/save_cita';
 
 

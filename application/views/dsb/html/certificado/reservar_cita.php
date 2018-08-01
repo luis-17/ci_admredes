@@ -65,6 +65,7 @@
 									<input type="hidden" id="aseg_id" name="aseg_id" value="<?=$aseg_id?>" />
 									<input type="hidden" id="cert_id" name="cert_id" value="<?=$cert_id?>">
 									<input type="hidden" id="idusuario" name="idusuario" value="<?=$idusuario;?>">
+									<input type="hidden" name="certase_id" name="certase_id" value="<?=$certase_id?>">
 
 									<div class="form-group">
 										<label class="col-sm-3 control-label no-padding-right" for="form-field-1"> Proveedor: </label>

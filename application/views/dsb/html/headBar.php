@@ -56,21 +56,21 @@
 								<li>
 									<a href="#">
 										<i class="ace-icon fa fa-cog"></i>
-										Settings
+										Perfil
 									</a>
 								</li>
 
 								<li>
 									<a href="profile.html">
 										<i class="ace-icon fa fa-user"></i>
-										Profile
+										Actualizar Contraseña
 									</a>
 								</li>
 
 								<li class="divider"></li>
 
 								<li>
-									<a href="<?php echo base_url(); ?>logout" class="btn btn-danger">Logout</a>
+									<a href="<?php echo base_url(); ?>logout" class="btn btn-danger">Cerrar Sesión</a>
 									<!-- <a href="#">
 										<i class="ace-icon fa fa-power-off"></i>
 										Logout

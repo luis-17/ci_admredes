@@ -368,7 +368,8 @@
 														<tbody>
 														<?php foreach ($asegurado as $aseg):
 														$idaseg=$aseg->aseg_id;
-														$fec=$aseg->ultima_atencion;
+														$fec=$aseg->ultima_atencion;										
+														$certase = $aseg->certase_id;
 														$fec=date("d/m/Y", strtotime($fec));
 														?>
 															<tr>
@@ -390,7 +391,7 @@
 																			</div>
 																			<?php if($e==1&&$e2!=3) {?>
 																			<div title="Reservar Atención" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
-																				&nbsp;<a class="boton fancybox" href="<?=  base_url()?>reservar_cita/<?=$id?>/<?=$idaseg?>/<?=$doc?>" data-fancybox-width="950" data-fancybox-height="690">
+																				&nbsp;<a class="boton fancybox" href="<?=  base_url()?>reservar_cita/<?=$id?>/<?=$idaseg?>/<?=$doc?>/<?=$certase?>" data-fancybox-width="950" data-fancybox-height="690">
 																				<i class="ace-icon fa fa-external-link bigger-120"></i>
 																				</a>
 																			</div>
@@ -423,7 +424,7 @@
 																				<?php if($e==1) {?>
 																				<li>
 																					<div title="Reservar Atención" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
-																						&nbsp;<a class="boton fancybox" href="<?=  base_url()?>reservar_cita/<?=$id?>/<?=$idaseg?>/<?=$doc?>" data-fancybox-width="950" data-fancybox-height="690">
+																						&nbsp;<a class="boton fancybox" href="<?=  base_url()?>reservar_cita/<?=$id?>/<?=$idaseg?>/<?=$doc?>/<?=$certase?>" data-fancybox-width="950" data-fancybox-height="690">
 																						<i class="ace-icon fa fa-external-link bigger-120"></i>
 																						</a>
 																					</div>

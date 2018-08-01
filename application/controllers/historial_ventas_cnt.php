@@ -31,7 +31,16 @@ class historial_ventas_cnt extends CI_Controller {
 	 */
 	public function index()
 	{
-		$idusuario=1;
+		//load session library
+		$this->load->library('session');
+
+		//restrict users to go to home if not logged in
+		if($this->session->userdata('user')){
+			//$this->load->view('home');
+
+			$user = $this->session->userdata('user');
+			extract($user);
+
 
 		$menuLista = $this->menu_mdl->getMenu($idusuario);
 		$data['menu1'] = $menuLista;
@@ -41,6 +50,11 @@ class historial_ventas_cnt extends CI_Controller {
 		$data['menu2'] = $submenuLista;		
 
 		$this->load->view('dsb/html/historial_ventas.php',$data);
+
+		}
+		else{
+			redirect('/');
+		}	
 	}
 
 }

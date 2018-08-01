@@ -47,7 +47,7 @@ class persona_juridica_cnt extends CI_Controller {
 			$submenuLista = $this->menu_mdl->getSubMenu($idusuario);
 			$data['menu2'] = $submenuLista;
 
-			$this->load->view('dsb/html/usuario.php',$data);
+			$this->load->view('dsb/html/persona_juridica.php',$data);
 		}
 		else{
 			redirect('/');

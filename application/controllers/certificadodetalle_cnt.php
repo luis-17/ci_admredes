@@ -101,11 +101,12 @@ class Certificadodetalle_cnt extends CI_Controller {
 		redirect ($ruta);
 	}
 
-	public function reservar_cita($id, $idaseg, $doc)
+	public function reservar_cita($id, $idaseg, $doc, $certase_id)
 	{
 		$data['cert_id'] = $id;
 		$data['aseg_id'] =$idaseg;
 		$data['doc'] = $doc;
+		$data['certase_id'] = $certase_id;
 
 		$asegurado = $this->certificado_mdl->getAsegurado($id);
 		$data['asegurado'] = $asegurado;
@@ -126,13 +127,26 @@ class Certificadodetalle_cnt extends CI_Controller {
 	{
 		$aseg_id = $_POST['aseg_id'];		
 		$cert_id = $_POST['cert_id'];
-		$doc = $_POST['doc'];
 		$data['aseg_id'] = $_POST['aseg_id'];
-		$data['doc'] = $_POST['doc'];
+		$data['cert_id'] = $_POST['cert_id'];
+		$data['certase_id'] = $_POST['certase_id'];
 		$data['idproveedor'] = $_POST['proveedor'];	
 		$data['idespecialidad'] = $_POST['producto'];	
 		$data['estado'] = $_POST['estado'];	
 		$data['fecha_cita'] = $_POST['feccita'];
 		$data['obs'] = $_POST['obs'];
+		$data['idusuario'] = $_POST['idusuario'];
+
+		$this->certificado_mdl->saveCalendario($data);
+		$id = $this->db->insert_id();
+		$data['idcita'] =  $id;
+		$num = $this->certificado_mdl->num_orden_atencion();
+		foreach ($num as $n) {
+			$numero=$n->num_orden_atencion;
+			$data['num'] = $numero;
+		}
+		$this->certificado_mdl->savePreOrden($data);
+		//redirect('calendario/'.$certase_id.'/'.$doc);
+
 	}
 }

@@ -6,13 +6,7 @@
  $this->load->database();
  }
 
- 	function count_all()
-     {
-      $query = $this->db->get("plan");
-      return $query->num_rows();
-     }
-
- 	function getPlanes($limit, $start){
+ 	function getPlanes(){
  		$output = '';
  		$this->db->select('*');
  		$this->db->from('plan pl');
@@ -20,106 +14,7 @@
  		$this->db->order_by("nombre_comercial_cli, nombre_plan");
 
 	 $planes = $this->db->get();
-	 $output .= '
-     <div class="col-xs-12">
-		<table id="simple-table" class="table table-striped table-bordered table-hover">
-			<thead>
-				<tr>
-					<th>Cliente</th>
-						<th>Plan</th>
-						<th>Carencia</th>
-						<th>Mora</th>
-						<th>Atención</th>
-						<th>Prima</th>
-						<th>Estado</th>
-						<th>
-					</th>
-				</tr>
-			</thead>
-
-		<tbody>
-      ';
-      foreach($planes->result() as $p)
-      {
-      	if($p->estado_plan==1):
-			$estado='Activo';
-			$titulo='Anular Plan';
-			$boton='ace-icon glyphicon glyphicon-trash';
-			$funcion='plan_anular';
-		else:
-			$estado='Inactivo';
-			$titulo='Reactivar Plan';
-			$boton='ace-icon glyphicon glyphicon-ok';
-			$funcion='plan_activar';
-		endif;
-      
-       $output .= '
-       <tr>
-			<td>'.$p->nombre_comercial_cli.'</td>
-			<td>'.$p->nombre_plan.'</td>
-			<td>'.$p->dias_carencia.' días</td>
-			<td>'.$p->dias_mora.' días</td>
-			<td>cada '.$p->dias_atencion.' días</td>
-			<td>S/.'.$p->prima_monto.'</td>
-			<td>'.$estado.'</td>
-			<td>
-				<div class="hidden-sm hidden-xs btn-group">
-					<div title="Ver Cobertura" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
-					<a class="boton fancybox" href="'.base_url().'plan_cobertura/'.$p->idplan.'/'.$p->nombre_plan.'" data-fancybox-width="950" data-fancybox-height="690">
-						<i class="ace-icon fa fa-eye bigger-120"></i>
-					</a>
-				</div>
-				<div title="Editar Plan" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
-					&nbsp;<a href="'.base_url().'plan_editar/'.$p->idplan.'/'.$p->nombre_plan.'">
-						<i class="ace-icon fa fa-pencil bigger-120"></i>
-					</a>
-				</div>
-				<div title="'.$titulo.'" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
-					&nbsp;<a href="'.base_url().''.$funcion.'/'.$p->idplan.'">
-						<i class="'.$boton.'"></i>
-					</a>
-				</div>
-				</div>
-
-					<div class="hidden-md hidden-lg">
-						<div class="inline pos-rel">
-							<button class="btn btn-minier btn-primary dropdown-toggle" data-toggle="dropdown" data-position="auto">
-								<i class="ace-icon fa fa-cog icon-only bigger-110"></i>
-							</button>
-
-							<ul class="dropdown-menu dropdown-only-icon dropdown-yellow dropdown-menu-right dropdown-caret dropdown-close">
-									<li>
-										<div title="Ver Cobertura" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
-											<a class="boton fancybox" href="'.base_url().'plan_cobertura/'.$p->idplan.'/'.$p->nombre_plan.'" data-fancybox-width="950" data-fancybox-height="690">
-												<i class="ace-icon fa fa-eye bigger-120"></i>
-											</a>
-										</div>
-									</li>
-									<li>
-										<div title="Editar Plan" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
-											&nbsp;<a href="'.base_url().'plan_editar/'.$p->idplan.'/'.$p->nombre_plan.'">
-												<i class="ace-icon fa fa-pencil bigger-120"></i>
-											</a>
-										</div>
-									</li>
-									<li>
-										<div title="'.$titulo.'" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
-											&nbsp;<a href="'.base_url().''.$funcion.'/'.$p->idplan.'">
-												<i class="'.$boton.'"></i>
-											</a>
-										</div>
-									</li>
-								</ul>
-							</div>
-						</div>
-					</td>
-				</tr>
-       ';
-      }
-      $output .= '</tbody>
-				</table>
-			</div>';
-      return $output;
+	 return $planes->result();
  	}
 
  	function getCobertura($id){
