@@ -51,9 +51,7 @@
 		<script src="<?=base_url()?>public/pagination/jquery-1.12.4.js"></script>
 		<script src="<?=base_url()?>public/pagination/jquery.dataTables.min.js"></script>
 		<script src="<?=base_url()?>public/pagination/dataTables.bootstrap.min.js"></script>
-
-
-
+		
 		<script>		
 			$(document).ready(function(){
 		    $('#aseg_numDoc').on('change',function(){
@@ -112,8 +110,6 @@
 		   });
 		 });
 		</script>
-
-
 	</head>
 
 	<body class="no-skin">

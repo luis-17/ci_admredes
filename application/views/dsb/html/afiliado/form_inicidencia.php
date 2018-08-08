@@ -59,7 +59,7 @@
 									</div>									
 									<div class="">
 										<div class="col-md-offset-3 col-md-9" style="text-align: right;">
-											<button class="btn btn-info" type="submit" onclick="guardar();">
+											<button class="btn btn-info" type="submit">
 												<i class="ace-icon fa fa-check bigger-110"></i>
 												Guardar
 											</button>

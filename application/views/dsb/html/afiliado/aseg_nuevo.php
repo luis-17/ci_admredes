@@ -140,7 +140,7 @@
 						<div class="row">
 							<div class="col-xs-12">
 								<!-- PAGE CONTENT BEGINS -->
-								<form class="form-horizontal" name="aseg" id="aseg" role="form" method="post" action="<?=base_url()?>index.php/aseg_save">					
+								<form class="form-horizontal" name="aseg" id="aseg" role="form" method="post" action="<?=base_url()?>aseg_save">					
 									
 									<input type="hidden" id="aseg_id" name="aseg_id" value="<?=$asegurado;?>" />
 									<input type="hidden" name="cert_id" id="cert_id" value="<?=$cert_id;?>">
@@ -161,7 +161,7 @@
 										<label class="col-sm-3 control-label no-padding-right" for="form-field-1"> Documento: </label>
 
 										<div class="col-sm-4">
-											<input onkeydown="" onkeyup="buscardni()" class="form-control input-mask-date" type="text" id="doc" name="doc" placeholder="" value="<?=$doc;?>"  required>
+											<input onkeyup="buscardni()" class="form-control input-mask-date" type="text" id="doc" name="doc" placeholder="" value="<?=$doc;?>"  required>
 										</div><label style="color: #E41919;"><?=$mensaje?></label>
 									</div>
 									<div class="form-group">
@@ -323,11 +323,12 @@
 		
 		<!-- basic scripts -->
 		<form id="buscar" name="buscar" method="post" action="<?=base_url();?>index.php/verifica_dni_in">
-									<input type="hidden" name="doc_copy" value="" id="doc_copy">
-									<input type="hidden" name="tipodoc_copy" value="" id="tipodoc_copy">
-									<input type="hidden" name="cert_copy" value="<?=$cert_id;?>">									
-									<input type="hidden" name="tipoop_copy" value="<?=$caso;?>">
-									</form>
+			<input type="hidden" name="doc_copy" value="" id="doc_copy">
+			<input type="hidden" name="tipodoc_copy" value="" id="tipodoc_copy">
+			<input type="hidden" name="cert_copy" value="<?=$cert_id;?>">									
+			<input type="hidden" name="tipoop_copy" value="<?=$caso;?>">
+			<input type="hidden" name="plan_copy" value="<?=$plan;?>">
+		</form>
 
 		<!--[if !IE]> -->
 		<script type="text/javascript">

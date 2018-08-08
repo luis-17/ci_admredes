@@ -48,10 +48,10 @@ class Afiliacion_cnt extends CI_Controller {
 
 			$submenuLista = $this->menu_mdl->getSubMenu($idusuario);
 			$data['menu2'] = $submenuLista;	
-			$planes = $this->afiliacion_mdl->getPlanes();
+			$planes = $this->afiliacion_mdl->getPlanes($idusuario);
 			$data['planes'] = $planes;
 			$data['estilo'] = "none";	
-			$canales = $this->afiliacion_mdl->getCanales();
+			$canales = $this->afiliacion_mdl->getCanales($idusuario);
 			$data['canales'] = $canales;
 			$data['canal'] = '';
 			$data['doc'] = '';
@@ -101,7 +101,7 @@ class Afiliacion_cnt extends CI_Controller {
 			$data['doc'] = $_POST['cont_numDoc'];
 			$canal=$_POST['canal'];
 
-			$data['canales'] = $this->afiliacion_mdl->getCanales();
+			$data['canales'] = $this->afiliacion_mdl->getCanales($idusuario);
 			$planes = $this->afiliacion_mdl->getPlanes2($canal);
 			$data['planes'] = $planes;
 			$data['estilo'] = "";
@@ -172,7 +172,7 @@ class Afiliacion_cnt extends CI_Controller {
 
 			$certificado=$this->afiliacion_mdl->certificado($data);
 			$data['certificado'] = $certificado;
-			$data['canales'] = $this->afiliacion_mdl->getCanales();
+			$data['canales'] = $this->afiliacion_mdl->getCanales($idusuario);
 			$planes = $this->afiliacion_mdl->getPlanes2($canal);
 			$data['planes'] = $planes;
 			$data['estilo'] = "";
@@ -245,13 +245,14 @@ class Afiliacion_cnt extends CI_Controller {
 			$this->load->view('dsb/html/afiliado/aseg_editar.php', $data);
 	}
 
-	public function aseg_nuevo($cert){
+	public function aseg_nuevo($cert,$plan){
 		$data['aseg_id']="";
 		$data['cert_id']=$cert;
 		$data['doc'] = "";
 		$data["tipdoc"] ="";
 		$data['cert_ver'] = "";
 		$data['aseg_ver'] = "";
+		$data['plan'] = $plan;
 
 		$ubigeo=$this->afiliacion_mdl->ubigeo();
 		$data['ubigeo']=$ubigeo;
@@ -287,7 +288,8 @@ class Afiliacion_cnt extends CI_Controller {
 		$this->load->view('dsb/html/afiliado/mensaje.php', $data);
 	}
 
-	public function aseg_save(){
+	public function aseg_save()
+	{
 		$data['aseg_id'] = $_POST['aseg_id'];
 		$id = $_POST['aseg_id'];
 		$cert = $_POST['cert_id'];
@@ -306,17 +308,23 @@ class Afiliacion_cnt extends CI_Controller {
 		$data['ec'] = $_POST['ec'];
 		$op = $_POST['tipoop'];
 		$data['tipomen'] = 2;
+		$user = $this->session->userdata('user');
+		extract($user);
+		$data['idusuario'] = $idusuario;
+		$data['id'] = $id;
+		$data['cert'] = $cert;
 
 		switch ($op) {
 			case 2:
 				$this->afiliacion_mdl->up_aseg($data);
-				$this->afiliacion_mdl->in_certase($id,$cert);
+				$this->afiliacion_mdl->in_certase($data);
 				break;
 
 			case 3:
 				$this->afiliacion_mdl->in_asegurado($data);
-				$id = $this->db->insert_id();
-				$this->afiliacion_mdl->in_certase($id,$cert);
+				$ida = $this->db->insert_id();
+				$data['id'] = $ida;
+				$this->afiliacion_mdl->in_certase($data);
 				break;
 			}
 		$this->load->view('dsb/html/afiliado/mensaje.php',$data);
@@ -349,6 +357,7 @@ class Afiliacion_cnt extends CI_Controller {
 		$data['doc'] = $_POST['doc_copy'];
 		$data['cert_id'] = $_POST['cert_copy'];		
 		$data['tipdoc'] = $_POST['tipodoc_copy'];
+		$data['plan'] = $_POST['plan_copy'];
 		$tipoop = $_POST['tipoop_copy'];
 
 		$ubigeo=$this->afiliacion_mdl->ubigeo();
@@ -384,8 +393,14 @@ class Afiliacion_cnt extends CI_Controller {
 		$data['cert_id'] = $_POST['cert_id'];
 		$data['desc'] = $_POST['desc_incidencia'];
 		$data['hoy'] = date('Y-m-d H:i:s');
+		$user = $this->session->userdata('user');
+		extract($user);
+		$data['idusuario'] = $idusuario;
+		$data['tipomen'] = 1;
 
 		$this->afiliacion_mdl->save_incidencia($data);
+		$this->load->view('dsb/html/afiliado/mensaje2.php', $data);
+
 	}
 
 	public function email() {
@@ -396,6 +411,10 @@ class Afiliacion_cnt extends CI_Controller {
 		$data['motivo'] = $_POST['can_motivo'];
 		date_default_timezone_set('America/Lima');
 		$data['hoy'] = date('Y-m-d');
+		$user = $this->session->userdata('user');
+		extract($user);
+		$data['idusuario'] = $idusuario;
+		$data['tipomen'] = 2;
 
 		$this->afiliacion_mdl->in_cancelado($data);
 		$this->afiliacion_mdl->up_cancertificado($data);
@@ -453,5 +472,7 @@ class Afiliacion_cnt extends CI_Controller {
 		//$mail->addAttachment('adjunto/RED_MEDICA_2018.pdf', 'Red_Medica.pdf');
 		// Enviar
 		$mail->send(); 
+
+		$this->load->view('dsb/html/afiliado/mensaje2.php', $data);
 	}
 }

@@ -148,12 +148,21 @@
 					<!-- /section:basics/content.breadcrumbs -->
 					
 					<div class="page-content">
+						<!-- /section:settings.box -->
+						<div class="page-header">
+							<h1>
+								Consultamos datos de afiliados
+								<small>
+									<i class="ace-icon fa fa-angle-double-right"></i>
+									
+								</small>
+							</h1>
+						</div><!-- /.page-header -->
+
 						<div class="row">
-							<div class="col-xs-12"></br>
-								<!-- PAGE CONTENT BEGINS -->
 								<form role="form" name="form_bus" id="form_bus" method="post" action="<?=base_url()?>index.php/buscar">	
 								<input type="hidden" name="id" id="id" value="">
-									<div class="form-row">
+									<div class="form-row"> 
 										<div class="form-group col-md-3">
 											<b class="text-primary">Canal</b>
 											<select name="canal" id="canal" required="Seleccione una opción de la lista" class="form-control">
@@ -188,37 +197,51 @@
 											</select>
 										</div>		
 										<div class="form-group col-md-3">
-											<b class="text-primary">DNI Contratante</b>
+											<b class="text-primary">DNI Responsable de Pago</b>
 											<input type="text" id="cont_numDoc" name="cont_numDoc" required="Digite el DNI"  class="form-control" value="<?=$doc;?>">
 										</div>		
 										<div class="form-group col-md-3">
 										<b class="text-primary"> </b></br>
-											<button class="btn btn-info" type="submit">
-												<i class="ace-icon fa fa-check bigger-110"></i>
+											<button class="btn btn-sm btn-info" type="submit">
+												<i class="ace-icon glyphicon glyphicon-search bigger-110"></i>
 												Buscar
 											</button>
 										</div>								
 								 </div>
 								</form>
 							</div><!-- /.col -->
+							
+							<br>
 							<div style="display: <?=$estilo;?>;">	
+							<?php 
+							$n1=2;
+						    if(!empty($certificado)){
+
+						    	foreach ($certificado as $c):
+							    $cert_id=$c->cert_id;
+							    $cert_num=$c->cert_num;
+							    $afiliados=$c->num_afiliados;
+							    $cant=$c->cant;
+							    $fec_reg=$c->fec_reg;
+							    ?>
 							<h4 class="black">
-								<i class="green ace-icon fa fa-pencil-square-o bigger-110"></i>
+								<i class="blue ace-icon fa fa-pencil-square-o bigger-110"></i>
 									Certificado N° <?=$cert_num;?>
 								</h4>
 
 							<div class="space-8"></div>
 
-							<div id="faq-list-2" class="panel-group accordion-style1 accordion-style2">
+							<div id="faq-list-<?=$n1;?>" class="panel-group accordion-style1 accordion-style<?=$n1;?>">
 								<div class="panel panel-default">
 									<div class="panel-heading">
-										<a href="#faq-2-1" data-parent="#faq-list-2" data-toggle="collapse" class="accordion-toggle collapsed">
+										<a href="#faq-<?=$n1;?>-1" data-parent="#faq-list-<?=$n1;?>" data-toggle="collapse" class="accordion-toggle collapsed">
 											<i class="ace-icon fa fa-chevron-right smaller-80" data-icon-hide="ace-icon fa fa-chevron-down align-top" data-icon-show="ace-icon fa fa-chevron-right"></i>&nbsp;
-												DATOS DEL CONTRATANTE
+												DATOS DEL RESPONSABLE DE PAGO
+												<input type="hidden" value="<?=$cert_id?>">
 										</a>
 									</div>
 
-								<div class="panel-collapse collapse" id="faq-2-1">
+								<div class="panel-collapse collapse" id="faq-<?=$n1;?>-1">
 									<div class="panel-body">
 														
 						
@@ -227,6 +250,7 @@
 								<?php
 								if(!empty($datos)){
 								foreach ($datos as $d): 
+									$cert_id2=$d->cert_id;
 									$dep = $d->dep;
 									$prov = $d->prov;
 									$dist = $d->dist;
@@ -235,6 +259,8 @@
 									$cnom1=$d->cont_nom1;
 									$cnom2=$d->cont_nom2;
 									$cont_id=$d->cont_id;
+									$num_aseg=0;
+									if($cert_id==$cert_id2){
 									?>
 									<form role="form" method="post" name="form_cont" id="form_cont" action="<?=base_url()?>index.php/cont_save">	
 									<input type="hidden" name="can" value="<?=$canal;?>">
@@ -347,6 +373,11 @@
 									</div>
 									<div class="form-row">
 										<div class="form-group col-md-12" style="text-align: right;">
+										<a class="boton fancybox" href="http://www.red-salud.com/gestion_afiliados2.0/adjunto/certificado.pdf" data-fancybox-width="600" data-fancybox-height="690"><button class="btn btn-info" >
+											<i class="ace-icon glyphicon glyphicon-print"></i>
+												Imprimir Certificado
+										</button>
+										</a>
 											<button class="btn btn-info" type="submit">
 												<i class="ace-icon fa fa-check bigger-110"></i>
 												Guardar
@@ -354,7 +385,7 @@
 										</div>	
 									</div>	
 								</form>
-								<?php endforeach; 
+								<?php } endforeach;  
 								}else {?>
 								<div>No se encontraron registros.</div>
 								<?php } ?>
@@ -362,32 +393,24 @@
 							<!-- end table -->
 							</div></div>
 
+							
 							<div class="panel panel-default">
 								<div class="panel-heading">
-									<a href="#faq-2-2" data-parent="#faq-list-2" data-toggle="collapse" class="accordion-toggle collapsed">
+									<a href="#faq-<?=$n1;?>-2" data-parent="#faq-list-<?=$n1;?>" data-toggle="collapse" class="accordion-toggle collapsed">
 										<i class="ace-icon fa fa-chevron-right smaller-80" data-icon-hide="ace-icon fa fa-chevron-down align-top" data-icon-show="ace-icon fa fa-chevron-right"></i>&nbsp;
-										DATOS DE LOS DEPENDIENTES
+										VER/AGREGAR AFILIADOS
 									</a>
 								</div>
 
-								<div class="panel-collapse collapse" id="faq-2-2">
+								<div class="panel-collapse collapse" id="faq-<?=$n1;?>-2">
 									<div class="panel-body">
-									<?php if(!empty($cant)){
-										foreach($cant as $c):
-											$cant=$c->cant;
-										endforeach;
-											}else{
-												$cant=0;
-												}
-										$num_aseg=0;?>
-
-
-										<?php if($cant<$afiliados): ?>
+										<?php $hoy=date('Y-m-d');
+										if($cant<$afiliados): ?>
 										<div style="text-align: right; padding-right: 3%;">
-											<a class="boton fancybox" href="<?=  base_url()?>index.php/aseg_nuevo/<?=$cert_id;?>" data-fancybox-width="950" data-fancybox-height="690">Agregar Dependiente
+											<a class="boton fancybox" href="<?=base_url()?>index.php/aseg_nuevo/<?=$cert_id;?>/<?=$plan?>" data-fancybox-width="950" data-fancybox-height="690">Agregar Afiliado
 											</a>
 										</div>
-										<?php endif; ?>	
+										<?php endif;?>
 
 										<?php if(!empty($asegurados)){ ?>
 										<div class="page-content">
@@ -399,12 +422,14 @@
 														<thead>
 															<tr>
 																<th>Documento</th>
-																<th>Asegurado</th>
+																<th>Afiliado</th>
 																<th>Editar</th>													
 															</tr>
 														</thead>
 														<tbody>
 														<?php foreach ($asegurados as $a):
+														$cert_id3=$a->cert_id;
+														if($cert_id==$cert_id3){
 														$num_aseg=$num_aseg+1; ?>
 															<tr>
 																<td><?=$a->aseg_numDoc;?></td>
@@ -412,8 +437,8 @@
 																<td>
 																	<div class="hidden-sm hidden-xs btn-group">
 																		<div title="Editar Dependiente" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
-																		&nbsp;<a class="boton fancybox" href="<?=  base_url()?>index.php/aseg_editar/<?=$a->aseg_id;?>/<?=$cert_id;?>" data-fancybox-width="950" data-fancybox-height="690">
-																					<i class="ace-icon fa fa-pencil bigger-120"></i>
+																		&nbsp;<a class="boton fancybox" href="<?=  base_url()?>index.php/aseg_editar/<?=$a->aseg_id;?>/<?=$cert_id;?>" data-fancybox-width="600" data-fancybox-height="690">
+																					<i class="blue ace-icon fa fa-pencil bigger-120"></i>
 																				</a>
 																	</div>
 																	</div>
@@ -427,7 +452,7 @@
 																						<li>
 																							<div title="Editar Dependiente" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
 																								<a class="boton fancybox" href="<?=  base_url()?>index.php/aseg_editar/<?=$a->aseg_id;?>/<?=$cert_id;?>" data-fancybox-width="950" data-fancybox-height="690">
-																									<i class="ace-icon fa fa-pencil bigger-120"></i>
+																									<i class="blue ace-icon fa fa-pencil bigger-120"></i>
 																								</a>
 																							</div>
 																						</li>				
@@ -436,7 +461,7 @@
 																			</div>
 																		</td>																	
 															</tr>
-														<?php endforeach; ?>
+														<?php } endforeach; ?>
 														</tbody>
 													</table>
 												</div>
@@ -449,21 +474,17 @@
 								</div>
 
 
-
-
-
-
 							<?php if($cancelar=='S'){ ?>
 							<div class="panel panel-default">
 								<div class="panel-heading">
-									<a href="#faq-2-3" data-parent="#faq-list-3" data-toggle="collapse" class="accordion-toggle collapsed">
+									<a href="#faq-<?=$n1;?>-3" data-parent="#faq-list-<?=$n1;?>" data-toggle="collapse" class="accordion-toggle collapsed">
 										<i class="ace-icon fa fa-chevron-right smaller-80" data-icon-hide="ace-icon fa fa-chevron-down align-top" data-icon-show="ace-icon fa fa-chevron-right"></i>&nbsp;
 										CANCELAR CERTIFICADO
 									</a>
 								</div>
 								
 
-								<div class="panel-collapse collapse" id="faq-2-3">
+								<div class="panel-collapse collapse" id="faq-<?=$n1;?>-3">
 									<div class="panel-body">
 										<div class="page-content">
 											<div class="row">
@@ -479,7 +500,7 @@
 													<div class="clearfix">
 															<p>
 															<a class="boton fancybox" href="<?=  base_url()?>index.php/form_incidencia/<?=$cert_id;?>" data-fancybox-width="750" data-fancybox-height="490">
-															<button class="btn btn-danger" type="button">
+															<button class="btn btn-info" type="button">
 																<i class="ace-icon glyphicon glyphicon-remove"></i>
 																Respuestas Incorrectas
 															</button>
@@ -505,7 +526,13 @@
 							<?php } ?>
 
 							</div>
-							</div></div>
+							</div>
+							<br>
+							<?php 
+							    $n1=$n1+1;
+							endforeach; } else {
+								echo "<div style='padding-left: 2%;'>No se encontraron registros.</div>";
+								} ?></div>
 
 
 
@@ -581,225 +608,6 @@
 
 		<!-- inline scripts related to this page -->
 
-		<!-- inline scripts related to this page -->
-		<script type="text/javascript">
-			jQuery(function($) {
-				$('.easy-pie-chart.percentage').each(function(){
-					var $box = $(this).closest('.infobox');
-					var barColor = $(this).data('color') || (!$box.hasClass('infobox-dark') ? $box.css('color') : 'rgba(255,255,255,0.95)');
-					var trackColor = barColor == 'rgba(255,255,255,0.95)' ? 'rgba(255,255,255,0.25)' : '#E2E2E2';
-					var size = parseInt($(this).data('size')) || 50;
-					$(this).easyPieChart({
-						barColor: barColor,
-						trackColor: trackColor,
-						scaleColor: false,
-						lineCap: 'butt',
-						lineWidth: parseInt(size/10),
-						animate: /msie\s*(8|7|6)/.test(navigator.userAgent.toLowerCase()) ? false : 1000,
-						size: size
-					});
-				})
-			
-				$('.sparkline').each(function(){
-					var $box = $(this).closest('.infobox');
-					var barColor = !$box.hasClass('infobox-dark') ? $box.css('color') : '#FFF';
-					$(this).sparkline('html',
-									 {
-										tagValuesAttribute:'data-values',
-										type: 'bar',
-										barColor: barColor ,
-										chartRangeMin:$(this).data('min') || 0
-									 });
-				});
-			
-			
-			  //flot chart resize plugin, somehow manipulates default browser resize event to optimize it!
-			  //but sometimes it brings up errors with normal resize event handlers
-			  $.resize.throttleWindow = false;
-			
-			  var placeholder = $('#piechart-placeholder').css({'width':'90%' , 'min-height':'150px'});
-			  var data = [
-				{ label: "social networks",  data: 38.7, color: "#68BC31"},
-				{ label: "search engines",  data: 24.5, color: "#2091CF"},
-				{ label: "ad campaigns",  data: 8.2, color: "#AF4E96"},
-				{ label: "direct traffic",  data: 18.6, color: "#DA5430"},
-				{ label: "other",  data: 10, color: "#FEE074"}
-			  ]
-			  function drawPieChart(placeholder, data, position) {
-			 	  $.plot(placeholder, data, {
-					series: {
-						pie: {
-							show: true,
-							tilt:0.8,
-							highlight: {
-								opacity: 0.25
-							},
-							stroke: {
-								color: '#fff',
-								width: 2
-							},
-							startAngle: 2
-						}
-					},
-					legend: {
-						show: true,
-						position: position || "ne", 
-						labelBoxBorderColor: null,
-						margin:[-30,15]
-					}
-					,
-					grid: {
-						hoverable: true,
-						clickable: true
-					}
-				 })
-			 }
-			 drawPieChart(placeholder, data);
-			
-			 /**
-			 we saved the drawing function and the data to redraw with different position later when switching to RTL mode dynamically
-			 so that's not needed actually.
-			 */
-			 placeholder.data('chart', data);
-			 placeholder.data('draw', drawPieChart);
-			
-			
-			  //pie chart tooltip example
-			  var $tooltip = $("<div class='tooltip top in'><div class='tooltip-inner'></div></div>").hide().appendTo('body');
-			  var previousPoint = null;
-			
-			  placeholder.on('plothover', function (event, pos, item) {
-				if(item) {
-					if (previousPoint != item.seriesIndex) {
-						previousPoint = item.seriesIndex;
-						var tip = item.series['label'] + " : " + item.series['percent']+'%';
-						$tooltip.show().children(0).text(tip);
-					}
-					$tooltip.css({top:pos.pageY + 10, left:pos.pageX + 10});
-				} else {
-					$tooltip.hide();
-					previousPoint = null;
-				}
-				
-			 });
-			
-				/////////////////////////////////////
-				$(document).one('ajaxloadstart.page', function(e) {
-					$tooltip.remove();
-				});
-			
-			
-			
-			
-				var d1 = [];
-				for (var i = 0; i < Math.PI * 2; i += 0.5) {
-					d1.push([i, Math.sin(i)]);
-				}
-			
-				var d2 = [];
-				for (var i = 0; i < Math.PI * 2; i += 0.5) {
-					d2.push([i, Math.cos(i)]);
-				}
-			
-				var d3 = [];
-				for (var i = 0; i < Math.PI * 2; i += 0.2) {
-					d3.push([i, Math.tan(i)]);
-				}
-				
-			
-				var sales_charts = $('#sales-charts').css({'width':'100%' , 'height':'220px'});
-				$.plot("#sales-charts", [
-					{ label: "Domains", data: d1 },
-					{ label: "Hosting", data: d2 },
-					{ label: "Services", data: d3 }
-				], {
-					hoverable: true,
-					shadowSize: 0,
-					series: {
-						lines: { show: true },
-						points: { show: true }
-					},
-					xaxis: {
-						tickLength: 0
-					},
-					yaxis: {
-						ticks: 10,
-						min: -2,
-						max: 2,
-						tickDecimals: 3
-					},
-					grid: {
-						backgroundColor: { colors: [ "#fff", "#fff" ] },
-						borderWidth: 1,
-						borderColor:'#555'
-					}
-				});
-			
-			
-				$('#recent-box [data-rel="tooltip"]').tooltip({placement: tooltip_placement});
-				function tooltip_placement(context, source) {
-					var $source = $(source);
-					var $parent = $source.closest('.tab-content')
-					var off1 = $parent.offset();
-					var w1 = $parent.width();
-			
-					var off2 = $source.offset();
-					//var w2 = $source.width();
-			
-					if( parseInt(off2.left) < parseInt(off1.left) + parseInt(w1 / 2) ) return 'right';
-					return 'left';
-				}
-			
-			
-				$('.dialogs,.comments').ace_scroll({
-					size: 300
-			    });
-				
-				
-				//Android's default browser somehow is confused when tapping on label which will lead to dragging the task
-				//so disable dragging when clicking on label
-				var agent = navigator.userAgent.toLowerCase();
-				if("ontouchstart" in document && /applewebkit/.test(agent) && /android/.test(agent))
-				  $('#tasks').on('touchstart', function(e){
-					var li = $(e.target).closest('#tasks li');
-					if(li.length == 0)return;
-					var label = li.find('label.inline').get(0);
-					if(label == e.target || $.contains(label, e.target)) e.stopImmediatePropagation() ;
-				});
-			
-				$('#tasks').sortable({
-					opacity:0.8,
-					revert:true,
-					forceHelperSize:true,
-					placeholder: 'draggable-placeholder',
-					forcePlaceholderSize:true,
-					tolerance:'pointer',
-					stop: function( event, ui ) {
-						//just for Chrome!!!! so that dropdowns on items don't appear below other items after being moved
-						$(ui.item).css('z-index', 'auto');
-					}
-					}
-				);
-				$('#tasks').disableSelection();
-				$('#tasks input:checkbox').removeAttr('checked').on('click', function(){
-					if(this.checked) $(this).closest('li').addClass('selected');
-					else $(this).closest('li').removeClass('selected');
-				});
-			
-			
-				//show the dropdowns on top or bottom depending on window height and menu position
-				$('#task-tab .dropdown-hover').on('mouseenter', function(e) {
-					var offset = $(this).offset();
-			
-					var $w = $(window)
-					if (offset.top > $w.scrollTop() + $w.innerHeight() - 100) 
-						$(this).addClass('dropup');
-					else $(this).removeClass('dropup');
-				});
-			
-			})
-
-		</script>
 		<!-- the following scripts are used in demo only for onpage help and you don't need them -->
 		<link rel="stylesheet" href="<?=  base_url()?>public/assets/css/ace.onpage-help.css" />
 		<link rel="stylesheet" href="<?=  base_url()?>public/docs/assets/js/themes/sunburst.css" />

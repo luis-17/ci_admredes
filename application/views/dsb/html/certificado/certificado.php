@@ -107,7 +107,7 @@
 								</span>	
 								<span class="input-icon">
 									<input type="text" id="doc" name="doc" placeholder="DNI contratante ó asegurado ..." class="nav-search-input" id="nav-search-input" size="30" value="<?=$id; ?>">
-									<button type="submit" class="btn btn-warning btn-xs">
+									<button type="submit" class="btn btn-info btn-xs">
 										<i class="ace-icon glyphicon glyphicon-search bigger-110 icon-only"></i>
 									</button>
 								</span>		

@@ -23,7 +23,7 @@
 	 
 	function getCertificado($id) {
 
-	 	$this->db->select("cert_id, cert.cert_num, cert.plan_id, concat(coalesce(co.cont_ape1,''),' ',coalesce(co.cont_ape2,''),' ',coalesce(co.cont_nom1,''),' ',coalesce(co.cont_nom2,''))as contratante, cert.cert_upProv,  cert.cert_estado, cert.cert_iniVig, cert.cert_finVig, cl.nombre_comercial_cli, pl.nombre_plan, pl.prima_monto");
+	 	$this->db->select("cert_id, cert.cert_num, cert.plan_id, concat(coalesce(co.cont_ape1,''),' ',coalesce(co.cont_ape2,''),' ',coalesce(co.cont_nom1,''),' ',coalesce(co.cont_nom2,''))as contratante, cert.cert_upProv,  cert.cert_estado, cert.cert_iniVig, cert.cert_finVig, cl.nombre_comercial_cli, pl.nombre_plan, pl.prima_monto, pl.dias_carencia, pl.dias_mora");
 		 $this->db->select("(select cob_fechCob from cobro where cert_id=cert.cert_id order by cob_fechCob desc limit 1) AS ultimo_cobro");
 		 $this->db->select("(SELECT MAX(cob_finCobertura) AS ultima_cobertura FROM cobro co WHERE co.cert_id = cert.cert_id LIMIT 1) AS ultima_cobertura");
 	 	$this->db->from('certificado cert');

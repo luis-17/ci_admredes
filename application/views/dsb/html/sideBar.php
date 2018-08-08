@@ -19,7 +19,7 @@
 
 				<ul class="nav nav-list">
 					<li class="active">
-						<a href="index.html">
+						<a href="<?=base_url();?>">
 							<i class="menu-icon fa fa-tachometer"></i>
 							<span class="menu-text"> Menú </span>
 						</a>

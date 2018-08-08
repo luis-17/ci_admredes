@@ -129,7 +129,6 @@
 								</li>
 							</ul>
 						</li>
-
 						<!-- /section:basics/navbar.user_menu -->
 					</ul>
 				</div>

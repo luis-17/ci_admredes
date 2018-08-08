@@ -15313,7 +15313,7 @@ div.ColVis_collectionBackground {
 .steps li.complete:before,
 .steps li.active .step,
 .steps li.complete .step {
-  border-color: #5293c4;
+  border-color: #171b54;
 }
 .steps li.complete .step {
   cursor: default;
@@ -15337,7 +15337,7 @@ div.ColVis_collectionBackground {
   z-index: 3;
   font-family: FontAwesome;
   font-size: 17px;
-  color: #87ba21;
+  color: #b61414;
 }
 .steps li.complete:hover .step {
   -moz-transform: scale(1.1);
@@ -15345,10 +15345,10 @@ div.ColVis_collectionBackground {
   -o-transform: scale(1.1);
   -ms-transform: scale(1.1);
   transform: scale(1.1);
-  border-color: #80afd4;
+  border-color: #cf6565;
 }
 .steps li.complete:hover:before {
-  border-color: #80afd4;
+  border-color: #cf6565;
 }
 .steps li .title {
   display: block;

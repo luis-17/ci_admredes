@@ -56,8 +56,6 @@
 		<script src="<?=base_url()?>public/pagination/jquery-1.12.4.js"></script>
 		<script src="<?=base_url()?>public/pagination/jquery.dataTables.min.js"></script>
 		<script src="<?=base_url()?>public/pagination/dataTables.bootstrap.min.js"></script>
-
-
 	</head>
 
 	<body class="no-skin">
@@ -129,73 +127,62 @@
 											<th></th>
 										</tr>
 									</thead>
-										<?php foreach($proveedores as $pr){?>
-										<tbody>
+										
+									<tbody>
+									<?php foreach($proveedores as $pr){?>
 										<tr>
-										<td><?=$pr->numero_documento_pr?></td>
-										<td><?=$pr->razon_social_pr?></td>
-										<td><?=$pr->nombre_comercial_pr?></td>
-										<td><?=$pr->direccion_pr?></td>
-										<td><?php echo ''.$pr->dep.'-'.$pr->prov.'-'.$pr->dist; ?></td>
-										<td><?php if($pr->estado_pr==1){
-											echo '<a href="'.base_url().'index.php/proveedor_anular/'.$pr->idproveedor.'"><span class="label label-info label-white middle">Activo</span></a>';
-													}else{
-														echo '<a href="'.base_url().'index.php/proveedor_activar/'.$pr->idproveedor.'"><span class="label label-danger label-white middle">Inactivo</span></a>';
-														}?></td>
-										<td>
-											<div class="hidden-sm hidden-xs btn-group">
-												<div title="Contactos" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
-													<a class="boton fancybox" href="'.base_url().'proveedor_contactos/'.$pr->idproveedor.'/'.$pr->nombre_comercial_pr.'" data-fancybox-width="950" data-fancybox-height="690">
-														<i class="ace-icon fa fa-eye bigger-120"></i>
-													</a>
-												</div>
-												<div title="Editar Plan" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
-													&nbsp;<a href="'.base_url().'proveedor_editar/'.$pr->idproveedor.'/'.$pr->nombre_comercial_pr.'">
-														<i class="ace-icon fa fa-pencil bigger-120"></i>
-													</a>
-												</div>
-												<div title="'.$titulo.'" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
-													&nbsp;<a href="'.base_url().''.$funcion.'/'.$pr->idproveedor.'">
-														<i class="'.$estilo.'"></i>
-													</a>
-												</div>
-											</div>
-
-												<div class="hidden-md hidden-lg">
-													<div class="inline pos-rel">
-														<button class="btn btn-minier btn-primary dropdown-toggle" data-toggle="dropdown" data-position="auto">
-															<i class="ace-icon fa fa-cog icon-only bigger-110"></i>
-														</button>
-
-														<ul class="dropdown-menu dropdown-only-icon dropdown-yellow dropdown-menu-right dropdown-caret dropdown-close">
-																<li>
-																	<div title="Contactos" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
-																		<a class="boton fancybox" href="'.base_url().'proveedor_contactos/'.$pr->idproveedor.'/'.$pr->nombre_comercial_pr.'" data-fancybox-width="950" data-fancybox-height="690">
-																			<i class="ace-icon fa fa-eye bigger-120"></i>
-																		</a>
-																	</div>
-																</li>
-																<li>
-																	<div title="Editar Plan" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
-																		&nbsp;<a href="'.base_url().'proveedor_editar/'.$pr->idproveedor.'/'.$pr->nombre_comercial_pr.'">
-																			<i class="ace-icon fa fa-pencil bigger-120"></i>
-																		</a>
-																	</div>
-																</li>
-																<li>
-																	<div title="'.$titulo.'" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
-																		&nbsp;<a href="'.base_url().''.$funcion.'/'.$pr->idproveedor.'">
-																			<i class="'.$estilo.'"></i>
-																		</a>
-																	</div>
-																</li>
-															</ul>
-														</div>
+											<td><?=$pr->numero_documento_pr?></td>
+											<td><?=$pr->razon_social_pr?></td>
+											<td><?=$pr->nombre_comercial_pr?></td>
+											<td><?=$pr->direccion_pr?></td>
+											<td><?php echo ''.$pr->dep.'-'.$pr->prov.'-'.$pr->dist; ?></td>
+											<td><?php if($pr->estado_pr==1){
+												echo '<a href="'.base_url().'inhabilitar_proveedor/'.$pr->idproveedor.'"><span class="label label-info label-white middle">Activo</span></a>';
+														}else{
+															echo '<a href="'.base_url().'habilitar_proveedor/'.$pr->idproveedor.'"><span class="label label-danger label-white middle">Inactivo</span></a>';
+															}?></td>
+											<td style="width: 5%;">
+												<div class="hidden-sm hidden-xs btn-group">
+													<div title="Agregar Contacto" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
+														<a class="boton fancybox" href="'.base_url().'proveedor_contactos/'.$pr->idproveedor.'/'.$pr->nombre_comercial_pr.'" data-fancybox-width="950" data-fancybox-height="690">
+															<i class="ace-icon glyphicon glyphicon-user"></i>
+														</a>
 													</div>
-												</td>		
-											</tr>									
-									</tbody>
-									<?php } ?>
+													<div title="Editar Proveedor" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
+														&nbsp;<a href="<?=base_url()?>proveedor_editar/<?=$pr->idproveedor?>/<?=$pr->nombre_comercial_pr?>">
+															<i class="ace-icon fa fa-pencil bigger-120"></i>
+														</a>
+													</div>
+												</div>
+
+													<div class="hidden-md hidden-lg">
+														<div class="inline pos-rel">
+															<button class="btn btn-minier btn-primary dropdown-toggle" data-toggle="dropdown" data-position="auto">
+																<i class="ace-icon fa fa-cog icon-only bigger-110"></i>
+															</button>
+
+															<ul class="dropdown-menu dropdown-only-icon dropdown-yellow dropdown-menu-right dropdown-caret dropdown-close">
+																	<li>
+																		<div title="Agregar Contacto" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
+																			<a class="boton fancybox" href="'.base_url().'proveedor_contactos/'.$pr->idproveedor.'/'.$pr->nombre_comercial_pr.'" data-fancybox-width="950" data-fancybox-height="690">
+																				<i class="ace-icon glyphicon glyphicon-user"></i>
+																			</a>
+																		</div>
+																	</li>
+																	<li>
+																		<div title="Editar Proveedor" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
+																			&nbsp;<a href="<?=base_url()?>proveedor_editar/<?=$pr->idproveedor?>/<?=$pr->nombre_comercial_pr?>">
+																				<i class="ace-icon fa fa-pencil bigger-120"></i>
+																			</a>
+																		</div>
+																	</li>
+																</ul>
+															</div>
+														</div>
+													</td>		
+											</tr>	
+											<?php } ?>								
+									</tbody>									
 								</table>
 								<?php } ?>
 							</div>

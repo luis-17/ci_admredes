@@ -99,7 +99,7 @@ $route['distrito'] = 'Afiliacion_cnt/distrito';
 $route['cont_save'] = 'Afiliacion_cnt/cont_save';
 $route['aseg_guardar'] = 'Afiliacion_cnt/aseg_guardar';
 $route['aseg_editar/(:any)/(:any)'] = 'Afiliacion_cnt/aseg_editar/$1/$2';
-$route['aseg_nuevo/(:any)'] = 'Afiliacion_cnt/aseg_nuevo/$1';
+$route['aseg_nuevo/(:any)/(:any)'] = 'Afiliacion_cnt/aseg_nuevo/$1/$2';
 $route['aseg_save'] = 'Afiliacion_cnt/aseg_save';
 $route['aseg_up'] = 'Afiliacion_cnt/aseg_up';
 $route['verifica_dni'] = 'Afiliacion_cnt/verifica_dni';
@@ -109,10 +109,8 @@ $route['form_cancelado/(:any)/(:any)/(:any)'] = 'Afiliacion_cnt/form_cancelado/$
 $route['save_incidencia'] = 'Afiliacion_cnt/save_incidencia';
 $route['email'] = 'Afiliacion_cnt/email';
 
-
-$route['proveedor_editar/(:any)/(:any)'] = 'proveedor_cnt/plan_editar/$1/$2';
-$route['proveedor_registrar'] = 'proveedor_cnt/plan_registrar';
-$route['proveedor_guardar'] = 'proveedor_cnt/plan_guardar';
+$route['proveedor_editar/(:any)/(:any)'] = 'proveedor_cnt/proveedor_editar/$1/$2';
+$route['proveedor_guardar'] = 'proveedor_cnt/proveedor_guardar';
 $route['habilitar_proveedor/(:any)'] = 'proveedor_cnt/habilitar/$1';
 $route['inhabilitar_proveedor/(:any)'] = 'proveedor_cnt/inhabilitar/$1';
 $route['nuevo_proveedor'] = "proveedor_cnt/nuevo";
@@ -121,7 +119,6 @@ $route['editar_proveedor/(:any)'] = "proveedor_cnt/editar/$1";
 $route['certificado_detalle/(:any)/(:any)'] = 'certificadodetalle_cnt/index/$1/$2';
 $route['aseg_atenciones/(:any)'] = 'certificadodetalle_cnt/aseg_atenciones/$1';
 $route['aseg_editar/(:any)'] = 'certificadodetalle_cnt/aseg_editar/$1';
-$route['aseg_save'] = 'aseg_save';
 $route['calendario/(:any)/(:any)'] = 'calendario_cnt/index/$1/$2';
 $route['calendario_guardar'] = 'calendario_cnt/calendario_guardar';
 $route['certificado2/(:any)'] = 'certificado_cnt/index2/$1';
@@ -130,8 +127,6 @@ $route['activar_certificado/(:any)/(:any)'] = 'certificadodetalle_cnt/activar_ce
 $route['cancelar_certificado/(:any)/(:any)'] = 'certificadodetalle_cnt/cancelar_certificado/$1/$2';
 $route['reservar_cita/(:any)/(:any)/(:any)/(:any)'] = 'certificadodetalle_cnt/reservar_cita/$1/$2/$3/$4';
 $route['save_cita'] ='certificadodetalle_cnt/save_cita';
-
-
 
 $route['siniestro/(:any)'] = 'siniestro_cnt/siniestro/$1';
 $route['atenciones/(:any)'] = 'atenciones_cnt/atenciones/$1';
@@ -167,8 +162,6 @@ $route['seleccionar_cobertura/(:any)/(:any)/(:any)'] = 'plan_cnt/seleccionar_cob
 $route['consultar_cobros_buscar'] = 'Reportes_cnt/buscar';
 $route['consultar_detalle_cobros/(:any)/(:any)/(:any)/(:any)'] = 'Reportes_cnt/detalle_cobros/$1/$2/$3/$4';
 $route['exc_cobros/(:any)/(:any)/(:any)'] = 'Reportes_cnt/exc_cobros/$1/$2/$3';
-
-
 
 // Rutas Ariel (Escribir debajo)
 
