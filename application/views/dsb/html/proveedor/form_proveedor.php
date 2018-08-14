@@ -43,6 +43,31 @@
 	        }
 	    });
 	</script>
+	<script type="text/javascript">
+    /*funcion ajax que llena el combo dependiendo de la categoria seleccionada*/
+    $(document).ready(function(){
+       $("#dep").change(function () {
+               $("#dep option:selected").each(function () {
+                dep=$('#dep').val();
+                $.post("<?=base_url();?>index.php/provincia", { dep: dep}, function(data){
+                $("#prov").html(data);
+                });            
+            });
+       })
+    });
+
+    $(document).ready(function(){
+       $("#prov").change(function () {
+               $("#prov option:selected").each(function () {
+                prov=$('#prov').val();
+                $.post("<?=base_url();?>index.php/distrito", { prov: prov}, function(data){
+                $("#dist").html(data);
+                });            
+            });
+       })
+    });
+    /*fin de la funcion ajax que llena el combo dependiendo de la categoria seleccionada*/
+    </script>
 		<!-- inline styles related to this page -->
 
 		<!-- ace settings handler -->
@@ -126,7 +151,7 @@
 								endif;
 							?>
 								<!-- PAGE CONTENT BEGINS -->
-								<form class="form-horizontal" role="form" method="post" action="<?=base_url()?>/proveedor_guardar">
+								<form class="form-horizontal" role="form" method="post" action="<?=base_url()?>proveedor_guardar">
 									<input type="hidden" id="idplan" name="idplan" value="<?=$id;?>" />
 
 									<div class="form-group">
@@ -197,7 +222,7 @@
 									<div class="form-group">
 										<label class="control-label col-xs-12 col-sm-3 no-padding-right" for="name">Departamento</label>	
 										<div class="col-xs-12 col-sm-9">
-											<select class="input-medium valid" id="departamento" name="departamento" aria-required="true" aria-invalid="false" aria-describedby="platform-error">
+											<select class="input-medium valid" id="dep" name="dep" aria-required="true" aria-invalid="false" aria-describedby="platform-error">
 												<option value="">Seleccionar</option>
 												<?php foreach ($departamento as $d):
 													$cod=$d->iddepartamento;
@@ -215,7 +240,7 @@
 									<div class="form-group">
 										<label class="control-label col-xs-12 col-sm-3 no-padding-right" for="name">Provincia:</label>	
 										<div class="col-xs-12 col-sm-9">
-											<select class="input-medium valid" id="provincia" name="provincia" aria-required="true" aria-invalid="false" aria-describedby="platform-error">
+											<select class="input-medium valid" id="prov" name="prov" aria-required="true" aria-invalid="false" aria-describedby="platform-error">
 												<option value="">Seleccione</option>
 											</select>
 										</div>
@@ -223,7 +248,7 @@
 									<div class="form-group">
 										<label class="control-label col-xs-12 col-sm-3 no-padding-right" for="name">Distrito:</label>	
 										<div class="col-xs-12 col-sm-9">
-											<select class="input-medium valid" id="distrito" name="distrito" aria-required="true" aria-invalid="false" aria-describedby="platform-error">
+											<select class="input-medium valid" id="dist" name="dist" aria-required="true" aria-invalid="false" aria-describedby="platform-error">
 												<option value="">Seleccione</option>
 											</select>
 										</div>

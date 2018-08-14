@@ -201,7 +201,7 @@ class Afiliacion_cnt extends CI_Controller {
 	{
 		$dep = $_POST['dep'];
 
-		$options='<option>Seleccionar</option>';
+		$options='<option value="">Seleccionar</option>';
 		$provincia = $this->afiliacion_mdl->provincia($dep);
 
 		foreach ($provincia as $p) {
@@ -215,7 +215,7 @@ class Afiliacion_cnt extends CI_Controller {
 	{
 		$prov = $_POST['prov'];
 
-		$options='<option>Seleccionar</option>';
+		$options='<option value="">Seleccionar</option>';
 		$distrito = $this->afiliacion_mdl->distrito($prov);
 
 		foreach ($distrito as $d) {

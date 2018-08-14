@@ -218,8 +218,7 @@
 							<span class="bigger-120">
 								<span class="blue bolder">Red Salud</span>
 								Application &copy; 2018
-							</span>
-
+							</span>                                                              
 							&nbsp; &nbsp;
 						</div>
 

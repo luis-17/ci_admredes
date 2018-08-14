@@ -42,7 +42,7 @@
 	            this.height = parseInt(this.element.data('fancybox-height'));
 	        }
 	    });
-		</script>
+	</script>
 		<!-- inline styles related to this page -->
 
 		<!-- ace settings handler -->
@@ -92,94 +92,6 @@
 
 					<!-- /section:basics/content.breadcrumbs -->
 					<div class="page-content">
-						<!-- #section:settings.box -->
-						<div class="ace-settings-container" id="ace-settings-container">
-							<div class="btn btn-app btn-xs btn-warning ace-settings-btn" id="ace-settings-btn">
-								<i class="ace-icon fa fa-cog bigger-130"></i>
-							</div>
-
-							<div class="ace-settings-box clearfix" id="ace-settings-box">
-								<div class="pull-left width-50">
-									<!-- #section:settings.skins -->
-									<div class="ace-settings-item">
-										<div class="pull-left">
-											<select id="skin-colorpicker" class="hide">
-												<option data-skin="no-skin" value="#438EB9">#438EB9</option>
-												<option data-skin="skin-1" value="#222A2D">#222A2D</option>
-												<option data-skin="skin-2" value="#C6487E">#C6487E</option>
-												<option data-skin="skin-3" value="#D0D0D0">#D0D0D0</option>
-											</select>
-										</div>
-										<span>&nbsp; Choose Skin</span>
-									</div>
-
-									<!-- /section:settings.skins -->
-
-									<!-- #section:settings.navbar -->
-									<div class="ace-settings-item">
-										<input type="checkbox" class="ace ace-checkbox-2" id="ace-settings-navbar" />
-										<label class="lbl" for="ace-settings-navbar"> Fixed Navbar</label>
-									</div>
-
-									<!-- /section:settings.navbar -->
-
-									<!-- #section:settings.sidebar -->
-									<div class="ace-settings-item">
-										<input type="checkbox" class="ace ace-checkbox-2" id="ace-settings-sidebar" />
-										<label class="lbl" for="ace-settings-sidebar"> Fixed Sidebar</label>
-									</div>
-
-									<!-- /section:settings.sidebar -->
-
-									<!-- #section:settings.breadcrumbs -->
-									<div class="ace-settings-item">
-										<input type="checkbox" class="ace ace-checkbox-2" id="ace-settings-breadcrumbs" />
-										<label class="lbl" for="ace-settings-breadcrumbs"> Fixed Breadcrumbs</label>
-									</div>
-
-									<!-- /section:settings.breadcrumbs -->
-
-									<!-- #section:settings.rtl -->
-									<div class="ace-settings-item">
-										<input type="checkbox" class="ace ace-checkbox-2" id="ace-settings-rtl" />
-										<label class="lbl" for="ace-settings-rtl"> Right To Left (rtl)</label>
-									</div>
-
-									<!-- /section:settings.rtl -->
-
-									<!-- #section:settings.container -->
-									<div class="ace-settings-item">
-										<input type="checkbox" class="ace ace-checkbox-2" id="ace-settings-add-container" />
-										<label class="lbl" for="ace-settings-add-container">
-											Inside
-											<b>.container</b>
-										</label>
-									</div>
-
-									<!-- /section:settings.container -->
-								</div><!-- /.pull-left -->
-
-								<div class="pull-left width-50">
-									<!-- #section:basics/sidebar.options -->
-									<div class="ace-settings-item">
-										<input type="checkbox" class="ace ace-checkbox-2" id="ace-settings-hover" />
-										<label class="lbl" for="ace-settings-hover"> Submenu on Hover</label>
-									</div>
-
-									<div class="ace-settings-item">
-										<input type="checkbox" class="ace ace-checkbox-2" id="ace-settings-compact" />
-										<label class="lbl" for="ace-settings-compact"> Compact Sidebar</label>
-									</div>
-
-									<div class="ace-settings-item">
-										<input type="checkbox" class="ace ace-checkbox-2" id="ace-settings-highlight" />
-										<label class="lbl" for="ace-settings-highlight"> Alt. Active Item</label>
-									</div>
-
-									<!-- /section:basics/sidebar.options -->
-								</div><!-- /.pull-left -->
-							</div><!-- /.ace-settings-box -->
-						</div><!-- /.ace-settings-container -->
 
 						<!-- /section:settings.box -->
 						<div class="page-header">
@@ -196,299 +108,303 @@
 								<!-- PAGE CONTENT BEGINS -->
 								<div class="tabbable">
 									<!-- #section:pages/faq -->
-									<ul class="nav nav-tabs padding-18 tab-size-bigger" id="myTab">
-										<li class="active">
-											<a data-toggle="tab" href="#faq-tab-1">
-												Certificado
-											</a>
-										</li>
+									<div id="faq-list-2" class="panel-group accordion-style1 accordion-style2">
+										<div class="panel panel-default">
+											<div class="panel-heading">
+												<a href="#faq-2-1" data-parent="#faq-list-2" data-toggle="collapse" class="accordion-toggle collapsed">
+													<i class="ace-icon fa fa-chevron-right smaller-80" data-icon-hide="ace-icon fa fa-chevron-down align-top" data-icon-show="ace-icon fa fa-chevron-right"></i>&nbsp;
+														CERTIFICADO
+												</a>
+											</div>
 
-										<li>
-											<a data-toggle="tab" href="#faq-tab-2">
-												Afiliados
-											</a>
-										</li>
+										<div class="panel-collapse collapse" id="faq-2-1">
+											<div class="panel-body">
 
-										<li>
-											<a data-toggle="tab" href="#faq-tab-3">
-												Cobros
-											</a>
-										</li>
-									</ul>
+													<h4 class="blue">
+														<i class="ace-icon glyphicon glyphicon-check bigger-110"></i>
+														Datos del Certificado
+													</h4>
+													<?php foreach ($certificado as $cert):
+													$id=$cert->cert_id;
+													if($cert->cert_estado==1):
+														$e=1;
+														$estado="Vigente";												
+														else:
+															$estado="Cancelado";
+															$e=3;													
+													endif;
+													$e2=0;
+													if($cert->cert_upProv==1):
+														$e2=1;
+														$estado2="Activo Manualmente";
+														$boton="ace-icon glyphicon glyphicon-remove";
+														$titulo="Cancelar Manualmente";
+														$ruta="cancelar_certificado";
+														else:
+															$e2=3;
+															$estado2="Inactivo";
+															$boton="ace-icon glyphicon glyphicon-ok";
+															$titulo="Activar Manualmente";
+															$ruta="activar_certificado";
+													endif;
+													$inicio=$cert->cert_iniVig;
+													if($cert->plan_id==13):
+														$fin = date("d-m-Y", strtotime($inicio." + 1 month"));		
+														$inicio=date("d/m/Y", strtotime($inicio));
+														else:
+															$inicio=date("d/m/Y", strtotime($inicio));
+															$fin=$cert->cert_finVig;
+															$fin=date("d/m/Y", strtotime($fin));
+													endif;	
+													$cobro=$cert->ultimo_cobro;
+													$cobro=date("d/m/Y", strtotime($cobro));
+													$cobertura=$cert->ultima_cobertura;
+													$cobertura=date("d/m/Y", strtotime($cobertura));
+													?>
+														<div class="col-xs-9 col-sm-12">
+															<div class="widget-box transparent">
+															<div class="profile-user-info profile-user-info-striped">
+																	<div class="profile-info-row">
+																		<div class="profile-info-name"> Nro Certificado: </div>
 
-									<!-- /section:pages/faq -->
-									<div class="tab-content no-border padding-24">
-										<div id="faq-tab-1" class="tab-pane fade in active">
-											<h4 class="blue">
-												<i class="ace-icon glyphicon glyphicon-check bigger-110"></i>
-												Datos del Certificado
-											</h4>
+																		<div class="profile-info-value">
+																			<span class="editable editable-click" id="username"><?=$cert->cert_num;?></span>
+																		</div>
+																		<div class="profile-info-name"> Contratante: </div>
 
-											<div class="space-8"></div>
+																		<div class="profile-info-value">
+																			<span class="editable editable-click" id="username"><?=$cert->contratante;?></span>
+																		</div>
+																		<div class="profile-info-name"> Est. Atención: </div>
 
-											<div id="faq-list-1" class="panel-group accordion-style1 accordion-style2">
-											<?php foreach ($certificado as $cert):
-											$id=$cert->cert_id;
-											if($cert->cert_estado==1):
-												$e=1;
-												$estado="Vigente";												
-												else:
-													$estado="Cancelado";
-													$e=3;													
-											endif;
-											$e2=0;
-											if($cert->cert_upProv==1):
-												$e2=1;
-												$estado2="Activo Manualmente";
-												$boton="ace-icon glyphicon glyphicon-remove";
-												$titulo="Cancelar Manualmente";
-												$ruta="cancelar_certificado";
-												else:
-													$e2=3;
-													$estado2="Inactivo";
-													$boton="ace-icon glyphicon glyphicon-ok";
-													$titulo="Activar Manualmente";
-													$ruta="activar_certificado";
-											endif;
-											$inicio=$cert->cert_iniVig;
-											if($cert->plan_id==13):
-												$fin = date("d-m-Y", strtotime($inicio." + 1 month"));		
-												$inicio=date("d/m/Y", strtotime($inicio));
-												else:
-													$inicio=date("d/m/Y", strtotime($inicio));
-													$fin=$cert->cert_finVig;
-													$fin=date("d/m/Y", strtotime($fin));
-											endif;	
-											$cobro=$cert->ultimo_cobro;
-											$cobro=date("d/m/Y", strtotime($cobro));
-											$cobertura=$cert->ultima_cobertura;
-											$cobertura=date("d/m/Y", strtotime($cobertura));
-											?>
-												<div class="col-xs-9 col-sm-12">
-													<div class="widget-box transparent">
-													<div class="profile-user-info profile-user-info-striped">
-															<div class="profile-info-row">
-																<div class="profile-info-name"> Nro Certificado: </div>
+																		<div class="profile-info-value">
+																			<span class="editable editable-click" id="username"><?=$estado2;?></span>
+																				<?php if($cert->plan_id!=13):?>
+																				<a href="<?=  base_url()?><?=$ruta?>/<?=$id?>/<?=$doc?>" title="<?=$titulo;?>">
+																						<span class="<?=$boton ?>"></span>
+																				</a>
+																			<?php endif; ?>
+																		</div>
+																	</div>
 
-																<div class="profile-info-value">
-																	<span class="editable editable-click" id="username"><?=$cert->cert_num;?></span>
-																</div>
-																<div class="profile-info-name"> Contratante: </div>
+																	<div class="profile-info-row">
+																		<div class="profile-info-name"> Est. Certificado: </div>
 
-																<div class="profile-info-value">
-																	<span class="editable editable-click" id="username"><?=$cert->contratante;?></span>
-																</div>
-																<div class="profile-info-name"> Est. Atención: </div>
+																		<div class="profile-info-value">
+																			<span class="editable editable-click" id="age"><?=$estado?></span>
+																		</div>
+																		<div class="profile-info-name"> Inicio Vigencia: </div>
 
-																<div class="profile-info-value">
-																	<span class="editable editable-click" id="username"><?=$estado2;?></span>
-																		<?php if($cert->plan_id!=13):?>
-																		<a href="<?=  base_url()?><?=$ruta?>/<?=$id?>/<?=$doc?>" title="<?=$titulo;?>">
-																				<span class="<?=$boton ?>"></span>
-																		</a>
-																	<?php endif; ?>
-																</div>
-															</div>
+																		<div class="profile-info-value">
+																			<span class="editable editable-click" id="age"><?=$inicio;?></span>
+																		</div>
+																		<div class="profile-info-name"> Fin Vigencia: </div>
 
-															<div class="profile-info-row">
-																<div class="profile-info-name"> Est. Certificado: </div>
+																		<div class="profile-info-value">
+																			<span class="editable editable-click" id="age"><?=$fin;?></span>
+																		</div>
+																	</div>
+																	<div class="profile-info-row">
+																		<div class="profile-info-name"> Cliente: </div>
 
-																<div class="profile-info-value">
-																	<span class="editable editable-click" id="age"><?=$estado?></span>
-																</div>
-																<div class="profile-info-name"> Inicio Vigencia: </div>
+																		<div class="profile-info-value">
+																			<span class="editable editable-click" id="age"><?=$cert->nombre_comercial_cli;?></span>
+																		</div>
+																		<div class="profile-info-name"> Plan: </div>
 
-																<div class="profile-info-value">
-																	<span class="editable editable-click" id="age"><?=$inicio;?></span>
-																</div>
-																<div class="profile-info-name"> Fin Vigencia: </div>
+																		<div class="profile-info-value">
+																			<span class="editable editable-click" id="age"><?=$cert->nombre_plan;?></span>
+																		</div>
+																		<div class="profile-info-name"> Precio: </div>
 
-																<div class="profile-info-value">
-																	<span class="editable editable-click" id="age"><?=$fin;?></span>
-																</div>
-															</div>
-															<div class="profile-info-row">
-																<div class="profile-info-name"> Cliente: </div>
+																		<div class="profile-info-value">
+																			<span class="editable editable-click" id="age"><?=$cert->prima_monto;?> PEN</span>
+																		</div>
+																	</div>
+																	
+																	<div class="profile-info-row">
+																		<div class="profile-info-name"> Últ. Cobro: </div>
 
-																<div class="profile-info-value">
-																	<span class="editable editable-click" id="age"><?=$cert->nombre_comercial_cli;?></span>
-																</div>
-																<div class="profile-info-name"> Plan: </div>
+																		<div class="profile-info-value">
+																			<span class="editable editable-click" id="age"><?=$cobro;?></span>
+																		</div>
+																		<div class="profile-info-name"> Cancelación: </div>
 
-																<div class="profile-info-value">
-																	<span class="editable editable-click" id="age"><?=$cert->nombre_plan;?></span>
-																</div>
-																<div class="profile-info-name"> Precio: </div>
-
-																<div class="profile-info-value">
-																	<span class="editable editable-click" id="age"><?=$cert->prima_monto;?> PEN</span>
-																</div>
-															</div>
-															
-															<div class="profile-info-row">
-																<div class="profile-info-name"> Últ. Cobro: </div>
-
-																<div class="profile-info-value">
-																	<span class="editable editable-click" id="age"><?=$cobro;?></span>
-																</div>
-																<div class="profile-info-name"> Cancelación: </div>
-
-																<div class="profile-info-value">
-																	<span class="editable editable-click" id="age">-</span>
+																		<div class="profile-info-value">
+																			<span class="editable editable-click" id="age">-</span>
+																		</div>
+																	</div>
 																</div>
 															</div>
 														</div>
-													</div>
-												</div>
+												
 											</div>
 										</div>
-											<?php endforeach; ?>
-										<div id="faq-tab-2" class="tab-pane fade">
-											<h4 class="blue">
-												<i class="blue ace-icon fa fa-users bigger-110"></i>
-												Listado de Afiliados al Certificado
-											</h4>
 
-											<div class="space-8"></div>
+										<div class="panel panel-default">
+											<div class="panel-heading">
+												<a href="#faq-2-2" data-parent="#faq-list-2" data-toggle="collapse" class="accordion-toggle collapsed">
+													<i class="ace-icon fa fa-chevron-right smaller-80" data-icon-hide="ace-icon fa fa-chevron-down align-top" data-icon-show="ace-icon fa fa-chevron-right"></i>&nbsp;
+													CONTRATANTE
+												</a>
+											</div>
 
-											<div id="faq-list-2" class="panel-group accordion-style1 accordion-style2">
-												<!-- star table -->		
-												<div class="col-xs-12">
-													<table id="simple-table" class="table table-striped table-bordered table-hover">
-														<thead>
-															<tr>
-																<th>DNI</th>
-																<th>Asegurado</th>
-																<th>Teléfono</th>
-																<th>Email</th>
-																<th></th>
-															</tr>
-														</thead>
+											<div class="panel-collapse collapse" id="faq-2-2">
+												<div class="panel-body">
+												</div>
+											</div>
+										<div class="panel panel-default">
+											<div class="panel-heading">
+												<a href="#faq-2-3" data-parent="#faq-list-2" data-toggle="collapse" class="accordion-toggle collapsed">
+													<i class="ace-icon fa fa-chevron-right smaller-80" data-icon-hide="ace-icon fa fa-chevron-down align-top" data-icon-show="ace-icon fa fa-chevron-right"></i>&nbsp;
+													AFILIADOS
+												</a>
+											</div>
+											
 
-														<tbody>
-														<?php foreach ($asegurado as $aseg):
-														$idaseg=$aseg->aseg_id;
-														$fec=$aseg->ultima_atencion;										
-														$certase = $aseg->certase_id;
-														$fec=date("d/m/Y", strtotime($fec));
-														?>
-															<tr>
-																<td><?=$aseg->aseg_numDoc;?></td>
-																<td><?=$aseg->asegurado;?></td>
-																<td><?=$aseg->aseg_telf;?></td>
-																<td><?=$aseg->aseg_email;?></td>
-																<td>
-																	<div class="hidden-sm hidden-xs btn-group">
-																			<div title="Ver Atenciones" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
-																				<a class="boton fancybox" href="<?=  base_url()?>aseg_atenciones/<?=$idaseg?>" data-fancybox-width="950" data-fancybox-height="690">
-																					<i class="ace-icon fa fa-eye bigger-120"></i>
-																				</a>
-																			</div>
-																			<div title="Editar Asegurado" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
-																				&nbsp;<a class="boton fancybox" href="<?=  base_url()?>aseg_editar/<?=$idaseg?>" data-fancybox-width="950" data-fancybox-height="690">
-																					<i class="ace-icon fa fa-pencil bigger-120"></i>
-																				</a>
-																			</div>
-																			<?php if($e==1&&$e2!=3) {?>
-																			<div title="Reservar Atención" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
-																				&nbsp;<a class="boton fancybox" href="<?=  base_url()?>reservar_cita/<?=$id?>/<?=$idaseg?>/<?=$doc?>/<?=$certase?>" data-fancybox-width="950" data-fancybox-height="690">
-																				<i class="ace-icon fa fa-external-link bigger-120"></i>
-																				</a>
-																			</div>
-																			<?php } ?>
-																	</div>
+											<div class="panel-collapse collapse" id="faq-2-3">
+												<div class="panel-body">
+													<h4 class="blue">
+														<i class="blue ace-icon fa fa-users bigger-110"></i>
+														Listado de Afiliados al Certificado
+													</h4>
+														<table id="simple-table" class="table table-striped table-bordered table-hover">
+															<thead>
+																<tr>
+																	<th>DNI</th>
+																	<th>Asegurado</th>
+																	<th>Teléfono</th>
+																	<th>Email</th>
+																	<th></th>
+																</tr>
+															</thead>
 
-																	<div class="hidden-md hidden-lg">
-																		<div class="inline pos-rel">
-																			<button class="btn btn-minier btn-primary dropdown-toggle" data-toggle="dropdown" data-position="auto">
-																				<i class="ace-icon fa fa-cog icon-only bigger-110"></i>
-																			</button>
-
-																			<ul class="dropdown-menu dropdown-only-icon dropdown-yellow dropdown-menu-right dropdown-caret dropdown-close">
-																				<li>
-																					<div title="Ver Atenciones" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
-																						<a class="boton fancybox" href="<?=  base_url()?>aseg_atenciones/<?=$id?>" data-fancybox-width="950" data-fancybox-height="690">
-																							<i class="ace-icon fa fa-eye bigger-120"></i>
-																						</a>
-																			</div>
-
-																				</li>
-
-																				<li>
-																					<div title="Editar Asegurado" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
-																						<a class="boton fancybox" href="<?=  base_url()?>aseg_editar/<?=$id?>" data-fancybox-width="950" data-fancybox-height="690">
-																							<i class="ace-icon fa fa-pencil bigger-120"></i>
-																						</a>
-																					</div>
-																				</li>
-																				<?php if($e==1) {?>
-																				<li>
-																					<div title="Reservar Atención" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
-																						&nbsp;<a class="boton fancybox" href="<?=  base_url()?>reservar_cita/<?=$id?>/<?=$idaseg?>/<?=$doc?>/<?=$certase?>" data-fancybox-width="950" data-fancybox-height="690">
-																						<i class="ace-icon fa fa-external-link bigger-120"></i>
-																						</a>
-																					</div>
-																				</li>
+															<tbody>
+															<?php foreach ($asegurado as $aseg):
+															$idaseg=$aseg->aseg_id;
+															$fec=$aseg->ultima_atencion;										
+															$certase = $aseg->certase_id;
+															$fec=date("d/m/Y", strtotime($fec));
+															?>
+																<tr>
+																	<td><?=$aseg->aseg_numDoc;?></td>
+																	<td><?=$aseg->asegurado;?></td>
+																	<td><?=$aseg->aseg_telf;?></td>
+																	<td><?=$aseg->aseg_email;?></td>
+																	<td>
+																		<div class="hidden-sm hidden-xs btn-group">
+																				<div title="Ver Atenciones" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
+																					<a class="boton fancybox" href="<?=  base_url()?>aseg_atenciones/<?=$idaseg?>" data-fancybox-width="950" data-fancybox-height="690">
+																						<i class="ace-icon fa fa-eye bigger-120"></i>
+																					</a>
+																				</div>
+																				<div title="Editar Asegurado" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
+																					&nbsp;<a class="boton fancybox" href="<?=  base_url()?>aseg_editar/<?=$idaseg?>" data-fancybox-width="950" data-fancybox-height="690">
+																						<i class="ace-icon fa fa-pencil bigger-120"></i>
+																					</a>
+																				</div>
+																				<?php if($e==1&&$e2!=3) {?>
+																				<div title="Reservar Atención" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
+																					&nbsp;<a class="boton fancybox" href="<?=  base_url()?>reservar_cita/<?=$id?>/<?=$idaseg?>/<?=$doc?>/<?=$certase?>" data-fancybox-width="950" data-fancybox-height="690">
+																					<i class="ace-icon fa fa-external-link bigger-120"></i>
+																					</a>
+																				</div>
 																				<?php } ?>
-																			</ul>
 																		</div>
-																	</div>
-																</td>
-															</tr>
-														<?php endforeach;?>
-														</tbody>
-													</table>
-												</div>
-												<!-- end table -->
+
+																		<div class="hidden-md hidden-lg">
+																			<div class="inline pos-rel">
+																				<button class="btn btn-minier btn-primary dropdown-toggle" data-toggle="dropdown" data-position="auto">
+																					<i class="ace-icon fa fa-cog icon-only bigger-110"></i>
+																				</button>
+
+																				<ul class="dropdown-menu dropdown-only-icon dropdown-yellow dropdown-menu-right dropdown-caret dropdown-close">
+																					<li>
+																						<div title="Ver Atenciones" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
+																							<a class="boton fancybox" href="<?=  base_url()?>aseg_atenciones/<?=$id?>" data-fancybox-width="950" data-fancybox-height="690">
+																								<i class="ace-icon fa fa-eye bigger-120"></i>
+																							</a>
+																				</div>
+
+																					</li>
+
+																					<li>
+																						<div title="Editar Asegurado" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
+																							<a class="boton fancybox" href="<?=  base_url()?>aseg_editar/<?=$id?>" data-fancybox-width="950" data-fancybox-height="690">
+																								<i class="ace-icon fa fa-pencil bigger-120"></i>
+																							</a>
+																						</div>
+																					</li>
+																					<?php if($e==1) {?>
+																					<li>
+																						<div title="Reservar Atención" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
+																							&nbsp;<a class="boton fancybox" href="<?=  base_url()?>reservar_cita/<?=$id?>/<?=$idaseg?>/<?=$doc?>/<?=$certase?>" data-fancybox-width="950" data-fancybox-height="690">
+																							<i class="ace-icon fa fa-external-link bigger-120"></i>
+																							</a>
+																						</div>
+																					</li>
+																					<?php } ?>
+																				</ul>
+																			</div>
+																		</div>
+																	</td>
+																</tr>
+															<?php endforeach;?>
+															</tbody>
+														</table>							
 											</div>
 										</div>
+										<div class="panel panel-default">
+											<div class="panel-heading">
+												<a href="#faq-2-4" data-parent="#faq-list-2" data-toggle="collapse" class="accordion-toggle collapsed">
+													<i class="ace-icon fa fa-chevron-right smaller-80" data-icon-hide="ace-icon fa fa-chevron-down align-top" data-icon-show="ace-icon fa fa-chevron-right"></i>&nbsp;
+													COBROS
+												</a>
+											</div>
+											<div class="panel-collapse collapse" id="faq-2-4">
+												<div class="panel-body">
+													<div class="col-xs-12">
+														<h4 class="blue">
+															<i class="blue ace-icon fa fa-credit-card bigger-110"></i>
+															Cobros Registrados
+														</h4>
+														<table id="simple-table" class="table table-striped table-bordered table-hover">
+															<thead>
+																<tr>
+																	<th>Fecha Cobro</th>
+																	<th>Vez Cobro</th>
+																	<th>Importe</th>
+																	<th>Inicio Cobertura</th>
+																	<th>Fin Cobertura</th>
+																</tr>
+															</thead>
 
-										<div id="faq-tab-3" class="tab-pane fade">
-											<h4 class="blue">
-												<i class="blue ace-icon fa fa-credit-card bigger-110"></i>
-												Cobros Registrados
-											</h4>
-
-											<div class="space-8"></div>
-
-											<div id="faq-list-3" class="panel-group accordion-style1 accordion-style2">
-												<!-- star table -->		
-												<div class="col-xs-12">
-													<table id="simple-table" class="table table-striped table-bordered table-hover">
-														<thead>
-															<tr>
-																<th>Fecha Cobro</th>
-																<th>Vez Cobro</th>
-																<th>Importe</th>
-																<th>Inicio Cobertura</th>
-																<th>Fin Cobertura</th>
-															</tr>
-														</thead>
-
-														<tbody>
-														<?php foreach ($cobros as $cob):
-														$cobro=$cob->cob_fechCob;
-														$cobro=date("d/m/Y", strtotime($cobro));
-														$inicio=$cob->cob_iniCobertura;;
-														$inicio=date("d/m/Y", strtotime($inicio));
-														$fin=$cob->cob_finCobertura;
-														$fin=date("d/m/Y", strtotime($fin));
-														?>
-															<tr>
-																<td><?=$cobro;?></td>
-																<td><?=$cob->cob_vezCob;?></td>
-																<td><?=$cob->importe;?></td>
-																<td><?=$inicio;?></td>
-																<td><?=$fin;?></td>
-															</tr>
-														<?php endforeach;?>
-														</tbody>
-													</table>
-												</div>
-												<!-- end table -->
+															<tbody>
+															<?php foreach ($cobros as $cob):
+															$cobro=$cob->cob_fechCob;
+															$cobro=date("d/m/Y", strtotime($cobro));
+															$inicio=$cob->cob_iniCobertura;;
+															$inicio=date("d/m/Y", strtotime($inicio));
+															$fin=$cob->cob_finCobertura;
+															$fin=date("d/m/Y", strtotime($fin));
+															?>
+																<tr>
+																	<td><?=$cobro;?></td>
+																	<td><?=$cob->cob_vezCob;?></td>
+																	<td><?=$cob->importe;?></td>
+																	<td><?=$inicio;?></td>
+																	<td><?=$fin;?></td>
+																</tr>
+															<?php endforeach;?>
+															</tbody>
+														</table>
+													</div>													
+												</div>								
 											</div>
 										</div>
 									</div>
+								<?php endforeach; ?>
+								</div>
 								</div>
 
 								<!-- PAGE CONTENT ENDS -->
@@ -521,7 +437,7 @@
 
 		<!-- basic scripts -->
 
-		<!--[if !IE]> -->
+			<!--[if !IE]> -->
 		<script type="text/javascript">
 			window.jQuery || document.write("<script src='<?=  base_url()?>public/assets/js/jquery.js'>"+"<"+"/script>");
 		</script>
@@ -565,7 +481,6 @@
 
 		<!-- inline scripts related to this page -->
 
-		
 		<!-- the following scripts are used in demo only for onpage help and you don't need them -->
 		<link rel="stylesheet" href="<?=  base_url()?>public/assets/css/ace.onpage-help.css" />
 		<link rel="stylesheet" href="<?=  base_url()?>public/docs/assets/js/themes/sunburst.css" />

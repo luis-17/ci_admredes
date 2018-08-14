@@ -12,6 +12,7 @@
 	 $this->db->join("ubigeo ud","cod_departamento_pr=ud.iddepartamento and idprovincia='00' and ud.iddistrito='00'",'left');
 	 $this->db->join("ubigeo up","cod_provincia_pr=up.idprovincia and up.iddistrito='00' and up.iddepartamento=ud.iddepartamento",'left');
 	 $this->db->join("ubigeo udi","cod_distrito_pr=udi.iddistrito and up.iddepartamento=udi.iddepartamento and udi.idprovincia=up.idprovincia",'left');
+	 $this->db->order_by("p.idproveedor","desc");
 	$proveedores = $this->db->get();
 	return $proveedores->result();
 	}
@@ -69,5 +70,48 @@
 		$provincia = $this->db->get();
 	 	return $provincia->result();
 	}
+
+	function verifica_ruc($data){
+		$this->db->select("count(idproveedor) as cant");
+		$this->db->from("proveedor");
+		$this->db->where("idtipodocumentoidentidad",3);
+		$this->db->where("numero_documento_pr",$data['ruc']);
+		$num = $this->db->get();
+		return $num->result();
+	}
+
+	function in_usuario($data){
+		$array = array
+		(
+			'idtipousuario' => 4,
+			'emailusuario' => $data['usuario'],
+			'username' => $data['usuario'],
+			'password' => md5($data['contrasena']),
+			'password_view' => $data['contrasena']
+		);
+		$this->db->insert('usuario',$array);
+	}
+
+	function in_proveedor($data){
+		$array = array
+		(
+			'idtipoproveedor' => $data['tipoproveedor'], 
+			'idtipodocumentoidentidad' => 3,
+			'idusuario' => $data['idusuario'],
+			'razon_social_pr' => $data['razonsocial'],
+			'nombre_comercial_pr' => $data['nombrecomercial'],
+			'numero_documento_pr' => $data['ruc'],
+			'direccion_pr' => $data['direccion'],
+			'referencia_pr' => $data['referencia'],
+			'cod_distrito_pr' => $data['distrito'],
+			'cod_provincia_pr' => $data['provincia'],
+			'cod_departamento_pr' => $data['departamento'],
+			'cod_sunasa_pr' => $data['codigosunasa']
+		);
+
+		$this->db->insert('proveedor',$array);
+	}
+
+	
 }
 ?>

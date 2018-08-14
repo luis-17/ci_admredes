@@ -22,7 +22,6 @@
  	}
 	 
 	function getCertificado($id) {
-
 	 	$this->db->select("cert_id, cert.cert_num, cert.plan_id, concat(coalesce(co.cont_ape1,''),' ',coalesce(co.cont_ape2,''),' ',coalesce(co.cont_nom1,''),' ',coalesce(co.cont_nom2,''))as contratante, cert.cert_upProv,  cert.cert_estado, cert.cert_iniVig, cert.cert_finVig, cl.nombre_comercial_cli, pl.nombre_plan, pl.prima_monto, pl.dias_carencia, pl.dias_mora");
 		 $this->db->select("(select cob_fechCob from cobro where cert_id=cert.cert_id order by cob_fechCob desc limit 1) AS ultimo_cobro");
 		 $this->db->select("(SELECT MAX(cob_finCobertura) AS ultima_cobertura FROM cobro co WHERE co.cert_id = cert.cert_id LIMIT 1) AS ultima_cobertura");
@@ -38,7 +37,6 @@
 	
 
 	function getCertificadoApellidos($ap){
-
 	 	$this->db->select("CONCAT(COALESCE(cont_ape1,''), ' ', COALESCE(cont_ape2,''),' ',COALESCE(cont_nom1,''), ' ', COALESCE(cont_nom2,''))as contratante, cont_numDoc, aseg_numDoc, CONCAT(COALESCE(aseg_ape1,''), ' ', COALESCE(aseg_ape2,''),' ',COALESCE(aseg_nom1,''), ' ', COALESCE(aseg_nom2,''))as asegurado, nombre_plan, nombre_comercial_cli, cert_num");
 		$this->db->from('certificado cert');
  		$this->db->join('certificado_asegurado ca','ca.cert_id=cert.cert_id');
@@ -117,7 +115,6 @@
 	}
 
 	function getAtenciones($id){
-
 		$this->db->select("num_orden_atencion, fecha_cita, fecha_atencion, nombre_comercial_pr, nombre_esp,estado_siniestro, 's' as procedencia");
 		$this->db->from("siniestro s");
 		$this->db->join('especialidad e','s.idespecialidad=e.idespecialidad');		
@@ -141,7 +138,6 @@
 	// }
 
 	function getAseg_editar($id){
-
 		$this->db->select("CONCAT(COALESCE(aseg_nom1,''), ' ', COALESCE(aseg_nom2,''), ' ', COALESCE(aseg_ape1,''), ' ', COALESCE(aseg_ape2,'')) AS asegurado, aseg_id, aseg_numDoc, aseg_fechNac, aseg_sexo,aseg_direcc, aseg_telf,aseg_email");
 		$this->db->select("(select descripcion_ubig from ubigeo where iddepartamento=SUBSTR(aseg_ubg,1,2) and idprovincia='00' and iddistrito='00' )as departamento");
 		$this->db->select("(select descripcion_ubig from ubigeo where iddepartamento=SUBSTR(aseg_ubg,1,2) and idprovincia=SUBSTR(aseg_ubg,3,2) and iddistrito='00' )as provincia");
