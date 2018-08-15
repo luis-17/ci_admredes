@@ -400,7 +400,7 @@ class Comprobante_pago_cnt extends CI_Controller {
 								$html .= "<td align='left'>";
 									$html .= "<ul class='ico-stack'>";
 										$html .="<div title='ver PDF' id='pdfButton' onclick=''>";
-											$html .="<a class='boton fancybox' href='generarPdf/".$b->idcomprobante."/".$canales."' data-fancybox-width='950' data-fancybox-height='800' target='_blank'>";
+											$html .="<a class='boton fancybox' href='".base_url()."comprobante_pago_cnt/generarPdf/".$b->idcomprobante."/".$canales."' data-fancybox-width='950' data-fancybox-height='800' target='_blank'>";
 												$html .= "<i class='ace-icon fa fa-file-pdf-o bigger-120'></i>";
 											$html .="</a>";
 										$html .="</div>";
@@ -460,7 +460,7 @@ class Comprobante_pago_cnt extends CI_Controller {
 									$html .= "<td align='left'>";
 										$html .= "<ul class='ico-stack'>";
 											$html .="<div title='ver PDF' id='pdfButton' onclick=''>";
-												$html .="<a class='boton fancybox' href='generarPdf/".$f->idcomprobante."/".$canales."' data-fancybox-width='950' data-fancybox-height='800' target='_blank'>";
+												$html .="<a class='boton fancybox' href='".base_url()."comprobante_pago_cnt/generarPdf/".$f->idcomprobante."/".$canales."' data-fancybox-width='950' data-fancybox-height='800' target='_blank'>";
 													$html .= "<i class='ace-icon fa fa-file-pdf-o bigger-120'></i>";
 												$html .="</a>";
 											$html .="</div>";
