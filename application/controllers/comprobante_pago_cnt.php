@@ -13,27 +13,35 @@ class Comprobante_pago_cnt extends CI_Controller {
 
 	public function index()
 	{
-		$idusuario=2;
+		//load session library
+		$this->load->library('session');
 
-		$menuLista = $this->menu_mdl->getMenu($idusuario);
-		$data['menu1'] = $menuLista;
+		//restrict users to go to home if not logged in
+		if($this->session->userdata('user')){
+			//$this->load->view('home');
 
-		$month = date('m');
-      	$year = date('Y');
-      	$day = date("d", mktime(0,0,0, $month+1, 0, $year));
+			$user = $this->session->userdata('user');
+			extract($user);
 
-		$data['idclienteempresa'] = 0;
+			$menuLista = $this->menu_mdl->getMenu($idusuario);
+			$data['menu1'] = $menuLista;
+			$submenuLista = $this->menu_mdl->getSubMenu($idusuario);
+			$data['menu2'] = $submenuLista;
 
-		$data['fecinicio'] = date('Y-m-d', mktime(0,0,0, $month, 1, $year));
-		$data['fecfin'] = date('Y-m-d', mktime(0,0,0, $month, $day, $year));
+			$month = date('m');
+			$year = date('Y');
+			$day = date("d", mktime(0,0,0, $month+1, 0, $year));
+			$data['idclienteempresa'] = 0;
+			$data['fecinicio'] = date('Y-m-d', mktime(0,0,0, $month, 1, $year));
+			$data['fecfin'] = date('Y-m-d', mktime(0,0,0, $month, $day, $year));
+			$canales = $this->comprobante_pago_mdl->getCanales();
+			$data['canales'] = $canales;
 
-		$submenuLista = $this->menu_mdl->getSubMenu($idusuario);
-		$data['menu2'] = $submenuLista;
-
-		$canales = $this->comprobante_pago_mdl->getCanales();
-		$data['canales'] = $canales;
-
-		$this->load->view('dsb/html/comprobante/generar_comp.php',$data);
+			$this->load->view('dsb/html/comprobante/generar_comp.php',$data);
+		}
+		else{
+			redirect('/');
+		}
 	}
 
 	public function mostrarDocumento(){
@@ -283,27 +291,36 @@ class Comprobante_pago_cnt extends CI_Controller {
 	}
 
 	public function comprobante_generado(){
-		$idusuario=2;
+		//load session library
+		$this->load->library('session');
 
-		$menuLista = $this->menu_mdl->getMenu($idusuario);
-		$data['menu1'] = $menuLista;
+		//restrict users to go to home if not logged in
+		if($this->session->userdata('user')){
+			//$this->load->view('home');
 
-		$month = date('m');
-      	$year = date('Y');
-      	$day = date("d", mktime(0,0,0, $month+1, 0, $year));
+			$user = $this->session->userdata('user');
+			extract($user);
 
-		$data['idclienteempresa'] = 0;
+			$menuLista = $this->menu_mdl->getMenu($idusuario);
+			$data['menu1'] = $menuLista;
+			$submenuLista = $this->menu_mdl->getSubMenu($idusuario);
+			$data['menu2'] = $submenuLista;
 
-		$data['fecinicio'] = date('Y-m-d', mktime(0,0,0, $month, 1, $year));
-		$data['fecfin'] = date('Y-m-d', mktime(0,0,0, $month, $day, $year));
+			$month = date('m');
+			$year = date('Y');
+			$day = date("d", mktime(0,0,0, $month+1, 0, $year));
+			$data['idclienteempresa'] = 0;
+			$data['fecinicio'] = date('Y-m-d', mktime(0,0,0, $month, 1, $year));
+			$data['fecfin'] = date('Y-m-d', mktime(0,0,0, $month, $day, $year));
+			$canales = $this->comprobante_pago_mdl->getCanales();
+			$data['canales'] = $canales;
 
-		$submenuLista = $this->menu_mdl->getSubMenu($idusuario);
-		$data['menu2'] = $submenuLista;
+			$this->load->view('dsb/html/comprobante/comprobante_generado.php',$data);	
 
-		$canales = $this->comprobante_pago_mdl->getCanales();
-		$data['canales'] = $canales;
-
-		$this->load->view('dsb/html/comprobante/comprobante_generado.php',$data);		
+		} 
+		else{
+			redirect('/');
+		}			
 	}
 
 	public function generarLista(){
