@@ -32,24 +32,53 @@
 		<script type="text/javascript" src="<?=  base_url()?>public/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
 
 		<script>
-			$(".fancybox")
-	    .attr('rel', 'gallery')
-	    .fancybox({
-	        type: 'iframe',
-	        autoSize : false,
-	        beforeLoad : function() {         
-	            this.width  = parseInt(this.element.data('fancybox-width'));  
-	            this.height = parseInt(this.element.data('fancybox-height'));
-	        }
+				$(".fancybox")
+		    .attr('rel', 'gallery')
+		    .fancybox({
+		        type: 'iframe',
+		        autoSize : false,
+		        beforeLoad : function() {         
+		            this.width  = parseInt(this.element.data('fancybox-width'));  
+		            this.height = parseInt(this.element.data('fancybox-height'));
+		        }
+		    });
+		</script>
+		 <script type="text/javascript">
+	    /*funcion ajax que llena el combo dependiendo de la categoria seleccionada*/
+	    $(document).ready(function(){
+	       $("#dep").change(function () {
+	               $("#dep option:selected").each(function () {
+	                dep=$('#dep').val();
+	                $.post("<?=base_url();?>index.php/provincia", { dep: dep}, function(data){
+	                $("#prov").html(data);
+	                });            
+	            });
+	       })
 	    });
-	</script>
+
+	    $(document).ready(function(){
+	       $("#prov").change(function () {
+	               $("#prov option:selected").each(function () {
+	                prov=$('#prov').val();
+	                $.post("<?=base_url();?>index.php/distrito", { prov: prov}, function(data){
+	                $("#dist").html(data);
+	                });            
+	            });
+	       })
+	    });
+	    /*fin de la funcion ajax que llena el combo dependiendo de la categoria seleccionada*/
+	    </script>
 		<!-- inline styles related to this page -->
 
 		<!-- ace settings handler -->
 		<script src="<?=  base_url()?>public/assets/js/ace-extra.js"></script>
 
 		<!-- HTML5shiv and Respond.js for IE8 to support HTML5 elements and media queries -->
-
+		<!-- para paginacion -->
+		<script src="<?=base_url()?>public/pagination/jquery.dataTables.min.css"></script>
+		<script src="<?=base_url()?>public/pagination/jquery-1.12.4.js"></script>
+		<script src="<?=base_url()?>public/pagination/jquery.dataTables.min.js"></script>
+		<script src="<?=base_url()?>public/pagination/dataTables.bootstrap.min.js"></script>
 	</head>
 
 	<body class="no-skin">
@@ -80,9 +109,8 @@
 								<i class="ace-icon fa fa-home home-icon"></i>
 								<a href="<?=base_url()?>index">Inicio</a>
 							</li>
-
 							<li>
-								<a href="<?=base_url()?>certificado2/<?=$doc?>">Certificado</a>
+								<a href="<?=base_url()?>certificado2/<?=$doc?>/<?=$id2?>">Certificado</a>
 							</li>
 							<li class="active">Detalle Certificado</li>
 						</ul><!-- /.breadcrumb -->
@@ -118,92 +146,110 @@
 											</div>
 
 										<div class="panel-collapse collapse" id="faq-2-1">
-											<div class="panel-body">
-
+											<div class="panel-body">													
+													<?php foreach ($certificado as $cert): ?>
 													<h4 class="blue">
 														<i class="ace-icon glyphicon glyphicon-check bigger-110"></i>
-														Datos del Certificado
+														Datos del Certificado <?=$cert->cert_num;?>
 													</h4>
-													<?php foreach ($certificado as $cert):
+													<?php 
 													$id=$cert->cert_id;
-													if($cert->cert_estado==1):
-														$e=1;
-														$estado="Vigente";												
-														else:
-															$estado="Cancelado";
-															$e=3;													
-													endif;
-													$e2=0;
-													if($cert->cert_upProv==1):
-														$e2=1;
-														$estado2="Activo Manualmente";
-														$boton="ace-icon glyphicon glyphicon-remove";
-														$titulo="Cancelar Manualmente";
-														$ruta="cancelar_certificado";
-														else:
-															$e2=3;
-															$estado2="Inactivo";
-															$boton="ace-icon glyphicon glyphicon-ok";
-															$titulo="Activar Manualmente";
-															$ruta="activar_certificado";
-													endif;
-													$inicio=$cert->cert_iniVig;
-													if($cert->plan_id==13):
-														$fin = date("d-m-Y", strtotime($inicio." + 1 month"));		
-														$inicio=date("d/m/Y", strtotime($inicio));
-														else:
-															$inicio=date("d/m/Y", strtotime($inicio));
-															$fin=$cert->cert_finVig;
-															$fin=date("d/m/Y", strtotime($fin));
-													endif;	
+													$num=$cert->dias_atencion;
+													$hoy= time();
+													$inicio=$cert->cert_ini;	
+													$finvig=$cert->cert_finVig;
+													$finvig=strtotime($finvig);											
+													$inicio2= strtotime($inicio);
+													$inicio=date("d-m-Y", strtotime($cert->cert_iniVig));
+													$fin=$cert->cert_fin;
+													$fin2= strtotime($fin); 
+													$fin=date("d-m-Y", strtotime($cert->cert_finVig));
+													$can=$cert->fec_can;
+													if($can==''){
+														$can='-';
+													}else{
+														$can=date("d-m-Y", strtotime($can));
+													}
 													$cobro=$cert->ultimo_cobro;
 													$cobro=date("d/m/Y", strtotime($cobro));
 													$cobertura=$cert->ultima_cobertura;
 													$cobertura=date("d/m/Y", strtotime($cobertura));
+													$act_man=$cert->cert_upProv;
+
+													if($cert->cert_estado==1){
+														$e=1;
+														$estado="Vigente";	
+
+														}elseif($hoy<=$finvig){
+															$estado="Vigente";
+															$e=1;
+															}else{
+																$estado="Cancelado";
+																$e=3;													
+															}	
+
+													if($e==1){
+														if($hoy>$inicio2 && $fin2>=$hoy){
+															$estado2="Activo";
+															$boton="";
+															$titulo="";
+															$ruta="";	
+															$e2=1;	
+														}else{
+															if($act_man==1){
+																$estado2="Activo Manualmente";
+																$boton="ace-icon glyphicon glyphicon-remove";
+																$titulo="Inactivar Manualmente";
+																$ruta="cancelar_certificado";
+																$e2=1;
+															}elseif($hoy<$inicio2){
+																$estado2="En carencia";
+																$boton="";
+																$titulo="";
+																$ruta="";
+																$e2=3;
+															}else{
+																$estado2="Inactivo";
+																$boton="ace-icon glyphicon glyphicon-ok";
+																$titulo="Activar Manualmente";
+																$ruta="activar_certificado";
+																$e2=3;
+															}
+														}
+													}else{
+														$estado2="Inactivo";
+														$boton="";
+														$titulo="";
+														$ruta="";
+														$e2=3;
+													}
 													?>
 														<div class="col-xs-9 col-sm-12">
 															<div class="widget-box transparent">
 															<div class="profile-user-info profile-user-info-striped">
-																	<div class="profile-info-row">
-																		<div class="profile-info-name"> Nro Certificado: </div>
-
-																		<div class="profile-info-value">
-																			<span class="editable editable-click" id="username"><?=$cert->cert_num;?></span>
-																		</div>
-																		<div class="profile-info-name"> Contratante: </div>
-
-																		<div class="profile-info-value">
-																			<span class="editable editable-click" id="username"><?=$cert->contratante;?></span>
-																		</div>
-																		<div class="profile-info-name"> Est. Atención: </div>
-
-																		<div class="profile-info-value">
-																			<span class="editable editable-click" id="username"><?=$estado2;?></span>
-																				<?php if($cert->plan_id!=13):?>
-																				<a href="<?=  base_url()?><?=$ruta?>/<?=$id?>/<?=$doc?>" title="<?=$titulo;?>">
-																						<span class="<?=$boton ?>"></span>
-																				</a>
-																			<?php endif; ?>
-																		</div>
-																	</div>
-
-																	<div class="profile-info-row">
+																	<div class="profile-info-row">	
 																		<div class="profile-info-name"> Est. Certificado: </div>
 
 																		<div class="profile-info-value">
 																			<span class="editable editable-click" id="age"><?=$estado?></span>
 																		</div>
-																		<div class="profile-info-name"> Inicio Vigencia: </div>
+																		<div class="profile-info-name"> Est. Atención: </div>
 
 																		<div class="profile-info-value">
-																			<span class="editable editable-click" id="age"><?=$inicio;?></span>
+																			<span class="editable editable-click" id="username"><?=$estado2;?></span>
+																				<?php if($cert->flg_activar=='S' && $e==1):?>
+																				<a href="<?=  base_url()?><?=$ruta?>/<?=$id?>/<?=$doc?>" title="<?=$titulo;?>">
+																						<span class="<?=$boton ?>"></span>
+																				</a>
+																			<?php endif; ?>
 																		</div>
-																		<div class="profile-info-name"> Fin Vigencia: </div>
+																		<div class="profile-info-name"> Últ. Cobro: </div>
 
 																		<div class="profile-info-value">
-																			<span class="editable editable-click" id="age"><?=$fin;?></span>
+																			<span class="editable editable-click" id="age"><?=$cobro;?></span>
 																		</div>
 																	</div>
+																	
 																	<div class="profile-info-row">
 																		<div class="profile-info-name"> Cliente: </div>
 
@@ -218,20 +264,26 @@
 																		<div class="profile-info-name"> Precio: </div>
 
 																		<div class="profile-info-value">
-																			<span class="editable editable-click" id="age"><?=$cert->prima_monto;?> PEN</span>
+																			<span class="editable editable-click" id="age"><?=$cert->prima_monto;?></span>
 																		</div>
 																	</div>
-																	
+
 																	<div class="profile-info-row">
-																		<div class="profile-info-name"> Últ. Cobro: </div>
+																		
+																		<div class="profile-info-name"> Inicio Vigencia: </div>
 
 																		<div class="profile-info-value">
-																			<span class="editable editable-click" id="age"><?=$cobro;?></span>
+																			<span class="editable editable-click" id="age"><?=$inicio;?></span>
+																		</div>
+																		<div class="profile-info-name"> Fin Vigencia: </div>
+
+																		<div class="profile-info-value">
+																			<span class="editable editable-click" id="age"><?=$fin;?></span>
 																		</div>
 																		<div class="profile-info-name"> Cancelación: </div>
 
 																		<div class="profile-info-value">
-																			<span class="editable editable-click" id="age">-</span>
+																			<span class="editable editable-click" id="age"><?=$can;?></span>
 																		</div>
 																	</div>
 																</div>
@@ -251,6 +303,132 @@
 
 											<div class="panel-collapse collapse" id="faq-2-2">
 												<div class="panel-body">
+													<h4 class="blue">
+														<i class="ace-icon glyphicon glyphicon-user bigger-110"></i>
+														Datos del Responsable de Pago
+													</h4>
+													<br>
+													<?php foreach ($contratante as $co){ 
+														$dep = $co->dep;
+														$prov = $co->prov;
+														$dist = $co->dist;?>
+
+													<form role="form" method="post" name="form_cont" id="form_cont" action="<?=base_url()?>cert_cont_save">	
+													<input type="hidden" name="cont_id" id="cont_id" value="<?=$co->cont_id?>">
+													<input type="hidden" name="id2" id="id2" value="<?=$id2?>">
+													<input type="hidden" name="doc" id="doc" value="<?=$doc?>">
+														<div class="form-row">
+															<div class="form-group col-md-3">
+																<b class="text-primary">Tipo de Documento</b>
+																<select disabled="true" name="tipodoc" id="tipodoc" required="Seleccione una opción de la lista" class="form-control" value="<?=$d->cont_tipoDoc;?>">
+																	<option value="1" <?php if($co->cont_tipoDoc==1): echo "selected"; endif;?> >DNI</option>
+					                                                <option value="2" <?php if($co->cont_tipoDoc==2): echo "selected"; endif;?> >Pasaporte</option>
+					                                                <option value="4" <?php if($co->cont_tipoDoc==4): echo "selected"; endif;?> >Carné de extranjería</option>
+					                                            </select>
+															</div>
+															<div class="form-group col-md-3">
+																<b class="text-primary">Nro de Documento</b>
+																<input value="<?=$co->cont_numDoc;?>" type="text" id="dni" name="dni" required="Digite el DNI"  class="form-control" disabled="true">
+															</div>
+														</div>
+														<div class="form-group col-md-6">
+														<p><img src=""></p>
+														<p><img src=""></p>
+														</div>
+														<div class="form-row">		
+															<div class="form-group col-md-3">
+																<b class="text-primary">Apellido Paterno</b>
+																<input  value="<?=$co->cont_ape1;?>" type="text" id="ape1" name="ape1" required="Digite el apellido paterno"  class="form-control" disabled="true">
+															</div>		
+															<div class="form-group col-md-3">
+																<b class="text-primary">Apellido Materno</b>
+																<input value="<?=$co->cont_ape2?>" type="text" id="ape2" name="ape2" required="Digite el apellido materno"  class="form-control" disabled="true">
+															</div>	
+															<div class="form-group col-md-3">
+																<b class="text-primary">Nombre 1</b>
+																<input value="<?=$co->cont_nom1?>" type="text" id="nom1" name="nom1" required="Digite el Nombre"  class="form-control" disabled="true">
+															</div>	
+															<div class="form-group col-md-3">
+																<b class="text-primary">Nombre 2</b>
+																<input value="<?=$co->cont_nom2?>" type="text" id="nom2" name="nom2"  class="form-control" disabled="true">
+															</div>									
+													 	</div>
+													 	<div class="form-row">		
+															<div class="form-group col-md-3">
+																<b class="text-primary">Dirección</b>
+																<input value="<?=$co->cont_direcc?>" type="text" id="direcc" name="direcc"  class="form-control">
+															</div>
+															<div class="form-group col-md-3">
+																<b class="text-primary">Departamento</b>
+																<select name="dep" id="dep" class="form-control">
+					                                            <option>Seleccionar</option>
+					                                            <?php foreach ($ubigeo as $u): 
+					                                            	if($dep==$u->iddepartamento):
+					                                            		$estdep='selected';
+																	else:
+																		$estdep='';
+																	endif;
+					                                            		?>
+					                                                <option value="<?=$u->iddepartamento;?>" <?=$estdep?> ><?=$u->descripcion_ubig;?></option>
+					                                                <?php endforeach; ?>        
+					                                         	</select>
+															</div>		
+															 	
+															<div class="form-group col-md-3">
+																<b class="text-primary">Provincia</b>
+																<select id="prov" name="prov" class="form-control">
+																<option value="">Seleccionar</option>
+																 <?php foreach ($provincia2 as $p2): 
+					                                            	if($prov==$p2->idprovincia):
+					                                            		$estprov='selected';
+																	else:
+																		$estprov='';
+																	endif;
+					                                            		?>
+					                                                <option value="<?=$p2->idprovincia;?>" <?=$estprov?> ><?=$p2->descripcion_ubig;?></option>
+					                                                <?php endforeach; ?>                                                            
+					                                         	</select>
+															</div>	
+															<div class="form-group col-md-3">
+																<b class="text-primary">Distrito</b>
+																<select name="dist" id="dist" class="form-control">
+																<option value="">Seleccionar</option>
+					                                                <?php foreach ($distrito2 as $d2): 
+					                                            	if($dist==$d2->iddistrito):
+					                                            		$estdist='selected';
+																	else:
+																		$estdist='';
+																	endif;
+					                                            		?>
+					                                                <option value="<?=$d2->iddistrito;?>" <?=$estdist?> ><?=$d2->descripcion_ubig;?></option>
+					                                                <?php endforeach; ?> 
+					                                            </select>
+															</div>										
+													 	</div>
+													 	<div class="form-row">
+															<div class="form-group col-md-3">
+																<b class="text-primary">Teléfono</b>
+																<input type="text" id="telf" name="telf" value="<?=$co->cont_telf?>" class="form-control">
+															</div>
+															<div class="form-group col-md-3">
+																<b class="text-primary">Correo Electrónico</b>
+																<input value="<?=$co->cont_email?>" type="text" id="correo" name="correo"   class="form-control">
+															</div>
+														</div>
+														<div class="form-group col-md-6">
+														<p><img src=""></p>
+														<p><img src=""></p>
+														</div>
+														<div class="form-row">
+															<div class="form-group col-md-12" style="text-align: right;">	
+																<button class="btn btn-info" type="submit">
+																	<i class="ace-icon fa fa-check bigger-110"></i>
+																	Guardar
+																</button>
+															</div>	
+														</div>	
+													</form>
+												<?php } ?>
 												</div>
 											</div>
 										<div class="panel panel-default">
@@ -273,6 +451,7 @@
 																<tr>
 																	<th>DNI</th>
 																	<th>Asegurado</th>
+																	<th>Última Atención</th>
 																	<th>Teléfono</th>
 																	<th>Email</th>
 																	<th></th>
@@ -282,19 +461,27 @@
 															<tbody>
 															<?php foreach ($asegurado as $aseg):
 															$idaseg=$aseg->aseg_id;
-															$fec=$aseg->ultima_atencion;										
-															$certase = $aseg->certase_id;
-															$fec=date("d/m/Y", strtotime($fec));
+															$fecha=date("d-m-Y");
+															$hoy2=strtotime($fecha."- ".$num." days");
+															$fec=$aseg->ultima_atencion;
+															$fec2= strtotime($fec);
+																if($fec==''){
+																	$fec='-';
+																}else{
+																	$fec=date("d/m/Y", strtotime($fec));
+																}										
+																$certase = $aseg->certase_id;
 															?>
 																<tr>
 																	<td><?=$aseg->aseg_numDoc;?></td>
 																	<td><?=$aseg->asegurado;?></td>
+																	<td><?=$fec;?>
 																	<td><?=$aseg->aseg_telf;?></td>
 																	<td><?=$aseg->aseg_email;?></td>
 																	<td>
 																		<div class="hidden-sm hidden-xs btn-group">
 																				<div title="Ver Atenciones" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
-																					<a class="boton fancybox" href="<?=  base_url()?>aseg_atenciones/<?=$idaseg?>" data-fancybox-width="950" data-fancybox-height="690">
+																					<a class="boton fancybox" href="<?=  base_url()?>aseg_atenciones/<?=$idaseg?>/<?=$id?>" data-fancybox-width="950" data-fancybox-height="690">
 																						<i class="ace-icon fa fa-eye bigger-120"></i>
 																					</a>
 																				</div>
@@ -303,7 +490,7 @@
 																						<i class="ace-icon fa fa-pencil bigger-120"></i>
 																					</a>
 																				</div>
-																				<?php if($e==1&&$e2!=3) {?>
+																				<?php if($e==1&&$e2==1&&$hoy2>$fec2) {?>
 																				<div title="Reservar Atención" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
 																					&nbsp;<a class="boton fancybox" href="<?=  base_url()?>reservar_cita/<?=$id?>/<?=$idaseg?>/<?=$doc?>/<?=$certase?>" data-fancybox-width="950" data-fancybox-height="690">
 																					<i class="ace-icon fa fa-external-link bigger-120"></i>
@@ -314,14 +501,14 @@
 
 																		<div class="hidden-md hidden-lg">
 																			<div class="inline pos-rel">
-																				<button class="btn btn-minier btn-primary dropdown-toggle" data-toggle="dropdown" data-position="auto">
+																				<button class="btn btn-minier btn-info dropdown-toggle" data-toggle="dropdown" data-position="auto">
 																					<i class="ace-icon fa fa-cog icon-only bigger-110"></i>
 																				</button>
 
 																				<ul class="dropdown-menu dropdown-only-icon dropdown-yellow dropdown-menu-right dropdown-caret dropdown-close">
 																					<li>
 																						<div title="Ver Atenciones" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
-																							<a class="boton fancybox" href="<?=  base_url()?>aseg_atenciones/<?=$id?>" data-fancybox-width="950" data-fancybox-height="690">
+																							<a class="boton fancybox" href="<?=  base_url()?>aseg_atenciones/<?=$idaseg?>/<?=$id?>" data-fancybox-width="950" data-fancybox-height="690">
 																								<i class="ace-icon fa fa-eye bigger-120"></i>
 																							</a>
 																				</div>
@@ -368,7 +555,7 @@
 															<i class="blue ace-icon fa fa-credit-card bigger-110"></i>
 															Cobros Registrados
 														</h4>
-														<table id="simple-table" class="table table-striped table-bordered table-hover">
+														<table id="example" class="table table-striped table-bordered table-hover">
 															<thead>
 																<tr>
 																	<th>Fecha Cobro</th>
@@ -383,22 +570,30 @@
 															<?php foreach ($cobros as $cob):
 															$cobro=$cob->cob_fechCob;
 															$cobro=date("d/m/Y", strtotime($cobro));
-															$inicio=$cob->cob_iniCobertura;;
-															$inicio=date("d/m/Y", strtotime($inicio));
-															$fin=$cob->cob_finCobertura;
-															$fin=date("d/m/Y", strtotime($fin));
+															$inicio2=$cob->cob_iniCobertura;;
+															$inicio2=date("d/m/Y", strtotime($inicio2));
+															$fin2=$cob->cob_finCobertura;
+															$fin2=date("d/m/Y", strtotime($fin2));
 															?>
 																<tr>
 																	<td><?=$cobro;?></td>
 																	<td><?=$cob->cob_vezCob;?></td>
 																	<td><?=$cob->importe;?></td>
-																	<td><?=$inicio;?></td>
-																	<td><?=$fin;?></td>
+																	<td><?=$inicio2;?></td>
+																	<td><?=$fin2;?></td>
 																</tr>
 															<?php endforeach;?>
 															</tbody>
 														</table>
-													</div>													
+													</div>
+													<script>			
+													//para paginacion
+													$(document).ready(function() {
+													    $('#example').DataTable( {
+													        "pagingType": "full_numbers"
+													    } );
+													} );
+												</script>													
 												</div>								
 											</div>
 										</div>

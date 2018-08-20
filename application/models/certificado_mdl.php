@@ -8,7 +8,7 @@
 
  	function getCertificados($doc){
  		$this->db->distinct('cert.cert_id');
- 		$this->db->select('cert.cert_id, cont_numDoc, cert_num, nombre_plan, nombre_comercial_cli, cert_upProv, cert.cert_estado');
+ 		$this->db->select('DATE_ADD(cert.cert_iniVig, INTERVAL pl.dias_carencia DAY) as cert_iniVig, DATE_ADD(cert.cert_finVig, INTERVAL pl.dias_mora DAY) AS cert_finVig, cert.cert_id, cont_numDoc, cert_num, nombre_plan, nombre_comercial_cli, cert_upProv, cert.cert_estado');
  		$this->db->from('certificado cert');
  		$this->db->join('certificado_asegurado ca','ca.cert_id=cert.cert_id');
  		$this->db->join('asegurado a','ca.aseg_id=a.aseg_id');
@@ -16,20 +16,20 @@
 	 	$this->db->join('plan pl', 'cert.plan_id = pl.idplan'); 	 
 	 	$this->db->join('cliente_empresa cl', 'cl.idclienteempresa=pl.idclienteempresa'); 
 	 	$this->db->where("aseg_numDoc=$doc  or cont_numDoc=$doc");
+	 	$this->db->order_by("cert_id","desc");
 
 	 $certificados = $this->db->get();
 	 return $certificados->result();
  	}
 	 
 	function getCertificado($id) {
-	 	$this->db->select("cert_id, cert.cert_num, cert.plan_id, concat(coalesce(co.cont_ape1,''),' ',coalesce(co.cont_ape2,''),' ',coalesce(co.cont_nom1,''),' ',coalesce(co.cont_nom2,''))as contratante, cert.cert_upProv,  cert.cert_estado, cert.cert_iniVig, cert.cert_finVig, cl.nombre_comercial_cli, pl.nombre_plan, pl.prima_monto, pl.dias_carencia, pl.dias_mora");
-		 $this->db->select("(select cob_fechCob from cobro where cert_id=cert.cert_id order by cob_fechCob desc limit 1) AS ultimo_cobro");
-		 $this->db->select("(SELECT MAX(cob_finCobertura) AS ultima_cobertura FROM cobro co WHERE co.cert_id = cert.cert_id LIMIT 1) AS ultima_cobertura");
+	 	$this->db->select("cert.cert_id, cert.cert_num, cert.plan_id, cert.cert_estado, cert.cert_upProv, DATE_ADD(cert.cert_iniVig, INTERVAL pl.dias_carencia DAY) as cert_ini, cert.cert_iniVig, DATE_ADD(cert.cert_finVig, INTERVAL pl.dias_mora DAY) AS cert_fin, cert_finVig, cl.nombre_comercial_cli, pl.nombre_plan, CONCAT(ROUND((pl.prima_monto+(pl.prima_adicional*num)),2),' PEN') as prima_monto, dias_atencion, (select cob_fechCob from cobro where cert_id=cert.cert_id order by cob_fechCob desc limit 1) AS ultimo_cobro, DATE_ADD((SELECT MAX(cob_finCobertura) FROM cobro co WHERE co.cert_id = cert.cert_id LIMIT 1),INTERVAL pl.dias_mora DAY) AS ultima_cobertura, (select can_finVig from cancelado where cert_id=".$id." order by can_id desc limit 1) as fec_can, flg_activar");
 	 	$this->db->from('certificado cert');
 	 	$this->db->join('contratante co', 'cert.cont_id=co.cont_id'); 
 	 	$this->db->join('plan pl', 'cert.plan_id = pl.idplan'); 	 
 	 	$this->db->join('cliente_empresa cl', 'cl.idclienteempresa=pl.idclienteempresa'); 
-	 	$this->db->where('cert_id', $id);
+	 	$this->db->join("(select count(aseg_id)-1 as num, a.cert_id from certificado_asegurado a where a.cert_id=".$id.")x","cert.cert_id=x.cert_id");
+	 	$this->db->where('cert.cert_id', $id);
 
 	 $certificado = $this->db->get();
 	 return $certificado->result();
@@ -37,7 +37,7 @@
 	
 
 	function getCertificadoApellidos($ap){
-	 	$this->db->select("CONCAT(COALESCE(cont_ape1,''), ' ', COALESCE(cont_ape2,''),' ',COALESCE(cont_nom1,''), ' ', COALESCE(cont_nom2,''))as contratante, cont_numDoc, aseg_numDoc, CONCAT(COALESCE(aseg_ape1,''), ' ', COALESCE(aseg_ape2,''),' ',COALESCE(aseg_nom1,''), ' ', COALESCE(aseg_nom2,''))as asegurado, nombre_plan, nombre_comercial_cli, cert_num");
+	 	$this->db->select("cert.cert_id,CONCAT(COALESCE(cont_ape1,''), ' ', COALESCE(cont_ape2,''),' ',COALESCE(cont_nom1,''), ' ', COALESCE(cont_nom2,''))as contratante, cont_numDoc, aseg_numDoc, CONCAT(COALESCE(aseg_ape1,''), ' ', COALESCE(aseg_ape2,''),' ',COALESCE(aseg_nom1,''), ' ', COALESCE(aseg_nom2,''))as asegurado, nombre_plan, nombre_comercial_cli, cert_num");
 		$this->db->from('certificado cert');
  		$this->db->join('certificado_asegurado ca','ca.cert_id=cert.cert_id');
  		$this->db->join('asegurado a','ca.aseg_id=a.aseg_id');
@@ -58,6 +58,16 @@
 		return $this->db->update('certificado', $data);
 	}
 
+	function getContratante($id){
+		$this->db->select("ce.cert_id, c.cont_id, cont_numDoc, cont_nom1, cont_nom2, cont_ape1, cont_ape2, cont_tipoDoc, cont_direcc, cont_telf, cont_email, coalesce(SUBSTR(cont_ubg, 15,2),'') as dep, coalesce(SUBSTR(cont_ubg, 15,4),'') as prov, coalesce(SUBSTR(cont_ubg, 15,6),'') as dist");
+	    $this->db->from("contratante c");
+	    $this->db->join("certificado ce","c.cont_id=ce.cont_id");
+	    $this->db->where("cert_id",$id);
+
+    $contratante=$this->db->get();
+    return $contratante->result();
+	}
+
 	function cancelar_certificado($id){
 		$data = array(
 			'cert_upProv' => 0
@@ -71,7 +81,7 @@
 		$this->db->select("(select descripcion_ubig from ubigeo where iddepartamento=SUBSTR(aseg_ubg,4,2) and idprovincia='00' and iddistrito='00' )as departamento");
 		$this->db->select("(select descripcion_ubig from ubigeo where iddepartamento=SUBSTR(aseg_ubg,4,2) and idprovincia=SUBSTR(aseg_ubg,6,2) and iddistrito='00' )as provincia");
 		$this->db->select("(select descripcion_ubig from ubigeo where iddepartamento=SUBSTR(aseg_ubg,4,2) and idprovincia=SUBSTR(aseg_ubg,6,2) and iddistrito=SUBSTR(aseg_ubg,8,2) )as distrito");
-		$this->db->select("(SELECT MAX(fecha_atencion) AS ultima_atencion FROM siniestro WHERE idasegurado=a.aseg_id LIMIT 1) AS ultima_atencion");
+		$this->db->select("(SELECT MAX(fecha_atencion) AS ultima_atencion FROM siniestro WHERE idasegurado=a.aseg_id and estado_siniestro<>0 and idcertificado=".$id." LIMIT 1) AS ultima_atencion");
 		$this->db->from('asegurado a');
 		$this->db->join('certificado_asegurado ca','a.aseg_id=ca.aseg_id');
 		$this->db->join('certificado c','c.cert_id=ca.cert_id');
@@ -114,13 +124,14 @@
 	return $asegurado->result();
 	}
 
-	function getAtenciones($id){
-		$this->db->select("num_orden_atencion, fecha_cita, fecha_atencion, nombre_comercial_pr, nombre_esp,estado_siniestro, 's' as procedencia");
+	function getAtenciones($id,$cert){
+		$this->db->select("idsiniestro, s.idasegurado, idcertificado, c.idcita, num_orden_atencion, estado_atencion, estado_siniestro, estado_cita, fecha_cita, fecha_atencion, nombre_comercial_pr, nombre_esp");
 		$this->db->from("siniestro s");
 		$this->db->join('especialidad e','s.idespecialidad=e.idespecialidad');		
 		$this->db->join('proveedor pr','pr.idproveedor=s.idproveedor');					
 		$this->db->join('cita c','c.idcita=s.idcita','left');
-		$this->db->where("estado_siniestro in(0,1,2) and estado_atencion='O' and s.idasegurado=$id");
+		$this->db->where("s.idasegurado=".$id." and idcertificado=".$cert);
+		$this->db->order_by("idsiniestro","desc");
 	$atenciones=$this->db->get();
 	return $atenciones->result();
 	}
@@ -138,10 +149,7 @@
 	// }
 
 	function getAseg_editar($id){
-		$this->db->select("CONCAT(COALESCE(aseg_nom1,''), ' ', COALESCE(aseg_nom2,''), ' ', COALESCE(aseg_ape1,''), ' ', COALESCE(aseg_ape2,'')) AS asegurado, aseg_id, aseg_numDoc, aseg_fechNac, aseg_sexo,aseg_direcc, aseg_telf,aseg_email");
-		$this->db->select("(select descripcion_ubig from ubigeo where iddepartamento=SUBSTR(aseg_ubg,1,2) and idprovincia='00' and iddistrito='00' )as departamento");
-		$this->db->select("(select descripcion_ubig from ubigeo where iddepartamento=SUBSTR(aseg_ubg,1,2) and idprovincia=SUBSTR(aseg_ubg,3,2) and iddistrito='00' )as provincia");
-		$this->db->select("(select descripcion_ubig from ubigeo where iddepartamento=SUBSTR(aseg_ubg,1,2) and idprovincia=SUBSTR(aseg_ubg,3,2) and iddistrito=SUBSTR(aseg_ubg,5,2) )as distrito");
+		$this->db->select("aseg_nom1,aseg_nom2,aseg_ape1,aseg_ape2, CONCAT(COALESCE(aseg_nom1,''), ' ', COALESCE(aseg_nom2,''), ' ', COALESCE(aseg_ape1,''), ' ', COALESCE(aseg_ape2,'')) AS asegurado, aseg_id, aseg_direcc, coalesce(SUBSTR(aseg_ubg, 1,2),'') as dep, coalesce(SUBSTR(aseg_ubg, 1,4),'') as prov, coalesce(SUBSTR(aseg_ubg, 1,6),'') as dist, aseg_email, aseg_telf, concat(SUBSTR(aseg_fechNac,1,4),'-',SUBSTR(aseg_fechNac,5,2),'-',SUBSTR(aseg_fechNac,7,2)) as aseg_fechNac, tipoDoc_id, aseg_numDoc, aseg_sexo, aseg_estCiv");
 		$this->db->from('asegurado a');
 		$this->db->where('aseg_id', $id);
 	$aseg=$this->db->get();
@@ -241,6 +249,82 @@
 			'fase_atencion' => 0
 			);
 		$this->db->insert('siniestro',$array);
+	}
+
+	function ubigeo(){
+		$this->db->select("idubigeo, iddepartamento, descripcion_ubig");
+		$this->db->from("ubigeo");
+		$this->db->where("idprovincia='00' and iddistrito='00'");
+		$this->db->order_by("descripcion_ubig");
+
+		$ubigeo = $this->db->get();
+		return $ubigeo->result();
+	}
+
+	function provincia2($data){
+		$this->db->select("idubigeo, CONCAT(iddepartamento,idprovincia) as idprovincia, descripcion_ubig");
+		$this->db->from("ubigeo");
+		$this->db->where("iddepartamento=(SELECT coalesce(SUBSTR(cont_ubg, 15,2),'') from contratante WHERE cont_id=(select cont_id from certificado where cert_id=".$data['id2'].")) and idprovincia<>'00' and iddistrito='00'");
+		$this->db->order_by("descripcion_ubig");
+
+		$provincia2 = $this->db->get();
+		return $provincia2->result();
+	}
+
+	function distrito2($data){
+		$this->db->select("idubigeo, CONCAT(iddepartamento,idprovincia,iddistrito) as iddistrito, descripcion_ubig");
+		$this->db->from("ubigeo");
+		$this->db->where("iddepartamento=(SELECT coalesce(SUBSTR(cont_ubg, 15,2),'') from contratante WHERE cont_id=(select cont_id from certificado where cert_id=".$data['id2'].")) and idprovincia=(SELECT coalesce(SUBSTR(cont_ubg, 17,2),'') from contratante WHERE cont_id=(select cont_id from certificado where cert_id=".$data['id2'].")) and iddistrito<>'00'");
+		$this->db->order_by("descripcion_ubig");
+
+		$distrito2 = $this->db->get();
+		return $distrito2->result();
+	}
+
+	function provincia3($data){
+		$this->db->select("idubigeo, CONCAT(iddepartamento,idprovincia) as idprovincia, descripcion_ubig");
+		$this->db->from("ubigeo");
+		$this->db->where("iddepartamento=(SELECT coalesce(SUBSTR(aseg_ubg, 1,2),'') from asegurado WHERE aseg_id='".$data['aseg_id']."' limit 1) and idprovincia<>'00' and iddistrito='00'");
+		$this->db->order_by("descripcion_ubig");
+
+		$provincia2 = $this->db->get();
+		return $provincia2->result();
+	}
+
+	function distrito3($data){
+		$this->db->select("idubigeo, CONCAT(iddepartamento,idprovincia,iddistrito) as iddistrito, descripcion_ubig");
+		$this->db->from("ubigeo");
+		$this->db->where("iddepartamento=(SELECT coalesce(SUBSTR(aseg_ubg, 1,2),'') from asegurado WHERE aseg_id='".$data['aseg_id']."' limit 1) and idprovincia=(SELECT coalesce(SUBSTR(aseg_ubg, 3,2),'') from asegurado WHERE aseg_id='".$data['aseg_id']."' limit 1) and iddistrito<>'00'");
+		$this->db->order_by("descripcion_ubig");
+
+		$distrito2 = $this->db->get();
+		return $distrito2->result();
+	}
+
+
+	function cont_save($data){
+		$array = array(
+			'cont_direcc' => $data['direcc'],
+			'cont_ubg' => "00000000000000".$data['ubigeo'],
+			'cont_telf' => $data['telf'],
+			'cont_email' => $data['correo']
+		);
+		$this->db->where('cont_id',$data['cont_id']);
+		return $this->db->update('contratante', $array);
+	}
+
+	function up_aseg($data){
+		$array = array(
+			'aseg_fechNac' => str_replace("-","",$data['fec_nac']),
+			'aseg_direcc' => $data['direccion'],
+			'aseg_telf' => $data['telf'],
+			'aseg_ubg' => $data['dis'],
+			'aseg_estCiv' => $data['ec'],
+			'aseg_sexo' => $data['genero'],
+			'aseg_email' => $data['correo']
+		);
+		$this->db->where('aseg_id',$data['aseg_id']);
+		return $this->db->update('asegurado', $array);
 	}
 }
 ?>

@@ -49,31 +49,6 @@
 		<script src="<?=  base_url()?>public/assets/js/ace-extra.js"></script>
 
 		<!-- HTML5shiv and Respond.js for IE8 to support HTML5 elements and media queries -->
-	<script type="text/javascript">
-    /*funcion ajax que llena el combo dependiendo de la categoria seleccionada*/
-    $(document).ready(function(){
-       $("#dep").change(function () {
-               $("#dep option:selected").each(function () {
-                dep=$('#dep').val();
-                $.post("<?=base_url();?>index.php/provincia", { dep: dep}, function(data){
-                $("#prov").html(data);
-                });            
-            });
-       })
-    });
-
-    $(document).ready(function(){
-       $("#prov").change(function () {
-               $("#prov option:selected").each(function () {
-                prov=$('#prov').val();
-                $.post("<?=base_url();?>index.php/distrito", { prov: prov}, function(data){
-                $("#dis").html(data);
-                });            
-            });
-       })
-    });
-    /*fin de la funcion ajax que llena el combo dependiendo de la categoria seleccionada*/
-    </script>
 	</head>
 
 	<body style="">	
@@ -92,7 +67,7 @@
 							<div class="col-xs-12">
 								<!-- PAGE CONTENT BEGINS -->
 								<div class="widget-main">
-									<p class="alert alert-success">
+									<p class="alert alert-info">
 									<?php 
 									$afiliado = $ape1." ".$ape2." ".$nom1." ".$nom2;
 									if($tipomen==1){ 

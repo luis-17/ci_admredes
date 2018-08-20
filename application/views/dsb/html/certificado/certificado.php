@@ -131,23 +131,55 @@
 
 														<tbody>
 														<?php foreach ($certificados as $c):
+															$hoy= time();
+															$inicio=$c->cert_iniVig;										
+															$inicio2= strtotime($inicio);
+															$fin=$c->cert_finVig;
+															$fin2= strtotime($fin); 
 															$cert=$c->cert_id;
-															if($c->cert_upProv==1):
-																$estado="Activo Manualmente";
-																else:
-																	$estado="Inactivo";
-															endif;
-															if($c->cert_estado==3):
-																$estado2="Cancelado";
-																else:
-																	$estado2="Vigente";
-															endif;?>
+															$act_man=$c->cert_upProv;
+															
+															if($c->cert_estado==1){
+																$e=1;
+																$estado="Vigente";	
+
+																}elseif($hoy<=$fin2){
+																	$estado="Vigente";
+																	$e=1;
+																	}else{
+																		$estado="Cancelado";
+																		$e=3;													
+																	}	
+
+															if($e==1){
+																if($hoy>$inicio2 && $fin2>=$hoy){
+																	$estado2="Activo";
+																}else{
+																	if($act_man==1){
+																		$estado2="Activo Manualmente";		
+																	}else{
+																		$estado2="Inactivo";
+																	}
+																}
+															}else{
+																$estado2="Inactivo";
+															}
+															?>
+
 															<tr>
+															<?php if($cert==$id2){?>
+																<td><b><?=$c->cert_num;?></b></td>
+																<td><b><?=$c->nombre_plan;?></b></td>
+																<td><b><?=$c->nombre_comercial_cli;?></b></td>
+																<td><b><?=$estado;?></b></td>
+																<td><b><?=$estado2;?></b></td>
+															<?php } else { ?>
 																<td><?=$c->cert_num;?></td>
 																<td><?=$c->nombre_plan;?></td>
 																<td><?=$c->nombre_comercial_cli;?></td>
-																<td><?=$estado2;?></td>
 																<td><?=$estado;?></td>
+																<td><?=$estado2;?></td>
+															<?php } ?>
 																<td>
 																	<div class="hidden-sm hidden-xs btn-group">
 																			<a href="<?=  base_url()?>certificado_detalle/<?=$cert?>/<?=$id;?>" title="Detalle Certificado"><i class="ace-icon fa fa-external-link bigger-120"></i></a>
@@ -185,13 +217,13 @@
 													<table id="simple-table" class="table table-striped table-bordered table-hover">
 														<thead>
 															<tr>
+																<th>Nro Certificado</th>
+																<th>Empresa</th>
+																<th>Plan</th>
 																<th>DNI Contratante</th>
 																<th>Contratante</th>
 																<th>DNI Asegurado</th>
-																<th>Asegurado</th>
-																<th>Empresa</th>
-																<th>Plan</th>
-																<th>Nro Certificado</th>
+																<th>Asegurado</th>																
 																<th></th>
 															</tr>
 														</thead>
@@ -199,16 +231,16 @@
 														<tbody>
 														<?php foreach ($certificadoap as $a):?>
 															<tr>
+																<td><?=$a->cert_num;?></td>
+																<td><?=$a->nombre_comercial_cli;?></td>
+																<td><?=$a->nombre_plan;?></td>
 																<td><?=$a->cont_numDoc;?></td>
 																<td><?=$a->contratante;?></td>
 																<td><?=$a->aseg_numDoc;?></td>
 																<td><?=$a->asegurado;?></td>
-																<td><?=$a->nombre_comercial_cli;?></td>
-																<td><?=$a->nombre_plan;?></td>
-																<td><?=$a->cert_num;?></td>
 																<td>
 																	<div class="hidden-sm hidden-xs btn-group">
-																			<a href="<?=  base_url()?>certificado2/<?=$a->aseg_numDoc?>" title="Detalle Certificado"><i class="ace-icon fa fa-external-link bigger-120"></i></a>
+																			<a href="<?=  base_url()?>certificado2/<?=$a->aseg_numDoc?>/<?=$a->cert_id?>" title="Detalle Certificado"><i class="ace-icon fa fa-external-link bigger-120"></i></a>
 																	</div>
 																</td>
 															</tr>

@@ -4,52 +4,43 @@
 		<meta charset="utf-8" />
 		<title>Sistema para la Gestión de Planes de Salud</title>
 
-		<meta name="description" content="with draggable and editable events" />
+		<meta name="description" content="overview &amp; stats" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
 
 		<!-- bootstrap & fontawesome -->
-		<link rel="stylesheet" href="<?=base_url()?>public/assets/css/bootstrap.css" />
-		<link rel="stylesheet" href="<?=base_url()?>public/assets/css/font-awesome.css" />
+		<link rel="stylesheet" href="<?=  base_url()?>public/assets/css/bootstrap.css" />
+		<link rel="stylesheet" href="<?=  base_url()?>public/assets/css/font-awesome.css" />
 
 		<!-- page specific plugin styles -->
-		<link rel="stylesheet" href="<?=base_url()?>public/assets/css/jquery-ui.custom.css" />
-		<link rel="stylesheet" href="<?=base_url()?>public/assets/css/fullcalendar.css" />
 
 		<!-- text fonts -->
-		<link rel="stylesheet" href="<?=base_url()?>public/assets/css/ace-fonts.css" />
+		<link rel="stylesheet" href="<?=  base_url()?>public/assets/css/ace-fonts.css" />
 
 		<!-- ace styles -->
-		<link rel="stylesheet" href="<?=base_url()?>public/assets/css/ace.css" class="ace-main-stylesheet" id="main-ace-style" />
+		<link rel="stylesheet" href="<?=  base_url()?>public/assets/css/ace.css" class="ace-main-stylesheet" id="main-ace-style" />
+		<!--<script type="text/javascript" src="<?=  base_url()?>public/fancybox/lib/jquery.mousewheel-3.0.6.pack.js"></script>-->
+		<!-- FancyBox -->
+		<!-- Add jQuery library -->
+		<script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
+		
+		<!-- Add mousewheel plugin (this is optional) -->
+		<script type="text/javascript" src="<?=  base_url()?>public/fancybox/lib/jquery.mousewheel-3.0.6.pack.js"></script>
 
-		<!--[if lte IE 9]>
-			<link rel="stylesheet" href="../assets/css/ace-part2.css" class="ace-main-stylesheet" />
-		<![endif]-->
-
-		<!--[if lte IE 9]>
-		  <link rel="stylesheet" href="../assets/css/ace-ie.css" />
-		<![endif]-->
-
+		<!-- Add fancyBox -->
+		<link rel="stylesheet" href="<?=  base_url()?>public/fancybox/source/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen" />
+		<script type="text/javascript" src="<?=  base_url()?>public/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
 		<!-- inline styles related to this page -->
 
 		<!-- ace settings handler -->
-		<script src="<?=base_url()?>public/assets/js/ace-extra.js"></script>
+		<script src="<?=  base_url()?>public/assets/js/ace-extra.js"></script>
 
 		<!-- HTML5shiv and Respond.js for IE8 to support HTML5 elements and media queries -->
-
-		<!--[if lte IE 8]>
-		<script src="../assets/js/html5shiv.js"></script>
-		<script src="../assets/js/respond.js"></script>
-		<![endif]-->
-
-		<!-- Include Date Range Picker -->
-		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/js/bootstrap-datepicker.min.js"></script>
-		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/css/bootstrap-datepicker3.css"/>
-
 		<!-- para paginacion -->
 		<script src="<?=base_url()?>public/pagination/jquery.dataTables.min.css"></script>
 		<script src="<?=base_url()?>public/pagination/jquery-1.12.4.js"></script>
 		<script src="<?=base_url()?>public/pagination/jquery.dataTables.min.js"></script>
 		<script src="<?=base_url()?>public/pagination/dataTables.bootstrap.min.js"></script>
+		
 
 	</head>
 
@@ -68,42 +59,131 @@
 									Atenciones del Asegurado
 								</div>
 							</div>
-							<table id="simple-table" class="table table-striped table-bordered table-hover">
+							<div>
+							<table id="example" class="table table-striped table-bordered table-hover">
 								<thead>
 									<tr>
 										<th>Num. Orden</th>
-										<th>Fecha Reservada</th>
-										<th>Fecha de Atención</th>
+										<th>Fecha Atención</th>
 										<th>Centro Médico</th>
 										<th>Especialidad</th>
 										<th>Estado</th>
+										<th></th>
 									</tr>
 								</thead>
 
 								<tbody>	
 								<?php foreach ($atenciones as $a):
-								switch($a->estado_siniestro):
-									case 0: 
-										$estadoa='Atención Anulada';
-									break;
-									case 1:
-										$estadoa='Atención Abierta';
-									break;
-									case 2:
-										$estadoa='Atención Cerrada';
-									break;
-								endswitch;?>													
+									if($a->estado_atencion=='P'){
+										$atencion="PO".$a->num_orden_atencion;
+										$fecha=$a->fecha_cita;
+
+										switch ($a->estado_cita):
+											case 0: 
+												$estadoa='Reserva Anulada';
+												$class="label label-danger label-white middle";
+												$e1=0;
+											break;
+											case 1:
+												$estadoa='Reserva Por Confirmar';
+												$e1=1;
+												$class="label label-warning label-white middle";
+											break;
+											case 2:
+												$estadoa='Reserva Confirmada';
+												$e1=2;
+												$class="label label-success label-white middle";
+											break;
+										endswitch;
+										$mostrar="S";
+									}else{
+										$atencion="OA".$a->num_orden_atencion;
+										$fecha=$a->fecha_atencion;
+										switch($a->estado_siniestro):
+											case 0: 
+												$estadoa='Atención Anulada';
+												$e2=0;
+												$class="label label-danger label-white middle";
+											break;
+											case 1:
+												$estadoa='Atención Abierta';
+												$e2=1;
+												$class="label label-info label-white middle";
+											break;
+											case 2:
+												$estadoa='Atención Cerrada';
+												$e2=2;
+												$class="label label-purple label-white middle";
+											break;
+										endswitch;
+										$mostrar="N";
+									}?>
+																					
 									<tr>
-										<td>OA<?=$a->num_orden_atencion;?></td>
-										<td><?=$a->fecha_cita;?></td>
-										<td><?=$a->fecha_atencion;?></td>
+										<td><?=$atencion?></td>
+										<td><?=$fecha?></td>
 										<td><?=$a->nombre_comercial_pr;?></td>
 										<td><?=$a->nombre_esp;?></td>
-										<td><?=$estadoa;?></td>
+										<td><span class="<?=$class;?>"><?=$estadoa;?></span></td>
+										<td>
+											<div class="hidden-sm hidden-xs btn-group">
+											
+												<?php if($e1!=0&&$mostrar=='S'){ ?>
+												<div title="Editar Reserva" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
+													<a class="boton fancybox" href="<?=  base_url()?>" data-fancybox-width="950" data-fancybox-height="690">
+														<i class="ace-icon glyphicon glyphicon-pencil bigger-120"></i>
+													</a>
+												</div>
+												<div title="Anular Reserva" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
+													<a class="boton fancybox" href="<?=  base_url()?>" data-fancybox-width="950" data-fancybox-height="690">
+														<i class="ace-icon glyphicon glyphicon-trash bigger-120"></i>
+													</a>
+												</div>
+												<?php } ?>
+											</div>
+
+											<div class="hidden-md hidden-lg">
+												<div class="inline pos-rel">
+													<button class="btn btn-minier btn-info dropdown-toggle" data-toggle="dropdown" data-position="auto">
+														<i class="ace-icon fa fa-cog icon-only bigger-110"></i>
+													</button>
+
+														<ul class="dropdown-menu dropdown-only-icon dropdown-yellow dropdown-menu-right dropdown-caret dropdown-close">
+
+															<?php if($e1!=0&&$mostrar=='S'){ ?>
+															<li>
+																<div title="Editar Reserva" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
+																	<a class="boton fancybox" href="<?=  base_url()?>" data-fancybox-width="950" data-fancybox-height="690">
+																		<i class="ace-icon glyphicon glyphicon-pencil bigger-120"></i>
+																	</a>
+																</div>
+
+															</li>
+															<li>			
+																<div title="Anular Reserva" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
+																	<a class="boton fancybox" href="<?=  base_url()?>" data-fancybox-width="950" data-fancybox-height="690">
+																		<i class="ace-icon glyphicon glyphicon-trash bigger-120"></i>
+																	</a>
+																</div>
+															</li>
+															<?php } ?>
+														</ul>
+													</div>
+											</div>
+										</td>
 									</tr>
 								<?php endforeach;?>
 								</tbody>
 							</table>
+							</div>
+							<script>			
+								//para paginacion
+								$(document).ready(function() {
+									$('#example').DataTable( {
+										"pagingType": "full_numbers"
+									} );
+								} );
+							</script>	
 							</div>
 						</div>
 						</div>

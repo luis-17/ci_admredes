@@ -1,42 +1,72 @@
 <html lang="en"><head>
-		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-		<meta charset="utf-8">
-		<title>Tables - Ace Admin</title>
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+		<meta charset="utf-8" />
+		<title>Sistema para la Gestión de Planes de Salud</title>
 
-		<meta name="description" content="Static &amp; Dynamic Tables">
-		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+		<meta name="description" content="overview &amp; stats" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
 
 		<!-- bootstrap & fontawesome -->
-		<link rel="stylesheet" href="<?=  base_url()?>public/assets/css/bootstrap.css">
-		<link rel="stylesheet" href="<?=  base_url()?>public/assets/css/font-awesome.css">
+		<link rel="stylesheet" href="<?=  base_url()?>public/assets/css/bootstrap.css" />
+		<link rel="stylesheet" href="<?=  base_url()?>public/assets/css/font-awesome.css" />
 
 		<!-- page specific plugin styles -->
 
 		<!-- text fonts -->
-		<link rel="stylesheet" href="<?=  base_url()?>public/assets/css/ace-fonts.css">
+		<link rel="stylesheet" href="<?=  base_url()?>public/assets/css/ace-fonts.css" />
 
 		<!-- ace styles -->
-		<link rel="stylesheet" href="<?=  base_url()?>public/assets/css/ace.css" class="ace-main-stylesheet" id="main-ace-style">
+		<link rel="stylesheet" href="<?=  base_url()?>public/assets/css/ace.css" class="ace-main-stylesheet" id="main-ace-style" />
+		<!--<script type="text/javascript" src="<?=  base_url()?>public/fancybox/lib/jquery.mousewheel-3.0.6.pack.js"></script>-->
+		<!-- FancyBox -->
+		<!-- Add jQuery library -->
+		<script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
+		
+		<!-- Add mousewheel plugin (this is optional) -->
+		<script type="text/javascript" src="<?=  base_url()?>public/fancybox/lib/jquery.mousewheel-3.0.6.pack.js"></script>
 
-		<!--[if lte IE 9]>
-			<link rel="stylesheet" href="../assets/css/ace-part2.css" class="ace-main-stylesheet" />
-		<![endif]-->
+		<!-- Add fancyBox -->
+		<link rel="stylesheet" href="<?=  base_url()?>public/fancybox/source/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen" />
+		<script type="text/javascript" src="<?=  base_url()?>public/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
 
-		<!--[if lte IE 9]>
-		  <link rel="stylesheet" href="../assets/css/ace-ie.css" />
-		<![endif]-->
+		<script>
+			$(".fancybox")
+	    .attr('rel', 'gallery')
+	    .fancybox({
+	        type: 'iframe',
+	        autoSize : false,
+	        beforeLoad : function() {         
+	            this.width  = parseInt(this.element.data('fancybox-width'));  
+	            this.height = parseInt(this.element.data('fancybox-height'));
+	        }
+	    });
+	</script>
 
-		<!-- inline styles related to this page -->
+		<script type="text/javascript">
+	    /*funcion ajax que llena el combo dependiendo de la categoria seleccionada*/
+	    $(document).ready(function(){
+	       $("#dep").change(function () {
+	               $("#dep option:selected").each(function () {
+	                dep=$('#dep').val();
+	                $.post("<?=base_url();?>index.php/provincia", { dep: dep}, function(data){
+	                $("#prov").html(data);
+	                });            
+	            });
+	       })
+	    });
 
-		<!-- ace settings handler -->
-		<script src="<?=  base_url()?>public/assets/js/ace-extra.js"></script>
-
-		<!-- HTML5shiv and Respond.js for IE8 to support HTML5 elements and media queries -->
-
-		<!--[if lte IE 8]>
-		<script src="../assets/js/html5shiv.js"></script>
-		<script src="../assets/js/respond.js"></script>
-		<![endif]-->
+	    $(document).ready(function(){
+	       $("#prov").change(function () {
+	               $("#prov option:selected").each(function () {
+	                prov=$('#prov').val();
+	                $.post("<?=base_url();?>index.php/distrito", { prov: prov}, function(data){
+	                $("#dis").html(data);
+	                });            
+	            });
+	       })
+	    });
+	    /*fin de la funcion ajax que llena el combo dependiendo de la categoria seleccionada*/
+	    </script>
 	</head>
 
 	<body style="">	
@@ -47,6 +77,10 @@
 					
 					<!-- /section:basics/content.breadcrumbs -->
 					<?php foreach($asegurado as $a): 
+						$dep=$a->dep;
+						$prov=$a->prov;
+						$dist=$a->dist;
+						$ec=$a->aseg_estCiv;
 						?>
 					<div class="page-content">
 						<div class="page-header">
@@ -57,8 +91,12 @@
 						<div class="row">
 							<div class="col-xs-12">
 								<!-- PAGE CONTENT BEGINS -->
-								<form class="form-horizontal" role="form" method="post" action="<?=base_url()?>aseg_save">
+								<form class="form-horizontal" role="form" method="post" action="<?=base_url()?>cert_aseg_save">
 									<input type="hidden" id="idaseg" name="idaseg" value="<?=$a->aseg_id?>" />
+									<input type="hidden" name="nom1" value="<?=$a->aseg_nom1;?>">
+									<input type="hidden" name="nom2" value="<?=$a->aseg_nom2;?>">
+									<input type="hidden" name="ape1" value="<?=$a->aseg_ape1;?>">
+									<input type="hidden" name="ape2" value="<?=$a->aseg_ape2;?>">
 									<div class="form-group">
 										<label class="col-sm-3 control-label no-padding-right" for="form-field-1"> Fecha de Nacimiento: </label>
 
@@ -72,8 +110,23 @@
 										<div class="col-sm-9">
 											<select id="genero" name="genero" value="<?=$a->aseg_sexo;?>" class="col-xs-10 col-sm-5">
 												<option value="">Seleccionar</option>
-												<option value="F">Femenino</option>
-												<option value="M">Masculino</option>
+												<option value="F" <?php if($a->aseg_sexo=='F'){echo "selected";	} ?>>Femenino</option>
+												<option value="M" <?php if($a->aseg_sexo=='M'){echo "selected";	} ?>>Masculino</option>
+											</select>
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label class="col-sm-3 control-label no-padding-right" for="form-field-1">Estado Civil: </label>
+
+										<div class="col-sm-9">
+											<select id="ec" name="ec" value="" class="col-xs-10 col-sm-5">
+												<option value="">Seleccionar</option>
+												<option value="S" <?php if($ec=='S'): echo "selected"; endif;?> >Soltero</option>
+												<option value="C"  <?php if($ec=='C'): echo "selected"; endif;?> >Casado</option>
+												<option value="CO"  <?php if($ec=='CO'): echo "selected"; endif;?> >Conviviente</option>
+												<option value="D"  <?php if($ec=='D'): echo "selected"; endif;?> >Divorciado</option>
+												<option value="V"  <?php if($ec=='V'): echo "selected"; endif;?> >Viudo</option>
 											</select>
 										</div>
 									</div>
@@ -82,9 +135,18 @@
 										<label class="col-sm-3 control-label no-padding-right" for="form-field-1">Departamento: </label>
 
 										<div class="col-sm-9">
-											<select id="dep" name="dep" value="" class="col-xs-10 col-sm-5">
-												<option value="">Seleccionar</option>
-											</select>
+											<select name="dep" id="dep"  class="col-xs-10 col-sm-5">
+                                            <option>Seleccionar</option>
+                                            <?php foreach ($ubigeo as $u): 
+                                            	if($dep==$u->iddepartamento):
+                                            		$estdep='selected';
+												else:
+													$estdep='';
+												endif;
+                                            		?>
+                                                <option value="<?=$u->iddepartamento;?>" <?=$estdep?> ><?=$u->descripcion_ubig;?></option>
+                                                <?php endforeach; ?>                                                            
+                                         	</select>
 										</div>
 									</div>
 
@@ -92,19 +154,36 @@
 										<label class="col-sm-3 control-label no-padding-right" for="form-field-1">Provincia: </label>
 
 										<div class="col-sm-9">
-											<select id="prov" name="prov" value="" class="col-xs-10 col-sm-5">
-												<option value="">Seleccionar</option>
-											</select>
+											<select id="prov" name="prov" class="col-xs-10 col-sm-5">
+											<option value="">Seleccionar</option>
+											 <?php foreach ($provincia3 as $p3): 
+                                            	if($prov==$p3->idprovincia):
+                                            		$estprov='selected';
+												else:
+													$estprov='';
+												endif;
+                                            		?>
+                                                <option value="<?=$p3->idprovincia;?>" <?=$estprov?> ><?=$p3->descripcion_ubig;?></option>
+                                                <?php endforeach; ?>                                                            
+                                         	</select>
 										</div>
 									</div>
 									
 									<div class="form-group">
 										<label class="col-sm-3 control-label no-padding-right" for="form-field-1">Distrito: </label>
-
 										<div class="col-sm-9">
-											<select id="dis" name="dis" value="" class="col-xs-10 col-sm-5">
-												<option value="">Seleccionar</option>
-											</select>
+											<select name="dis" id="dis" class="col-xs-10 col-sm-5">
+											<option value="">Seleccionar</option>
+                                                <?php foreach ($distrito3 as $d3): 
+                                            	if($dist==$d3->iddistrito):
+                                            		$estdist='selected';
+												else:
+													$estdist='';
+												endif;
+                                            		?>
+                                                <option value="<?=$d3->iddistrito;?>" <?=$estdist?> ><?=$d3->descripcion_ubig;?></option>
+                                                <?php endforeach; ?> 
+                                            </select>
 										</div>
 									</div>
 
@@ -133,7 +212,7 @@
 									</div>
 									<div class="clearfix form-actions">
 										<div class="col-md-offset-3 col-md-9">
-											<button class="btn btn-info" type="button">
+											<button class="btn btn-info" type="submit">
 												<i class="ace-icon fa fa-check bigger-110"></i>
 												Guardar
 											</button>

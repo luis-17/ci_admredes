@@ -117,16 +117,18 @@ $route['nuevo_proveedor'] = "proveedor_cnt/nuevo";
 $route['editar_proveedor/(:any)'] = "proveedor_cnt/editar/$1";
 
 $route['certificado_detalle/(:any)/(:any)'] = 'certificadodetalle_cnt/index/$1/$2';
-$route['aseg_atenciones/(:any)'] = 'certificadodetalle_cnt/aseg_atenciones/$1';
+$route['aseg_atenciones/(:any)/(:any)'] = 'certificadodetalle_cnt/aseg_atenciones/$1/$2';
 $route['aseg_editar/(:any)'] = 'certificadodetalle_cnt/aseg_editar/$1';
 $route['calendario/(:any)/(:any)'] = 'calendario_cnt/index/$1/$2';
 $route['calendario_guardar'] = 'calendario_cnt/calendario_guardar';
-$route['certificado2/(:any)'] = 'certificado_cnt/index2/$1';
+$route['certificado2/(:any)/(:any)'] = 'certificado_cnt/index2/$1/$2';
 $route['consulta_certificado'] = 'certificado_cnt/consulta_certificado';
 $route['activar_certificado/(:any)/(:any)'] = 'certificadodetalle_cnt/activar_certificado/$1/$2';
 $route['cancelar_certificado/(:any)/(:any)'] = 'certificadodetalle_cnt/cancelar_certificado/$1/$2';
 $route['reservar_cita/(:any)/(:any)/(:any)/(:any)'] = 'certificadodetalle_cnt/reservar_cita/$1/$2/$3/$4';
 $route['save_cita'] ='certificadodetalle_cnt/save_cita';
+$route['cert_cont_save'] = 'certificadodetalle_cnt/cert_cont_save';
+$route['cert_aseg_save'] = 'certificadodetalle_cnt/cert_aseg_up';
 
 $route['siniestro/(:any)'] = 'siniestro_cnt/siniestro/$1';
 $route['atenciones/(:any)'] = 'atenciones_cnt/atenciones/$1';

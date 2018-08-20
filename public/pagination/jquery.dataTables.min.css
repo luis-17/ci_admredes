@@ -6,7 +6,8 @@ table.dataTable{
     border-spacing:0
 }
 table.dataTable thead th,table.dataTable tfoot th{
-    font-weight:bold
+    font-weight:bold;
+    font-size: 0.1em
 }
 table.dataTable thead th,table.dataTable thead td{
     padding:10px 18px;

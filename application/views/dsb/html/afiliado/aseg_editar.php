@@ -82,32 +82,33 @@
 				<div class="main-content-inner">
 					<!-- #section:basics/content.breadcrumbs -->
 					<?php 
-									$mensaje="";
-									$est_boton="";
-										foreach($asegurado as $a):
-											$tit="ACTUALIZAR DATOS DEL DEPENDIENTE";
-											$tipodoc=$a->tipoDoc_id;
-											$doc=$a->aseg_numDoc;
-											$ape1=$a->aseg_ape1;
-											$ape2=$a->aseg_ape2;
-											$nom1=$a->aseg_nom1;
-											$nom2=$a->aseg_nom2;
-											$fecnac=$a->aseg_fechNac;
-											$direc=$a->aseg_direcc;
-											$telf=$a->aseg_telf;
-											$ec=$a->aseg_estCiv;
-											$sexo=$a->aseg_sexo;
-											$correo=$a->aseg_email;
-											$dep=$a->dep;
-											$prov=$a->prov;
-											$dist=$a->dist;
-											$asegurado=$aseg_id;
-											$caso=1;
-											if(!empty($aseg_ver)){
-												$mensaje="El documento ya existe.";
-												$est_boton='disabled = "true"';
-											}
-										endforeach;  ?>
+						$mensaje="";
+						$est_boton="";
+							foreach($asegurado as $a):
+								$tit="ACTUALIZAR DATOS DEL DEPENDIENTE";
+								$tipodoc=$a->tipoDoc_id;
+								$doc=$a->aseg_numDoc;
+								$ape1=$a->aseg_ape1;
+								$ape2=$a->aseg_ape2;
+								$nom1=$a->aseg_nom1;
+								$nom2=$a->aseg_nom2;
+								$fecnac=$a->aseg_fechNac;
+								$direc=$a->aseg_direcc;
+								$telf=$a->aseg_telf;
+								$ec=$a->aseg_estCiv;
+								$sexo=$a->aseg_sexo;
+								$correo=$a->aseg_email;
+								$dep=$a->dep;
+								$prov=$a->prov;
+								$dist=$a->dist;
+								$asegurado=$aseg_id;
+								$caso=1;
+								if(!empty($aseg_ver)){
+									$mensaje="El documento ya existe.";
+									$est_boton='disabled = "true"';
+								}
+							endforeach;  
+					?>
 					
 					<!-- /section:basics/content.breadcrumbs -->
 					<div class="page-content">
@@ -302,12 +303,12 @@
 		
 		<!-- basic scripts -->
 		<form id="buscar" name="buscar" method="post" action="<?=base_url();?>index.php/verifica_dni">
-									<input type="hidden" name="doc_copy" value="" id="doc_copy">
-									<input type="hidden" name="tipodoc_copy" value="" id="tipodoc_copy">
-									<input type="hidden" name="cert_copy" value="<?=$cert_id;?>">
-									<input type="hidden" name="tipoop_copy" value="1">
-									<input type="hidden" name="aseg_id_copy" id="aseg_id_copy">
-									</form>
+			<input type="hidden" name="doc_copy" value="" id="doc_copy">
+			<input type="hidden" name="tipodoc_copy" value="" id="tipodoc_copy">
+			<input type="hidden" name="cert_copy" value="<?=$cert_id;?>">
+			<input type="hidden" name="tipoop_copy" value="1">
+			<input type="hidden" name="aseg_id_copy" id="aseg_id_copy">
+		</form>
 
 		<!--[if !IE]> -->
 		<script type="text/javascript">

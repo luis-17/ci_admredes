@@ -52,12 +52,22 @@ class Certificadodetalle_cnt extends CI_Controller {
 			$certificado = $this->certificado_mdl->getCertificado($id);	
 			$data['certificado'] = $certificado;
 
+			$contratante = $this->certificado_mdl->getContratante($id);
+			$data['contratante'] = $contratante;
+
 			$asegurado = $this->certificado_mdl->getAsegurados($id);	
 			$data['asegurado'] = $asegurado;
 
 			$cobros = $this->certificado_mdl->getCobros($id);	
 			$data['cobros'] = $cobros;
 			$data['doc']=$doc;
+			$data['id2'] = $id;
+			$ubigeo=$this->certificado_mdl->ubigeo();
+			$data['ubigeo']=$ubigeo;
+			$provincia2=$this->certificado_mdl->provincia2($data);
+			$data['provincia2']=$provincia2;
+			$distrito2=$this->certificado_mdl->distrito2($data);
+			$data['distrito2']=$distrito2;
 
 			$this->load->view('dsb/html/certificado/certificado_detalle.php',$data);
 		}
@@ -66,16 +76,22 @@ class Certificadodetalle_cnt extends CI_Controller {
 		}
 	}
 
-	public function aseg_atenciones($id){
+	public function aseg_atenciones($id,$cert){
 
-		$atenciones = $this->certificado_mdl->getAtenciones($id);
+		$atenciones = $this->certificado_mdl->getAtenciones($id,$cert);
 		$data['atenciones'] = $atenciones;	
 
 		$this->load->view('dsb/html/certificado/aseg_atenciones.php', $data);
 	}
 
 	public function aseg_editar($id){
-
+		$ubigeo=$this->certificado_mdl->ubigeo();
+		$data['aseg_id'] = $id;
+		$data['ubigeo']=$ubigeo;
+		$provincia3=$this->certificado_mdl->provincia3($data);
+		$data['provincia3']=$provincia3;
+		$distrito3=$this->certificado_mdl->distrito3($data);
+		$data['distrito3']=$distrito3;
 		$asegurado = $this->certificado_mdl->getAseg_editar($id);
 		$data['asegurado'] = $asegurado;	
 
@@ -147,6 +163,38 @@ class Certificadodetalle_cnt extends CI_Controller {
 		}
 		$this->certificado_mdl->savePreOrden($data);
 		//redirect('calendario/'.$certase_id.'/'.$doc);
+	}
 
+	public function cert_cont_save()
+	{
+		$data['direcc'] = $_POST['direcc'];
+		$data['telf'] = $_POST['telf'];
+		$data['correo'] = $_POST['correo'];
+		$data['ubigeo'] = $_POST['dist'];
+		$data['cont_id'] = $_POST['cont_id'];
+		$id2 = $_POST['id2'];
+		$doc = $_POST['doc'];
+
+		$this->certificado_mdl->cont_save($data);
+		redirect("certificado_detalle/".$id2."/".$doc);
+	}
+
+	public function cert_aseg_up(){
+		$data['aseg_id'] = $_POST['idaseg'];
+		$data['ape1'] = $_POST['ape1'];
+		$data['ape2'] = $_POST['ape2'];
+		$data['nom1'] = $_POST['nom1'];
+		$data['nom2'] = $_POST['nom2'];
+		$data['fec_nac'] = $_POST['fec_nac'];
+		$data['genero'] = $_POST['genero'];
+		$data['dis'] = $_POST['dis'];
+		$data['direccion'] = $_POST['direccion'];
+		$data['correo'] = $_POST['correo'];
+		$data['telf'] = $_POST['telf'];
+		$data['ec'] = $_POST['ec'];
+		$data['tipomen'] = 1;
+		
+		$this->certificado_mdl->up_aseg($data);
+		$this->load->view('dsb/html/afiliado/mensaje.php', $data);
 	}
 }

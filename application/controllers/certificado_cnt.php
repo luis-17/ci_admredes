@@ -49,6 +49,7 @@ class Certificado_cnt extends CI_Controller {
 			$submenuLista = $this->menu_mdl->getSubMenu($idusuario);
 			$data['menu2'] = $submenuLista;	
 			$data['id'] = "";	
+			$data['id2'] = 0;
 			$data['nom'] = "";			
 			$this->load->view('dsb/html/certificado/certificado.php', $data);
 		}
@@ -57,7 +58,7 @@ class Certificado_cnt extends CI_Controller {
 		}
 	}
 
-	public function index2($id)
+	public function index2($id,$id2)
 	{
 		//load session library
 		$this->load->library('session');
@@ -77,6 +78,7 @@ class Certificado_cnt extends CI_Controller {
 			$data['menu2'] = $submenuLista;		
 
 			$data['id'] = $id;
+			$data['id2'] = $id2;
 			$data['nom'] = "";
 
 			$certificados = $this->certificado_mdl->getCertificados($id);
@@ -113,6 +115,7 @@ class Certificado_cnt extends CI_Controller {
 			$nom = $_POST['nom'];
 
 			$data['id'] = $doc;
+			$data['id2'] = 0;
 			$data['nom'] = $nom;
 
 			if($nom!=''):
