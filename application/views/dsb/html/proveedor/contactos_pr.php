@@ -181,7 +181,7 @@
 									<div class="col-xs-12">
 												<div>
 													<table id="example" class="table table-striped table-bordered table-hover">
-														<thead>
+														<thead  style="font-size: 12px;">
 															<tr>
 																<th>Cargo</th>
 																<th>Nombres</th>
@@ -201,7 +201,7 @@
 																}else{
 																	$boton='<a href="'.base_url().'contacto_activar/'.$c->idcontactoproveedor.'/'.$c->idproveedor.'"><span class="label label-danger label-white middle">Inactivo</span></a>';
 																	} ?>
-														<tbody>
+														<tbody  style="font-size: 12px;">
 														
 															<tr>
 																<td><?=$c->descripcion_ctc?></td>

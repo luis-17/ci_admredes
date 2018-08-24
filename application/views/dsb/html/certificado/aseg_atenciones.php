@@ -61,7 +61,7 @@
 							</div>
 							<div>
 							<table id="example" class="table table-striped table-bordered table-hover">
-								<thead>
+								<thead  style="font-size: 12px;">
 									<tr>
 										<th>Num. Orden</th>
 										<th>Fecha Atención</th>
@@ -72,7 +72,7 @@
 									</tr>
 								</thead>
 
-								<tbody>	
+								<tbody  style="font-size: 12px;">	
 								<?php foreach ($atenciones as $a):
 									$e1=0;
 									$e2=0;

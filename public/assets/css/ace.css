@@ -19905,4 +19905,9 @@ input.typeahead.scrollable ~ .tt-dropdown-menu {
     display: none !important;
   }
 
+
+  td.letra{
+    font-size: 11px;
+  }
+
 }

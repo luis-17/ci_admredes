@@ -145,7 +145,7 @@
 							<div class="tabbable">
 									<!-- #section:pages/faq -->
 									<div class="col-xs-12">
-													<table id="simple-table" class="table table-striped table-bordered table-hover">
+													<table id="simple-table" class="table table-striped table-bordered table-hover"  style="font-size: 12px;">
 														<thead>
 															<tr>
 																<th></th>
@@ -158,7 +158,7 @@
 															</tr>
 														</thead>
 
-														<tbody>
+														<tbody style="font-size: 12px;">
 														<?php $cont=0;
 														foreach($cobertura as $c):
 															if($c->visible==1):

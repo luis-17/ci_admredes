@@ -30,6 +30,12 @@
 
 		<!-- HTML5shiv and Respond.js for IE8 to support HTML5 elements and media queries -->
 
+			<!-- para paginacion -->
+		<script src="<?=base_url()?>public/pagination/jquery.dataTables.min.css"></script>
+		<script src="<?=base_url()?>public/pagination/jquery-1.12.4.js"></script>
+		<script src="<?=base_url()?>public/pagination/jquery.dataTables.min.js"></script>
+		<script src="<?=base_url()?>public/pagination/dataTables.bootstrap.min.js"></script>
+
 	</head>
 
 	<body class="no-skin">
@@ -51,12 +57,10 @@
 						</div><!-- /.page-header -->
 
 						<div class="row">
-							<div class="col-xs-12">
-								<!-- PAGE CONTENT BEGINS -->						
-								<div align="center">
 									<!-- star table -->		
-									<div class="col-xs-12"  align="center">
-										<table id="simple-table" class="table table-striped table-bordered table-hover">
+									<div class="col-xs-12">
+										<div>
+										<table id="example" class="table table-striped table-bordered table-hover">
 											<thead>
 													<tr>
 														<th></th>
@@ -90,8 +94,16 @@
 													<?php endforeach; ?>
 												</tbody>
 										</table>
+										</div>
+										<script>			
+													//para paginacion
+													$(document).ready(function() {
+													$('#example').DataTable( {
+													"pagingType": "full_numbers"
+													} );
+												} );
+												</script>	
 									</div>
-								</div>
 							</div><!-- /.col -->
 						</div><!-- /.row -->
 					</div><!-- /.page-content -->

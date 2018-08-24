@@ -7,7 +7,7 @@
  }
 
  	function getCobros($datos){
- 		$this->db->select("c2.cert_id, c1.cert_num, cob_fechCob, cob_vezCob, cob_importe, cont_numDoc, concat(coalesce(cont_ape1,''),coalesce(cont_ape2,''),coalesce(cont_nom1,''),coalesce(cont_nom2,'')) as contratante");
+ 		$this->db->select("c2.cert_id, c1.cert_num, cob_fechCob, cob_vezCob, cob_importe, cont_numDoc, concat(coalesce(cont_ape1,''),' ',coalesce(cont_ape2,''),' ',coalesce(cont_nom1,''),' ',coalesce(cont_nom2,'')) as contratante");
  		$this->db->select("(select count(certase_id) from certificado_asegurado ca where ca.cert_id=c1.cert_id group by ca.cert_id) as num_afiliados");
  		$this->db->from('cobro c1');
  		$this->db->join("certificado c2","c1.cert_id=c2.cert_id");

@@ -158,7 +158,7 @@
 												<thead>
 													<tr>
 														<th>Importe (S/.)</th>
-														<th>Número de Pagos</th>
+														<th>Número de Primas</th>
 														<th>Sub Total (S/.)</th>
 														<th></th>
 													</tr>
