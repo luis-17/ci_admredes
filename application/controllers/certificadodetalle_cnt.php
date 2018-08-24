@@ -117,11 +117,11 @@ class Certificadodetalle_cnt extends CI_Controller {
 		redirect ($ruta);
 	}
 
-	public function reservar_cita($id, $idaseg, $doc, $certase_id)
+	public function reservar_cita($id, $idaseg, $cita, $certase_id)
 	{
 		$data['cert_id'] = $id;
 		$data['aseg_id'] =$idaseg;
-		$data['doc'] = $doc;
+		$data['cita'] = $cita;
 		$data['certase_id'] = $certase_id;
 
 		$asegurado = $this->certificado_mdl->getAsegurado($id);
@@ -135,6 +135,13 @@ class Certificadodetalle_cnt extends CI_Controller {
 
 		$productos = $this->certificado_mdl->getProductos();
 		$data['productos'] = $productos;
+
+		if($data['cita']==null){
+			$data['getcita']="";
+		}else{
+			$getcita=$this->certificado_mdl->getCita($data);
+			$data['getcita']=$getcita; 
+		}
 
 		$this->load->view('dsb/html/certificado/reservar_cita.php',$data);
 	}
@@ -152,17 +159,46 @@ class Certificadodetalle_cnt extends CI_Controller {
 		$data['fecha_cita'] = $_POST['feccita'];
 		$data['obs'] = $_POST['obs'];
 		$data['idusuario'] = $_POST['idusuario'];
+		$data['idsiniestro'] = $_POST['idsiniestro'];
 
-		$this->certificado_mdl->saveCalendario($data);
-		$id = $this->db->insert_id();
-		$data['idcita'] =  $id;
-		$num = $this->certificado_mdl->num_orden_atencion();
-		foreach ($num as $n) {
-			$numero=$n->num_orden_atencion;
-			$data['num'] = $numero;
+		if($data['idsiniestro']==''){
+			$this->certificado_mdl->saveCalendario($data);
+			$id = $this->db->insert_id();
+			$data['idcita'] =  $id;
+			$num = $this->certificado_mdl->num_orden_atencion();
+			foreach ($num as $n) {
+				$numero=$n->num_orden_atencion;
+				$data['num'] = $numero;
+			}
+			$this->certificado_mdl->savePreOrden($data);
+			$data['mensaje'] = 2;
+		}else{
+			$data['idcita'] = $_POST['idcita'];
+			$this->certificado_mdl->updateCalendario($data);
+			$this->certificado_mdl->updatePreOrden($data);
+			$data['mensaje'] = 3;
 		}
-		$this->certificado_mdl->savePreOrden($data);
-		//redirect('calendario/'.$certase_id.'/'.$doc);
+		
+		$this->load->view('dsb/html/mensaje.php', $data);
+	}
+
+	public function anular_cita($idcita,$aseg,$cert){
+		$data['cita'] = $idcita;
+		$data['aseg'] = $aseg;
+		$data['cert'] = $cert;
+		$getcita=$this->certificado_mdl->getCita($data);
+		$data['getcita']=$getcita; 
+		$this->load->view('dsb/html/certificado/anular_cita.php', $data);
+	}
+
+	public function eliminar_cita(){
+		$data['mensaje'] = 4;
+		$data['idcita'] = $_POST['idcita'];
+		$data['idsiniestro'] = $_POST['idsiniestro'];
+
+		$this->certificado_mdl->eliminar_cita($data);
+		$this->certificado_mdl->eliminar_orden($data);
+		$this->load->view('dsb/html/mensaje.php', $data);
 	}
 
 	public function cert_cont_save()
@@ -195,6 +231,7 @@ class Certificadodetalle_cnt extends CI_Controller {
 		$data['tipomen'] = 1;
 		
 		$this->certificado_mdl->up_aseg($data);
-		$this->load->view('dsb/html/afiliado/mensaje.php', $data);
+		$data['mensaje'] = 1;
+		$this->load->view('dsb/html/mensaje.php', $data);
 	}
 }

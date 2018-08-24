@@ -285,7 +285,7 @@ class Afiliacion_cnt extends CI_Controller {
 		$data['tipomen'] = 1;
 		
 		$this->afiliacion_mdl->up_aseg($data);
-		$this->load->view('dsb/html/afiliado/mensaje.php', $data);
+		$this->load->view('dsb/html/mensaje.php', $data);
 	}
 
 	public function aseg_save()
@@ -327,7 +327,7 @@ class Afiliacion_cnt extends CI_Controller {
 				$this->afiliacion_mdl->in_certase($data);
 				break;
 			}
-		$this->load->view('dsb/html/afiliado/mensaje.php',$data);
+		$this->load->view('dsb/html/mensaje.php',$data);
 	}
 
 	public function verifica_dni(){
@@ -399,7 +399,7 @@ class Afiliacion_cnt extends CI_Controller {
 		$data['tipomen'] = 1;
 
 		$this->afiliacion_mdl->save_incidencia($data);
-		$this->load->view('dsb/html/afiliado/mensaje2.php', $data);
+		$this->load->view('dsb/html/mensaje2.php', $data);
 
 	}
 
@@ -473,6 +473,6 @@ class Afiliacion_cnt extends CI_Controller {
 		// Enviar
 		$mail->send(); 
 
-		$this->load->view('dsb/html/afiliado/mensaje2.php', $data);
+		$this->load->view('dsb/html/mensaje2.php', $data);
 	}
 }

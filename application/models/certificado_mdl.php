@@ -125,7 +125,7 @@
 	}
 
 	function getAtenciones($id,$cert){
-		$this->db->select("idsiniestro, s.idasegurado, idcertificado, c.idcita, num_orden_atencion, estado_atencion, estado_siniestro, estado_cita, fecha_cita, fecha_atencion, nombre_comercial_pr, nombre_esp");
+		$this->db->select("idsiniestro, s.idasegurado, c.idcertificadoasegurado, idcertificado, c.idcita, num_orden_atencion, estado_atencion, estado_siniestro, estado_cita, fecha_cita, fecha_atencion, nombre_comercial_pr, nombre_esp");
 		$this->db->from("siniestro s");
 		$this->db->join('especialidad e','s.idespecialidad=e.idespecialidad');		
 		$this->db->join('proveedor pr','pr.idproveedor=s.idproveedor');					
@@ -134,6 +134,15 @@
 		$this->db->order_by("idsiniestro","desc");
 	$atenciones=$this->db->get();
 	return $atenciones->result();
+	}
+
+	function getCita($data){
+		$this->db->select("idsiniestro, estado_atencion, num_orden_atencion, c.idproveedor, c.idespecialidad, estado_cita, fecha_cita, hora_cita_inicio, hora_cita_fin, observaciones_cita");
+		$this->db->from("cita c");
+		$this->db->join("siniestro s","c.idcita=s.idcita");
+		$this->db->where("c.idcita",$data['cita']);
+	$cita=$this->db->get();
+	return $cita->result();
 	}
 
 	// function getCitas($id){
@@ -221,9 +230,26 @@
 				 'idempresaadmin' => 1,
 				 'fecha_cita' => $data['fecha_cita'],
 				 'idespecialidad' => $data['idespecialidad'],
-				 'estado_cita' => $data['estado']
+				 'estado_cita' => $data['estado'],
+				 'observaciones_cita' => $data['obs']
  				 );
 		$this->db->insert('cita',$array);
+	}
+
+	function updateCalendario($data){
+		$array = array(
+				 'idasegurado' => $data['aseg_id'],
+				 'idcertificadoasegurado' => $data['certase_id'],
+				 'idproveedor' => $data['idproveedor'],
+				 'idusuario' => $data['idusuario'],
+				 'idempresaadmin' => 1,
+				 'fecha_cita' => $data['fecha_cita'],
+				 'idespecialidad' => $data['idespecialidad'],
+				 'estado_cita' => $data['estado'],
+				 'observaciones_cita' => $data['obs']
+ 				 );
+		$this->db->where('idcita',$data['idcita']);
+		return $this->db->update('cita', $array);
 	}
 
 	function num_orden_atencion(){
@@ -249,6 +275,34 @@
 			'fase_atencion' => 0
 			);
 		$this->db->insert('siniestro',$array);
+	}
+
+	function updatePreOrden($data){
+		$array = array(
+			'idproveedor' => $data['idproveedor'],
+			'fecha_atencion' => $data['fecha_cita'],
+			'idespecialidad' => $data['idespecialidad']
+			);
+		$this->db->where('idsiniestro',$data['idsiniestro']);
+		return $this->db->update('siniestro', $array);
+	}
+
+
+
+	function eliminar_cita($data){
+		$array = array(
+				 'estado_cita' => 0
+ 				 );
+		$this->db->where('idcita',$data['idcita']);
+		return $this->db->update('cita', $array);
+	}
+
+	function eliminar_orden($data){
+		$array = array(
+			'estado_siniestro' => 0
+			);
+		$this->db->where('idsiniestro',$data['idsiniestro']);
+		return $this->db->update('siniestro', $array);
 	}
 
 	function ubigeo(){

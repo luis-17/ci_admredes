@@ -36,8 +36,9 @@
 	}
 
 	function dataproveedor($id){
-		$this->db->select("idproveedor, idtipoproveedor, numero_documento_pr, cod_sunasa_pr, razon_social_pr, nombre_comercial_pr, direccion_pr, referencia_pr, cod_distrito_pr, cod_provincia_pr, cod_departamento_pr, 'editarproveedor' as funcion");
+		$this->db->select("idproveedor, idtipoproveedor, numero_documento_pr, cod_sunasa_pr, razon_social_pr, nombre_comercial_pr, direccion_pr, referencia_pr, cod_distrito_pr, cod_provincia_pr, cod_departamento_pr, 'editarproveedor' as funcion, pr.idusuario, username, password_view");
 		$this->db->from("proveedor pr");
+		$this->db->join("usuario u","pr.idusuario=u.idusuario");
 		$this->db->where("idproveedor",$id);
 
 		$proveedor = $this->db->get();
@@ -62,23 +63,25 @@
 	}
 
 	function provincia($id){
-		$this->db->select("idubigeo, iddepartamento, descripcion_ubig");
-		$this->db->from("ubigeo u");
-		$this->db->join("proveedor p","u.iddepartamento=p.cod_departamento_pr and  iddistrito='00' and idprovincia!='00'");	
-		$this->db->where("iddepartamento",$id);
+		$this->db->select("idubigeo, CONCAT(iddepartamento,idprovincia) as idprovincia, descripcion_ubig");
+		$this->db->from("ubigeo");
+		$this->db->where("iddepartamento=(SELECT cod_departamento_pr from proveedor WHERE idproveedor=".$id.") and idprovincia<>'00' and iddistrito='00'");
+		$this->db->order_by("descripcion_ubig");
 
 		$provincia = $this->db->get();
-	 	return $provincia->result();
+		return $provincia->result();
 	}
 
-	function verifica_ruc($data){
-		$this->db->select("count(idproveedor) as cant");
-		$this->db->from("proveedor");
-		$this->db->where("idtipodocumentoidentidad",3);
-		$this->db->where("numero_documento_pr",$data['ruc']);
-		$num = $this->db->get();
-		return $num->result();
+	function distrito($id){
+		$this->db->select("idubigeo, CONCAT(iddepartamento,idprovincia,iddistrito) as iddistrito, descripcion_ubig");
+		$this->db->from("ubigeo");
+		$this->db->where("iddepartamento=(SELECT cod_departamento_pr from proveedor WHERE idproveedor=".$id.")  and idprovincia=(SELECT cod_provincia_pr from proveedor WHERE idproveedor=".$id.") and iddistrito<>'00'");
+		$this->db->order_by("descripcion_ubig");
+
+		$distrito = $this->db->get();
+		return $distrito->result();
 	}
+
 
 	function in_usuario($data){
 		$array = array
@@ -103,8 +106,8 @@
 			'numero_documento_pr' => $data['ruc'],
 			'direccion_pr' => $data['direccion'],
 			'referencia_pr' => $data['referencia'],
-			'cod_distrito_pr' => $data['distrito'],
-			'cod_provincia_pr' => $data['provincia'],
+			'cod_distrito_pr' => substr($data['distrito'], 4,2),
+			'cod_provincia_pr' => substr($data['provincia'], 2,2),
 			'cod_departamento_pr' => $data['departamento'],
 			'cod_sunasa_pr' => $data['codigosunasa']
 		);
@@ -112,6 +115,109 @@
 		$this->db->insert('proveedor',$array);
 	}
 
+	function up_proveedor($data){
+		$array = array
+		(
+			'idtipoproveedor' => $data['tipoproveedor'], 
+			'idtipodocumentoidentidad' => 3,
+			'idusuario' => $data['idusuario'],
+			'razon_social_pr' => $data['razonsocial'],
+			'nombre_comercial_pr' => $data['nombrecomercial'],
+			'numero_documento_pr' => $data['ruc'],
+			'direccion_pr' => $data['direccion'],
+			'referencia_pr' => $data['referencia'],
+			'cod_distrito_pr' => substr($data['distrito'], 4,2),
+			'cod_provincia_pr' => substr($data['provincia'], 2,2),
+			'cod_departamento_pr' => $data['departamento'],
+			'cod_sunasa_pr' => $data['codigosunasa']
+		);
+		$this->db->where("idproveedor",$data['id']);
+		return $this->db->update("proveedor",$array);
+	}
+
+	function up_usuario($data){
+		$array = array
+		(
+			'idtipousuario' => 4,
+			'emailusuario' => $data['usuario'],
+			'username' => $data['usuario'],
+			'password' => md5($data['contrasena']),
+			'password_view' => $data['contrasena']
+		);
+		$this->db->where('idusuario',$data['idusuario']);
+		return $this->db->update("usuario",$array);
+	}
+
+	function get_contactos($id){
+		$this->db->select("idproveedor,idcontactoproveedor, estado_cp, nombres_cp, apellidos_cp, telefono_fijo_cp, anexo_cp, telefono_movil_cp, email_cp, c.idcargocontacto, envio_correo_cita, descripcion_ctc");
+		$this->db->from("contacto_proveedor c");
+		$this->db->join("cargo_contacto cc","c.idcargocontacto=cc.idcargocontacto");
+		$this->db->where("idproveedor",$id);
+
+	$contactos = $this->db->get();
+	return $contactos->result();
+	}
 	
+	function get_contacto($id){
+		$this->db->select("idproveedor, idcontactoproveedor, estado_cp, nombres_cp, apellidos_cp, telefono_fijo_cp, anexo_cp, telefono_movil_cp, email_cp, c.idcargocontacto, envio_correo_cita, descripcion_ctc");
+		$this->db->from("contacto_proveedor c");
+		$this->db->join("cargo_contacto cc","c.idcargocontacto=cc.idcargocontacto");
+		$this->db->where("idcontactoproveedor",$id);
+
+	$contacto = $this->db->get();
+	return $contacto->result();
+	}
+
+	function get_cargos(){
+		$this->db->select("idcargocontacto, descripcion_ctc");
+		$this->db->from("cargo_contacto");
+		$this->db->where("estado_ctc",1);
+		$this->db->order_by("descripcion_ctc");
+	$query = $this->db->get();
+	return $query->result();
+	}
+
+	function add_contacto($data){
+		$array = array(
+			'idproveedor' => $data['idp'],
+			'nombres_cp' => $data['nombres'],
+			'apellidos_cp' => $data['apellidos'],
+			'telefono_fijo_cp' => $data['telf'],
+			'anexo_cp' => $data['anexo'],
+			'telefono_movil_cp' => $data['movil'],
+			'email_cp' => $data['email'],
+			'envio_correo_cita' => $data['envio'],
+			'idcargocontacto' => $data['idcargo'] 
+			);
+		$this->db->insert("contacto_proveedor",$array);
+	}
+
+	function up_contacto($data){
+		$array = array(
+			'nombres_cp' => $data['nombres'],
+			'apellidos_cp' => $data['apellidos'],
+			'telefono_fijo_cp' => $data['telf'],
+			'anexo_cp' => $data['anexo'],
+			'telefono_movil_cp' => $data['movil'],
+			'email_cp' => $data['email'],
+			'envio_correo_cita' => $data['envio'],
+			'idcargocontacto' => $data['idcargo'] 
+			);
+		$this->db->where("idcontactoproveedor",$data['idcp']);
+		$this->db->update("contacto_proveedor",$array);
+
+	}
+
+	function anularc($idcp){
+		$array = array('estado_cp' => 0 );		
+		$this->db->where("idcontactoproveedor",$idcp);
+		$this->db->update("contacto_proveedor",$array);
+	}
+
+	function activarc($idcp){
+		$array = array('estado_cp' => 1 );		
+		$this->db->where("idcontactoproveedor",$idcp);
+		$this->db->update("contacto_proveedor",$array);
+	}
 }
 ?>

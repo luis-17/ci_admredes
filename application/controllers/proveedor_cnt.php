@@ -94,6 +94,10 @@ class Proveedor_cnt extends CI_Controller {
 			$data['data_tipoproveedor'] = $datatipoproveedor;
 			$departamento = $this->proveedor_mdl->departamento();
 			$data['departamento'] = $departamento;
+			$provincia = $this->proveedor_mdl->provincia($id);
+			$data['provincia'] = $provincia;
+			$distrito = $this->proveedor_mdl->distrito($id);
+			$distrito['distrito'] = $distrito;
 			$data['nom'] = "Nuevo Proveedor";
 			$data['accion'] = "Registrar Proveedor";
 			$data['mensaje'] = "";
@@ -104,7 +108,7 @@ class Proveedor_cnt extends CI_Controller {
 		}
 	}
 
-	public function proveedor_editar($id,$nom)
+	public function proveedor_editar($id)
 	{
 		//load session library
 		$this->load->library('session');
@@ -130,8 +134,9 @@ class Proveedor_cnt extends CI_Controller {
 			$data['departamento'] = $departamento;
 			$provincia = $this->proveedor_mdl->provincia($id);
 			$data['provincia'] = $provincia;
+			$distrito = $this->proveedor_mdl->distrito($id);
+			$data['distrito'] = $distrito;
 			$data['accion'] = "Actualizar Proveedor";
-			$data['nom'] = "";
 			$this->load->view('dsb/html/proveedor/form_proveedor.php',$data);
 		}
 		else{
@@ -169,18 +174,26 @@ class Proveedor_cnt extends CI_Controller {
 			$data['distrito'] = $_POST['dist'];
 			$data['usuario'] = $_POST['usuario'];
 			$data['contrasena'] = $_POST['contrasena'];
+			$data['id'] = $_POST['idproveedor'];
 
-			$num=$this->proveedor_mdl->verifica_ruc($data);
-			if(!empty($num)){
-				$data['mensaje'] = "El número de documento ya se encuentra registrado.";
+			if($data['id']==0){
+				$this->proveedor_mdl->in_usuario($data);
+				$data['idusuario'] = $this->db->insert_id();
+				$this->proveedor_mdl->in_proveedor($data);	
+
+				echo "<script>
+				alert('Los datos del proveedor han sido registrados con éxito.');window.location.assign('".base_url()."proveedor')
+				</script>";
+
 			}else{
-				$data['mensaje'] = "";
+				$data['idusuario'] = $_POST['idusuario'];
+				$this->proveedor_mdl->up_usuario($data);
+				$this->proveedor_mdl->up_proveedor($data);
+				echo "<script>
+				alert('Los datos del proveedor han sido actualizados con éxito.');window.location.assign('".base_url()."proveedor')
+				</script>";
 			}
-
-			$this->proveedor_mdl->in_usuario($data);
-			$data['idusuario'] = $this->db->insert_id();
-
-			$this->proveedor_mdl->in_proveedor($data);			
+				
 		}
 		else{
 			redirect('/');
@@ -213,6 +226,70 @@ class Proveedor_cnt extends CI_Controller {
 		}		
 
 		echo $options;
+	}
+
+	public function proveedor_contactos($id)
+	{
+		$contactos = $this->proveedor_mdl->get_contactos($id);
+		$data['id'] = $id;
+		$data['contactos'] = $contactos;
+		$data['contacto'] = "";
+		$cargos = $this->proveedor_mdl->get_cargos();
+		$data['cargos'] = $cargos;
+
+		$this->load->view('dsb/html/proveedor/contactos_pr.php',$data);
+	}
+
+	public function seleccionar_contacto($id,$idp)
+	{
+		$contactos = $this->proveedor_mdl->get_contactos($idp);
+		$data['contactos'] = $contactos;
+		$contacto = $this->proveedor_mdl->get_contacto($id);
+		$data['contacto'] = $contacto;
+		$cargos = $this->proveedor_mdl->get_cargos();
+		$data['cargos'] = $cargos;
+
+		$this->load->view('dsb/html/proveedor/contactos_pr.php',$data);
+	}
+
+	public function guardar_contacto()
+	{
+		$data['idcp'] = $_POST['idcp'];
+		$data['idp'] = $_POST['idp'];
+		$data['nombres'] = $_POST['nombres'];
+		$data['apellidos'] = $_POST['apellidos'];
+		$data['telf'] = $_POST['telf'];
+		$data['anexo'] = $_POST['anexo'];
+		$data['movil'] = $_POST['movil'];
+		$data['email'] = $_POST['email'];
+		$data['envio'] = $_POST['envio'];
+		$data['idcargo'] = $_POST['idcargo'];
+
+		if($data['idcp']==0){
+			$this->proveedor_mdl->add_contacto($data);
+			echo "<script>
+				alert('Los datos del contacto han sido registrados con éxito.');window.location.assign('".base_url()."proveedor_contactos/".$data['idp']."')
+				</script>";
+
+		}else{
+			$this->proveedor_mdl->up_contacto($data);
+			echo "<script>
+				alert('Los datos del contacto han sido actualizados con éxito.');window.location.assign('".base_url()."proveedor_contactos/".$data['idp']."')
+				</script>";
+		}
+
+	} 
+
+	public function contacto_anular($idcp,$idp)
+	{
+		$this->proveedor_mdl->anularc($idcp);
+		redirect("proveedor_contactos/$idp");
+	}
+
+	public function contacto_activar($idcp,$idp)
+	{
+		$this->proveedor_mdl->activarc($idcp);
+		redirect("proveedor_contactos/$idp");
 	}
 
 }

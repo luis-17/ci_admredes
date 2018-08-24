@@ -1,102 +1,91 @@
-<!DOCTYPE html>
-<html lang="en">
-	<head>
-		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
-		<meta charset="utf-8" />
-		<title>Sistema para la Gestión de Planes de Salud</title>
+<?php
+	$user = $this->session->userdata('user');
+	extract($user);
+	date_default_timezone_set('America/Lima');
+?>
+<html lang="en"><head>
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta charset="utf-8">
+		<title>Tables - Ace Admin</title>
 
-		<meta name="description" content="overview &amp; stats" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+		<meta name="description" content="Static &amp; Dynamic Tables">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 
 		<!-- bootstrap & fontawesome -->
-		<link rel="stylesheet" href="<?=  base_url()?>public/assets/css/bootstrap.css" />
-		<link rel="stylesheet" href="<?=  base_url()?>public/assets/css/font-awesome.css" />
+		<link rel="stylesheet" href="<?=  base_url()?>public/assets/css/bootstrap.css">
+		<link rel="stylesheet" href="<?=  base_url()?>public/assets/css/font-awesome.css">
 
 		<!-- page specific plugin styles -->
 
 		<!-- text fonts -->
-		<link rel="stylesheet" href="<?=  base_url()?>public/assets/css/ace-fonts.css" />
+		<link rel="stylesheet" href="<?=  base_url()?>public/assets/css/ace-fonts.css">
 
 		<!-- ace styles -->
-		<link rel="stylesheet" href="<?=  base_url()?>public/assets/css/ace.css" class="ace-main-stylesheet" id="main-ace-style" />
-		<!--<script type="text/javascript" src="<?=  base_url()?>public/fancybox/lib/jquery.mousewheel-3.0.6.pack.js"></script>-->
-		<!-- FancyBox -->
-		<!-- Add jQuery library -->
-		<script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
-		
-		<!-- Add mousewheel plugin (this is optional) -->
-		<script type="text/javascript" src="<?=  base_url()?>public/fancybox/lib/jquery.mousewheel-3.0.6.pack.js"></script>
+		<link rel="stylesheet" href="<?=  base_url()?>public/assets/css/ace.css" class="ace-main-stylesheet" id="main-ace-style">
 
-		<!-- Add fancyBox -->
-		<link rel="stylesheet" href="<?=  base_url()?>public/fancybox/source/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen" />
-		<script type="text/javascript" src="<?=  base_url()?>public/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+		<!--[if lte IE 9]>
+			<link rel="stylesheet" href="../assets/css/ace-part2.css" class="ace-main-stylesheet" />
+		<![endif]-->
 
-		<script>
-			$(".fancybox")
-	    .attr('rel', 'gallery')
-	    .fancybox({
-	        type: 'iframe',
-	        autoSize : false,
-	        beforeLoad : function() {         
-	            this.width  = parseInt(this.element.data('fancybox-width'));  
-	            this.height = parseInt(this.element.data('fancybox-height'));
-	        }
-	    });
-	</script>
+		<!--[if lte IE 9]>
+		  <link rel="stylesheet" href="../assets/css/ace-ie.css" />
+		<![endif]-->
+
 		<!-- inline styles related to this page -->
 
 		<!-- ace settings handler -->
 		<script src="<?=  base_url()?>public/assets/js/ace-extra.js"></script>
 
 		<!-- HTML5shiv and Respond.js for IE8 to support HTML5 elements and media queries -->
+
+		<!--[if lte IE 8]>
+		<script src="../assets/js/html5shiv.js"></script>
+		<script src="../assets/js/respond.js"></script>
+		<![endif]-->
 	</head>
 
 	<body style="">	
 			<!-- /section:basics/sidebar -->
-			<div class="main-content">
-				<div class="main-content-inner">
-					<!-- #section:basics/content.breadcrumbs -->
-										
-					<!-- /section:basics/content.breadcrumbs -->
-					<div class="page-content">
+			<div class="page-content">
 						<div class="page-header">
-							<h1>							
+							<h1>
+							Anular Reserva de Atención										
 							</h1>
 						</div>
+						<?php 
+							foreach ($getcita as $c) {
+								$idsiniestro=$c->idsiniestro;
+								$num=$c->num_orden_atencion; 
+							}
+						?>
 						<div class="row">
 							<div class="col-xs-12">
 								<!-- PAGE CONTENT BEGINS -->
-								<div class="widget-main">
-									<p class="alert alert-info">
-									<?php 
-										if($mensaje==1) {
-											if($tipomen==1){ 
-												echo "Los datos del afiliado <b>".$ape1." ".$ape2." ".$nom1." ".$nom2."</b> han sido actualizados con éxito";
-											} else {
-												echo "El afiliado <b>".$afiliado."</b> ha sido registrado con éxito";
-											}
-										}elseif($mensaje==2){
-											echo "Se ha registrado la reserva de atención con éxito";
-										}else{
-											echo "Se actualizó la reserva de atención con éxito";
-										}
-									?>									
-									</p>
-								</div>	
-								<div class="">
-									<div class="col-md-offset-3 col-md-9" style="text-align: right;">
-										<button class="btn btn-info" onclick="guardar()" >
-											<i class="ace-icon fa fa-check bigger-110"></i>
-												Cerrar
-										</button>
+								<form class="form-horizontal" role="form" method="post" action="<?=base_url()?>eliminar_cita">
+									<input type="hidden" name="idcita" id="idcita" value="<?=$cita?>">
+									<input type="hidden" id="idusuario" name="idusuario" value="<?=$idusuario;?>">
+									<input type="hidden" name="idsiniestro" id="idsiniestro" value="<?=$idsiniestro?>">	
+									<h4>¿Está seguro de anular la reserva de atención PO<?=$num;?>?</h4>
+
+									<div class="clearfix form-actions">
+										<div class="col-md-offset-3 col-md-9">
+											<button class="btn btn-info" type="submit">
+												<i class="ace-icon fa fa-check bigger-110"></i>
+												Sí
+											</button>
+											<a href="<?=  base_url()?>aseg_atenciones/<?=$aseg?>/<?=$cert?>"><button class="btn btn-info" type="button">
+												<i class="ace-icon glyphicon glyphicon-remove bigger-110"></i>
+												No
+											</button>
+											</a>
+										</div>
 									</div>
-								</div>							
+								</form>
 							</div><!-- /.col -->
-						</div>	
+						</div>
 					</div>
 				</div><!-- /.main-content -->			
 			</div><!-- /.main-container -->
-		
 		<!-- basic scripts -->
 
 		<!--[if !IE]> -->
@@ -111,6 +100,15 @@
  window.jQuery || document.write("<script src='../assets/js/jquery1x.js'>"+"<"+"/script>");
 </script>
 <![endif]-->
+		</script>
+
+		<script type="text/javascript">
+			function guardar() {
+				parent.location.reload(true);
+				parent.$.fancybox.close();
+			}
+
+		</script>
 		<script type="text/javascript">
 			if('ontouchstart' in document.documentElement) document.write("<script src='<?=  base_url()?>public/assets/js/jquery.mobile.custom.js'>"+"<"+"/script>");
 		</script>
@@ -144,14 +142,6 @@
 		<script src="<?=  base_url()?>public/assets/js/ace/ace.settings-skin.js"></script>
 		<script src="<?=  base_url()?>public/assets/js/ace/ace.widget-on-reload.js"></script>
 		<script src="<?=  base_url()?>public/assets/js/ace/ace.searchbox-autocomplete.js"></script>
-
-		<script type="text/javascript">
-			function guardar() {
-				parent.location.reload(true);
-				parent.$.fancybox.close();
-			}
-
-		</script>
 
 		<!-- the following scripts are used in demo only for onpage help and you don't need them -->
 		<link rel="stylesheet" href="<?=  base_url()?>public/assets/css/ace.onpage-help.css">

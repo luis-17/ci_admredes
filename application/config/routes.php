@@ -109,12 +109,17 @@ $route['form_cancelado/(:any)/(:any)/(:any)'] = 'Afiliacion_cnt/form_cancelado/$
 $route['save_incidencia'] = 'Afiliacion_cnt/save_incidencia';
 $route['email'] = 'Afiliacion_cnt/email';
 
-$route['proveedor_editar/(:any)/(:any)'] = 'proveedor_cnt/proveedor_editar/$1/$2';
+$route['proveedor_editar/(:any)'] = 'proveedor_cnt/proveedor_editar/$1';
 $route['proveedor_guardar'] = 'proveedor_cnt/proveedor_guardar';
+$route['proveedor_contactos/(:any)'] = 'proveedor_cnt/proveedor_contactos/$1';
+$route['seleccionar_contacto/(:any)/(:any)'] = 'proveedor_cnt/seleccionar_contacto/$1/$2';
+$route['guardar_contacto'] = 'proveedor_cnt/guardar_contacto';
 $route['habilitar_proveedor/(:any)'] = 'proveedor_cnt/habilitar/$1';
 $route['inhabilitar_proveedor/(:any)'] = 'proveedor_cnt/inhabilitar/$1';
 $route['nuevo_proveedor'] = "proveedor_cnt/nuevo";
 $route['editar_proveedor/(:any)'] = "proveedor_cnt/editar/$1";
+$route['contacto_anular/(:any)/(:any)'] = 'proveedor_cnt/contacto_anular/$1/$2';
+$route['contacto_activar/(:any)/(:any)'] = 'proveedor_cnt/contacto_activar/$1/$2';
 
 $route['certificado_detalle/(:any)/(:any)'] = 'certificadodetalle_cnt/index/$1/$2';
 $route['aseg_atenciones/(:any)/(:any)'] = 'certificadodetalle_cnt/aseg_atenciones/$1/$2';
@@ -127,6 +132,9 @@ $route['activar_certificado/(:any)/(:any)'] = 'certificadodetalle_cnt/activar_ce
 $route['cancelar_certificado/(:any)/(:any)'] = 'certificadodetalle_cnt/cancelar_certificado/$1/$2';
 $route['reservar_cita/(:any)/(:any)/(:any)/(:any)'] = 'certificadodetalle_cnt/reservar_cita/$1/$2/$3/$4';
 $route['save_cita'] ='certificadodetalle_cnt/save_cita';
+$route['anular_cita/(:any)/(:any)/(:any)'] = 'certificadodetalle_cnt/anular_cita/$1/$2/$3';
+$route['eliminar_cita'] = 'certificadodetalle_cnt/eliminar_cita';
+
 $route['cert_cont_save'] = 'certificadodetalle_cnt/cert_cont_save';
 $route['cert_aseg_save'] = 'certificadodetalle_cnt/cert_aseg_up';
 

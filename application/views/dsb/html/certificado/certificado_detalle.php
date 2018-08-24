@@ -480,19 +480,20 @@
 																	<td><?=$aseg->aseg_email;?></td>
 																	<td>
 																		<div class="hidden-sm hidden-xs btn-group">
-																				<div title="Ver Atenciones" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
-																					<a class="boton fancybox" href="<?=  base_url()?>aseg_atenciones/<?=$idaseg?>/<?=$id?>" data-fancybox-width="950" data-fancybox-height="690">
-																						<i class="ace-icon fa fa-eye bigger-120"></i>
-																					</a>
-																				</div>
 																				<div title="Editar Asegurado" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
 																					&nbsp;<a class="boton fancybox" href="<?=  base_url()?>aseg_editar/<?=$idaseg?>" data-fancybox-width="950" data-fancybox-height="690">
 																						<i class="ace-icon fa fa-pencil bigger-120"></i>
 																					</a>
 																				</div>
+
+																				<div title="Ver Atenciones" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
+																					&nbsp;<a class="boton fancybox" href="<?=  base_url()?>aseg_atenciones/<?=$idaseg?>/<?=$id?>" data-fancybox-width="950" data-fancybox-height="690">
+																						<i class="ace-icon fa fa-eye bigger-120"></i>
+																					</a>
+																				</div>
 																				<?php if($e==1&&$e2==1&&$hoy2>$fec2) {?>
 																				<div title="Reservar Atención" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
-																					&nbsp;<a class="boton fancybox" href="<?=  base_url()?>reservar_cita/<?=$id?>/<?=$idaseg?>/<?=$doc?>/<?=$certase?>" data-fancybox-width="950" data-fancybox-height="690">
+																					&nbsp;<a class="boton fancybox" href="<?=  base_url()?>reservar_cita/<?=$id?>/<?=$idaseg?>/null/<?=$certase?>" data-fancybox-width="950" data-fancybox-height="690">
 																					<i class="ace-icon fa fa-external-link bigger-120"></i>
 																					</a>
 																				</div>
@@ -505,27 +506,26 @@
 																					<i class="ace-icon fa fa-cog icon-only bigger-110"></i>
 																				</button>
 
-																				<ul class="dropdown-menu dropdown-only-icon dropdown-yellow dropdown-menu-right dropdown-caret dropdown-close">
-																					<li>
-																						<div title="Ver Atenciones" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
-																							<a class="boton fancybox" href="<?=  base_url()?>aseg_atenciones/<?=$idaseg?>/<?=$id?>" data-fancybox-width="950" data-fancybox-height="690">
-																								<i class="ace-icon fa fa-eye bigger-120"></i>
-																							</a>
-																				</div>
-
-																					</li>
-
+																				<ul class="dropdown-menu dropdown-only-icon dropdown-yellow dropdown-menu-right dropdown-caret dropdown-close">			
 																					<li>
 																						<div title="Editar Asegurado" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
-																							<a class="boton fancybox" href="<?=  base_url()?>aseg_editar/<?=$id?>" data-fancybox-width="950" data-fancybox-height="690">
+																							&nbsp;<a class="boton fancybox" href="<?=  base_url()?>aseg_editar/<?=$id?>" data-fancybox-width="950" data-fancybox-height="690">
 																								<i class="ace-icon fa fa-pencil bigger-120"></i>
 																							</a>
 																						</div>
 																					</li>
+																					<li>
+																						<div title="Ver Atenciones" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
+																							&nbsp;<a class="boton fancybox" href="<?=  base_url()?>aseg_atenciones/<?=$idaseg?>/<?=$id?>" data-fancybox-width="950" data-fancybox-height="690">
+																								<i class="ace-icon fa fa-eye bigger-120"></i>
+																							</a>
+																						</div>
+
+																					</li>
 																					<?php if($e==1) {?>
 																					<li>
 																						<div title="Reservar Atención" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
-																							&nbsp;<a class="boton fancybox" href="<?=  base_url()?>reservar_cita/<?=$id?>/<?=$idaseg?>/<?=$doc?>/<?=$certase?>" data-fancybox-width="950" data-fancybox-height="690">
+																							&nbsp;<a class="boton fancybox" href="<?=  base_url()?>reservar_cita/<?=$id?>/<?=$idaseg?>null/<?=$certase?>" data-fancybox-width="950" data-fancybox-height="690">
 																							<i class="ace-icon fa fa-external-link bigger-120"></i>
 																							</a>
 																						</div>

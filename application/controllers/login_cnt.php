@@ -63,7 +63,14 @@ class Login_cnt extends CI_Controller {
 			$submenuLista = $this->menu_mdl->getSubMenu($idusuario);
 			$data['menu2'] = $submenuLista;	
 			$data['id'] = "";	
-			$data['nom'] = "";			
+			$data['nom'] = "";
+			$atenciones = $this->login_mdl->atenciones();
+			foreach ($atenciones as $a) {
+				$data['idcita'] = $a->idcita;
+				$data['idsiniestro'] = $a->idsiniestro;
+				$this->login_mdl->eliminar_cita($data);
+				$this->login_mdl->eliminar_orden($data);
+			}			
 			$this->load->view('dsb/html/certificado/certificado.php', $data);
 		}
 		else{

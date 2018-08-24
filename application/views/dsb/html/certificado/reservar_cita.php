@@ -1,6 +1,7 @@
 <?php
 	$user = $this->session->userdata('user');
 	extract($user);
+	date_default_timezone_set('America/Lima');
 ?>
 <html lang="en"><head>
 		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
@@ -45,35 +46,61 @@
 
 	<body style="">	
 			<!-- /section:basics/sidebar -->
-			<?php 
-				date_default_timezone_set('America/Lima');
-				$hoy=date('Y-m-d');
-				$ini = date("h:i");
-				$fin = date("h:i", strtotime($ini."+30 minute"));
-			?>
 			<div class="page-content">
 						<div class="page-header">
 							<h1>
-							Reservar Atención							
+							<?php if($cita=='null'){
+								echo "Reservar Atención";
+								}else{
+									echo "Actualizar Reserva";
+									}?>						
 							</h1>
 						</div>
+						<?php if(!empty($getcita)){
+									foreach ($getcita as $c) {
+										$idsiniestro=$c->idsiniestro;
+										$prov=$c->idproveedor;
+										$esp=$c->idespecialidad;
+										$estado=$c->estado_cita;
+										$hoy=$c->fecha_cita;
+										$ini=$c->hora_cita_inicio;
+										$fin=$c->hora_cita_fin;
+										$obs=$c->observaciones_cita;
+									}
+								}else{
+									$idsiniestro="";
+									$prov="";
+									$esp="";
+									$estado="";									
+									$hoy=date('Y-m-d');
+									$ini = date("h:i");
+									$fin = date("h:i", strtotime($ini."+30 minute"));
+									$obs="";
+								}
+						?>
 						<div class="row">
 							<div class="col-xs-12">
 								<!-- PAGE CONTENT BEGINS -->
 								<form class="form-horizontal" role="form" method="post" action="<?=base_url()?>save_cita">
-									<input type="hidden" name="doc" id="doc" value="<?=$doc?>">
 									<input type="hidden" id="aseg_id" name="aseg_id" value="<?=$aseg_id?>" />
+									<input type="hidden" name="idcita" id="idcita" value="<?=$cita?>">
 									<input type="hidden" id="cert_id" name="cert_id" value="<?=$cert_id?>">
 									<input type="hidden" id="idusuario" name="idusuario" value="<?=$idusuario;?>">
 									<input type="hidden" name="certase_id" name="certase_id" value="<?=$certase_id?>">
+									<input type="hidden" name="idsiniestro" id="idsiniestro" value="<?=$idsiniestro?>">
 
 									<div class="form-group">
 										<label class="col-sm-3 control-label no-padding-right" for="form-field-1"> Proveedor: </label>
 										<div class="col-sm-9">
 											<select name='proveedor' id='proveedor' required>
 										    	<option value=''>Seleccione</option>
-											    <?php foreach ($proveedores as $pr):?>
-											    	<option value='<?=$pr->idproveedor;?>'><?=$pr->nombre_comercial_pr;?></option>
+											    <?php foreach ($proveedores as $pr):
+											    	if($pr->idproveedor==$prov){
+											    		$estado_prov="selected";
+											    		}else{
+											    			$estado_prov="";
+											    			}?>
+											    	<option value='<?=$pr->idproveedor;?>' <?=$estado_prov?> ><?=$pr->nombre_comercial_pr;?></option>
 											    <?php endforeach; ?>
 										    </select>
 										</div>
@@ -85,8 +112,14 @@
 										<div class="col-sm-9">
 											<select name='producto' id='producto' required>
 										    	<option value=''>Seleccione</option>
-											    <?php foreach ($productos as $p):?>
-											    	<option value='<?=$p->idespecialidad;?>'><?=$p->descripcion_prod;?></option>
+											    <?php foreach ($productos as $p):
+											    	if($p->idespecialidad==$esp){
+											    		$est_esp="selected";
+											    	}else{
+											    		$est_esp="";
+											    	}
+											    ?>
+											    	<option value='<?=$p->idespecialidad;?>' <?=$est_esp?> ><?=$p->descripcion_prod;?></option>
 											    <?php endforeach; ?>
 										    </select>
 										</div>
@@ -97,8 +130,8 @@
 
 										<div class="col-sm-9">
 											<select name='estado' id='estado' required>
-										    	<option value='1'>Cita Reservada</option>
-										    	<option value='2'>Cita Confirmada</option>
+										    	<?php if($estado!=2){ ?><option value='1' <?php if($estado==1){echo "selected";}?> >Cita Reservada</option> <?php } ?>
+										    	<option value='2' <?php if($estado==2){echo "selected";}?>>Cita Confirmada</option>
 										    </select>
 										</div>
 									</div>
@@ -131,7 +164,7 @@
 										<label class="col-sm-3 control-label no-padding-right" for="form-field-1">Observaciones: </label>
 
 										<div class="col-sm-9">
-											 <textarea rows='2' cols='71' name='obs' id='obs'></textarea>
+											 <textarea rows='2' cols='71' name='obs' id='obs'><?=$obs?></textarea>
 										</div>
 									</div>
 

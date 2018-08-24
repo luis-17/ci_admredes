@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="en">
 	<head>
 		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
@@ -29,168 +30,81 @@
 		<!-- Add fancyBox -->
 		<link rel="stylesheet" href="<?=  base_url()?>public/fancybox/source/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen" />
 		<script type="text/javascript" src="<?=  base_url()?>public/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+		<script>
+			$(".fancybox")
+	    .attr('rel', 'gallery')
+	    .fancybox({
+	        type: 'iframe',
+	        autoSize : false,
+	        beforeLoad : function() {         
+	            this.width  = parseInt(this.element.data('fancybox-width'));  
+	            this.height = parseInt(this.element.data('fancybox-height'));
+	        }
+	    });
+	</script>
 		<!-- inline styles related to this page -->
 
 		<!-- ace settings handler -->
 		<script src="<?=  base_url()?>public/assets/js/ace-extra.js"></script>
 
 		<!-- HTML5shiv and Respond.js for IE8 to support HTML5 elements and media queries -->
-		<!-- para paginacion -->
-		<script src="<?=base_url()?>public/pagination/jquery.dataTables.min.css"></script>
-		<script src="<?=base_url()?>public/pagination/jquery-1.12.4.js"></script>
-		<script src="<?=base_url()?>public/pagination/jquery.dataTables.min.js"></script>
-		<script src="<?=base_url()?>public/pagination/dataTables.bootstrap.min.js"></script>
-		
-
 	</head>
 
-	<body class="no-skin" style="">	
+	<body style="">	
 			<!-- /section:basics/sidebar -->
 			<div class="main-content">
 				<div class="main-content-inner">
 					<!-- #section:basics/content.breadcrumbs -->
-					
+										
 					<!-- /section:basics/content.breadcrumbs -->
 					<div class="page-content">
+						<div class="page-header">
+							<h1>							
+							</h1>
+						</div>
 						<div class="row">
-						<div class="col-xs-12">
-							<div class="modal-header no-padding">
-								<div class="table-header">
-									Atenciones del Asegurado
-								</div>
-							</div>
-							<div>
-							<table id="example" class="table table-striped table-bordered table-hover">
-								<thead>
-									<tr>
-										<th>Num. Orden</th>
-										<th>Fecha Atención</th>
-										<th>Centro Médico</th>
-										<th>Especialidad</th>
-										<th>Estado</th>
-										<th></th>
-									</tr>
-								</thead>
-
-								<tbody>	
-								<?php foreach ($atenciones as $a):
-									$e1=0;
-									$e2=0;
-									if($a->estado_atencion=='P'){
-										$atencion="PO".$a->num_orden_atencion;
-										$fecha=$a->fecha_cita;
-										switch ($a->estado_cita):
-											case 0: 
-												$estadoa='Reserva Anulada';
-												$class="label label-danger label-white middle";
-												$e1=0;
-											break;
+							<div class="col-xs-12">
+								<!-- PAGE CONTENT BEGINS -->
+								<div class="widget-main">
+									<p class="alert alert-info">
+									<?php 
+										switch ($mensaje) {
 											case 1:
-												$estadoa='Reserva Por Confirmar';
-												$e1=1;
-												$class="label label-warning label-white middle";
-											break;
-											case 2:
-												$estadoa='Reserva Confirmada';
-												$e1=2;
-												$class="label label-success label-white middle";
-											break;
-										endswitch;
-										$mostrar="S";
-									}else{
-										$atencion="OA".$a->num_orden_atencion;
-										$fecha=$a->fecha_atencion;
-										switch($a->estado_siniestro):
-											case 0: 
-												$estadoa='Atención Anulada';
-												$e2=0;
-												$class="label label-danger label-white middle";
-											break;
-											case 1:
-												$estadoa='Atención Abierta';
-												$e2=1;
-												$class="label label-info label-white middle";
-											break;
-											case 2:
-												$estadoa='Atención Cerrada';
-												$e2=2;
-												$class="label label-purple label-white middle";
-											break;
-										endswitch;
-										$mostrar="N";
-									}?>
-																					
-									<tr>
-										<td><?=$atencion?></td>
-										<td><?=$fecha?></td>
-										<td><?=$a->nombre_comercial_pr;?></td>
-										<td><?=$a->nombre_esp;?></td>
-										<td><span class="<?=$class;?>"><?=$estadoa;?></span></td>
-										<td>
-											<div class="hidden-sm hidden-xs btn-group">
+												if($tipomen==1){ 
+												echo "Los datos del afiliado <b>".$ape1." ".$ape2." ".$nom1." ".$nom2."</b> han sido actualizados con éxito";
+												} else {
+													echo "El afiliado <b>".$afiliado."</b> ha sido registrado con éxito";
+												}
+												break;
 											
-												<?php if($e1!=0&&$mostrar=='S'){ ?>
-												<div title="Editar Reserva" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
-													<a class="boton fancybox" href="<?=  base_url()?>reservar_cita/<?=$a->idcertificado?>/<?=$a->idasegurado?>/<?=$a->idcita?>/<?=$a->idcertificadoasegurado?>" data-fancybox-width="950" data-fancybox-height="690">
-														<i class="ace-icon glyphicon glyphicon-pencil bigger-120"></i>
-													</a>
-												</div>
-												<div title="Anular Reserva" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
-													<a class="boton fancybox" href="<?=  base_url()?>anular_cita/<?=$a->idcita?>/<?=$a->idasegurado?>/<?=$a->idcertificado?>" data-fancybox-width="950" data-fancybox-height="690">
-														<i class="ace-icon glyphicon glyphicon-trash bigger-120"></i>
-													</a>
-												</div>
-												<?php } ?>
-											</div>
-
-											<div class="hidden-md hidden-lg">
-												<div class="inline pos-rel">
-													
-															<?php if($e1!=0&&$mostrar=='S'){ ?>
-													<button class="btn btn-minier btn-info dropdown-toggle" data-toggle="dropdown" data-position="auto">
-														<i class="ace-icon fa fa-cog icon-only bigger-110"></i>
-													</button>
-														<ul class="dropdown-menu dropdown-only-icon dropdown-yellow dropdown-menu-right dropdown-caret dropdown-close">
-															<li>
-																<div title="Editar Reserva" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
-																	<a class="boton fancybox" href="<?=  base_url()?>reservar_cita/<?=$a->idcertificado?>/<?=$a->idasegurado?>/<?=$a->idcita?>/<?=$a->idcertificadoasegurado?>" data-fancybox-width="950" data-fancybox-height="690">
-																		<i class="ace-icon glyphicon glyphicon-pencil bigger-120"></i>
-																	</a>
-																</div>
-
-															</li>
-															<li>			
-																<div title="Anular Reserva" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
-																	<a class="boton fancybox" href="<?=  base_url()?>anular_cita/<?=$a->idcita?>/<?=$a->idasegurado?>/<?=$a->idcertificado?>" data-fancybox-width="950" data-fancybox-height="690">
-																		<i class="ace-icon glyphicon glyphicon-trash bigger-120"></i>
-																	</a>
-																</div>
-															</li>
-															<?php } ?>
-														</ul>
-													</div>
-											</div>
-										</td>
-									</tr>
-								<?php endforeach;?>
-								</tbody>
-							</table>
-							</div>
-							<script>			
-								//para paginacion
-								$(document).ready(function() {
-									$('#example').DataTable( {
-										"pagingType": "full_numbers"
-									} );
-								} );
-							</script>	
-							</div>
-						</div>
-						</div>
-					</div><!-- /.main-content -->
-			
-				</div><!-- /.main-container -->
-
+											case 2:
+												echo "Se ha registrado la reserva de atención con éxito";
+												break;
+											case 3:
+												echo "Se actualizó la reserva de atención con éxito";
+												break;
+											case 4:
+												echo 'Se anuló la reserva de atención con éxito';
+												break;
+										}
+									?>									
+									</p>
+								</div>	
+								<div class="">
+									<div class="col-md-offset-3 col-md-9" style="text-align: right;">
+										<button class="btn btn-info" onclick="guardar()" >
+											<i class="ace-icon fa fa-check bigger-110"></i>
+												Cerrar
+										</button>
+									</div>
+								</div>							
+							</div><!-- /.col -->
+						</div>	
+					</div>
+				</div><!-- /.main-content -->			
+			</div><!-- /.main-container -->
+		
 		<!-- basic scripts -->
 
 		<!--[if !IE]> -->
@@ -239,7 +153,13 @@
 		<script src="<?=  base_url()?>public/assets/js/ace/ace.widget-on-reload.js"></script>
 		<script src="<?=  base_url()?>public/assets/js/ace/ace.searchbox-autocomplete.js"></script>
 
-		
+		<script type="text/javascript">
+			function guardar() {
+				parent.location.reload(true);
+				parent.$.fancybox.close();
+			}
+
+		</script>
 
 		<!-- the following scripts are used in demo only for onpage help and you don't need them -->
 		<link rel="stylesheet" href="<?=  base_url()?>public/assets/css/ace.onpage-help.css">
