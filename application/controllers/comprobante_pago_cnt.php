@@ -144,7 +144,7 @@ class Comprobante_pago_cnt extends CI_Controller {
 						$boletaSuma = $this->comprobante_pago_mdl->getDatosSumaBoleta($inicio, $fin, $canales, $serie);
 						foreach ($boletaSuma as $bs):
 							$html .="<tr>";
-								$html .="<td colspan=5 align='left'>Total de cobro Boletas</td>";
+								$html .="<td colspan=5 align='left'>Total de cobro Boletas: </td>";
 								$html .="<td colspan=2 align='right'>S/. ".$bs->suma."</td>";
 							$html .="</tr>";
 						endforeach;
@@ -236,7 +236,7 @@ class Comprobante_pago_cnt extends CI_Controller {
 
 									$html .= "<td align='center'>".$cant2."</td>";
 
-									$html .= "<td align='left'>".$f->descripcion."</td>";
+									$html .= "<td align='left'>Pendiente</td>";
 								$html .= "</tr>";
 
 							}
@@ -1661,7 +1661,7 @@ class Comprobante_pago_cnt extends CI_Controller {
 					$xmlSigned = $signer->signFromFile($xmlPath);
 
 					file_put_contents($filename.'.xml', $xmlSigned);
-					echo $xmlSigned;
+					//echo $xmlSigned;
 
 					if ($this->zip->open("adjunto/xml/boletas/".$filename.".zip", ZIPARCHIVE::CREATE)===true) {
 						$this->zip->addFile($filename.'.xml');
@@ -1672,6 +1672,27 @@ class Comprobante_pago_cnt extends CI_Controller {
 						unlink($filename.".xml");
 						unlink("adjunto/xml/boletas/".$filename.".xml");
 					}
+
+					$service = 'https://e-beta.sunat.gob.pe/ol-ti-itcpfegem-beta/billService?wsdl'; 
+			    	$headers = new CustomHeaders('20600258894MODDATOS', 'moddatos'); 
+			    	
+			    	$client = new SoapClient($service, array(
+			    		'cache_wsdl' => WSDL_CACHE_NONE,
+			    		'trace' => TRUE,
+			    		//'soap_version' => SOAP_1_2
+			    	));
+
+			    	$client->__setSoapHeaders([$headers]); 
+			    	$fcs = $client->__getFunctions();
+
+			    	$zipXml = $filename.'.zip'; 
+			    	$params = array( 
+			    		'fileName' => $zipXml, 
+			    		'contentFile' => file_get_contents("adjunto/xml/boletas/".$zipXml) 
+			    	); 
+
+			    	$status = $client->sendBill($params);
+			    	print_r($status);
 				}
 			}
 
@@ -1829,18 +1850,6 @@ class Comprobante_pago_cnt extends CI_Controller {
 
 				    	$status = $client->sendBill($params);
 				    	print_r($status);
-
-			    	    /*$WSHeader = '<wsse:Security xmlns:wsse="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd">
-					        <wsse:UsernameToken>
-					            <wsse:Username>20600258894MODDATOS</wsse:Username>
-					            <wsse:Password>moddatos</wsse:Password>
-					        </wsse:UsernameToken>
-					    </wsse:Security>';
-
-					    $headers = new SoapHeader('http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd', 'Security', new SoapVar($WSHeader, XSD_ANYXML));
-
-					    $soap = new SoapClient('adjunto/wsdl/billService');
-					    $soap->__soapCall('sendBill', $argumentos, null, $headers);*/
 				}
 			}
     	}
