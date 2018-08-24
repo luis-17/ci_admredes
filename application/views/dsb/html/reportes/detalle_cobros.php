@@ -30,7 +30,7 @@
 
 		<!-- HTML5shiv and Respond.js for IE8 to support HTML5 elements and media queries -->
 
-			<!-- para paginacion -->
+		<!-- para paginacion -->
 		<script src="<?=base_url()?>public/pagination/jquery.dataTables.min.css"></script>
 		<script src="<?=base_url()?>public/pagination/jquery-1.12.4.js"></script>
 		<script src="<?=base_url()?>public/pagination/jquery.dataTables.min.js"></script>
