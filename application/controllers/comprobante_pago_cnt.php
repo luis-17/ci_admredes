@@ -1,8 +1,13 @@
 <?php
 ini_set('max_execution_time', 600); 
+ini_set("soap.wsdl_cache_enabled", 0);
 defined('BASEPATH') OR exit('No direct script access allowed');
+use RobRichards\XMLSecLibs\XMLSecurityDSig;
+use RobRichards\XMLSecLibs\XMLSecurityKey;
+use Greenter\XMLSecLibs\Sunat\SignedXml;
+
 class Comprobante_pago_cnt extends CI_Controller {
-	
+
 	public function __construct()
 	{
 		parent::__construct();
@@ -13,35 +18,27 @@ class Comprobante_pago_cnt extends CI_Controller {
 
 	public function index()
 	{
-		//load session library
-		$this->load->library('session');
+		$idusuario=2;
 
-		//restrict users to go to home if not logged in
-		if($this->session->userdata('user')){
-			//$this->load->view('home');
+		$menuLista = $this->menu_mdl->getMenu($idusuario);
+		$data['menu1'] = $menuLista;
 
-			$user = $this->session->userdata('user');
-			extract($user);
+		$month = date('m');
+      	$year = date('Y');
+      	$day = date("d", mktime(0,0,0, $month+1, 0, $year));
 
-			$menuLista = $this->menu_mdl->getMenu($idusuario);
-			$data['menu1'] = $menuLista;
-			$submenuLista = $this->menu_mdl->getSubMenu($idusuario);
-			$data['menu2'] = $submenuLista;
+		$data['idclienteempresa'] = 0;
 
-			$month = date('m');
-			$year = date('Y');
-			$day = date("d", mktime(0,0,0, $month+1, 0, $year));
-			$data['idclienteempresa'] = 0;
-			$data['fecinicio'] = date('Y-m-d', mktime(0,0,0, $month, 1, $year));
-			$data['fecfin'] = date('Y-m-d', mktime(0,0,0, $month, $day, $year));
-			$canales = $this->comprobante_pago_mdl->getCanales();
-			$data['canales'] = $canales;
+		$data['fecinicio'] = date('Y-m-d', mktime(0,0,0, $month, 1, $year));
+		$data['fecfin'] = date('Y-m-d', mktime(0,0,0, $month, $day, $year));
 
-			$this->load->view('dsb/html/comprobante/generar_comp.php',$data);
-		}
-		else{
-			redirect('/');
-		}
+		$submenuLista = $this->menu_mdl->getSubMenu($idusuario);
+		$data['menu2'] = $submenuLista;
+
+		$canales = $this->comprobante_pago_mdl->getCanales();
+		$data['canales'] = $canales;
+
+		$this->load->view('dsb/html/comprobante/generar_comp.php',$data);
 	}
 
 	public function mostrarDocumento(){
@@ -144,8 +141,15 @@ class Comprobante_pago_cnt extends CI_Controller {
 					$html .= "</thead>";
 					$html .= "<tbody>";
 
-						$boleta = $this->comprobante_pago_mdl->getDatosBoleta($inicio, $fin, $canales, $serie);
+						$boletaSuma = $this->comprobante_pago_mdl->getDatosSumaBoleta($inicio, $fin, $canales, $serie);
+						foreach ($boletaSuma as $bs):
+							$html .="<tr>";
+								$html .="<td colspan=5 align='left'>Total de cobro Boletas</td>";
+								$html .="<td colspan=2 align='right'>S/. ".$bs->suma."</td>";
+							$html .="</tr>";
+						endforeach;
 
+						$boleta = $this->comprobante_pago_mdl->getDatosBoleta($inicio, $fin, $canales, $serie);
 						foreach ((array) $boleta as $b):
 
 							$importe = $b->cob_importe;
@@ -191,6 +195,14 @@ class Comprobante_pago_cnt extends CI_Controller {
 					$html .= "</thead>";
 					$html .= "<tbody>";
 
+						$facturaSuma = $this->comprobante_pago_mdl->getDatosSumaFacturas($inicio, $fin, $canales, $serie);
+						foreach ($facturaSuma as $fs):
+							$html .= "<tr>";
+								$html .= "<td colspan=6 align='left'>Total de cobros de Facturas</td>";
+								$html .= "<td colspan=2 align='right'>".$fs->suma."</td>";
+							$html .= "</tr>";
+						endforeach;
+
 						$factura = $this->comprobante_pago_mdl->getDatosFacturas($inicio, $fin, $canales, $serie);
 
 						$tot=0; 
@@ -229,7 +241,6 @@ class Comprobante_pago_cnt extends CI_Controller {
 
 							}
 						endforeach;
-
 					$html .= "</tbody>";
 				$html .= "</table>";
 			$html .= "</div>";
@@ -250,6 +261,8 @@ class Comprobante_pago_cnt extends CI_Controller {
 		$idPlanUnique = array_unique($idPlan);
 		$correlativo = $_POST['correlativo'];
 		$importeTotal = $_POST['importeTotal'];
+
+		
 
 		if ($canales == 1 || $canales == 2 || $canales == 3 || $canales == 6 || $canales == 7) {
 
@@ -283,7 +296,7 @@ class Comprobante_pago_cnt extends CI_Controller {
 		}
 
 		//for para recorrer los planes obtenidos de la vista y hacer update del idestadocobro
-		for ($i=0; $i < count($idPlan); $i++) { 
+		for ($i=0; $i < count(array_unique($idPlan)); $i++) { 
 			
 			$this->comprobante_pago_mdl->updateEstadoCobro($inicio, $fin, $idPlan[$i]);
 
@@ -291,36 +304,27 @@ class Comprobante_pago_cnt extends CI_Controller {
 	}
 
 	public function comprobante_generado(){
-		//load session library
-		$this->load->library('session');
+		$idusuario=2;
 
-		//restrict users to go to home if not logged in
-		if($this->session->userdata('user')){
-			//$this->load->view('home');
+		$menuLista = $this->menu_mdl->getMenu($idusuario);
+		$data['menu1'] = $menuLista;
 
-			$user = $this->session->userdata('user');
-			extract($user);
+		$month = date('m');
+      	$year = date('Y');
+      	$day = date("d", mktime(0,0,0, $month+1, 0, $year));
 
-			$menuLista = $this->menu_mdl->getMenu($idusuario);
-			$data['menu1'] = $menuLista;
-			$submenuLista = $this->menu_mdl->getSubMenu($idusuario);
-			$data['menu2'] = $submenuLista;
+		$data['idclienteempresa'] = 0;
 
-			$month = date('m');
-			$year = date('Y');
-			$day = date("d", mktime(0,0,0, $month+1, 0, $year));
-			$data['idclienteempresa'] = 0;
-			$data['fecinicio'] = date('Y-m-d', mktime(0,0,0, $month, 1, $year));
-			$data['fecfin'] = date('Y-m-d', mktime(0,0,0, $month, $day, $year));
-			$canales = $this->comprobante_pago_mdl->getCanales();
-			$data['canales'] = $canales;
+		$data['fecinicio'] = date('Y-m-d', mktime(0,0,0, $month, 1, $year));
+		$data['fecfin'] = date('Y-m-d', mktime(0,0,0, $month, $day, $year));
 
-			$this->load->view('dsb/html/comprobante/comprobante_generado.php',$data);	
+		$submenuLista = $this->menu_mdl->getSubMenu($idusuario);
+		$data['menu2'] = $submenuLista;
 
-		} 
-		else{
-			redirect('/');
-		}			
+		$canales = $this->comprobante_pago_mdl->getCanales();
+		$data['canales'] = $canales;
+
+		$this->load->view('dsb/html/comprobante/comprobante_generado.php',$data);		
 	}
 
 	public function generarLista(){
@@ -1063,6 +1067,10 @@ class Comprobante_pago_cnt extends CI_Controller {
 
 	public function envioEmail($idcomprobante, $canales){
 
+		include ('./application/libraries/xmldsig/src/XMLSecurityDSig.php');
+    	include ('./application/libraries/xmldsig/src/XMLSecurityKey.php');
+    	include ('./application/libraries/xmldsig/src/Sunat/SignedXml.php');
+
     	$this->xml = new XMLWriter();
 		
 		$mail = new PHPMailer();
@@ -1156,183 +1164,119 @@ class Comprobante_pago_cnt extends CI_Controller {
 
 		        $filename="20600258894-03-".$b->serie."-".$b->correlativo;
 
-	    		$this->xml->openMemory();
-				$this->xml->startDocument("1.0","ISO-8859-1", "no");
-				$this->xml->startElement("Invoice");
-				   	$this->xml->writeAttribute('xmlns', 'urn:oasis:names:specification:ubl:schema:xsd:Invoice-2');  
-				   	$this->xml->writeAttribute('xmlns:cac', 'rn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2');  
-				   	$this->xml->writeAttribute('xmlns:cbc', 'rn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2');  
-				   	$this->xml->writeAttribute('xmlns:ccts', 'urn:un:unece:uncefact:documentation:2');  
-				   	$this->xml->writeAttribute('xmlns:ds', 'http://www.w3.org/2000/09/xmldsig#');  
-				   	$this->xml->writeAttribute('xmlns:ext', 'rn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2');  
-				  	$this->xml->writeAttribute('xmlns:qdt', 'rn:oasis:names:specification:ubl:schema:xsd:QualifiedDatatypes-2');  
-				  	$this->xml->writeAttribute('xmlns:sac', 'rn:sunat:names:specification:ubl:peru:schema:xsd:SunatAggregateComponents-1');
-				   	$this->xml->writeAttribute('xmlns:udt', 'rn:un:unece:uncefact:data:specification:UnqualifiedDataTypesSchemaModule:2'); 
-				   	$this->xml->writeAttribute('xmlns:xsi', 'http://www.w3.org/2001/XMLSchema-instance');
-				   	$this->xml->startElement("ext:UBLExtensions");
-				   		$this->xml->startElement("ext:UBLExtension");
-				   			$this->xml->startElement("ext:ExtensionContent");
-				   				$this->xml->startElement("sac:AdditionalInformation");
-				   					$this->xml->startElement("sac:AdditionalMonetaryTotal");
-				   						$this->xml->writeElement("cbc:ID", 1001);
-										$this->xml->startElement("cbc:PayableAmount");
-				   							$this->xml->writeAttribute('currencyID', 'PEN');
-				   							$this->xml->text($b->neto);
-				   						$this->xml->endElement();
-				   					$this->xml->endElement();
-				   				$this->xml->endElement();
-				   			$this->xml->endElement();	
-				   		$this->xml->endElement();
-				   		$this->xml->startElement("ext:UBLExtension");
-				   			$this->xml->startElement("ext:ExtensionContent");
-				   				//inicio firma
-					   			$this->xml->startElement("ds:Signature");
-					   			$this->xml->writeAttribute('Id', 'signatureKG');
-						   			$this->xml->startElement('ds:SignedInfo');
-						   				$this->xml->startElement('ds:CanonicalizationMethod');
-					   					$this->xml->writeAttribute('Algorithm', 'http://www.w3.org/TR/2001/REC-xml-c14n-20010315');
-					   					$this->xml->endElement();
-						   				$this->xml->startElement('ds:SignatureMethod');
-					   					$this->xml->writeAttribute('Algorithm', 'http://www.w3.org/2000/09/xmldsig#rsa-sha1');
-					   					$this->xml->endElement();
-						   				$this->xml->startElement('ds:Reference');
-					   					$this->xml->writeAttribute('URI', '');
-							   				$this->xml->startElement('ds:Transforms');
-								   				$this->xml->startElement('ds:Transform');
-							   					$this->xml->writeAttribute('Algorithm', 'http://www.w3.org/2000/09/xmldsig#enveloped-signature');
-							   				$this->xml->endElement();
-								   				$this->xml->startElement('ds:DigestMethod');
-							   					$this->xml->writeAttribute('Algorithm', 'http://www.w3.org/2000/09/xmldsig#sha1');
-							   				$this->xml->writeElement("ds:DigestValue", "ld6X+TvM42Fe+F1KM/OBjiKpnko=");
-						   				$this->xml->endElement();
-						   			$this->xml->endElement();
-						   			$this->xml->writeElement("ds:SignatureValue", "W6DbMHJEFmU7GuiU0O+HRUqVzQZZW3QndYtUyeL0VxXuTafHu2vBC+OXvnnali43VXRGQ+/E0tPlZAssqI/PEPfzIU79Wufq6saxYGHKvzdnBi6hnaMuCSG5THHNFppx4aT1KNg7p/koBB3U8PT9C6m6UnkJJNUquHkFc9BCqI8=");
-						   			$this->xml->startElement("ds:KeyInfo");
-						   				$this->xml->startElement("ds:X509Data");
-						   					$this->xml->writeElement("ds:X509SubjectName", "1.2.840.113549.1.9.1=#161a4253554c434140534f55544845524e504552552e434f4d2e5045,CN=Carlos Vega,OU=10200545523,O=Vega Poblete Carlos Enrique,L=CHICLAYO,ST=LAMBAYEQUE,C=PE");
-						   					$this->xml->writeElement("ds:X509Certificate", "MIIESTCCAzGgAwIBAgIKWOCRzgAAAAAAIjANBgkqhkiG9w0BAQUFADAnMRUwEwYKCZImiZPyLGQBGRYFU1VOQVQxDjAMBgNVBAMTBVNVTkFUMB4XDTEwMTIyODE5NTExMFoXDTExMTIyODIwMDExMFowgZUxCzAJBgNVBAYTAlBFMQ0wCwYDVQQIEwRMSU1BMQ0wCwYDVQQHEwRMSU1BMREwDwYDVQQKEwhTT1VUSEVSTjEUMBIGA1UECxMLMjAxMDAxNDc1MTQxFDASBgNVBAMTC0JvcmlzIFN1bGNhMSkwJwYJKoZIhvcNAQkBFhpCU1VMQ0FAU09VVEhFUk5QRVJVLkNPTS5QRTCBnzANBgkqhkiG9w0BAQEFAAOBjQAwgYkCgYEAtRtcpfBLzyajuEmYt4mVH8EE02KQiETsdKStUThVYM7g3Lkx5zq3SH5nLH00EKGCtota6RR+V40sgIbnh+Nfs1SOQcAohNwRfWhho7sKNZFR971rFxj4cTKMEvpt8Dr98UYFkJhph6WnsniGM2tJDq9KJ52UXrlScMfBityx0AsCAwEAAaOCAYowggGGMA4GA1UdDwEB/wQEAwIE8DBEBgkqhkiG9w0BCQ8ENzA1MA4GCCqGSIb3DQMCAgIAgDAOBggqhkiG9w0DBAICAIAwBwYFKw4DAgcwCgYIKoZIhvcNAwcwHQYDVR0OBBYEFG/m6twbiRNzRINavjq+U0j/ZECMBMGA1UdJQQMMAoGCCsGAQUFBwMCMB8GA1UdIwQYMBaAFN9kHQDqWONmozw3xdNSIMFW2t+7MFkGA1UdHwRSMFAwTqBMoEqGImh0dHA6Ly9wY2IyMjYvQ2VydEVucm9sbC9TVU5BVC5jcmyGJGZpbGU6Ly9cXHBjYjIyNlxDZXJ0RW5yb2xsXFNVTkFULmNybDB+BggrBgEFBQcBAQRyMHAwNQYIKwYBBQUHMAKGKWh0dHA6Ly9wY2IyMjYvQ2VydEVucm9sbC9wY2IyMjZfU1VOQVQuY3J0MDcGCCsGAQUFBzAChitmaWxlOi8vXFxwY2IyMjZcQ2VydEVucm9sbFxwY2IyMjZfU1VOQVQuY3J0MA0GCSqGSIb3DQEBBQUAA4IBAQBI6wJ/QmRpz3C3rorBflOvA9DOa3GNiiB7rtPIjF4mPmtgfo2pK9gvnxmV2pST3ovfu0nbG2kpjzzaaelRjEodHvkcM3abGsOE53wfxqQF5uf/jkzZA9hbLHtE1aLKBD0Mhzc6cvI072alnE6QU3RZ16ie9CYsHmMrs+sPHMy8DJU5YrdnqHdSn2D3nhKBi4QfT/WURPOuo6DF4iWgrCyMf3eJgmGKSUN3At5fK4HSpfyURT0kboaJKNBgQwy0HhGh5BLM7DsTi/KwfdUYkoFgrY71Pm23+ra+xTow1Vk9gj5NqrlpMY5gAVQXEIo1++GxDtaK/5EiVKSqzJ6geIfz");
-						   				$this->xml->endElement();
-						   			$this->xml->endElement();
-					   			$this->xml->endElement();
-					   			//fin firma
-				   			$this->xml->endElement();
-						$this->xml->endElement();
-					$this->xml->endElement();
-			   		$this->xml->endElement();
-			   	$this->xml->endElement();
-			   	$this->xml->writeElement("cbc:UBLVersionID", "2.0");
-			   	$this->xml->writeElement("cbc:CustomizationID", "1.0");
-			   	$this->xml->writeElement("cbc:ID", $b->serie."-".$b->correlativo);
-			   	$this->xml->writeElement("cbc:IssueDate", $b->fecha_emision);
-			   	//03 si es boleta, 01 si es factura
-			   	$this->xml->writeElement("cbc:InvoiceTypeCode", "03"); 
-			   	$this->xml->writeElement("cbc:DocumentCurrencyCode", "PEN");
-				   	$this->xml->startElement("cac:Signature");
-				   		$this->xml->writeElement("cbc:ID", "IDSignKG");
-						   	$this->xml->startElement("cac:SignatoryParty");
-							   	$this->xml->startElement("cac:PartyIdentification");
-				   					$this->xml->writeElement("cbc:ID", "20600258894");
-							   	$this->xml->endElement();
-							   	$this->xml->startElement("cac:PartyName");
-				   					$this->xml->writeElement("cbc:Name", "RED SALUD INTERNATIONAL MANAGED HEALTH CARE");
-							   	$this->xml->endElement();
-						   	$this->xml->endElement();
-						   	$this->xml->startElement("cac:DigitalSignatureAttachment");
-							   	$this->xml->startElement("cac:ExternalReference");
-				   					$this->xml->writeElement("cbc:URI", "#SignatureKG");
-							   	$this->xml->endElement();
-						   	$this->xml->endElement();
-				   	$this->xml->endElement();
-				   	$this->xml->startElement("cac:AccountingSupplierParty");
-				   		$this->xml->writeElement("cbc:CustomerAssignedAccountID", "20600258894");
-				   		$this->xml->writeElement("cbc:AdditionalAccountID", "6");
-				   		$this->xml->startElement("cac:Party");
-					   		$this->xml->startElement("cac:PartyName");
-				   				$this->xml->writeElement("cbc:Name", "RED SALUD INTERNATIONAL MANAGED HEALTH CARE");
-					   		$this->xml->endElement();
-					   		$this->xml->startElement("cac:PostalAddress");
-				   				$this->xml->writeElement("cbc:ID", "150122");
-				   				$this->xml->writeElement("cbc:StreetName", "AV. JOSE PARDO #601 INT.502 (PISO 5)");
-				   				$this->xml->writeElement("cbc:CitySubdivisionName", "");
-				   				$this->xml->writeElement("cbc:CityName", "LIMA");
-				   				$this->xml->writeElement("cbc:CountrySubentity", "LIMA");
-				   				$this->xml->writeElement("cbc:District", "MIRAFLORES");
-						   		$this->xml->startElement("cac:Country");
-					   				$this->xml->writeElement("cbc:IdentificationCode", "PE");
-						   		$this->xml->endElement();
-					   		$this->xml->endElement();
-					   		$this->xml->startElement("cac:PartyLegalEntity");
-				   				$this->xml->writeElement("cbc:RegistrationName", "RED SALUD INTERNATIONAL MANAGED HEALTH CARE");
-					   		$this->xml->endElement();			   		
-				   		$this->xml->endElement();
-				   	$this->xml->endElement();
-				   	$this->xml->startElement("cac:AccountingCustomerParty");
-						$this->xml->writeElement("cbc:CustomerAssignedAccountID", $b->cont_numDoc);
-						$this->xml->writeElement("cbc:AdditionalAccountID", "1");
-						$this->xml->startElement("cac:Party");
-							$this->xml->startElement("cac:PartyLegalEntity");
-								$this->xml->writeElement("cbc:RegistrationName", $b->contratante);
-							$this->xml->endElement();
-						$this->xml->endElement();		   		
-				   	$this->xml->endElement();
-					$this->xml->startElement("cac:TaxTotal");
-						$this->xml->startElement("cbc:TaxAmount");
-   							$this->xml->writeAttribute('currencyID', 'PEN');
-   							$this->xml->text($b->igv);
-   						$this->xml->endElement();
-						$this->xml->startElement("cac:TaxSubtotal");
-							$this->xml->startElement("cbc:TaxAmount");
-	   							$this->xml->writeAttribute('currencyID', 'PEN');
-	   							$this->xml->text($b->igv);
-	   						$this->xml->endElement();
-							$this->xml->startElement("cac:TaxCategory");
-								$this->xml->startElement("cac:TaxScheme");
-									$this->xml->writeElement("cbc:ID", 1000);
-									$this->xml->writeElement("cbc:Name", "IGV");
-									$this->xml->writeElement("cbc:TaxTypeCode", "VAT");
-								$this->xml->endElement();
-							$this->xml->endElement();
-						$this->xml->endElement();
-					$this->xml->endElement();
-					$this->xml->startElement("cac:LegalMonetaryTotal");
-						$this->xml->startElement("cbc:PayableAmount");
-   							$this->xml->writeAttribute('currencyID', 'PEN');
-   							$this->xml->text($b->total);
-   						$this->xml->endElement();
-					$this->xml->endElement();
-					$this->xml->startElement("cac:InvoiceLine");
-						$this->xml->writeElement("cbc:ID", 1);
-							$this->xml->startElement("cbc:InvoicedQuantity");
-	   							$this->xml->writeAttribute('unitCode', 'NIU');
-	   							$this->xml->text(1);
-	   						$this->xml->endElement();
-							$this->xml->startElement("cbc:LineExtensionAmount");
-	   							$this->xml->writeAttribute('currencyID', 'PEN');
-	   							$this->xml->text($b->neto);
-	   						$this->xml->endElement();
-							$this->xml->startElement("cac:PricingReference");
-								$this->xml->startElement("cac:AlternativeConditionPrice");
-									$this->xml->startElement("cbc:PriceAmount");
-			   							$this->xml->writeAttribute('currencyID', 'PEN');
-			   							$this->xml->text($b->total);
-			   						$this->xml->endElement();
-									$this->xml->writeElement("cbc:PriceTypeCode", "01");
-								$this->xml->endElement();
-							$this->xml->endElement();
-							$this->xml->startElement("cac:Item");
-								$this->xml->writeElement("cbc:Description", $b->nombre_plan);
-							$this->xml->endElement();
-							$this->xml->startElement("cac:Price");
-								$this->xml->startElement("cbc:PriceAmount");
-		   							$this->xml->writeAttribute('currencyID', 'PEN');
-		   							$this->xml->text($b->neto);
-		   						$this->xml->endElement();
-							$this->xml->endElement();
-					$this->xml->endElement();
-				$this->xml->endElement(); 
-				$this->xml->endDocument();
-				//$this->xml->flush();
-				file_put_contents("adjunto/comprobantes/".$filename.".xml", $this->xml->outputMemory());
+	    		$datos = '<?xml version="1.0" encoding="ISO-8859-1"?>
+<Invoice xmlns="urn:oasis:names:specification:ubl:schema:xsd:Invoice-2" xmlns:cac="urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2" xmlns:cbc="urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2" xmlns:ccts="urn:un:unece:uncefact:documentation:2" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:ext="urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2" xmlns:qdt="urn:oasis:names:specification:ubl:schema:xsd:QualifiedDatatypes-2" xmlns:udt="urn:un:unece:uncefact:data:specification:UnqualifiedDataTypesSchemaModule:2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<ext:UBLExtensions>
+		<ext:UBLExtension>
+			<ext:ExtensionContent></ext:ExtensionContent>
+		</ext:UBLExtension>
+	</ext:UBLExtensions>
+	<cbc:UBLVersionID>2.1</cbc:UBLVersionID>
+	<cbc:CustomizationID>2.0</cbc:CustomizationID>
+	<cbc:ID>'.$b->serie.'-'.$b->correlativo.'</cbc:ID>
+	<cbc:IssueDate>'.$b->fecha_emision.'</cbc:IssueDate>
+	<cbc:InvoiceTypeCode listID="0101" listAgencyName="PE:SUNAT" listName="Tipo de Documento" listURI="urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo01">03</cbc:InvoiceTypeCode>
+	<cbc:DocumentCurrencyCode listID="ISO 4217 Alpha" listName="Currency" listAgencyName="United Nations Economic Commission for Europe">PEN</cbc:DocumentCurrencyCode>
+	<cac:AccountingSupplierParty>
+		<cac:Party>
+			<cac:PartyIdentification>
+				<cbc:ID schemeID="6" schemeName="Documento de Identidad" schemeAgencyName="PE:SUNAT" schemeURI="urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo06">20600258894</cbc:ID>
+			</cac:PartyIdentification>
+			<cac:PartyName>
+				<cbc:Name>RED SALUD</cbc:Name>
+			</cac:PartyName>
+			<cac:PartyLegalEntity>
+				<cbc:RegistrationName>HEALTH CARE ADMINISTRATION RED SALUD S.A.C.</cbc:RegistrationName>
+				<cac:RegistrationAddress>
+					<cac:AddressLine>
+						<cbc:Line>AV. JOSE PARDO #601 INT.502 (PISO 5)</cbc:Line>
+					</cac:AddressLine>
+					<cbc:CityName>LIMA</cbc:CityName>
+					<cbc:CountrySubentity>LIMA</cbc:CountrySubentity>
+					<cbc:District>MIRAFLORES</cbc:District>
+					<cac:Country>
+						<cbc:IdentificationCode listID="ISO 3166-1" listAgencyName="United Nations Economic Commission for Europe" listName="Country">PE</cbc:IdentificationCode>
+					</cac:Country>
+					<cbc:AddressTypeCode></cbc:AddressTypeCode>
+				</cac:RegistrationAddress>
+			</cac:PartyLegalEntity>
+		</cac:Party>
+	</cac:AccountingSupplierParty>
+	<cac:AccountingCustomerParty>
+		<cac:Party>
+			<cac:PartyIdentification>
+				<cbc:ID schemeID="6" schemeName="Documento de Identidad" schemeAgencyName="PE:SUNAT" schemeURI="urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo06">'.$b->cont_numDoc.'</cbc:ID>
+			</cac:PartyIdentification>
+			<cac:PartyLegalEntity>
+				<cbc:RegistrationName>'.$b->contratante.'</cbc:RegistrationName>
+			</cac:PartyLegalEntity>
+		</cac:Party>
+	</cac:AccountingCustomerParty>
+	<cac:TaxTotal>
+		<cbc:TaxAmount currencyID="PEN">'.$b->igv.'</cbc:TaxAmount>
+		<cac:TaxSubtotal>
+			<cbc:TaxableAmount currencyID="PEN">'.$b->total.'</cbc:TaxableAmount>
+			<cbc:TaxAmount currencyID="PEN">'.$b->igv.'</cbc:TaxAmount>
+			<cac:TaxCategory>
+				<cac:TaxScheme>
+					<cbc:ID schemeName="Codigo de tributos" schemeAgencyName="PE:SUNAT" schemeURI="urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo05">1000</cbc:ID>
+					<cbc:Name>IGV</cbc:Name>
+					<cbc:TaxTypeCode>VAT</cbc:TaxTypeCode>
+				</cac:TaxScheme>
+			</cac:TaxCategory>
+		</cac:TaxSubtotal>
+	</cac:TaxTotal>
+	<cac:LegalMonetaryTotal>
+		<cbc:PayableAmount currencyID="PEN">'.$b->total.'</cbc:PayableAmount>
+	</cac:LegalMonetaryTotal>
+	<cac:InvoiceLine>
+		<cbc:ID>1</cbc:ID>
+		<cbc:InvoicedQuantity unitCode="NIU" unitCodeListID="UN/ECE rec 20" unitCodeListAgencyName="United Nations Economic Commission forEurope">1</cbc:InvoicedQuantity>
+		<cbc:LineExtensionAmount currencyID="PEN">'.$b->neto.'</cbc:LineExtensionAmount>
+		<cac:PricingReference>
+			<cac:AlternativeConditionPrice>
+				<cbc:PriceAmount currencyID="PEN">'.$b->total.'</cbc:PriceAmount>
+				<cbc:PriceTypeCode listName="Tipo de Precio" listAgencyName="PE:SUNAT" listURI="urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo16">01</cbc:PriceTypeCode>
+			</cac:AlternativeConditionPrice>
+		</cac:PricingReference>
+		<cac:TaxTotal>
+			<cbc:TaxAmount currencyID="PEN">'.$b->igv.'</cbc:TaxAmount>
+			<cac:TaxSubtotal>
+				<cbc:TaxableAmount currencyID="PEN">'.$b->total.'</cbc:TaxableAmount>
+				<cbc:TaxAmount currencyID="PEN">'.$b->igv.'</cbc:TaxAmount>
+				<cac:TaxCategory>
+					<cbc:Percent>18.00</cbc:Percent>
+				</cac:TaxCategory>
+				<cbc:TaxExemptionReasonCode listAgencyName="PE:SUNAT" listName="Afectacion del IGV" listURI="urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo07">10</cbc:TaxExemptionReasonCode>
+				<cac:TaxScheme>
+					<cbc:ID schemeName="Codigo de tributos" schemeAgencyName="PE:SUNAT" schemeURI="urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo05">1000</cbc:ID>
+					<cbc:Name>IGV</cbc:Name>
+					<cbc:TaxTypeCode>VAT</cbc:TaxTypeCode>
+				</cac:TaxScheme>
+			</cac:TaxSubtotal>
+		</cac:TaxTotal>
+		<cac:Item>
+			<cbc:Description>'.$b->nombre_plan.'</cbc:Description>
+		</cac:Item>
+		<cac:Price>
+			<cbc:PriceAmount currencyID="PEN">'.$b->neto.'</cbc:PriceAmount>
+		</cac:Price>
+	</cac:InvoiceLine>
+</Invoice>';
+
+				$doc = new DOMDocument(); 
+				$doc->loadxml($datos);
+				$doc->save('adjunto/comprobantes/'.$filename.'.xml');
+
+				$xmlPath = 'adjunto/comprobantes/'.$filename.'.xml';
+				$certPath = 'adjunto/firma/LLAMA-PE-CERTIFICADO-DEMO-20600258894.pem'; // Convertir pfx to pem 
+
+				$signer = new SignedXml();
+				$signer->setCertificateFromFile($certPath);
+
+				$xmlSigned = $signer->signFromFile($xmlPath);
+
+				file_put_contents('adjunto/comprobantes/'.$filename.'.xml', $xmlSigned);
 
 		     	$mail->IsSMTP();
 		        $mail->SMTPAuth   = true; 
@@ -1433,183 +1377,118 @@ class Comprobante_pago_cnt extends CI_Controller {
 
 		        $filename="20600258894-01-".$f->serie."-".$f->correlativo;
 
-					$this->xml->openMemory();
-					$this->xml->startDocument("1.0","ISO-8859-1", "no");
-					$this->xml->startElement("Invoice");
-					   	$this->xml->writeAttribute('xmlns', 'urn:oasis:names:specification:ubl:schema:xsd:Invoice-2');  
-					   	$this->xml->writeAttribute('xmlns:cac', 'urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2');  
-					   	$this->xml->writeAttribute('xmlns:cbc', 'urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2');  
-					   	$this->xml->writeAttribute('xmlns:ccts', 'urn:un:unece:uncefact:documentation:2');  
-					   	$this->xml->writeAttribute('xmlns:ds', 'http://www.w3.org/2000/09/xmldsig#');  
-					   	$this->xml->writeAttribute('xmlns:ext', 'urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2');  
-					  	$this->xml->writeAttribute('xmlns:qdt', 'urn:oasis:names:specification:ubl:schema:xsd:QualifiedDatatypes-2');  
-					  	$this->xml->writeAttribute('xmlns:sac', 'urn:sunat:names:specification:ubl:peru:schema:xsd:SunatAggregateComponents-1');
-					   	$this->xml->writeAttribute('xmlns:udt', 'urn:un:unece:uncefact:data:specification:UnqualifiedDataTypesSchemaModule:2');
-					   	$this->xml->writeAttribute('xmlns:xsi', 'http://www.w3.org/2001/XMLSchema-instance');
-					   	$this->xml->startElement("ext:UBLExtensions");
-					   		$this->xml->startElement("ext:UBLExtension");
-					   			$this->xml->startElement("ext:ExtensionContent");
-					   				$this->xml->startElement("sac:AdditionalInformation");
-					   					$this->xml->startElement("sac:AdditionalMonetaryTotal");
-					   						$this->xml->writeElement("cbc:ID", 1001);
-					   						$this->xml->startElement("cbc:PayableAmount");
-					   							$this->xml->writeAttribute('currencyID', 'PEN');
-					   							$this->xml->text($f->neto);
-					   						$this->xml->endElement();
-					   					$this->xml->endElement();
-					   				$this->xml->endElement();
-					   			$this->xml->endElement();	
-					   		$this->xml->endElement();
-					   		$this->xml->startElement("ext:UBLExtension");
-					   			$this->xml->startElement("ext:ExtensionContent");
-						   			//inicio firma
-						   			$this->xml->startElement("ds:Signature");
-						   			$this->xml->writeAttribute('Id', 'signatureKG');
-							   			$this->xml->startElement('ds:SignedInfo');
-							   				$this->xml->startElement('ds:CanonicalizationMethod');
-						   					$this->xml->writeAttribute('Algorithm', 'http://www.w3.org/TR/2001/REC-xml-c14n-20010315');
-						   					$this->xml->endElement();
-							   				$this->xml->startElement('ds:SignatureMethod');
-						   					$this->xml->writeAttribute('Algorithm', 'http://www.w3.org/2000/09/xmldsig#rsa-sha1');
-						   					$this->xml->endElement();
-							   				$this->xml->startElement('ds:Reference');
-						   					$this->xml->writeAttribute('URI', '');
-								   				$this->xml->startElement('ds:Transforms');
-									   				$this->xml->startElement('ds:Transform');
-								   					$this->xml->writeAttribute('Algorithm', 'http://www.w3.org/2000/09/xmldsig#enveloped-signature');
-								   				$this->xml->endElement();
-									   				$this->xml->startElement('ds:DigestMethod');
-								   					$this->xml->writeAttribute('Algorithm', 'http://www.w3.org/2000/09/xmldsig#sha1');
-								   				$this->xml->writeElement("ds:DigestValue", "ryg5Vl+6zuSrAlgSQUYrWeaSQjk=");
-							   				$this->xml->endElement();
-							   			$this->xml->endElement();
-							   			$this->xml->writeElement("ds:SignatureValue", "SOiGQpmVz7hBgGjIOQNlcwyHkQLC4S7R2zBuNnOUj4KjZQb3//xNPJMRB67m8x1mpQE6pffiH85vMzYLJ9nt7MLLZXOfP+rPGfkJBmNbYxaGLj9v3qZWyyEzHFGKS+8OfVSgMsHNwZ3IqfuICzc/xo8L7sFj+aT16IHf5TYffb0=");
-							   			$this->xml->startElement("ds:KeyInfo");
-							   				$this->xml->startElement("ds:X509Data");
-							   					$this->xml->writeElement("ds:X509SubjectName", "1.2.840.113549.1.9.1=#161a4253554c434140534f55544845524e504552552e434f4d2e5045,CN=Juan Robles,OU=20100454523,O=SOPORTE TECNOLOGICOS EIRL,L=LIMA,ST=LIMA,C=PE");
-							   					$this->xml->writeElement("ds:X509Certificate", "MIIESTCCAzGgAwIBAgIKWOCRzgAAAAAAIjANBgkqhkiG9w0BAQUFADAnMRUwEwYKCZImiZPyLGQBGRYFU1VOQVQxDjAMBgNVBAMTBVNVTkFUMB4XDTEwMTIyODE5NTExMFoXDTExMTIyODIwMDExMFowgZUxCzAJBgNVBAYTAlBFMQ0wCwYDVQQIEwRMSU1BMQ0wCwYDVQQHEwRMSU1BMREwDwYDVQQKEwhTT1VUSEVSTjEUMBIGA1UECxMLMjAxMDAxNDc1MTQxFDASBgNVBAMTC0JvcmlzIFN1bGNhMSkwJwYJKoZIhvcNAQkBFhpCU1VMQ0FAU09VVEhFUk5QRVJVLkNPTS5QRTCBnzANBgkqhkiG9w0BAQEFAAOBjQAwgYkCgYEAtRtcpfBLzyajuEmYt4mVH8EE02KQiETsdKStUThVYM7g3Lkx5zq3SH5nLH00EKGCtota6RR+V40sgIbnh+Nfs1SOQcAohNwRfWhho7sKNZFR971rFxj4cTKMEvpt8Dr98UYFkJhph6WnsniGM2tJDq9KJ52UXrlScMfBityx0AsCAwEAAaOCAYowggGGMA4GA1UdDwEB/wQEAwIE8DBEBgkqhkiG9w0BCQ8ENzA1MA4GCCqGSIb3DQMCAgIAgDAOBggqhkiG9w0DBAICAIAwBwYFKw4DAgcwCgYIKoZIhvcNAwcwHQYDVR0OBBYEFG/m6twbiRNzRINavjq+U0j/ZECMBMGA1UdJQQMMAoGCCsGAQUFBwMCMB8GA1UdIwQYMBaAFN9kHQDqWONmozw3xdNSIMFW2t+7MFkGA1UdHwRSMFAwTqBMoEqGImh0dHA6Ly9wY2IyMjYvQ2VydEVucm9sbC9TVU5BVC5jcmyGJGZpbGU6Ly9cXHBjYjIyNlxDZXJ0RW5yb2xsXFNVTkFULmNybDB+BggrBgEFBQcBAQRyMHAwNQYIKwYBBQUHMAKGKWh0dHA6Ly9wY2IyMjYvQ2VydEVucm9sbC9wY2IyMjZfU1VOQVQuY3J0MDcGCCsGAQUFBzAChitmaWxlOi8vXFxwY2IyMjZcQ2VydEVucm9sbFxwY2IyMjZfU1VOQVQuY3J0MA0GCSqGSIb3DQEBBQUAA4IBAQBI6wJ/QmRpz3C3rorBflOvA9DOa3GNiiB7rtPIjF4mPmtgfo2pK9gvnxmV2pST3ovfu0nbG2kpjzzaaelRjEodHvkcM3abGsOE53wfxqQF5uf/jkzZA9hbLHtE1aLKBD0Mhzc6cvI072alnE6QU3RZ16ie9CYsHmMrs+sPHMy8DJU5YrdnqHdSn2D3nhKBi4QfT/WURPOuo6DF4iWgrCyMf3eJgmGKSUN3At5fK4HSpfyURT0kboaJKNBgQwy0HhGh5BLM7DsTi/KwfdUYkoFgrY71Pm23+ra+xTow1Vk9gj5NqrlpMY5gAVQXEIo1++GxDtaK/5EiVKSqzJ6geIfz");
-							   				$this->xml->endElement();
-							   			$this->xml->endElement();
-						   			$this->xml->endElement();
-						   			//fin firma
-					   			$this->xml->endElement();
-							$this->xml->endElement();
-						$this->xml->endElement();
-				   		$this->xml->endElement();
-				   	$this->xml->endElement();
-				   	$this->xml->writeElement("cbc:UBLVersionID", "2.0"); 
-				   	$this->xml->writeElement("cbc:CustomizationID", "1.0");
-				   	$this->xml->writeElement("cbc:ID", $f->serie."-".$f->correlativo); 
-				   	$this->xml->writeElement("cbc:IssueDate", $f->fecha_emision);
-				   	//03 si es boleta, 01 si es factura
-				   	$this->xml->writeElement("cbc:InvoiceTypeCode", "01"); 
-				   	$this->xml->writeElement("cbc:DocumentCurrencyCode", "PEN");
-					   	$this->xml->startElement("cac:Signature");
-					   		$this->xml->writeElement("cbc:ID", "IDSignKG");
-							   	$this->xml->startElement("cac:SignatoryParty");
-								   	$this->xml->startElement("cac:PartyIdentification");
-					   					$this->xml->writeElement("cbc:ID", "20600258894");
-								   	$this->xml->endElement();
-								   	$this->xml->startElement("cac:PartyName");
-					   					$this->xml->writeElement("cbc:Name", "RED SALUD INTERNATIONAL MANAGED HEALTH CARE");
-								   	$this->xml->endElement();
-							   	$this->xml->endElement();
-							   	$this->xml->startElement("cac:DigitalSignatureAttachment");
-								   	$this->xml->startElement("cac:ExternalReference");
-					   					$this->xml->writeElement("cbc:URI", "#SignatureKG");
-								   	$this->xml->endElement();
-							   	$this->xml->endElement();
-					   	$this->xml->endElement();
-					   	$this->xml->startElement("cac:AccountingSupplierParty");
-					   		$this->xml->writeElement("cbc:CustomerAssignedAccountID", "20600258894");
-					   		$this->xml->writeElement("cbc:AdditionalAccountID", "6");
-					   		$this->xml->startElement("cac:Party");
-						   		$this->xml->startElement("cac:PartyName");
-					   				$this->xml->writeElement("cbc:Name", "RED SALUD INTERNATIONAL MANAGED HEALTH CARE");
-						   		$this->xml->endElement();
-						   		$this->xml->startElement("cac:PostalAddress");
-					   				$this->xml->writeElement("cbc:ID", "150122");
-					   				$this->xml->writeElement("cbc:StreetName", "AV. JOSE PARDO #601 INT.502 (PISO 5)");
-					   				$this->xml->writeElement("cbc:CitySubdivisionName", "");
-					   				$this->xml->writeElement("cbc:CityName", "LIMA");
-					   				$this->xml->writeElement("cbc:CountrySubentity", "LIMA");
-					   				$this->xml->writeElement("cbc:District", "MIRAFLORES");
-							   		$this->xml->startElement("cac:Country");
-						   				$this->xml->writeElement("cbc:IdentificationCode", "PE");
-							   		$this->xml->endElement();
-						   		$this->xml->endElement();
-						   		$this->xml->startElement("cac:PartyLegalEntity");
-					   				$this->xml->writeElement("cbc:RegistrationName", "RED SALUD INTERNATIONAL MANAGED HEALTH CARE");
-						   		$this->xml->endElement();			   		
-					   		$this->xml->endElement();
-					   	$this->xml->endElement();
-					   	$this->xml->startElement("cac:AccountingCustomerParty");
-							$this->xml->writeElement("cbc:CustomerAssignedAccountID", $f->numero_documento_cli);
-							$this->xml->writeElement("cbc:AdditionalAccountID", "6");
-							$this->xml->startElement("cac:Party");
-								$this->xml->startElement("cac:PartyLegalEntity");
-									$this->xml->writeElement("cbc:RegistrationName", $f->razon_social_cli);
-								$this->xml->endElement();
-							$this->xml->endElement();		   		
-					   	$this->xml->endElement();
-						$this->xml->startElement("cac:TaxTotal");
-							$this->xml->startElement("cbc:TaxAmount");
-	   							$this->xml->writeAttribute('currencyID', 'PEN');
-	   							$this->xml->text($f->igv);
-	   						$this->xml->endElement();
-							$this->xml->startElement("cac:TaxSubtotal");
-								$this->xml->startElement("cbc:TaxAmount");
-		   							$this->xml->writeAttribute('currencyID', 'PEN');
-		   							$this->xml->text($f->igv);
-		   						$this->xml->endElement();
-								$this->xml->startElement("cac:TaxCategory");
-									$this->xml->startElement("cac:TaxScheme");
-										$this->xml->writeElement("cbc:ID", 1000);
-										$this->xml->writeElement("cbc:Name", "IGV");
-										$this->xml->writeElement("cbc:TaxTypeCode", "VAT");
-									$this->xml->endElement();
-								$this->xml->endElement();
-							$this->xml->endElement();
-						$this->xml->endElement();
-						$this->xml->startElement("cac:LegalMonetaryTotal");
-							$this->xml->startElement("cbc:PayableAmount");
-	   							$this->xml->writeAttribute('currencyID', 'PEN');
-	   							$this->xml->text($f->total);
-	   						$this->xml->endElement();
-						$this->xml->endElement();
-						$this->xml->startElement("cac:InvoiceLine");
-							$this->xml->writeElement("cbc:ID", 1);
-								$this->xml->startElement("cbc:InvoicedQuantity");
-		   							$this->xml->writeAttribute('unitCode', 'NIU');
-		   							$this->xml->text(1);
-		   						$this->xml->endElement();
-								$this->xml->startElement("cbc:LineExtensionAmount");
-		   							$this->xml->writeAttribute('currencyID', 'PEN');
-		   							$this->xml->text($f->neto);
-		   						$this->xml->endElement();
-								$this->xml->startElement("cac:PricingReference");
-									$this->xml->startElement("cac:AlternativeConditionPrice");
-										$this->xml->startElement("cbc:PriceAmount");
-				   							$this->xml->writeAttribute('currencyID', 'PEN');
-				   							$this->xml->text($f->total);
-				   						$this->xml->endElement();
-										$this->xml->writeElement("cbc:PriceTypeCode", "01");
-									$this->xml->endElement();
-								$this->xml->endElement();
-								$this->xml->startElement("cac:Item");
-									$this->xml->writeElement("cbc:Description", $f->nombre_plan);
-								$this->xml->endElement();
-								$this->xml->startElement("cac:Price");
-									$this->xml->startElement("cbc:PriceAmount");
-			   							$this->xml->writeAttribute('currencyID', 'PEN');
-			   							$this->xml->text($f->neto);
-			   						$this->xml->endElement();
-								$this->xml->endElement();
-						$this->xml->endElement();
-					$this->xml->endElement(); 
-					$this->xml->endDocument();
-					//$this->xml->flush();
-					file_put_contents("adjunto/comprobantes/".$filename.".xml", $this->xml->outputMemory());
+					$datos = '<?xml version="1.0" encoding="ISO-8859-1"?>
+<Invoice xmlns="urn:oasis:names:specification:ubl:schema:xsd:Invoice-2" xmlns:cac="urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2" xmlns:cbc="urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2" xmlns:ccts="urn:un:unece:uncefact:documentation:2" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:ext="urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2" xmlns:qdt="urn:oasis:names:specification:ubl:schema:xsd:QualifiedDatatypes-2" xmlns:udt="urn:un:unece:uncefact:data:specification:UnqualifiedDataTypesSchemaModule:2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<ext:UBLExtensions>
+		<ext:UBLExtension>
+			<ext:ExtensionContent></ext:ExtensionContent>
+		</ext:UBLExtension>
+	</ext:UBLExtensions>
+	<cbc:UBLVersionID>2.1</cbc:UBLVersionID>
+	<cbc:CustomizationID>2.0</cbc:CustomizationID>
+	<cbc:ID>'.$f->serie.'-'.$f->correlativo.'</cbc:ID>
+	<cbc:IssueDate>'.$f->fecha_emision.'</cbc:IssueDate>
+	<cbc:InvoiceTypeCode listID="0101" listAgencyName="PE:SUNAT" listName="Tipo de Documento" listURI="urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo01">01</cbc:InvoiceTypeCode>
+	<cbc:DocumentCurrencyCode listID="ISO 4217 Alpha" listName="Currency" listAgencyName="United Nations Economic Commission for Europe">PEN</cbc:DocumentCurrencyCode>
+	<cac:AccountingSupplierParty>
+		<cac:Party>
+			<cac:PartyIdentification>
+				<cbc:ID schemeID="6" schemeName="Documento de Identidad" schemeAgencyName="PE:SUNAT" schemeURI="urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo06">20600258894</cbc:ID>
+			</cac:PartyIdentification>
+			<cac:PartyName>
+				<cbc:Name>RED SALUD</cbc:Name>
+			</cac:PartyName>
+			<cac:PartyLegalEntity>
+				<cbc:RegistrationName>HEALTH CARE ADMINISTRATION RED SALUD S.A.C.</cbc:RegistrationName>
+				<cac:RegistrationAddress>
+					<cac:AddressLine>
+						<cbc:Line>AV. JOSE PARDO #601 INT.502 (PISO 5)</cbc:Line>
+					</cac:AddressLine>
+					<cbc:CityName>LIMA</cbc:CityName>
+					<cbc:CountrySubentity>LIMA</cbc:CountrySubentity>
+					<cbc:District>MIRAFLORES</cbc:District>
+					<cac:Country>
+						<cbc:IdentificationCode listID="ISO 3166-1" listAgencyName="United Nations Economic Commission for Europe" listName="Country">PE</cbc:IdentificationCode>
+					</cac:Country>
+					<cbc:AddressTypeCode></cbc:AddressTypeCode>
+				</cac:RegistrationAddress>
+			</cac:PartyLegalEntity>
+		</cac:Party>
+	</cac:AccountingSupplierParty>
+	<cac:AccountingCustomerParty>
+		<cac:Party>
+			<cac:PartyIdentification>
+				<cbc:ID schemeID="6" schemeName="Documento de Identidad" schemeAgencyName="PE:SUNAT" schemeURI="urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo06">'.$f->numero_documento_cli.'</cbc:ID>
+			</cac:PartyIdentification>
+			<cac:PartyLegalEntity>
+				<cbc:RegistrationName>'.$f->razon_social_cli.'</cbc:RegistrationName>
+			</cac:PartyLegalEntity>
+		</cac:Party>
+	</cac:AccountingCustomerParty>
+	<cac:TaxTotal>
+		<cbc:TaxAmount currencyID="PEN">'.$f->igv.'</cbc:TaxAmount>
+		<cac:TaxSubtotal>
+			<cbc:TaxableAmount currencyID="PEN">'.$f->total.'</cbc:TaxableAmount>
+			<cbc:TaxAmount currencyID="PEN">'.$f->igv.'</cbc:TaxAmount>
+			<cac:TaxCategory>
+				<cac:TaxScheme>
+					<cbc:ID schemeName="Codigo de tributos" schemeAgencyName="PE:SUNAT" schemeURI="urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo05">1000</cbc:ID>
+					<cbc:Name>IGV</cbc:Name>
+					<cbc:TaxTypeCode>VAT</cbc:TaxTypeCode>
+				</cac:TaxScheme>
+			</cac:TaxCategory>
+		</cac:TaxSubtotal>
+	</cac:TaxTotal>
+	<cac:LegalMonetaryTotal>
+		<cbc:PayableAmount currencyID="PEN">'.$f->total.'</cbc:PayableAmount>
+	</cac:LegalMonetaryTotal>
+	<cac:InvoiceLine>
+		<cbc:ID>1</cbc:ID>
+		<cbc:InvoicedQuantity unitCode="NIU" unitCodeListID="UN/ECE rec 20" unitCodeListAgencyName="United Nations Economic Commission forEurope">1</cbc:InvoicedQuantity>
+		<cbc:LineExtensionAmount currencyID="PEN">'.$f->neto.'</cbc:LineExtensionAmount>
+		<cac:PricingReference>
+			<cac:AlternativeConditionPrice>
+				<cbc:PriceAmount currencyID="PEN">'.$f->total.'</cbc:PriceAmount>
+				<cbc:PriceTypeCode listName="Tipo de Precio" listAgencyName="PE:SUNAT" listURI="urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo16">01</cbc:PriceTypeCode>
+			</cac:AlternativeConditionPrice>
+		</cac:PricingReference>
+		<cac:TaxTotal>
+			<cbc:TaxAmount currencyID="PEN">'.$f->igv.'</cbc:TaxAmount>
+			<cac:TaxSubtotal>
+				<cbc:TaxableAmount currencyID="PEN">'.$f->total.'</cbc:TaxableAmount>
+				<cbc:TaxAmount currencyID="PEN">'.$f->igv.'</cbc:TaxAmount>
+				<cac:TaxCategory>
+					<cbc:Percent>18.00</cbc:Percent>
+				</cac:TaxCategory>
+				<cbc:TaxExemptionReasonCode listAgencyName="PE:SUNAT" listName="Afectacion del IGV" listURI="urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo07">10</cbc:TaxExemptionReasonCode>
+				<cac:TaxScheme>
+					<cbc:ID schemeName="Codigo de tributos" schemeAgencyName="PE:SUNAT" schemeURI="urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo05">1000</cbc:ID>
+					<cbc:Name>IGV</cbc:Name>
+					<cbc:TaxTypeCode>VAT</cbc:TaxTypeCode>
+				</cac:TaxScheme>
+			</cac:TaxSubtotal>
+		</cac:TaxTotal>
+		<cac:Item>
+			<cbc:Description>'.$f->nombre_plan.'</cbc:Description>
+		</cac:Item>
+		<cac:Price>
+			<cbc:PriceAmount currencyID="PEN">'.$f->neto.'</cbc:PriceAmount>
+		</cac:Price>
+	</cac:InvoiceLine>
+</Invoice>';
+				$doc = new DOMDocument(); 
+				$doc->loadxml($datos);
+				$doc->save('adjunto/comprobantes/'.$filename.'.xml');
+
+				$xmlPath = 'adjunto/comprobantes/'.$filename.'.xml';
+				$certPath = 'adjunto/firma/LLAMA-PE-CERTIFICADO-DEMO-20600258894.pem'; // Convertir pfx to pem 
+
+				$signer = new SignedXml();
+				$signer->setCertificateFromFile($certPath);
+
+				$xmlSigned = $signer->signFromFile($xmlPath);
+
+				file_put_contents('adjunto/comprobantes/'.$filename.'.xml', $xmlSigned);
 
 		     	$mail->IsSMTP();
 		        $mail->SMTPAuth   = true;
@@ -1644,6 +1523,11 @@ class Comprobante_pago_cnt extends CI_Controller {
 
     public function crearXml(){
 
+    	include ('./application/libraries/xmldsig/src/XMLSecurityDSig.php');
+    	include ('./application/libraries/xmldsig/src/XMLSecurityKey.php');
+    	include ('./application/libraries/xmldsig/src/Sunat/SignedXml.php');
+    	include ('./application/libraries/CustomHeaders.php');
+
     	$this->zip = new ZipArchive();
 
     	$this->xml = new XMLWriter();
@@ -1653,7 +1537,6 @@ class Comprobante_pago_cnt extends CI_Controller {
     	$canales = $this->input->post('canales');
     	$fecinicio = $this->input->post('fechainicio');
     	$fecfin = $this->input->post('fechafin');
-
 
     	if ($canales == 1 || $canales == 2 || $canales == 3 || $canales == 6 || $canales == 7) {
 
@@ -1665,194 +1548,130 @@ class Comprobante_pago_cnt extends CI_Controller {
 
 		    		$filename="20600258894-03-".$b->serie."-".$b->correlativo;
 
-		    		$this->xml->openMemory();
-					$this->xml->startDocument("1.0","ISO-8859-1", "no");
-					$this->xml->startElement("Invoice");
-					   	$this->xml->writeAttribute('xmlns', 'urn:oasis:names:specification:ubl:schema:xsd:Invoice-2');  
-					   	$this->xml->writeAttribute('xmlns:cac', 'rn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2');  
-					   	$this->xml->writeAttribute('xmlns:cbc', 'rn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2');  
-					   	$this->xml->writeAttribute('xmlns:ccts', 'urn:un:unece:uncefact:documentation:2');  
-					   	$this->xml->writeAttribute('xmlns:ds', 'http://www.w3.org/2000/09/xmldsig#');  
-					   	$this->xml->writeAttribute('xmlns:ext', 'rn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2');  
-					  	$this->xml->writeAttribute('xmlns:qdt', 'rn:oasis:names:specification:ubl:schema:xsd:QualifiedDatatypes-2');  
-					  	$this->xml->writeAttribute('xmlns:sac', 'rn:sunat:names:specification:ubl:peru:schema:xsd:SunatAggregateComponents-1');
-					   	$this->xml->writeAttribute('xmlns:udt', 'rn:un:unece:uncefact:data:specification:UnqualifiedDataTypesSchemaModule:2'); 
-					   	$this->xml->writeAttribute('xmlns:xsi', 'http://www.w3.org/2001/XMLSchema-instance');
-					   	$this->xml->startElement("ext:UBLExtensions");
-					   		$this->xml->startElement("ext:UBLExtension");
-					   			$this->xml->startElement("ext:ExtensionContent");
-					   				$this->xml->startElement("sac:AdditionalInformation");
-					   					$this->xml->startElement("sac:AdditionalMonetaryTotal");
-					   						$this->xml->writeElement("cbc:ID", 1001);
-											$this->xml->startElement("cbc:PayableAmount");
-					   							$this->xml->writeAttribute('currencyID', 'PEN');
-					   							$this->xml->text($b->neto);
-					   						$this->xml->endElement();
-					   					$this->xml->endElement();
-					   				$this->xml->endElement();
-					   			$this->xml->endElement();	
-					   		$this->xml->endElement();
-					   		$this->xml->startElement("ext:UBLExtension");
-					   			$this->xml->startElement("ext:ExtensionContent");
-					   				//inicio firma
-						   			$this->xml->startElement("ds:Signature");
-						   			$this->xml->writeAttribute('Id', 'signatureKG');
-							   			$this->xml->startElement('ds:SignedInfo');
-							   				$this->xml->startElement('ds:CanonicalizationMethod');
-						   					$this->xml->writeAttribute('Algorithm', 'http://www.w3.org/TR/2001/REC-xml-c14n-20010315');
-						   					$this->xml->endElement();
-							   				$this->xml->startElement('ds:SignatureMethod');
-						   					$this->xml->writeAttribute('Algorithm', 'http://www.w3.org/2000/09/xmldsig#rsa-sha1');
-						   					$this->xml->endElement();
-							   				$this->xml->startElement('ds:Reference');
-						   					$this->xml->writeAttribute('URI', '');
-								   				$this->xml->startElement('ds:Transforms');
-									   				$this->xml->startElement('ds:Transform');
-								   					$this->xml->writeAttribute('Algorithm', 'http://www.w3.org/2000/09/xmldsig#enveloped-signature');
-								   				$this->xml->endElement();
-									   				$this->xml->startElement('ds:DigestMethod');
-								   					$this->xml->writeAttribute('Algorithm', 'http://www.w3.org/2000/09/xmldsig#sha1');
-								   				$this->xml->writeElement("ds:DigestValue", "ld6X+TvM42Fe+F1KM/OBjiKpnko=");
-							   				$this->xml->endElement();
-							   			$this->xml->endElement();
-							   			$this->xml->writeElement("ds:SignatureValue", "W6DbMHJEFmU7GuiU0O+HRUqVzQZZW3QndYtUyeL0VxXuTafHu2vBC+OXvnnali43VXRGQ+/E0tPlZAssqI/PEPfzIU79Wufq6saxYGHKvzdnBi6hnaMuCSG5THHNFppx4aT1KNg7p/koBB3U8PT9C6m6UnkJJNUquHkFc9BCqI8=");
-							   			$this->xml->startElement("ds:KeyInfo");
-							   				$this->xml->startElement("ds:X509Data");
-							   					$this->xml->writeElement("ds:X509SubjectName", "1.2.840.113549.1.9.1=#161a4253554c434140534f55544845524e504552552e434f4d2e5045,CN=Carlos Vega,OU=10200545523,O=Vega Poblete Carlos Enrique,L=CHICLAYO,ST=LAMBAYEQUE,C=PE");
-							   					$this->xml->writeElement("ds:X509Certificate", "MIIESTCCAzGgAwIBAgIKWOCRzgAAAAAAIjANBgkqhkiG9w0BAQUFADAnMRUwEwYKCZImiZPyLGQBGRYFU1VOQVQxDjAMBgNVBAMTBVNVTkFUMB4XDTEwMTIyODE5NTExMFoXDTExMTIyODIwMDExMFowgZUxCzAJBgNVBAYTAlBFMQ0wCwYDVQQIEwRMSU1BMQ0wCwYDVQQHEwRMSU1BMREwDwYDVQQKEwhTT1VUSEVSTjEUMBIGA1UECxMLMjAxMDAxNDc1MTQxFDASBgNVBAMTC0JvcmlzIFN1bGNhMSkwJwYJKoZIhvcNAQkBFhpCU1VMQ0FAU09VVEhFUk5QRVJVLkNPTS5QRTCBnzANBgkqhkiG9w0BAQEFAAOBjQAwgYkCgYEAtRtcpfBLzyajuEmYt4mVH8EE02KQiETsdKStUThVYM7g3Lkx5zq3SH5nLH00EKGCtota6RR+V40sgIbnh+Nfs1SOQcAohNwRfWhho7sKNZFR971rFxj4cTKMEvpt8Dr98UYFkJhph6WnsniGM2tJDq9KJ52UXrlScMfBityx0AsCAwEAAaOCAYowggGGMA4GA1UdDwEB/wQEAwIE8DBEBgkqhkiG9w0BCQ8ENzA1MA4GCCqGSIb3DQMCAgIAgDAOBggqhkiG9w0DBAICAIAwBwYFKw4DAgcwCgYIKoZIhvcNAwcwHQYDVR0OBBYEFG/m6twbiRNzRINavjq+U0j/ZECMBMGA1UdJQQMMAoGCCsGAQUFBwMCMB8GA1UdIwQYMBaAFN9kHQDqWONmozw3xdNSIMFW2t+7MFkGA1UdHwRSMFAwTqBMoEqGImh0dHA6Ly9wY2IyMjYvQ2VydEVucm9sbC9TVU5BVC5jcmyGJGZpbGU6Ly9cXHBjYjIyNlxDZXJ0RW5yb2xsXFNVTkFULmNybDB+BggrBgEFBQcBAQRyMHAwNQYIKwYBBQUHMAKGKWh0dHA6Ly9wY2IyMjYvQ2VydEVucm9sbC9wY2IyMjZfU1VOQVQuY3J0MDcGCCsGAQUFBzAChitmaWxlOi8vXFxwY2IyMjZcQ2VydEVucm9sbFxwY2IyMjZfU1VOQVQuY3J0MA0GCSqGSIb3DQEBBQUAA4IBAQBI6wJ/QmRpz3C3rorBflOvA9DOa3GNiiB7rtPIjF4mPmtgfo2pK9gvnxmV2pST3ovfu0nbG2kpjzzaaelRjEodHvkcM3abGsOE53wfxqQF5uf/jkzZA9hbLHtE1aLKBD0Mhzc6cvI072alnE6QU3RZ16ie9CYsHmMrs+sPHMy8DJU5YrdnqHdSn2D3nhKBi4QfT/WURPOuo6DF4iWgrCyMf3eJgmGKSUN3At5fK4HSpfyURT0kboaJKNBgQwy0HhGh5BLM7DsTi/KwfdUYkoFgrY71Pm23+ra+xTow1Vk9gj5NqrlpMY5gAVQXEIo1++GxDtaK/5EiVKSqzJ6geIfz");
-							   				$this->xml->endElement();
-							   			$this->xml->endElement();
-						   			$this->xml->endElement();
-						   			//fin firma
-					   			$this->xml->endElement();
-							$this->xml->endElement();
-						$this->xml->endElement();
-				   		$this->xml->endElement();
-				   	$this->xml->endElement();
-				   	$this->xml->writeElement("cbc:UBLVersionID", "2.0");
-				   	$this->xml->writeElement("cbc:CustomizationID", "1.0");
-				   	$this->xml->writeElement("cbc:ID", $b->serie."-".$b->correlativo);
-				   	$this->xml->writeElement("cbc:IssueDate", $b->fecha_emision);
-				   	//03 si es boleta, 01 si es factura
-				   	$this->xml->writeElement("cbc:InvoiceTypeCode", "03"); 
-				   	$this->xml->writeElement("cbc:DocumentCurrencyCode", "PEN");
-					   	$this->xml->startElement("cac:Signature");
-					   		$this->xml->writeElement("cbc:ID", "IDSignKG");
-							   	$this->xml->startElement("cac:SignatoryParty");
-								   	$this->xml->startElement("cac:PartyIdentification");
-					   					$this->xml->writeElement("cbc:ID", "20600258894");
-								   	$this->xml->endElement();
-								   	$this->xml->startElement("cac:PartyName");
-					   					$this->xml->writeElement("cbc:Name", "RED SALUD INTERNATIONAL MANAGED HEALTH CARE");
-								   	$this->xml->endElement();
-							   	$this->xml->endElement();
-							   	$this->xml->startElement("cac:DigitalSignatureAttachment");
-								   	$this->xml->startElement("cac:ExternalReference");
-					   					$this->xml->writeElement("cbc:URI", "#SignatureKG");
-								   	$this->xml->endElement();
-							   	$this->xml->endElement();
-					   	$this->xml->endElement();
-					   	$this->xml->startElement("cac:AccountingSupplierParty");
-					   		$this->xml->writeElement("cbc:CustomerAssignedAccountID", "20600258894");
-					   		$this->xml->writeElement("cbc:AdditionalAccountID", "6");
-					   		$this->xml->startElement("cac:Party");
-						   		$this->xml->startElement("cac:PartyName");
-					   				$this->xml->writeElement("cbc:Name", "RED SALUD INTERNATIONAL MANAGED HEALTH CARE");
-						   		$this->xml->endElement();
-						   		$this->xml->startElement("cac:PostalAddress");
-					   				$this->xml->writeElement("cbc:ID", "150122");
-					   				$this->xml->writeElement("cbc:StreetName", "AV. JOSE PARDO #601 INT.502 (PISO 5)");
-					   				$this->xml->writeElement("cbc:CitySubdivisionName", "");
-					   				$this->xml->writeElement("cbc:CityName", "LIMA");
-					   				$this->xml->writeElement("cbc:CountrySubentity", "LIMA");
-					   				$this->xml->writeElement("cbc:District", "MIRAFLORES");
-							   		$this->xml->startElement("cac:Country");
-						   				$this->xml->writeElement("cbc:IdentificationCode", "PE");
-							   		$this->xml->endElement();
-						   		$this->xml->endElement();
-						   		$this->xml->startElement("cac:PartyLegalEntity");
-					   				$this->xml->writeElement("cbc:RegistrationName", "RED SALUD INTERNATIONAL MANAGED HEALTH CARE");
-						   		$this->xml->endElement();			   		
-					   		$this->xml->endElement();
-					   	$this->xml->endElement();
-					   	$this->xml->startElement("cac:AccountingCustomerParty");
-							$this->xml->writeElement("cbc:CustomerAssignedAccountID", $b->cont_numDoc);
-							$this->xml->writeElement("cbc:AdditionalAccountID", "1");
-							$this->xml->startElement("cac:Party");
-								$this->xml->startElement("cac:PartyLegalEntity");
-									$this->xml->writeElement("cbc:RegistrationName", $b->contratante);
-								$this->xml->endElement();
-							$this->xml->endElement();		   		
-					   	$this->xml->endElement();
-						$this->xml->startElement("cac:TaxTotal");
-							$this->xml->startElement("cbc:TaxAmount");
-	   							$this->xml->writeAttribute('currencyID', 'PEN');
-	   							$this->xml->text($b->igv);
-	   						$this->xml->endElement();
-							$this->xml->startElement("cac:TaxSubtotal");
-								$this->xml->startElement("cbc:TaxAmount");
-		   							$this->xml->writeAttribute('currencyID', 'PEN');
-		   							$this->xml->text($b->igv);
-		   						$this->xml->endElement();
-								$this->xml->startElement("cac:TaxCategory");
-									$this->xml->startElement("cac:TaxScheme");
-										$this->xml->writeElement("cbc:ID", 1000);
-										$this->xml->writeElement("cbc:Name", "IGV");
-										$this->xml->writeElement("cbc:TaxTypeCode", "VAT");
-									$this->xml->endElement();
-								$this->xml->endElement();
-							$this->xml->endElement();
-						$this->xml->endElement();
-						$this->xml->startElement("cac:LegalMonetaryTotal");
-							$this->xml->startElement("cbc:PayableAmount");
-	   							$this->xml->writeAttribute('currencyID', 'PEN');
-	   							$this->xml->text($b->total);
-	   						$this->xml->endElement();
-						$this->xml->endElement();
-						$this->xml->startElement("cac:InvoiceLine");
-							$this->xml->writeElement("cbc:ID", 1);
-								$this->xml->startElement("cbc:InvoicedQuantity");
-		   							$this->xml->writeAttribute('unitCode', 'NIU');
-		   							$this->xml->text(1);
-		   						$this->xml->endElement();
-								$this->xml->startElement("cbc:LineExtensionAmount");
-		   							$this->xml->writeAttribute('currencyID', 'PEN');
-		   							$this->xml->text($b->neto);
-		   						$this->xml->endElement();
-								$this->xml->startElement("cac:PricingReference");
-									$this->xml->startElement("cac:AlternativeConditionPrice");
-										$this->xml->startElement("cbc:PriceAmount");
-				   							$this->xml->writeAttribute('currencyID', 'PEN');
-				   							$this->xml->text($b->total);
-				   						$this->xml->endElement();
-										$this->xml->writeElement("cbc:PriceTypeCode", "01");
-									$this->xml->endElement();
-								$this->xml->endElement();
-								$this->xml->startElement("cac:Item");
-									$this->xml->writeElement("cbc:Description", $b->nombre_plan);
-								$this->xml->endElement();
-								$this->xml->startElement("cac:Price");
-									$this->xml->startElement("cbc:PriceAmount");
-			   							$this->xml->writeAttribute('currencyID', 'PEN');
-			   							$this->xml->text($b->neto);
-			   						$this->xml->endElement();
-								$this->xml->endElement();
-						$this->xml->endElement();
-					$this->xml->endElement(); 
-					$this->xml->endDocument();
-					//$this->xml->flush();
-					file_put_contents($filename.".xml", $this->xml->outputMemory());
+		    		$datos = '<?xml version="1.0" encoding="ISO-8859-1"?>
+<Invoice xmlns="urn:oasis:names:specification:ubl:schema:xsd:Invoice-2" xmlns:cac="urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2" xmlns:cbc="urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2" xmlns:ccts="urn:un:unece:uncefact:documentation:2" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:ext="urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2" xmlns:qdt="urn:oasis:names:specification:ubl:schema:xsd:QualifiedDatatypes-2" xmlns:udt="urn:un:unece:uncefact:data:specification:UnqualifiedDataTypesSchemaModule:2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<ext:UBLExtensions>
+		<ext:UBLExtension>
+			<ext:ExtensionContent></ext:ExtensionContent>
+		</ext:UBLExtension>
+	</ext:UBLExtensions>
+	<cbc:UBLVersionID>2.1</cbc:UBLVersionID>
+	<cbc:CustomizationID>2.0</cbc:CustomizationID>
+	<cbc:ID>'.$b->serie.'-'.$b->correlativo.'</cbc:ID>
+	<cbc:IssueDate>'.$b->fecha_emision.'</cbc:IssueDate>
+	<cbc:InvoiceTypeCode listID="0101" listAgencyName="PE:SUNAT" listName="Tipo de Documento" listURI="urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo01">03</cbc:InvoiceTypeCode>
+	<cbc:DocumentCurrencyCode listID="ISO 4217 Alpha" listName="Currency" listAgencyName="United Nations Economic Commission for Europe">PEN</cbc:DocumentCurrencyCode>
+	<cac:AccountingSupplierParty>
+		<cac:Party>
+			<cac:PartyIdentification>
+				<cbc:ID schemeID="6" schemeName="Documento de Identidad" schemeAgencyName="PE:SUNAT" schemeURI="urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo06">20600258894</cbc:ID>
+			</cac:PartyIdentification>
+			<cac:PartyName>
+				<cbc:Name>RED SALUD</cbc:Name>
+			</cac:PartyName>
+			<cac:PartyLegalEntity>
+				<cbc:RegistrationName>HEALTH CARE ADMINISTRATION RED SALUD S.A.C.</cbc:RegistrationName>
+				<cac:RegistrationAddress>
+					<cac:AddressLine>
+						<cbc:Line>AV. JOSE PARDO #601 INT.502 (PISO 5)</cbc:Line>
+					</cac:AddressLine>
+					<cbc:CityName>LIMA</cbc:CityName>
+					<cbc:CountrySubentity>LIMA</cbc:CountrySubentity>
+					<cbc:District>MIRAFLORES</cbc:District>
+					<cac:Country>
+						<cbc:IdentificationCode listID="ISO 3166-1" listAgencyName="United Nations Economic Commission for Europe" listName="Country">PE</cbc:IdentificationCode>
+					</cac:Country>
+					<cbc:AddressTypeCode></cbc:AddressTypeCode>
+				</cac:RegistrationAddress>
+			</cac:PartyLegalEntity>
+		</cac:Party>
+	</cac:AccountingSupplierParty>
+	<cac:AccountingCustomerParty>
+		<cac:Party>
+			<cac:PartyIdentification>
+				<cbc:ID schemeID="6" schemeName="Documento de Identidad" schemeAgencyName="PE:SUNAT" schemeURI="urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo06">'.$b->cont_numDoc.'</cbc:ID>
+			</cac:PartyIdentification>
+			<cac:PartyLegalEntity>
+				<cbc:RegistrationName>'.$b->contratante.'</cbc:RegistrationName>
+			</cac:PartyLegalEntity>
+		</cac:Party>
+	</cac:AccountingCustomerParty>
+	<cac:TaxTotal>
+		<cbc:TaxAmount currencyID="PEN">'.$b->igv.'</cbc:TaxAmount>
+		<cac:TaxSubtotal>
+			<cbc:TaxableAmount currencyID="PEN">'.$b->total.'</cbc:TaxableAmount>
+			<cbc:TaxAmount currencyID="PEN">'.$b->igv.'</cbc:TaxAmount>
+			<cac:TaxCategory>
+				<cac:TaxScheme>
+					<cbc:ID schemeName="Codigo de tributos" schemeAgencyName="PE:SUNAT" schemeURI="urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo05">1000</cbc:ID>
+					<cbc:Name>IGV</cbc:Name>
+					<cbc:TaxTypeCode>VAT</cbc:TaxTypeCode>
+				</cac:TaxScheme>
+			</cac:TaxCategory>
+		</cac:TaxSubtotal>
+	</cac:TaxTotal>
+	<cac:LegalMonetaryTotal>
+		<cbc:PayableAmount currencyID="PEN">'.$b->total.'</cbc:PayableAmount>
+	</cac:LegalMonetaryTotal>
+	<cac:InvoiceLine>
+		<cbc:ID>1</cbc:ID>
+		<cbc:InvoicedQuantity unitCode="NIU" unitCodeListID="UN/ECE rec 20" unitCodeListAgencyName="United Nations Economic Commission forEurope">1</cbc:InvoicedQuantity>
+		<cbc:LineExtensionAmount currencyID="PEN">'.$b->neto.'</cbc:LineExtensionAmount>
+		<cac:PricingReference>
+			<cac:AlternativeConditionPrice>
+				<cbc:PriceAmount currencyID="PEN">'.$b->total.'</cbc:PriceAmount>
+				<cbc:PriceTypeCode listName="Tipo de Precio" listAgencyName="PE:SUNAT" listURI="urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo16">01</cbc:PriceTypeCode>
+			</cac:AlternativeConditionPrice>
+		</cac:PricingReference>
+		<cac:TaxTotal>
+			<cbc:TaxAmount currencyID="PEN">'.$b->igv.'</cbc:TaxAmount>
+			<cac:TaxSubtotal>
+				<cbc:TaxableAmount currencyID="PEN">'.$b->total.'</cbc:TaxableAmount>
+				<cbc:TaxAmount currencyID="PEN">'.$b->igv.'</cbc:TaxAmount>
+				<cac:TaxCategory>
+					<cbc:Percent>18.00</cbc:Percent>
+				</cac:TaxCategory>
+				<cbc:TaxExemptionReasonCode listAgencyName="PE:SUNAT" listName="Afectacion del IGV" listURI="urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo07">10</cbc:TaxExemptionReasonCode>
+				<cac:TaxScheme>
+					<cbc:ID schemeName="Codigo de tributos" schemeAgencyName="PE:SUNAT" schemeURI="urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo05">1000</cbc:ID>
+					<cbc:Name>IGV</cbc:Name>
+					<cbc:TaxTypeCode>VAT</cbc:TaxTypeCode>
+				</cac:TaxScheme>
+			</cac:TaxSubtotal>
+		</cac:TaxTotal>
+		<cac:Item>
+			<cbc:Description>'.$b->nombre_plan.'</cbc:Description>
+		</cac:Item>
+		<cac:Price>
+			<cbc:PriceAmount currencyID="PEN">'.$b->neto.'</cbc:PriceAmount>
+		</cac:Price>
+	</cac:InvoiceLine>
+</Invoice>';
+					
+					$doc = new DOMDocument(); 
+					$doc->loadxml($datos);
+					$doc->save('adjunto/xml/boletas/'.$filename.'.xml');
+
+					$xmlPath = 'adjunto/xml/boletas/'.$filename.'.xml';
+					$certPath = 'adjunto/firma/LLAMA-PE-CERTIFICADO-DEMO-20600258894.pem'; // Convertir pfx to pem 
+
+					$signer = new SignedXml();
+					$signer->setCertificateFromFile($certPath);
+
+					$xmlSigned = $signer->signFromFile($xmlPath);
+
+					file_put_contents($filename.'.xml', $xmlSigned);
+					echo $xmlSigned;
 
 					if ($this->zip->open("adjunto/xml/boletas/".$filename.".zip", ZIPARCHIVE::CREATE)===true) {
-						$this->zip->addFile($filename.".xml");
+						$this->zip->addFile($filename.'.xml');
 						$this->zip->close();
 						unlink($filename.".xml");
-						//echo "Creado ".$filename.".zip";
+						unlink("adjunto/xml/boletas/".$filename.".xml");
 					} else {
-						//echo "Error creando ".$filename.".zip";
 						unlink($filename.".xml");
+						unlink("adjunto/xml/boletas/".$filename.".xml");
 					}
-
 				}
 			}
 
@@ -1865,199 +1684,166 @@ class Comprobante_pago_cnt extends CI_Controller {
 		    	foreach ($facturas as $f){
 
 		    		$filename="20600258894-01-".$f->serie."-".$f->correlativo;
+					
+					$datos = '<?xml version="1.0" encoding="ISO-8859-1"?>
+<Invoice xmlns="urn:oasis:names:specification:ubl:schema:xsd:Invoice-2" xmlns:cac="urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2" xmlns:cbc="urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2" xmlns:ccts="urn:un:unece:uncefact:documentation:2" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:ext="urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2" xmlns:qdt="urn:oasis:names:specification:ubl:schema:xsd:QualifiedDatatypes-2" xmlns:udt="urn:un:unece:uncefact:data:specification:UnqualifiedDataTypesSchemaModule:2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<ext:UBLExtensions>
+		<ext:UBLExtension>
+			<ext:ExtensionContent></ext:ExtensionContent>
+		</ext:UBLExtension>
+	</ext:UBLExtensions>
+	<cbc:UBLVersionID>2.1</cbc:UBLVersionID>
+	<cbc:CustomizationID>2.0</cbc:CustomizationID>
+	<cbc:ID>'.$f->serie.'-'.$f->correlativo.'</cbc:ID>
+	<cbc:IssueDate>'.$f->fecha_emision.'</cbc:IssueDate>
+	<cbc:InvoiceTypeCode listID="0101" listAgencyName="PE:SUNAT" listName="Tipo de Documento" listURI="urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo01">01</cbc:InvoiceTypeCode>
+	<cbc:DocumentCurrencyCode listID="ISO 4217 Alpha" listName="Currency" listAgencyName="United Nations Economic Commission for Europe">PEN</cbc:DocumentCurrencyCode>
+	<cac:AccountingSupplierParty>
+		<cac:Party>
+			<cac:PartyIdentification>
+				<cbc:ID schemeID="6" schemeName="Documento de Identidad" schemeAgencyName="PE:SUNAT" schemeURI="urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo06">20600258894</cbc:ID>
+			</cac:PartyIdentification>
+			<cac:PartyName>
+				<cbc:Name>RED SALUD</cbc:Name>
+			</cac:PartyName>
+			<cac:PartyLegalEntity>
+				<cbc:RegistrationName>HEALTH CARE ADMINISTRATION RED SALUD S.A.C.</cbc:RegistrationName>
+				<cac:RegistrationAddress>
+					<cac:AddressLine>
+						<cbc:Line>AV. JOSE PARDO #601 INT.502 (PISO 5)</cbc:Line>
+					</cac:AddressLine>
+					<cbc:CityName>LIMA</cbc:CityName>
+					<cbc:CountrySubentity>LIMA</cbc:CountrySubentity>
+					<cbc:District>MIRAFLORES</cbc:District>
+					<cac:Country>
+						<cbc:IdentificationCode listID="ISO 3166-1" listAgencyName="United Nations Economic Commission for Europe" listName="Country">PE</cbc:IdentificationCode>
+					</cac:Country>
+					<cbc:AddressTypeCode></cbc:AddressTypeCode>
+				</cac:RegistrationAddress>
+			</cac:PartyLegalEntity>
+		</cac:Party>
+	</cac:AccountingSupplierParty>
+	<cac:AccountingCustomerParty>
+		<cac:Party>
+			<cac:PartyIdentification>
+				<cbc:ID schemeID="6" schemeName="Documento de Identidad" schemeAgencyName="PE:SUNAT" schemeURI="urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo06">'.$f->numero_documento_cli.'</cbc:ID>
+			</cac:PartyIdentification>
+			<cac:PartyLegalEntity>
+				<cbc:RegistrationName>'.$f->razon_social_cli.'</cbc:RegistrationName>
+			</cac:PartyLegalEntity>
+		</cac:Party>
+	</cac:AccountingCustomerParty>
+	<cac:TaxTotal>
+		<cbc:TaxAmount currencyID="PEN">'.$f->igv.'</cbc:TaxAmount>
+		<cac:TaxSubtotal>
+			<cbc:TaxableAmount currencyID="PEN">'.$f->total.'</cbc:TaxableAmount>
+			<cbc:TaxAmount currencyID="PEN">'.$f->igv.'</cbc:TaxAmount>
+			<cac:TaxCategory>
+				<cac:TaxScheme>
+					<cbc:ID schemeName="Codigo de tributos" schemeAgencyName="PE:SUNAT" schemeURI="urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo05">1000</cbc:ID>
+					<cbc:Name>IGV</cbc:Name>
+					<cbc:TaxTypeCode>VAT</cbc:TaxTypeCode>
+				</cac:TaxScheme>
+			</cac:TaxCategory>
+		</cac:TaxSubtotal>
+	</cac:TaxTotal>
+	<cac:LegalMonetaryTotal>
+		<cbc:PayableAmount currencyID="PEN">'.$f->total.'</cbc:PayableAmount>
+	</cac:LegalMonetaryTotal>
+	<cac:InvoiceLine>
+		<cbc:ID>1</cbc:ID>
+		<cbc:InvoicedQuantity unitCode="NIU" unitCodeListID="UN/ECE rec 20" unitCodeListAgencyName="United Nations Economic Commission forEurope">1</cbc:InvoicedQuantity>
+		<cbc:LineExtensionAmount currencyID="PEN">'.$f->neto.'</cbc:LineExtensionAmount>
+		<cac:PricingReference>
+			<cac:AlternativeConditionPrice>
+				<cbc:PriceAmount currencyID="PEN">'.$f->total.'</cbc:PriceAmount>
+				<cbc:PriceTypeCode listName="Tipo de Precio" listAgencyName="PE:SUNAT" listURI="urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo16">01</cbc:PriceTypeCode>
+			</cac:AlternativeConditionPrice>
+		</cac:PricingReference>
+		<cac:TaxTotal>
+			<cbc:TaxAmount currencyID="PEN">'.$f->igv.'</cbc:TaxAmount>
+			<cac:TaxSubtotal>
+				<cbc:TaxableAmount currencyID="PEN">'.$f->total.'</cbc:TaxableAmount>
+				<cbc:TaxAmount currencyID="PEN">'.$f->igv.'</cbc:TaxAmount>
+				<cac:TaxCategory>
+					<cbc:Percent>18.00</cbc:Percent>
+				</cac:TaxCategory>
+				<cbc:TaxExemptionReasonCode listAgencyName="PE:SUNAT" listName="Afectacion del IGV" listURI="urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo07">10</cbc:TaxExemptionReasonCode>
+				<cac:TaxScheme>
+					<cbc:ID schemeName="Codigo de tributos" schemeAgencyName="PE:SUNAT" schemeURI="urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo05">1000</cbc:ID>
+					<cbc:Name>IGV</cbc:Name>
+					<cbc:TaxTypeCode>VAT</cbc:TaxTypeCode>
+				</cac:TaxScheme>
+			</cac:TaxSubtotal>
+		</cac:TaxTotal>
+		<cac:Item>
+			<cbc:Description>'.$f->nombre_plan.'</cbc:Description>
+		</cac:Item>
+		<cac:Price>
+			<cbc:PriceAmount currencyID="PEN">'.$f->neto.'</cbc:PriceAmount>
+		</cac:Price>
+	</cac:InvoiceLine>
+</Invoice>';
+					$doc = new DOMDocument();
+					$doc->loadxml($datos);
+					$doc->save('adjunto/xml/facturas/'.$filename.'.xml');
 
-					$this->xml->openMemory();
-					$this->xml->startDocument("1.0","ISO-8859-1", "no");
-					$this->xml->startElement("Invoice");
-					   	$this->xml->writeAttribute('xmlns', 'urn:oasis:names:specification:ubl:schema:xsd:Invoice-2');  
-					   	$this->xml->writeAttribute('xmlns:cac', 'urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2');  
-					   	$this->xml->writeAttribute('xmlns:cbc', 'urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2');  
-					   	$this->xml->writeAttribute('xmlns:ccts', 'urn:un:unece:uncefact:documentation:2');  
-					   	$this->xml->writeAttribute('xmlns:ds', 'http://www.w3.org/2000/09/xmldsig#');  
-					   	$this->xml->writeAttribute('xmlns:ext', 'urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2');  
-					  	$this->xml->writeAttribute('xmlns:qdt', 'urn:oasis:names:specification:ubl:schema:xsd:QualifiedDatatypes-2');  
-					  	$this->xml->writeAttribute('xmlns:sac', 'urn:sunat:names:specification:ubl:peru:schema:xsd:SunatAggregateComponents-1');
-					   	$this->xml->writeAttribute('xmlns:udt', 'urn:un:unece:uncefact:data:specification:UnqualifiedDataTypesSchemaModule:2');
-					   	$this->xml->writeAttribute('xmlns:xsi', 'http://www.w3.org/2001/XMLSchema-instance');
-					   	$this->xml->startElement("ext:UBLExtensions");
-					   		$this->xml->startElement("ext:UBLExtension");
-					   			$this->xml->startElement("ext:ExtensionContent");
-					   				$this->xml->startElement("sac:AdditionalInformation");
-					   					$this->xml->startElement("sac:AdditionalMonetaryTotal");
-					   						$this->xml->writeElement("cbc:ID", 1001);
-					   						$this->xml->startElement("cbc:PayableAmount");
-					   							$this->xml->writeAttribute('currencyID', 'PEN');
-					   							$this->xml->text($f->neto);
-					   						$this->xml->endElement();
-					   					$this->xml->endElement();
-					   				$this->xml->endElement();
-					   			$this->xml->endElement();	
-					   		$this->xml->endElement();
-					   		$this->xml->startElement("ext:UBLExtension");
-					   			$this->xml->startElement("ext:ExtensionContent");
-						   			//inicio firma
-						   			$this->xml->startElement("ds:Signature");
-						   			$this->xml->writeAttribute('Id', 'signatureKG');
-							   			$this->xml->startElement('ds:SignedInfo');
-							   				$this->xml->startElement('ds:CanonicalizationMethod');
-						   					$this->xml->writeAttribute('Algorithm', 'http://www.w3.org/TR/2001/REC-xml-c14n-20010315');
-						   					$this->xml->endElement();
-							   				$this->xml->startElement('ds:SignatureMethod');
-						   					$this->xml->writeAttribute('Algorithm', 'http://www.w3.org/2000/09/xmldsig#rsa-sha1');
-						   					$this->xml->endElement();
-							   				$this->xml->startElement('ds:Reference');
-						   					$this->xml->writeAttribute('URI', '');
-								   				$this->xml->startElement('ds:Transforms');
-									   				$this->xml->startElement('ds:Transform');
-								   					$this->xml->writeAttribute('Algorithm', 'http://www.w3.org/2000/09/xmldsig#enveloped-signature');
-								   				$this->xml->endElement();
-									   				$this->xml->startElement('ds:DigestMethod');
-								   					$this->xml->writeAttribute('Algorithm', 'http://www.w3.org/2000/09/xmldsig#sha1');
-								   				$this->xml->writeElement("ds:DigestValue", "ryg5Vl+6zuSrAlgSQUYrWeaSQjk=");
-							   				$this->xml->endElement();
-							   			$this->xml->endElement();
-							   			$this->xml->writeElement("ds:SignatureValue", "SOiGQpmVz7hBgGjIOQNlcwyHkQLC4S7R2zBuNnOUj4KjZQb3//xNPJMRB67m8x1mpQE6pffiH85vMzYLJ9nt7MLLZXOfP+rPGfkJBmNbYxaGLj9v3qZWyyEzHFGKS+8OfVSgMsHNwZ3IqfuICzc/xo8L7sFj+aT16IHf5TYffb0=");
-							   			$this->xml->startElement("ds:KeyInfo");
-							   				$this->xml->startElement("ds:X509Data");
-							   					$this->xml->writeElement("ds:X509SubjectName", "1.2.840.113549.1.9.1=#161a4253554c434140534f55544845524e504552552e434f4d2e5045,CN=Juan Robles,OU=20100454523,O=SOPORTE TECNOLOGICOS EIRL,L=LIMA,ST=LIMA,C=PE");
-							   					$this->xml->writeElement("ds:X509Certificate", "MIIESTCCAzGgAwIBAgIKWOCRzgAAAAAAIjANBgkqhkiG9w0BAQUFADAnMRUwEwYKCZImiZPyLGQBGRYFU1VOQVQxDjAMBgNVBAMTBVNVTkFUMB4XDTEwMTIyODE5NTExMFoXDTExMTIyODIwMDExMFowgZUxCzAJBgNVBAYTAlBFMQ0wCwYDVQQIEwRMSU1BMQ0wCwYDVQQHEwRMSU1BMREwDwYDVQQKEwhTT1VUSEVSTjEUMBIGA1UECxMLMjAxMDAxNDc1MTQxFDASBgNVBAMTC0JvcmlzIFN1bGNhMSkwJwYJKoZIhvcNAQkBFhpCU1VMQ0FAU09VVEhFUk5QRVJVLkNPTS5QRTCBnzANBgkqhkiG9w0BAQEFAAOBjQAwgYkCgYEAtRtcpfBLzyajuEmYt4mVH8EE02KQiETsdKStUThVYM7g3Lkx5zq3SH5nLH00EKGCtota6RR+V40sgIbnh+Nfs1SOQcAohNwRfWhho7sKNZFR971rFxj4cTKMEvpt8Dr98UYFkJhph6WnsniGM2tJDq9KJ52UXrlScMfBityx0AsCAwEAAaOCAYowggGGMA4GA1UdDwEB/wQEAwIE8DBEBgkqhkiG9w0BCQ8ENzA1MA4GCCqGSIb3DQMCAgIAgDAOBggqhkiG9w0DBAICAIAwBwYFKw4DAgcwCgYIKoZIhvcNAwcwHQYDVR0OBBYEFG/m6twbiRNzRINavjq+U0j/ZECMBMGA1UdJQQMMAoGCCsGAQUFBwMCMB8GA1UdIwQYMBaAFN9kHQDqWONmozw3xdNSIMFW2t+7MFkGA1UdHwRSMFAwTqBMoEqGImh0dHA6Ly9wY2IyMjYvQ2VydEVucm9sbC9TVU5BVC5jcmyGJGZpbGU6Ly9cXHBjYjIyNlxDZXJ0RW5yb2xsXFNVTkFULmNybDB+BggrBgEFBQcBAQRyMHAwNQYIKwYBBQUHMAKGKWh0dHA6Ly9wY2IyMjYvQ2VydEVucm9sbC9wY2IyMjZfU1VOQVQuY3J0MDcGCCsGAQUFBzAChitmaWxlOi8vXFxwY2IyMjZcQ2VydEVucm9sbFxwY2IyMjZfU1VOQVQuY3J0MA0GCSqGSIb3DQEBBQUAA4IBAQBI6wJ/QmRpz3C3rorBflOvA9DOa3GNiiB7rtPIjF4mPmtgfo2pK9gvnxmV2pST3ovfu0nbG2kpjzzaaelRjEodHvkcM3abGsOE53wfxqQF5uf/jkzZA9hbLHtE1aLKBD0Mhzc6cvI072alnE6QU3RZ16ie9CYsHmMrs+sPHMy8DJU5YrdnqHdSn2D3nhKBi4QfT/WURPOuo6DF4iWgrCyMf3eJgmGKSUN3At5fK4HSpfyURT0kboaJKNBgQwy0HhGh5BLM7DsTi/KwfdUYkoFgrY71Pm23+ra+xTow1Vk9gj5NqrlpMY5gAVQXEIo1++GxDtaK/5EiVKSqzJ6geIfz");
-							   				$this->xml->endElement();
-							   			$this->xml->endElement();
-						   			$this->xml->endElement();
-						   			//fin firma
-					   			$this->xml->endElement();
-							$this->xml->endElement();
-						$this->xml->endElement();
-				   		$this->xml->endElement();
-				   	$this->xml->endElement();
-				   	$this->xml->writeElement("cbc:UBLVersionID", "2.0"); 
-				   	$this->xml->writeElement("cbc:CustomizationID", "1.0");
-				   	$this->xml->writeElement("cbc:ID", $f->serie."-".$f->correlativo); 
-				   	$this->xml->writeElement("cbc:IssueDate", $f->fecha_emision);
-				   	//03 si es boleta, 01 si es factura
-				   	$this->xml->writeElement("cbc:InvoiceTypeCode", "01"); 
-				   	$this->xml->writeElement("cbc:DocumentCurrencyCode", "PEN");
-					   	$this->xml->startElement("cac:Signature");
-					   		$this->xml->writeElement("cbc:ID", "IDSignKG");
-							   	$this->xml->startElement("cac:SignatoryParty");
-								   	$this->xml->startElement("cac:PartyIdentification");
-					   					$this->xml->writeElement("cbc:ID", "20600258894");
-								   	$this->xml->endElement();
-								   	$this->xml->startElement("cac:PartyName");
-					   					$this->xml->writeElement("cbc:Name", "RED SALUD INTERNATIONAL MANAGED HEALTH CARE");
-								   	$this->xml->endElement();
-							   	$this->xml->endElement();
-							   	$this->xml->startElement("cac:DigitalSignatureAttachment");
-								   	$this->xml->startElement("cac:ExternalReference");
-					   					$this->xml->writeElement("cbc:URI", "#SignatureKG");
-								   	$this->xml->endElement();
-							   	$this->xml->endElement();
-					   	$this->xml->endElement();
-					   	$this->xml->startElement("cac:AccountingSupplierParty");
-					   		$this->xml->writeElement("cbc:CustomerAssignedAccountID", "20600258894");
-					   		$this->xml->writeElement("cbc:AdditionalAccountID", "6");
-					   		$this->xml->startElement("cac:Party");
-						   		$this->xml->startElement("cac:PartyName");
-					   				$this->xml->writeElement("cbc:Name", "RED SALUD INTERNATIONAL MANAGED HEALTH CARE");
-						   		$this->xml->endElement();
-						   		$this->xml->startElement("cac:PostalAddress");
-					   				$this->xml->writeElement("cbc:ID", "150122");
-					   				$this->xml->writeElement("cbc:StreetName", "AV. JOSE PARDO #601 INT.502 (PISO 5)");
-					   				$this->xml->writeElement("cbc:CitySubdivisionName", "");
-					   				$this->xml->writeElement("cbc:CityName", "LIMA");
-					   				$this->xml->writeElement("cbc:CountrySubentity", "LIMA");
-					   				$this->xml->writeElement("cbc:District", "MIRAFLORES");
-							   		$this->xml->startElement("cac:Country");
-						   				$this->xml->writeElement("cbc:IdentificationCode", "PE");
-							   		$this->xml->endElement();
-						   		$this->xml->endElement();
-						   		$this->xml->startElement("cac:PartyLegalEntity");
-					   				$this->xml->writeElement("cbc:RegistrationName", "RED SALUD INTERNATIONAL MANAGED HEALTH CARE");
-						   		$this->xml->endElement();			   		
-					   		$this->xml->endElement();
-					   	$this->xml->endElement();
-					   	$this->xml->startElement("cac:AccountingCustomerParty");
-							$this->xml->writeElement("cbc:CustomerAssignedAccountID", $f->numero_documento_cli);
-							$this->xml->writeElement("cbc:AdditionalAccountID", "6");
-							$this->xml->startElement("cac:Party");
-								$this->xml->startElement("cac:PartyLegalEntity");
-									$this->xml->writeElement("cbc:RegistrationName", $f->razon_social_cli);
-								$this->xml->endElement();
-							$this->xml->endElement();		   		
-					   	$this->xml->endElement();
-						$this->xml->startElement("cac:TaxTotal");
-							$this->xml->startElement("cbc:TaxAmount");
-	   							$this->xml->writeAttribute('currencyID', 'PEN');
-	   							$this->xml->text($f->igv);
-	   						$this->xml->endElement();
-							$this->xml->startElement("cac:TaxSubtotal");
-								$this->xml->startElement("cbc:TaxAmount");
-		   							$this->xml->writeAttribute('currencyID', 'PEN');
-		   							$this->xml->text($f->igv);
-		   						$this->xml->endElement();
-								$this->xml->startElement("cac:TaxCategory");
-									$this->xml->startElement("cac:TaxScheme");
-										$this->xml->writeElement("cbc:ID", 1000);
-										$this->xml->writeElement("cbc:Name", "IGV");
-										$this->xml->writeElement("cbc:TaxTypeCode", "VAT");
-									$this->xml->endElement();
-								$this->xml->endElement();
-							$this->xml->endElement();
-						$this->xml->endElement();
-						$this->xml->startElement("cac:LegalMonetaryTotal");
-							$this->xml->startElement("cbc:PayableAmount");
-	   							$this->xml->writeAttribute('currencyID', 'PEN');
-	   							$this->xml->text($f->total);
-	   						$this->xml->endElement();
-						$this->xml->endElement();
-						$this->xml->startElement("cac:InvoiceLine");
-							$this->xml->writeElement("cbc:ID", 1);
-								$this->xml->startElement("cbc:InvoicedQuantity");
-		   							$this->xml->writeAttribute('unitCode', 'NIU');
-		   							$this->xml->text(1);
-		   						$this->xml->endElement();
-								$this->xml->startElement("cbc:LineExtensionAmount");
-		   							$this->xml->writeAttribute('currencyID', 'PEN');
-		   							$this->xml->text($f->neto);
-		   						$this->xml->endElement();
-								$this->xml->startElement("cac:PricingReference");
-									$this->xml->startElement("cac:AlternativeConditionPrice");
-										$this->xml->startElement("cbc:PriceAmount");
-				   							$this->xml->writeAttribute('currencyID', 'PEN');
-				   							$this->xml->text($f->total);
-				   						$this->xml->endElement();
-										$this->xml->writeElement("cbc:PriceTypeCode", "01");
-									$this->xml->endElement();
-								$this->xml->endElement();
-								$this->xml->startElement("cac:Item");
-									$this->xml->writeElement("cbc:Description", $f->nombre_plan);
-								$this->xml->endElement();
-								$this->xml->startElement("cac:Price");
-									$this->xml->startElement("cbc:PriceAmount");
-			   							$this->xml->writeAttribute('currencyID', 'PEN');
-			   							$this->xml->text($f->neto);
-			   						$this->xml->endElement();
-								$this->xml->endElement();
-						$this->xml->endElement();
-					$this->xml->endElement(); 
-					$this->xml->endDocument();
-					//$this->xml->flush();
-					file_put_contents($filename.".xml", $this->xml->outputMemory());
+					$xmlPath = 'adjunto/xml/facturas/'.$filename.'.xml';
+					$certPath = 'adjunto/firma/LLAMA-PE-CERTIFICADO-DEMO-20600258894.pem'; // Convertir pfx to pem 
+
+					$signer = new SignedXml();
+					$signer->setCertificateFromFile($certPath);
+
+					$xmlSigned = $signer->signFromFile($xmlPath);
+
+					file_put_contents($filename.'.xml', $xmlSigned);
+					//echo $xmlSigned;
 
 					if ($this->zip->open("adjunto/xml/facturas/".$filename.".zip", ZIPARCHIVE::CREATE)===true) {
-						$this->zip->addFile($filename.".xml");
+						$this->zip->addFile($filename.'.xml');
 						$this->zip->close();
 						unlink($filename.".xml");
-						//echo "Creado ".$filename.".zip";
+						unlink("adjunto/xml/facturas/".$filename.".xml");
 					} else {
-						//echo "Error creando ".$filename.".zip";
 						unlink($filename.".xml");
+						unlink("adjunto/xml/facturas/".$filename.".xml");
 					}
 
+						$service = 'https://e-beta.sunat.gob.pe/ol-ti-itcpfegem-beta/billService?wsdl'; 
+				    	$headers = new CustomHeaders('20600258894MODDATOS', 'moddatos'); 
+				    	
+				    	$client = new SoapClient($service, array(
+				    		'cache_wsdl' => WSDL_CACHE_NONE,
+				    		'trace' => TRUE,
+				    		//'soap_version' => SOAP_1_2
+				    	));
+
+				    	$client->__setSoapHeaders([$headers]); 
+				    	$fcs = $client->__getFunctions();
+
+				    	$zipXml = $filename.'.zip'; 
+				    	$params = array( 
+				    		'fileName' => $zipXml, 
+				    		'contentFile' => file_get_contents("adjunto/xml/facturas/".$zipXml) 
+				    	); 
+
+				    	$status = $client->sendBill($params);
+				    	print_r($status);
+
+			    	    /*$WSHeader = '<wsse:Security xmlns:wsse="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd">
+					        <wsse:UsernameToken>
+					            <wsse:Username>20600258894MODDATOS</wsse:Username>
+					            <wsse:Password>moddatos</wsse:Password>
+					        </wsse:UsernameToken>
+					    </wsse:Security>';
+
+					    $headers = new SoapHeader('http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd', 'Security', new SoapVar($WSHeader, XSD_ANYXML));
+
+					    $soap = new SoapClient('adjunto/wsdl/billService');
+					    $soap->__soapCall('sendBill', $argumentos, null, $headers);*/
 				}
 			}
-
     	}
-
     }
+
 }	
