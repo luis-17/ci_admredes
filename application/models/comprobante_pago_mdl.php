@@ -51,9 +51,6 @@ class Comprobante_pago_mdl extends CI_model {
 	function getMostrarCorrelativo($serie){
 		$this->db->select("c.correlativo");
 		$this->db->from("comprobante_pago c");
-		//$this->db->join("tipo_documento_mov t" , "id_tipo_documento_mov=t.idtipodocumentomov");		
-		//$this->db->join("canal_detalle c2" , "t.idtipodocumentomov=c2.idtipodocumentomov");		
-		//$this->db->join("serie s" , "c2.idserie=s.idserie");
 		$this->db->where("serie='".$serie."'");
 		$this->db->order_by("c.idcomprobante", "DESC");
 		$this->db->limit(1);
@@ -84,6 +81,18 @@ class Comprobante_pago_mdl extends CI_model {
 		return $data->result();
 	}
 
+	function getDatosSumaBoleta($inicio, $fin, $canales, $serie){
+		$this->db->select("SUM(cob_importe/100) as suma");
+		$this->db->from("cobro c1");
+		$this->db->join("plan p1" , "c1.plan_id=p1.idplan");
+		$this->db->join("cliente_empresa c2" , "p1.idclienteempresa=c2.idclienteempresa");
+		$this->db->join("serie s1" , "c2.id_serie=s1.idserie");
+		$this->db->where("c1.cob_fechCob>='".$inicio."' and c1.cob_fechCob<='".$fin."' and p1.idclienteempresa=".$canales." and s1.numero_serie='".$serie."' and c1.idestadocobro=1");
+
+		$data = $this->db->get();
+		return $data->result();	
+	}
+
 	function getDatosFacturas($inicio, $fin, $canales, $serie){
 		$this->db->select("COUNT(cob_id) as cant, SUM(cob_importe)/100 as cob_importe, plan_id, c2.nombre_plan, c3.razon_social_cli, c3.nombre_comercial_cli, c3.idclienteempresa, c3.numero_documento_cli, c4.idestadocobro, c4.descripcion, c5.idserie, c5.numero_serie");
 		$this->db->from("cobro c1");
@@ -97,6 +106,18 @@ class Comprobante_pago_mdl extends CI_model {
 		$data = $this->db->get();
 		return $data->result();
  	} 
+
+ 	function getDatosSumaFacturas($inicio, $fin, $canales, $serie){
+ 		$this->db->select("SUM(cob_importe/100) as suma");
+ 		$this->db->from("cobro c1");
+ 		$this->db->join("plan p1" , "c1.plan_id=p1.idplan");
+ 		$this->db->join("cliente_empresa c2" , "p1.idclienteempresa=c2.idclienteempresa");
+ 		$this->db->join("serie s1" , "c2.id_serie=s1.idserie");
+ 		$this->db->where("c1.cob_fechCob>='".$inicio."' and c1.cob_fechCob<='".$fin."' and p1.idclienteempresa=".$canales." and s1.numero_serie='".$serie."' and c1.idestadocobro=1");
+
+ 		$data = $this->db->get();
+ 		return $data->result();
+ 	}
 
  	function insertDatosBoletas($inicio, $fin, $fechaEmi, $serie, $correlativo, $idContratante, $importeTotal, $cobro, $idPlan){
  		$this->db->set("fecha_emision" , $fechaEmi);
