@@ -43,7 +43,7 @@
 		        }
 		    });
 		</script>
-		 <script type="text/javascript">
+		<script type="text/javascript">
 	    /*funcion ajax que llena el combo dependiendo de la categoria seleccionada*/
 	    $(document).ready(function(){
 	       $("#dep").change(function () {
@@ -179,13 +179,16 @@
 													if($cert->cert_estado==1){
 														$e=1;
 														$estado="Vigente";	
+														$fin3=$finvig;
 
 														}elseif($hoy<=$finvig){
 															$estado="Vigente";
 															$e=1;
+															$fin3=date("d-m-Y", strtotime($fin2));
 															}else{
 																$estado="Cancelado";
-																$e=3;													
+																$e=3;	
+																$fin3=date("d-m-Y", strtotime($fin2));					
 															}	
 
 													if($e==1){
@@ -493,7 +496,7 @@
 																				</div>
 																				<?php if($e==1&&$e2==1&&$hoy2>$fec2) {?>
 																				<div title="Reservar Atención" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
-																					&nbsp;<a class="boton fancybox" href="<?=  base_url()?>reservar_cita/<?=$id?>/<?=$idaseg?>/null/<?=$certase?>" data-fancybox-width="950" data-fancybox-height="690">
+																					&nbsp;<a class="boton fancybox" href="<?=  base_url()?>reservar_cita/<?=$id?>/<?=$idaseg?>/null/<?=$certase?>/<?=$fin3?>" data-fancybox-width="950" data-fancybox-height="690">
 																					<i class="ace-icon fa fa-external-link bigger-120"></i>
 																					</a>
 																				</div>
@@ -525,7 +528,7 @@
 																					<?php if($e==1) {?>
 																					<li>
 																						<div title="Reservar Atención" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
-																							&nbsp;<a class="boton fancybox" href="<?=  base_url()?>reservar_cita/<?=$id?>/<?=$idaseg?>null/<?=$certase?>" data-fancybox-width="950" data-fancybox-height="690">
+																							&nbsp;<a class="boton fancybox" href="<?=  base_url()?>reservar_cita/<?=$id?>/<?=$idaseg?>null/<?=$certase?>/<?=$fin3?>" data-fancybox-width="950" data-fancybox-height="690">
 																							<i class="ace-icon fa fa-external-link bigger-120"></i>
 																							</a>
 																						</div>

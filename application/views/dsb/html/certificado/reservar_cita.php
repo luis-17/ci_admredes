@@ -140,7 +140,7 @@
 										<label class="col-sm-3 control-label no-padding-right" for="form-field-1">Fecha: </label>
 
 										<div class="col-sm-9">
-											<input type='date' name='feccita' id='feccita' value='<?=$hoy;?>' required  />
+											<input max="<?=$fin?>" type='date' name='feccita' id='feccita' value='<?=$hoy;?>' required  />
 										</div>
 									</div>
 
