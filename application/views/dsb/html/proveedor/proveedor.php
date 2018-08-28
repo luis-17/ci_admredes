@@ -84,7 +84,7 @@
 						<ul class="breadcrumb">
 							<li>
 								<i class="ace-icon fa fa-home home-icon"></i>
-								<a href="<?=base_url()?>index">Inicio</a>
+								<a href="<?=base_url()?>">Inicio</a>
 							</li>
 							<li class="active">Proveedores</li>
 						</ul><!-- /.breadcrumb -->
@@ -107,7 +107,7 @@
 						<div class="row">
 							<div class="col-xs-12">
 								<div class="widget-toolbar no-border invoice-info">
-									<a href="<?=base_url()?>nuevo_proveedor"><button class="btn btn-white btn-info">
+									<a href="<?=base_url()?>index.php/nuevo_proveedor"><button class="btn btn-white btn-info">
 										Nuevo Proveedor
 									</button></a>
 								</div>
@@ -144,12 +144,12 @@
 											<td style="width: 5%;">
 												<div class="hidden-sm hidden-xs btn-group">
 													<div title="Agregar Contacto" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
-														<a class="boton fancybox" href="<?=base_url()?>proveedor_contactos/<?=$pr->idproveedor?>" data-fancybox-width="950" data-fancybox-height="690">
+														<a class="boton fancybox" href="<?=base_url()?>index.php/proveedor_contactos/<?=$pr->idproveedor?>" data-fancybox-width="950" data-fancybox-height="690">
 															<i class="ace-icon glyphicon glyphicon-user"></i>
 														</a>
 													</div>
 													<div title="Editar Proveedor" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
-														&nbsp;<a href="<?=base_url()?>proveedor_editar/<?=$pr->idproveedor?>">
+														&nbsp;<a href="<?=base_url()?>index.php/proveedor_editar/<?=$pr->idproveedor?>">
 															<i class="ace-icon fa fa-pencil bigger-120"></i>
 														</a>
 													</div>
@@ -164,14 +164,14 @@
 															<ul class="dropdown-menu dropdown-only-icon dropdown-yellow dropdown-menu-right dropdown-caret dropdown-close">
 																	<li>
 																		<div title="Agregar Contacto" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
-																			<a class="boton fancybox" href="<?=base_url()?>proveedor_contactos/<?=$pr->idproveedor?>" data-fancybox-width="950" data-fancybox-height="690">
+																			<a class="boton fancybox" href="<?=base_url()?>index.php/proveedor_contactos/<?=$pr->idproveedor?>" data-fancybox-width="950" data-fancybox-height="690">
 																				<i class="ace-icon glyphicon glyphicon-user"></i>
 																			</a>
 																		</div>
 																	</li>
 																	<li>
 																		<div title="Editar Proveedor" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
-																			&nbsp;<a href="<?=base_url()?>proveedor_editar/<?=$pr->idproveedor?>">
+																			&nbsp;<a href="<?=base_url()?>index.php/proveedor_editar/<?=$pr->idproveedor?>">
 																				<i class="ace-icon fa fa-pencil bigger-120"></i>
 																			</a>
 																		</div>

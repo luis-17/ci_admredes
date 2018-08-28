@@ -37,7 +37,7 @@
 	function getPlan($id){
 		$this->db->select("C.plan_id");
 		$this->db->from("siniestro S");
-		$this->db->join("certificado C","c.cert_id=S.idcertificado");		
+		$this->db->join("certificado C","C.cert_id=S.idcertificado");		
 		$this->db->where("S.idsiniestro = $id");
 		$plan = $this->db->get();
 		return $plan->row_array();	

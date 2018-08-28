@@ -72,14 +72,14 @@ $hora_fin = date("h:i", strtotime($hora_ini."+30 minute"));?>
 						<ul class="breadcrumb">
 							<li>
 								<i class="ace-icon fa fa-home home-icon"></i>
-								<a href="<?=base_url()?>index">Inicio</a>
+								<a href="<?=base_url()?>index.php/index">Inicio</a>
 							</li>
 							<?php foreach ($certificado as $c): ?>								
 							<li>
-								<a href="<?=base_url()?>certificado2/<?=$doc?>">Certificado</a>
+								<a href="<?=base_url()?>index.php/certificado2/<?=$doc?>">Certificado</a>
 							</li>
 							<li>
-								<a href="<?=base_url()?>certificado_detalle/<?=$c->cert_id;?>/<?=$doc?>">Detalle Certificado</a>
+								<a href="<?=base_url()?>index.php/certificado_detalle/<?=$c->cert_id;?>/<?=$doc?>">Detalle Certificado</a>
 							</li>							
 							<?php endforeach ?>
 							<li class="active">Calendario de Citas</li>

@@ -138,7 +138,7 @@
 						<ul class="breadcrumb">
 							<li>
 								<i class="ace-icon fa fa-home home-icon"></i>
-								<a href="<?=base_url()?>index">Home</a>
+								<a href="<?=base_url()?>">Home</a>
 							</li>
 
 							<li class="active">
@@ -232,7 +232,7 @@
 																<td>
 																	<div class="hidden-sm hidden-xs btn-group">		
 																			&nbsp;
-																			<a href="<?=base_url()?>siniestro/<?=$o->idsiniestro?>" title="Detalle Siniestro"><i class="ace-icon fa fa-external-link bigger-120"></i></a>
+																			<a href="<?=base_url()?>index.php/siniestro/<?=$o->idsiniestro?>" title="Detalle Siniestro"><i class="ace-icon fa fa-external-link bigger-120"></i></a>
 																	</div>	
 																</td>
 															</tr>
@@ -297,12 +297,12 @@
 																<td><?=$po->aseg_numDoc;?></td>
 																<td>
 																	<div>
-																		<a href="<?=base_url()?>orden/<?=$po->idsiniestro?>/O"  title="Generar Orden">
+																		<a href="<?=base_url()?>index.php/orden/<?=$po->idsiniestro?>/O"  title="Generar Orden">
 																			<span class="ace-icon glyphicon glyphicon-ok"></span>
 																		</a>
 																	</div>
 																	<div>
-																		<a href="<?=base_url()?>orden/<?=$po->idsiniestro?>/A" title="Anular Pre Orden">
+																		<a href="<?=base_url()?>index.php/orden/<?=$po->idsiniestro?>/A" title="Anular Pre Orden">
 																			<span class="ace-icon glyphicon glyphicon-remove"></span>
 																		</a>
 																	</div>
@@ -317,7 +317,7 @@
 
 										<div id="faq-tab-3" class="tab-pane fade">
 											<!-- star table -->
-										<form id="creaSin" action="<?=base_url()?>creaSiniestro" method="post">
+										<form id="creaSin" action="<?=base_url()?>index.php/creaSiniestro" method="post">
 											<div class="row">
 											  <div class="col-sm-4">
 											  	<div class="form-group">
@@ -403,7 +403,7 @@
 												
 												<div class="row">
 												  <div class="col-sm-6">
-												  	<input class="btn btn-primary" name="enviar" type="submit" value="Guardar">
+												  	<input class="btn btn-info" name="enviar" type="submit" value="Guardar">
 												  </div>
 												  
 

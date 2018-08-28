@@ -78,10 +78,10 @@
 						<ul class="breadcrumb">
 							<li>
 								<i class="ace-icon fa fa-home home-icon"></i>
-								<a href="<?=base_url()?>index">Inicio</a>
+								<a href="<?=base_url()?>">Inicio</a>
 							</li>
 							<li>
-							<a href="<?=base_url()?>index">Reportes</a></li>
+							<a href="<?=base_url()?>index.php/index">Reportes</a></li>
 							<li class="active">Consultar Cobros</li>
 						</ul><!-- /.breadcrumb -->
 
@@ -110,7 +110,7 @@
 											<div class="profile-user-info profile-user-info-striped">
 												<div class="profile-info-row">
 
-												<form name="form" id="form" method="post" action="<?=base_url()?>consultar_cobros_buscar" class="form-horizontal">
+												<form name="form" id="form" method="post" action="<?=base_url()?>index.php/consultar_cobros_buscar" class="form-horizontal">
 													<div class="profile-info-name"> Plan: </div>
 													<div class="profile-info-name">
 														<select name="plan" id="plan" required="Seleccione una opción de la lista">
@@ -183,7 +183,7 @@
 														<td>
 															<div class="hidden-sm hidden-xs btn-group">
 																<div title="Ver Detalle de Cobros" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
-																<a class="boton fancybox" href="<?=base_url()?>consultar_detalle_cobros/<?=$co->cob_importe;?>/<?=$plan_id;?>/<?=$fecinicio;?>/<?=$fecfin?>" data-fancybox-width="950" data-fancybox-height="690">
+																<a class="boton fancybox" href="<?=base_url()?>index.php/consultar_detalle_cobros/<?=$co->cob_importe;?>/<?=$plan_id;?>/<?=$fecinicio;?>/<?=$fecfin?>" data-fancybox-width="950" data-fancybox-height="690">
 																	<i class="ace-icon fa fa-eye bigger-120"></i>
 																</a>
 																</div>
@@ -198,7 +198,7 @@
 																	<ul class="dropdown-menu dropdown-only-icon dropdown-yellow dropdown-menu-right dropdown-caret dropdown-close">
 																			<li>
 																				<div title="Ver Detalle de Cobros" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
-																				<a class="boton fancybox" href="<?=base_url()?>consultar_detalle_cobros/<?=$co->cob_importe;?>/<?=$plan_id;?>/<?=$fecinicio;?>/<?=$fecfin?>" data-fancybox-width="950" data-fancybox-height="690">
+																				<a class="boton fancybox" href="<?=base_url()?>index.php/consultar_detalle_cobros/<?=$co->cob_importe;?>/<?=$plan_id;?>/<?=$fecinicio;?>/<?=$fecfin?>" data-fancybox-width="950" data-fancybox-height="690">
 																					<i class="ace-icon fa fa-eye bigger-120"></i>
 																				</a>
 																				</div>

@@ -81,7 +81,7 @@
 						<div class="row">
 							<div class="col-xs-12">
 								<!-- PAGE CONTENT BEGINS -->
-								<form class="form-horizontal" role="form" method="post" action="<?=base_url()?>save_cita">
+								<form class="form-horizontal" role="form" method="post" action="<?=base_url()?>index.php/save_cita">
 									<input type="hidden" id="aseg_id" name="aseg_id" value="<?=$aseg_id?>" />
 									<input type="hidden" name="idcita" id="idcita" value="<?=$cita?>">
 									<input type="hidden" id="cert_id" name="cert_id" value="<?=$cert_id?>">

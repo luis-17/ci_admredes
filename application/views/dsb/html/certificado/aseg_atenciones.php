@@ -131,12 +131,12 @@
 											
 												<?php if($e1!=0&&$mostrar=='S'){ ?>
 												<div title="Editar Reserva" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
-													<a class="boton fancybox" href="<?=  base_url()?>reservar_cita/<?=$a->idcertificado?>/<?=$a->idasegurado?>/<?=$a->idcita?>/<?=$a->idcertificadoasegurado?>" data-fancybox-width="950" data-fancybox-height="690">
+													<a class="boton fancybox" href="<?=  base_url()?>index.php/reservar_cita/<?=$a->idcertificado?>/<?=$a->idasegurado?>/<?=$a->idcita?>/<?=$a->idcertificadoasegurado?>" data-fancybox-width="950" data-fancybox-height="690">
 														<i class="ace-icon glyphicon glyphicon-pencil bigger-120"></i>
 													</a>
 												</div>
 												<div title="Anular Reserva" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
-													<a class="boton fancybox" href="<?=  base_url()?>anular_cita/<?=$a->idcita?>/<?=$a->idasegurado?>/<?=$a->idcertificado?>" data-fancybox-width="950" data-fancybox-height="690">
+													<a class="boton fancybox" href="<?=  base_url()?>index.php/anular_cita/<?=$a->idcita?>/<?=$a->idasegurado?>/<?=$a->idcertificado?>" data-fancybox-width="950" data-fancybox-height="690">
 														<i class="ace-icon glyphicon glyphicon-trash bigger-120"></i>
 													</a>
 												</div>
@@ -153,7 +153,7 @@
 														<ul class="dropdown-menu dropdown-only-icon dropdown-yellow dropdown-menu-right dropdown-caret dropdown-close">
 															<li>
 																<div title="Editar Reserva" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
-																	<a class="boton fancybox" href="<?=  base_url()?>reservar_cita/<?=$a->idcertificado?>/<?=$a->idasegurado?>/<?=$a->idcita?>/<?=$a->idcertificadoasegurado?>" data-fancybox-width="950" data-fancybox-height="690">
+																	<a class="boton fancybox" href="<?=  base_url()?>index.php/reservar_cita/<?=$a->idcertificado?>/<?=$a->idasegurado?>/<?=$a->idcita?>/<?=$a->idcertificadoasegurado?>" data-fancybox-width="950" data-fancybox-height="690">
 																		<i class="ace-icon glyphicon glyphicon-pencil bigger-120"></i>
 																	</a>
 																</div>
@@ -161,7 +161,7 @@
 															</li>
 															<li>			
 																<div title="Anular Reserva" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
-																	<a class="boton fancybox" href="<?=  base_url()?>anular_cita/<?=$a->idcita?>/<?=$a->idasegurado?>/<?=$a->idcertificado?>" data-fancybox-width="950" data-fancybox-height="690">
+																	<a class="boton fancybox" href="<?=  base_url()?>index.php/anular_cita/<?=$a->idcita?>/<?=$a->idasegurado?>/<?=$a->idcertificado?>" data-fancybox-width="950" data-fancybox-height="690">
 																		<i class="ace-icon glyphicon glyphicon-trash bigger-120"></i>
 																	</a>
 																</div>

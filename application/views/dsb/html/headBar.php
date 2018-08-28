@@ -70,7 +70,7 @@
 								<li class="divider"></li>
 
 								<li>
-									<a href="<?php echo base_url(); ?>logout" class="btn btn-danger">Cerrar Sesión</a>
+									<a href="<?php echo base_url(); ?>index.php/logout" class="btn btn-danger">Cerrar Sesión</a>
 									<!-- <a href="#">
 										<i class="ace-icon fa fa-power-off"></i>
 										Logout

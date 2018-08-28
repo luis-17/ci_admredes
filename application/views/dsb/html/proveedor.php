@@ -9,17 +9,17 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
 
 		<!-- bootstrap & fontawesome -->
-		<link rel="stylesheet" href="public/assets/css/bootstrap.css" />
-		<link rel="stylesheet" href="public/assets/css/font-awesome.css" />
+		<link rel="stylesheet" href="<?=base_url()?>public/assets/css/bootstrap.css" />
+		<link rel="stylesheet" href="<?=base_url()?>public/assets/css/font-awesome.css" />
 
 		<!-- page specific plugin styles -->
 
 		<!-- text fonts -->
-		<link rel="stylesheet" href="public/assets/css/ace-fonts.css" />
+		<link rel="stylesheet" href="<?=base_url()?>public/assets/css/ace-fonts.css" />
 
 		<!-- ace styles -->
-		<link rel="stylesheet" href="public/assets/css/ace.css" class="ace-main-stylesheet" id="main-ace-style" />
-		<script type="text/javascript" src="public/fancybox/lib/jquery.mousewheel-3.0.6.pack.js"></script>
+		<link rel="stylesheet" href="<?=base_url()?>public/assets/css/ace.css" class="ace-main-stylesheet" id="main-ace-style" />
+		<script type="text/javascript" src="<?=base_url()?>public/fancybox/lib/jquery.mousewheel-3.0.6.pack.js"></script>
 		<!-- FancyBox -->
 		<!-- Add jQuery library -->
 		<script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
@@ -28,8 +28,8 @@
 		<script type="text/javascript" src="public/fancybox/lib/jquery.mousewheel-3.0.6.pack.js"></script>
 
 		<!-- Add fancyBox -->
-		<link rel="stylesheet" href="public/fancybox/source/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen" />
-		<script type="text/javascript" src="public/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+		<link rel="stylesheet" href="<?=base_url()?>public/fancybox/source/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen" />
+		<script type="text/javascript" src="<?=base_url()?>public/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
 
 		<script>
 			$(".fancybox")

@@ -68,7 +68,7 @@
 						<ul class="breadcrumb">
 							<li>
 								<i class="ace-icon fa fa-home home-icon"></i>
-								<a href="<?=base_url()?>index">Inicio</a>
+								<a href="<?=base_url()?>">Inicio</a>
 							</li>
 							<li class="active">Certificado</li>
 						</ul><!-- /.breadcrumb -->
@@ -101,7 +101,7 @@
 									</a>
 								</div>								
 								<div align="center">
-								<form method="post" action="<?=base_url()?>consulta_certificado">
+								<form method="post" action="<?=base_url()?>index.php/consulta_certificado">
 								<span class="input-icon">
 									<input type="text" id="nom" name="nom" placeholder="Apellidos ..." class="nav-search-input" id="nav-search-input" size="30" value="<?=$nom;?>">									
 								</span>	
@@ -182,7 +182,7 @@
 															<?php } ?>
 																<td>
 																	<div class="hidden-sm hidden-xs btn-group">
-																			<a href="<?=  base_url()?>certificado_detalle/<?=$cert?>/<?=$id;?>" title="Detalle Certificado"><i class="ace-icon fa fa-external-link bigger-120"></i></a>
+																			<a href="<?=  base_url()?>index.php/certificado_detalle/<?=$cert?>/<?=$id;?>" title="Detalle Certificado"><i class="ace-icon fa fa-external-link bigger-120"></i></a>
 																	</div>
 
 																	<div class="hidden-md hidden-lg">
@@ -194,7 +194,7 @@
 																			<ul class="dropdown-menu dropdown-only-icon dropdown-yellow dropdown-menu-right dropdown-caret dropdown-close">
 																				
 																				<li>
-																					<a href="<?=  base_url()?>certificado_detalle/<?=$cert?>/<?=$id;?>" title="Detalle Certificado">
+																					<a href="<?=  base_url()?>index.php/certificado_detalle/<?=$cert?>/<?=$id;?>" title="Detalle Certificado">
 																						<span class="red">
 																							<i class="ace-icon fa fa-external-link bigger-120"></i>
 																						</span>
@@ -240,7 +240,7 @@
 																<td><?=$a->asegurado;?></td>
 																<td>
 																	<div class="hidden-sm hidden-xs btn-group">
-																			<a href="<?=  base_url()?>certificado2/<?=$a->aseg_numDoc?>/<?=$a->cert_id?>" title="Detalle Certificado"><i class="ace-icon fa fa-external-link bigger-120"></i></a>
+																			<a href="<?=  base_url()?>index.php/certificado2/<?=$a->aseg_numDoc?>/<?=$a->cert_id?>" title="Detalle Certificado"><i class="ace-icon fa fa-external-link bigger-120"></i></a>
 																	</div>
 																</td>
 															</tr>

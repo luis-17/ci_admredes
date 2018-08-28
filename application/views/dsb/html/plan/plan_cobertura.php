@@ -55,7 +55,7 @@
 						<div class="row">
 							<div class="col-xs-12">
 								<!-- PAGE CONTENT BEGINS -->
-								<form class="form-horizontal" id="form" name="form" role="form" method="post" action="<?=base_url()?>guardar_cobertura">
+								<form class="form-horizontal" id="form" name="form" role="form" method="post" action="<?=base_url()?>index.php/guardar_cobertura">
 									<input type="hidden" id="nom" name="nom" value="<?=$nom;?>">
 									<input type="hidden" name="idplan" id="idplan" value="<?=$id?>">
 									<input type="hidden" id="idplandetalle" name="idplandetalle" value="<?=$iddet?>" />
@@ -196,14 +196,14 @@
 																			<ul class="dropdown-menu dropdown-only-icon dropdown-yellow dropdown-menu-right dropdown-caret dropdown-close">
 																				<li>
 																					<div title="Editar Cobertura" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
-																						<a class="boton fancybox" href="<?=base_url()?>seleccionar_cobertura/<?=$id?>/<?=$nom?>/<?=$c->idplandetalle;?>" data-fancybox-width="950" data-fancybox-height="300">
+																						<a class="boton fancybox" href="<?=base_url()?>index.php/seleccionar_cobertura/<?=$id?>/<?=$nom?>/<?=$c->idplandetalle;?>" data-fancybox-width="950" data-fancybox-height="300">
 																							<i class="ace-icon fa fa-pencil bigger-120"></i>
 																						</a>
 																					</div>
 																				</li>
 																				<li>
 																					<div title="<?=$titulo?>" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
-																						&nbsp;<a href="<?=base_url()?><?=$funcion?>/<?=$id?>/<?=$nom?>/<?=$c->idplandetalle;?>">
+																						&nbsp;<a href="<?=base_url()?>index.php/<?=$funcion?>/<?=$id?>/<?=$nom?>/<?=$c->idplandetalle;?>">
 																						<i class="<?=$boton?>"></i>
 																						</a>
 																					</div>
