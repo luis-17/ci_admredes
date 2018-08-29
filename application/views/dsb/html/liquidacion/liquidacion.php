@@ -156,7 +156,7 @@
 						<ul class="breadcrumb">
 							<li>
 								<i class="ace-icon fa fa-home home-icon"></i>
-								<a href="<?=base_url()?>index">Home</a>
+								<a href="<?=base_url()?>">Home</a>
 							</li>
 
 							<li class="active">
@@ -364,7 +364,7 @@
         <h4 class="modal-title" id="myModalLabel">Registro de Pago a Proveedor</h4>
       </div>
       <div class="modal-body">
-       <form id="creaSin" action="<?=base_url()?>registraPago" method="post">
+       <form id="creaSin" action="<?=base_url()?>index.php/registraPago" method="post">
 											<div class="row">
 											  <div class="col-sm-4">
 											  	<div class="form-group">

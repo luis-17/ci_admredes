@@ -78,9 +78,9 @@
 						<ul class="breadcrumb">
 							<li>
 								<i class="ace-icon fa fa-home home-icon"></i>
-								<a href="<?=base_url()?>index">Inicio</a>
+								<a href="<?=base_url()?>">Inicio</a>
 							</li>
-							<li><a href="<?=base_url()?>plan">Planes</a></li>
+							<li><a href="<?=base_url()?>index.php/plan">Planes</a></li>
 							<li class="active"><?=$accion?></li>
 						</ul><!-- /.breadcrumb -->
 
@@ -118,7 +118,7 @@
 											endforeach;
 								endif; ?>
 								<!-- PAGE CONTENT BEGINS -->
-								<form class="form-horizontal" role="form" method="post" action="<?=base_url()?>/plan_guardar">
+								<form class="form-horizontal" role="form" method="post" action="<?=base_url()?>index.php/plan_guardar">
 									<input type="hidden" id="idplan" name="idplan" value="<?=$id;?>" />
 
 									<div class="form-group">

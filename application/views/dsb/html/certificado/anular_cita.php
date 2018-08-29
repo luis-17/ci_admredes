@@ -61,7 +61,7 @@
 						<div class="row">
 							<div class="col-xs-12">
 								<!-- PAGE CONTENT BEGINS -->
-								<form class="form-horizontal" role="form" method="post" action="<?=base_url()?>eliminar_cita">
+								<form class="form-horizontal" role="form" method="post" action="<?=base_url()?>index.php/eliminar_cita">
 									<input type="hidden" name="idcita" id="idcita" value="<?=$cita?>">
 									<input type="hidden" id="idusuario" name="idusuario" value="<?=$idusuario;?>">
 									<input type="hidden" name="idsiniestro" id="idsiniestro" value="<?=$idsiniestro?>">	
@@ -73,7 +73,7 @@
 												<i class="ace-icon fa fa-check bigger-110"></i>
 												Sí
 											</button>
-											<a href="<?=  base_url()?>aseg_atenciones/<?=$aseg?>/<?=$cert?>"><button class="btn btn-info" type="button">
+											<a href="<?=  base_url()?>index.php/aseg_atenciones/<?=$aseg?>/<?=$cert?>"><button class="btn btn-info" type="button">
 												<i class="ace-icon glyphicon glyphicon-remove bigger-110"></i>
 												No
 											</button>

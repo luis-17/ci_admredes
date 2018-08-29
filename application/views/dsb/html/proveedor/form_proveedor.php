@@ -103,9 +103,9 @@
 						<ul class="breadcrumb">
 							<li>
 								<i class="ace-icon fa fa-home home-icon"></i>
-								<a href="<?=base_url()?>index">Inicio</a>
+								<a href="<?=base_url()?>">Inicio</a>
 							</li>
-							<li><a href="<?=base_url()?>proveedor">Proveedores</a></li>
+							<li><a href="<?=base_url()?>index.php/proveedor">Proveedores</a></li>
 							<li class="active"><?=$accion?></li>
 						</ul><!-- /.breadcrumb -->
 
@@ -160,7 +160,7 @@
 							<div class="col-xs-12">
 							
 								<!-- PAGE CONTENT BEGINS -->
-								<form class="form-horizontal" role="form" method="post" action="<?=base_url()?>proveedor_guardar">
+								<form class="form-horizontal" role="form" method="post" action="<?=base_url()?>index.php/proveedor_guardar">
 									<input type="hidden" id="idproveedor" name="idproveedor" value="<?=$id;?>" >
 									<input type="hidden" name="idusuario" name="idusuario" value="<?=$idusuario?>">
 

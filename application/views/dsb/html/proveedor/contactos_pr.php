@@ -88,7 +88,7 @@
 						<div class="row">
 							<div class="col-xs-12">
 								<!-- PAGE CONTENT BEGINS -->
-								<form class="form-horizontal" id="form" name="form" role="form" method="post" action="<?=base_url()?>guardar_contacto">
+								<form class="form-horizontal" id="form" name="form" role="form" method="post" action="<?=base_url()?>index.php/guardar_contacto">
 									<input type="hidden" name="idcp" value="<?=$idcp?>">
 									<input type="hidden" name="idp" value="<?=$idp?>">
 
@@ -216,7 +216,7 @@
 																	<div class="hidden-md hidden-lg">
 																		<div class="inline pos-rel">
 																			<div title="Editar Contacto" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
-																						<a class="boton fancybox" href="<?=base_url()?>seleccionar_contacto/<?=$c->idcontactoproveedor?>/<?=$c->idproveedor?>" data-fancybox-width="1000" data-fancybox-height="300">
+																						<a class="boton fancybox" href="<?=base_url()?>index.php/seleccionar_contacto/<?=$c->idcontactoproveedor?>/<?=$c->idproveedor?>" data-fancybox-width="1000" data-fancybox-height="300">
 																							<i class="ace-icon fa fa-pencil bigger-120"></i>
 																						</a>
 																			</div>

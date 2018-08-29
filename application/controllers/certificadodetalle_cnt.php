@@ -117,12 +117,13 @@ class Certificadodetalle_cnt extends CI_Controller {
 		redirect ($ruta);
 	}
 
-	public function reservar_cita($id, $idaseg, $cita, $certase_id)
+	public function reservar_cita($id, $idaseg, $cita, $certase_id, $fin)
 	{
 		$data['cert_id'] = $id;
 		$data['aseg_id'] =$idaseg;
 		$data['cita'] = $cita;
 		$data['certase_id'] = $certase_id;
+		$data['fin'] = $fin;
 
 		$asegurado = $this->certificado_mdl->getAsegurado($id);
 		$data['asegurado'] = $asegurado;

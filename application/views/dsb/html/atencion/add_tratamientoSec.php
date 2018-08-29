@@ -122,7 +122,7 @@
     <!-- Main jumbotron for a primary marketing message or call to action -->
     <div class="jumbotron">
       <div class="container">        
-		<form id="form2" name="form2" role="form" action="<?=base_url()?>guardaMediS" method="post">	
+		<form id="form2" name="form2" role="form" action="<?=base_url()?>index.php/guardaMediS" method="post">	
 			
 			<div id="grupo5">
 							

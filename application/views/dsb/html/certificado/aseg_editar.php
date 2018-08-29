@@ -91,7 +91,7 @@
 						<div class="row">
 							<div class="col-xs-12">
 								<!-- PAGE CONTENT BEGINS -->
-								<form class="form-horizontal" role="form" method="post" action="<?=base_url()?>cert_aseg_save">
+								<form class="form-horizontal" role="form" method="post" action="<?=base_url()?>index.php/cert_aseg_save">
 									<input type="hidden" id="idaseg" name="idaseg" value="<?=$a->aseg_id?>" />
 									<input type="hidden" name="nom1" value="<?=$a->aseg_nom1;?>">
 									<input type="hidden" name="nom2" value="<?=$a->aseg_nom2;?>">

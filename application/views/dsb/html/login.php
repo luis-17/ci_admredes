@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <title>Random Login Form</title>
-  <link rel="stylesheet" href="public/assets/css/login/style.css" />
+  <link rel="stylesheet" href="<?=base_url()?>public/assets/css/login/style.css" />
   <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/prefixfree/1.0.7/prefixfree.min.js"></script> -->
   <link rel="shortcut icon" type="image/x-icon" href="public/assets/css/login/icono.ico">
 
@@ -16,7 +16,7 @@
 		<div class="grad"></div>
 		<div class="header">
 			<!-- <div>Red<span>Salud</span></div> -->
-			<img src="public/assets/css/login/logo.png" alt="RedSalud">
+			<img src="<?=base_url()?>public/assets/css/login/logo.png" alt="RedSalud">
 		</div>
 		<br>
 		<div class="login">

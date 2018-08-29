@@ -71,7 +71,7 @@ class Login_cnt extends CI_Controller {
 				$this->login_mdl->eliminar_cita($data);
 				$this->login_mdl->eliminar_orden($data);
 			}			
-			$this->load->view('dsb/html/certificado/certificado.php', $data);
+			$this->load->view('dsb/html/index.php', $data);
 		}
 		else{
 			redirect('/');

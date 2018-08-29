@@ -48,7 +48,7 @@
 								<ul class="submenu">
 									<li class="">
 
-										<a href="<?php echo base_url($uv->archivo)?>">
+										<a href="<?php echo base_url()?>index.php/<?=$uv->archivo?>">
 											<i class="menu-icon fa fa-caret-right"></i>
 
 											<?=$uv->submenu;?>

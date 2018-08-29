@@ -143,7 +143,7 @@
     <!-- Main jumbotron for a primary marketing message or call to action -->
     <div class="jumbotron">
       <div class="container">        
-		<form id="form2" name="form2" role="form" action="<?=base_url()?>guardaMediP" method="post">	
+		<form id="form2" name="form2" role="form" action="<?=base_url()?>index.php/guardaMediP" method="post">	
 			<div class="form-group col-md-6">
 				<h4 style="color:#033766;">Diagnóstico Elegido</h4>
 					<div id="messageAtention">

@@ -29,6 +29,7 @@
 	 $this->db->join('submenu', 'submenu.idsubmenu = rol.idsubmenu'); 
 	 $this->db->join('menu', 'menu.idmenu = submenu.idmenu'); 
 	 $this->db->where('idusuario', $idusuario);
+	 $this->db->order_by('archivo');
 
 	 $submenu = $this->db->get();
 	 return $submenu->result();
