@@ -1,5 +1,5 @@
 <?php 
-ini_set('max_execution_time', 600); 
+ini_set('max_execution_time', 6000); 
 class Comprobante_pago_mdl extends CI_model {
 
 	function Comprobante_pago() {
@@ -74,7 +74,7 @@ class Comprobante_pago_mdl extends CI_model {
  		$this->db->join("cliente_empresa c6","c4.idclienteempresa=c6.idclienteempresa");
 		$this->db->join("serie c7","c6.id_serie=c7.idserie");
  		$this->db->where("c1.cob_fechCob>='".$inicio."' and c1.cob_fechCob<='".$fin."' and c4.idclienteempresa=".$canales." and c7.numero_serie='".$serie."' and c1.idestadocobro=1");
- 		$this->db->group_by("c1.cob_id");
+ 		//$this->db->group_by("c1.cob_id");
  		$this->db->order_by("cob_fechCob");
 	 	
 	 	$data = $this->db->get();
@@ -82,7 +82,7 @@ class Comprobante_pago_mdl extends CI_model {
 	}
 
 	function getDatosSumaBoleta($inicio, $fin, $canales, $serie){
-		$this->db->select("SUM(cob_importe/100) as suma");
+		$this->db->select("TRUNCATE(SUM(cob_importe/100),2) as suma");
 		$this->db->from("cobro c1");
 		$this->db->join("plan p1" , "c1.plan_id=p1.idplan");
 		$this->db->join("cliente_empresa c2" , "p1.idclienteempresa=c2.idclienteempresa");
@@ -94,7 +94,7 @@ class Comprobante_pago_mdl extends CI_model {
 	}
 
 	function getDatosFacturas($inicio, $fin, $canales, $serie){
-		$this->db->select("COUNT(cob_id) as cant, SUM(cob_importe)/100 as cob_importe, plan_id, c2.nombre_plan, c3.razon_social_cli, c3.nombre_comercial_cli, c3.idclienteempresa, c3.numero_documento_cli, c4.idestadocobro, c4.descripcion, c5.idserie, c5.numero_serie");
+		$this->db->select("COUNT(cob_id) as cant, SUM(cob_importe)/100 as cob_importe, plan_id, c2.nombre_plan, c3.razon_social_cli, c3.nombre_comercial_cli, c3.idclienteempresa, c3.numero_documento_cli, c4.idestadocobro, c5.idserie, c5.numero_serie");
 		$this->db->from("cobro c1");
 		$this->db->join("plan c2","c1.plan_id=c2.idplan");
 		$this->db->join("cliente_empresa c3","c2.idclienteempresa=c3.idclienteempresa");
@@ -108,7 +108,7 @@ class Comprobante_pago_mdl extends CI_model {
  	} 
 
  	function getDatosSumaFacturas($inicio, $fin, $canales, $serie){
- 		$this->db->select("SUM(cob_importe/100) as suma");
+ 		$this->db->select("TRUNCATE(SUM(cob_importe/100),2) as suma");
  		$this->db->from("cobro c1");
  		$this->db->join("plan p1" , "c1.plan_id=p1.idplan");
  		$this->db->join("cliente_empresa c2" , "p1.idclienteempresa=c2.idclienteempresa");
@@ -243,7 +243,7 @@ class Comprobante_pago_mdl extends CI_model {
  	}
 
  	function getDatosXmlBoletas($inicio, $fin, $serie, $idPlan){
- 		$this->db->select("CONCAT(REPEAT( '0', 2 - LENGTH( MONTH(CURDATE())) ) , MONTH(CURDATE())) as mes, CONCAT(REPEAT( '0', 8 - LENGTH( correlativo) ) , correlativo) as correlativo, fecha_emision, TRUNCATE(importe_total,2) as total, TRUNCATE((importe_total/1.18) ,2) as neto, TRUNCATE((importe_total - TRUNCATE((importe_total/1.18) ,2)) ,2) as igv, c.serie, p.nombre_plan, c1.descripcion, c1.centro_costo, c2.cont_numDoc, CONCAT(cont_ape1,' ',cont_ape2,' ',cont_nom1,' ',cont_nom2) as contratante");
+ 		$this->db->select("CONCAT(REPEAT( '0', 2 - LENGTH( MONTH(CURDATE())) ) , MONTH(CURDATE())) as mes, CONCAT(REPEAT( '0', 8 - LENGTH( correlativo) ) , correlativo) as correlativo, fecha_emision, TRUNCATE(importe_total,2) as total, TRUNCATE((importe_total/1.18) ,2) as neto, TRUNCATE((importe_total/1.18)*0.18 ,2) as igv, c.serie, p.nombre_plan, c1.descripcion, c1.centro_costo, c2.cont_numDoc, CONCAT(cont_ape1,' ',cont_ape2,' ',cont_nom1,' ',cont_nom2) as contratante");
  		$this->db->from("Comprobante_pago c");
 		$this->db->join("plan p","c.idplan=p.idplan");
  		$this->db->join("centro_costo c1","p.idcentrocosto=c1.idcentrocosto");	
@@ -264,6 +264,12 @@ class Comprobante_pago_mdl extends CI_model {
  		
 		$data = $this->db->get();
 		return $data->result();
+ 	}
+
+ 	 function updateEstadoCobroEmitido($inicio, $fin, $idPlan){
+ 		$this->db->set("idestadocobro", 3);
+		$this->db->where("cob_fechCob>='".$inicio."' and cob_fechCob<='".$fin."' and plan_id=".$idPlan." and idestadocobro=2");
+		$this->db->update("cobro"); 
  	}
 }
 ?>

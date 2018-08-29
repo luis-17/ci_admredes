@@ -66,7 +66,7 @@
 						<div class="row">
 							<div class="col-xs-12">
 								<!-- PAGE CONTENT BEGINS -->
-								<form class="form-horizontal" name="formPdf" id="formPdf" role="form" method="post" action="<?=base_url()."comprobante_pago_cnt/envioEmail/".$idcomprobante."/".$canales;?>">	
+								<form class="form-horizontal" name="formPdf" id="formPdf" role="form" method="post" action="<?=base_url()."boletaje_cnt/envioEmail/".$idcomprobante."/".$canales;?>">	
 
 									<div class='form-group'>
 										<label class='col-sm-3 control-label no-padding-right' for='form-field-1'>Correo electrónico:</label>
@@ -79,7 +79,7 @@
 										<div class='col-md-offset-3 col-md-9' style='text-align: right;'>
 											<input type='text' class='hidden' id='idcomprobante' name='idcomprobante' value="<?=$idcomprobante;?>">
 											<input type='text' class='hidden' id='canales' name='canales' value="<?=$canales;?>">
-											<button class='btn btn-info' type='submit' id='buttonPdfCorreo' href='<?=base_url()."comprobante_pago_cnt/enviarPdf/".$email."/".$idcomprobante."/".$canales;?>' onclick="guardar()">
+											<button class='btn btn-info' type='submit' id='buttonPdfCorreo' href='<?=base_url()."boletaje_cnt/enviarPdf/".$email."/".$idcomprobante."/".$canales;?>' onclick="guardar()">
 												<i class='ace-icon fa fa-paper-plane bigger-110'></i> Enviar
 											</button>
 										</div>

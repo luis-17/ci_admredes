@@ -252,7 +252,7 @@
 							</li>
 							<li>
 							<a href="<?=base_url()?>index">Comprobantes de Pago</a></li>
-							<li class="active">Generar Comprobantes de Pago</li>
+							<li class="active">Ventas</li>
 						</ul><!-- /.breadcrumb -->
 
 						<!-- /section:basics/content.searchbox -->
@@ -260,7 +260,7 @@
 					<div class="page-content">
 						<div class="page-header">
 							<h1>
-								Generar Comprobantes de pago
+								Ventas
 								<small>
 									<i class="ace-icon fa fa-angle-double-right"></i>
 								</small>
@@ -274,7 +274,7 @@
 									<div class="col-xs-9 col-sm-12">
 										<div class="widget-box transparent">
 												
-												<form name="formCategoria" id="formCategoria" method="post" action="<?=base_url()?>comprobante_pago_cnt">
+												<form name="formCategoria" id="formCategoria" method="post" action='<?=base_url()."index.php/ventas"?>'>
 
 													<div class="profile-user-info profile-user-info-striped">
 														<div class="profile-info-row">
@@ -458,7 +458,7 @@
 					var canales = $("#canales").val();
 					//ajax para pasar los parámetros
 					$.ajax({
-						url: "<?= BASE_URL()?>comprobante_pago_cnt/mostrarDocumento",
+						url: "<?= BASE_URL()?>ventas_cnt/mostrarDocumento",
 						type: 'POST',
 						dataType: 'json',
 						data: {canales:canales},
@@ -484,7 +484,7 @@
 				//función para enviar datos a la tabla dinámica que se va a generar    
 			    $('#buttonBuscar').click(function(){
 			        $.ajax({                        
-			           	url: "<?= BASE_URL()?>comprobante_pago_cnt/mostrarDatos",   
+			           	url: "<?= BASE_URL()?>ventas_cnt/mostrarDatos",   
 			           	type: 'POST',
 			           	dataType: 'json',                                 
 			           	data: $("#formCategoria").serialize(), 
@@ -503,7 +503,7 @@
 
 			    $('#buttonBuscar').click(function(){
 			        $.ajax({                        
-			           	url: "<?= BASE_URL()?>comprobante_pago_cnt/mostrarCorrelativo",   
+			           	url: "<?= BASE_URL()?>ventas_cnt/mostrarCorrelativo",   
 			           	type: 'POST',
 			           	dataType: 'json',                                 
 			           	data: $("#formCategoria").serialize(), 
@@ -518,7 +518,7 @@
 
 			    $('#buttonGenerar').click(function(){
 			    	$.ajax({
-			    		url: "<?= BASE_URL()?>comprobante_pago_cnt/generarComprobante",
+			    		url: "<?= BASE_URL()?>ventas_cnt/generarComprobante",
 			    		type: 'POST',
 			    		dataType: 'json',
 			    		data: $("#formCategoria").serialize(),

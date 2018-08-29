@@ -252,7 +252,7 @@
 							</li>
 							<li>
 							<a href="<?=base_url()?>index">Comprobantes de Pago</a></li>
-							<li class="active">Comprobantes de Pago</li>
+							<li class="active">Boletaje Masivo</li>
 						</ul><!-- /.breadcrumb -->
 
 						<!-- /section:basics/content.searchbox -->
@@ -260,7 +260,7 @@
 					<div class="page-content">
 						<div class="page-header">
 							<h1>
-								Comprobantes de pago
+								Boletaje Masivo
 								<small>
 									<i class="ace-icon fa fa-angle-double-right"></i>
 								</small>
@@ -274,7 +274,7 @@
 									<div class="col-xs-9 col-sm-12">
 										<div class="widget-box transparent">
 												
-												<form name="formCategoria" id="formCategoria" method="post" action='<?=base_url()."comprobante_pago_cnt/crearXml/"?>'>
+												<form name="formCategoria" id="formCategoria" method="post" action='<?=base_url()."index.php/boleta/crearXml/"?>'>
 
 													<div class="profile-user-info profile-user-info-striped">
 														<div class="profile-info-row">
@@ -330,11 +330,11 @@
 																	<button type="button" id="buttonExcel" name="buttonExcel" class="btn btn-white btn-info btn-bold btn-xs"> Generar archivo Excel <i class="ace-icon fa fa-file-excel-o bigger-110 icon-only"></i>
 																	</button>
 																</div>
-																<div class="profile-info-name"></div>
+																<!--<div class="profile-info-name"></div>
 																<div class="profile-info-name">
 																	<button type="button" id="buttonPdf" name="buttonPdf" class="btn btn-white btn-info btn-bold btn-xs"> Enviar archivos PDF <i class="ace-icon fa fa-file-pdf-o bigger-110 icon-only"></i>
 																	</button>
-																</div>
+																</div>-->
 																<div class="profile-info-name"></div>
 																<div class="profile-info-name">
 																	<button type="submit" id="buttonComprobante" name="buttonComprobante" class="btn btn-white btn-info btn-bold btn-xs" > Crear archivo Comprobante <i class="ace-icon fa fa-file-code-o bigger-110 icon-only"></i>
@@ -484,7 +484,7 @@
 					var canales = $("#canales").val();
 					//ajax para pasar los parámetros
 					$.ajax({
-						url: "<?= BASE_URL()?>comprobante_pago_cnt/generarLista",
+						url: "<?= BASE_URL()?>boletaje_cnt/generarLista",
 						type: 'POST',
 						dataType: 'json',
 						data: {canales:canales},
@@ -510,7 +510,7 @@
 				//función para enviar datos a la tabla dinámica que se va a generar    
 			    $('#buttonBuscar').click(function(){
 			        $.ajax({                        
-			           	url: "<?= BASE_URL()?>comprobante_pago_cnt/mostrarDatosComprobantes",   
+			           	url: "<?= BASE_URL()?>boletaje_cnt/mostrarDatosComprobantes",   
 			           	type: 'POST',
 			           	dataType: 'json',                                 
 			           	data: $("#formCategoria").serialize(), 
@@ -536,7 +536,7 @@
 			    	var canales = $("#canales").val();
 
 			        $.ajax({                        
-			           	url: "<?= BASE_URL()?>comprobante_pago_cnt/generarExcel",   
+			           	url: "<?= BASE_URL()?>boletaje_cnt/generarExcel",   
 			           	type: 'POST',
 			           	dataType: 'json',                                 
 			           	data: {fechainicio:fechainicio,
@@ -576,7 +576,7 @@
 
 				$('#buttonDbf').click(function(){
 			        $.ajax({                        
-			           	url: "<?= BASE_URL()?>comprobante_pago_cnt/generarArchivoDbf",   
+			           	url: "<?= BASE_URL()?>boletaje_cnt/generarArchivoDbf",   
 			           	type: 'POST',
 			           	dataType: 'json',                                 
 			           	data: $("#formCategoria").serialize(), 
@@ -590,7 +590,7 @@
 
 			    $('#buttonComprobante').click(function(){
 			        $.ajax({                        
-			           	url: "<?= BASE_URL()?>comprobante_pago_cnt/crearXml",   
+			           	url: "<?= BASE_URL()?>boletaje_cnt/crearXml",   
 			           	type: 'POST',
 			           	dataType: 'json',                                 
 			           	data: $("#formCategoria").serialize(), 
