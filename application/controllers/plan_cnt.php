@@ -162,7 +162,7 @@ class plan_cnt extends CI_Controller {
 			else:
 				$this->plan_mdl->update_plan($data);
 		endif;
-		redirect('plan');
+		redirect('index.php/plan');
 	}
 
 	function guardar_cobertura()
@@ -200,13 +200,13 @@ class plan_cnt extends CI_Controller {
  	function plan_anular($id)
  	{
  		$this->plan_mdl->plan_anular($id);
- 		redirect('plan');
+ 		redirect('index.php/plan');
  	}
 
  	function plan_activar($id)
  	{
  		$this->plan_mdl->plan_activar($id);
- 		redirect('plan');
+ 		redirect('index.php/plan');
  	}
 
  	function cobertura_anular($id, $nom, $iddet)

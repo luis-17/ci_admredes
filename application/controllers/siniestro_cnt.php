@@ -420,7 +420,7 @@ class Siniestro_cnt extends CI_Controller {
 			$insert = $this->db->insert_id();
 
 			//$this->load->view('dsb/html/atencion/test.php',$data);
-			redirect(base_url()."siniestro/".$insert);
+			redirect(base_url()."index.php/siniestro/".$insert);
 		}
 		else{
 			redirect('/');
@@ -472,7 +472,7 @@ class Siniestro_cnt extends CI_Controller {
 
 				//$this->load->view('dsb/html/liquidacion/liquidacion.php',$data);
 
-				redirect(base_url()."siniestro/".$data['idsiniestro']);
+				redirect(base_url()."index.php/siniestro/".$data['idsiniestro']);
 
 
 			}else if($_POST['presscheck']==1){
@@ -507,7 +507,7 @@ class Siniestro_cnt extends CI_Controller {
 		    
 			//$this->load->view('dsb/html/liquidacion/liquidacion.php',$data);
 			//$this->load->view('dsb/html/atencion/test.php',$data);
-			redirect(base_url()."siniestro/".$data['idsiniestro']);
+			redirect(base_url()."index.php/siniestro/".$data['idsiniestro']);
 		}
 		else{
 			redirect('/');

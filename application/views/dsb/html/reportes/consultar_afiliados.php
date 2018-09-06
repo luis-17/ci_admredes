@@ -65,6 +65,13 @@
 		<script src="<?=  base_url()?>public/assets/js/ace-extra.js"></script>
 
 		<!-- HTML5shiv and Respond.js for IE8 to support HTML5 elements and media queries -->
+		<!-- para paginacion -->
+		<script src="<?=base_url()?>public/pagination/jquery.dataTables.min.css"></script>
+		<script src="<?=base_url()?>public/pagination/jquery-1.12.4.js"></script>
+		<script src="<?=base_url()?>public/pagination/jquery.dataTables.min.js"></script>
+		<script src="<?=base_url()?>public/pagination/dataTables.bootstrap.min.js"></script>
+
+		<!-- HTML5shiv and Respond.js for IE8 to support HTML5 elements and media queries -->
 
 	</head>
 	<body class="no-skin">
@@ -98,7 +105,7 @@
 							</li>
 							<li>
 							<a href="<?=base_url()?>index.php/index">Reportes</a></li>
-							<li class="active">Consultar Cobros</li>
+							<li class="active">Consultar Afiliados</li>
 						</ul><!-- /.breadcrumb -->
 
 						<!-- /section:basics/content.searchbox -->
@@ -110,7 +117,7 @@
 						<!-- /section:settings.box -->
 						<div class="page-header">
 							<h1>
-								Consultar Cobros
+								Consultar Afiliados
 								<small>
 									<i class="ace-icon fa fa-angle-double-right"></i>									
 								</small>
@@ -120,16 +127,16 @@
 						<div class="row">
 							<div class="col-xs-12">
 								<!-- PAGE CONTENT BEGINS -->						
-								<div align="center">								
+								<div>								
 									<div class="col-xs-9 col-sm-12">
 										<div class="widget-box transparent">
 											<div class="profile-user-info profile-user-info-striped">
 												<div class="profile-info-row">
 
-												<form name="form" id="form" method="post" action="<?=base_url()?>index.php/consultar_cobros_buscar" class="form-horizontal">
+												<form name="form" id="form" method="post" action="<?=base_url()?>index.php/consultar_afiliados_buscar" class="form-horizontal">
 													<div class="profile-info-name"> Canal: </div>
 													<div class="profile-info-name">
-														<select name="canal" id="canal" required="Seleccione una opción de la lista" class="form-control"  style="width: 150px;">
+														<select name="canal" id="canal" required="Seleccione una opción de la lista" class="form-control"  style="width: 200px;">
 															<option value="">Seleccione</option>
 															<?php foreach ($canales as $c):
 																if($canal==$c->idclienteempresa):
@@ -139,11 +146,11 @@
 																endif;?>
 																<option value="<?=$c->idclienteempresa;?>" <?=$estc?> ><?=$c->nombre_comercial_cli?> </option>
 															<?php endforeach; ?>
-													</select>
+														</select>
 													</div>
 													<div class="profile-info-name"> Plan: </div>
 													<div class="profile-info-name">
-														<select name="plan" id="plan" required="Seleccione una opción de la lista"  class="form-control"  style="width: 150px;">											
+														<select name="plan" id="plan" required="Seleccione una opción de la lista"  class="form-control"  style="width: 200px;">											
 															<option value="">Seleccione</option>
 															<?php 
 																$cancelar='N';
@@ -160,20 +167,19 @@
 																<?php endforeach; ?>				
 														</select>
 													</div>
-													<div class="profile-info-name"> Inicio: </div>
+													<div class="profile-info-name"> Plan: </div>
 													<div class="profile-info-name">
-														<input class="form-control input-mask-date" type="date" id="fechainicio" name="fechainicio" required="Seleccione una fecha de inicio" value="<?=$fecinicio;?>">
-													</div>
-													<div class="profile-info-name"> Fin: </div>
-													<div class="profile-info-name">
-														<input class="form-control input-mask-date" type="date" id="fechafin" name="fechafin" required="Seleccione una fecha de fin" value="<?=$fecfin;?>">														
+														<select name="tipo" id="tipo" required="Seleccione una opción de la lista"  class="form-control"   style="width: 200px;">											
+															<option value="1">Vigentes</option>
+															<option value="3">Cancelados</option>
+														</select>
 													</div>
 													<div  class="profile-info-name">
 													<button type="submit" class="btn btn-info btn-xs">Buscar 
 														<i class="ace-icon glyphicon glyphicon-search bigger-110 icon-only"></i>
 													</button>
 													</form>	
-													<a href="<?php echo base_url(); ?>exportar2excel" target="_blank"><button class="btn btn-info" type="button" onclick="exportar_cobros()" style="">Descargar excel</button>	</a>													
+													<button onclick="exportar_cobros()" style="display: none;">exportar</button>														
 													</div>
 												</div>
 											</div>
@@ -189,77 +195,42 @@
 								<div style="display: <?=$estilo;?>;">
 									<!-- star table -->		
 										<div  align="center" class="col-xs-12">
-											<table align="center" id="simple-table" class="table table-striped table-bordered table-hover">
+											<table align="center" id="example" class="table table-striped table-bordered table-hover">
 												<thead>
 													<tr>
-														<th>Descripción</th>
-														<th>Importe (S/.)</th>
-														<th>Número de Primas</th>
-														<th>Sub Total (S/.)</th>
-														<th></th>
+														<th>ID Cert.</th>
+														<th>N° Certificado</th>
+														<th>N° Documento</th>
+														<th>Afiliado</th>
+														<th>N° Teléfono</th>
+														<th>Tipo</th>
 													</tr>
 												</thead>
 
 												<tbody>
-													<?php $tot=0; $totcant=0;
-													foreach ($cobros as $co){
-													$importe=$co->cob_importe;
-													$importe=$importe/100;
-													$importe=number_format((float)$importe, 2, '.', ',');
-													$cant=$co->cant;
-													$cant2=number_format((float)$cant, 0, '', ',');
-													$totcant=$totcant+$cant;
-													$sub=$cant*$importe;
-													$sub2=number_format((float)$sub, 2, '.', ',');
-													$tot=$tot+$sub;
-													$desc=$co->descripcion;
+													<?php 
+													foreach ($afiliados as $a):
 													?>
 													<tr>
-														<td><?=$desc;?></td>
-														<td align="right"><?=$importe;?></td>	
-														<td align="right"><?=$cant2;?></td>
-														<td align="right"><?=$sub2;?></td>
-														<td>
-															<div class="hidden-sm hidden-xs btn-group">
-																<div title="Ver Detalle de Cobros" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
-																<a class="boton fancybox" href="<?=base_url()?>index.php/consultar_detalle_cobros/<?=$co->cob_importe;?>/<?=$plan_id;?>/<?=$fecinicio;?>/<?=$fecfin?>" data-fancybox-width="950" data-fancybox-height="690">
-																	<i class="ace-icon fa fa-eye bigger-120"></i>
-																</a>
-																</div>
-															</div>
-
-															<div class="hidden-md hidden-lg">
-																<div class="inline pos-rel">
-																	<button class="btn btn-minier btn-primary dropdown-toggle" data-toggle="dropdown" data-position="auto">
-																		<i class="ace-icon fa fa-cog icon-only bigger-110"></i>
-																	</button>
-
-																	<ul class="dropdown-menu dropdown-only-icon dropdown-yellow dropdown-menu-right dropdown-caret dropdown-close">
-																			<li>
-																				<div title="Ver Detalle de Cobros" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
-																				<a class="boton fancybox" href="<?=base_url()?>index.php/consultar_detalle_cobros/<?=$co->cob_importe;?>/<?=$plan_id;?>/<?=$fecinicio;?>/<?=$fecfin?>" data-fancybox-width="950" data-fancybox-height="690">
-																					<i class="ace-icon fa fa-eye bigger-120"></i>
-																				</a>
-																				</div>
-																			</li>				
-																		</ul>
-																	</div>
-																</div>
-														</td>
+														<td><?=$a->cert_id;?></td>	
+														<td><?=$a->cert_num;?></td>
+														<td><?=$a->aseg_numDoc;?></td>
+														<td><?=$a->asegurado;?></td>
+														<td><?=$a->aseg_telf;?></td>
+														<td><?=$a->tipo;?></td>
 													</tr>
-													<?php } ?>
-												</tbody>
-												<?php 
-													$tot=number_format((float)$tot, 2, '.', ',');
-													$totcant=number_format((float)$totcant, 0, '', ',');?>
-												<tbody>
-													<td colspan="2"><b>TOTAL</b></td>
-													<td align="right"><b><?=$totcant;?></b></td>
-													<td align="right"><b><?=$tot;?></b></td>
-													<td></td>
+													<?php endforeach; ?>
 												</tbody>
 											</table>
 										</div>
+										<script>			
+										//para paginacion
+										$(document).ready(function() {
+										$('#example').DataTable( {
+										"pagingType": "full_numbers"
+										} );
+									} );
+									</script>	
 										</div>
 										<!-- end table -->
 								</div>

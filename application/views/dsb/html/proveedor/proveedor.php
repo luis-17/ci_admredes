@@ -118,6 +118,7 @@
 								<table id="example" class="table table-striped table-bordered table-hover">
 									<thead>
 										<tr>
+											<th>ID</th>
 											<th>DNI/RUC</th>
 											<th>Razón Social</th>
 											<th>Nombre Comercial</th>
@@ -131,15 +132,16 @@
 									<tbody>
 									<?php foreach($proveedores as $pr){?>
 										<tr>
+											<td><?=$pr->idproveedor;?></td>
 											<td><?=$pr->numero_documento_pr?></td>
 											<td><?=$pr->razon_social_pr?></td>
 											<td><?=$pr->nombre_comercial_pr?></td>
 											<td><?=$pr->direccion_pr?></td>
 											<td><?php echo ''.$pr->dep.'-'.$pr->prov.'-'.$pr->dist; ?></td>
 											<td><?php if($pr->estado_pr==1){
-												echo '<a href="'.base_url().'inhabilitar_proveedor/'.$pr->idproveedor.'"><span class="label label-info label-white middle">Activo</span></a>';
+												echo '<a href="'.base_url().'index.php/inhabilitar_proveedor/'.$pr->idproveedor.'"><span class="label label-info label-white middle">Activo</span></a>';
 														}else{
-															echo '<a href="'.base_url().'habilitar_proveedor/'.$pr->idproveedor.'"><span class="label label-danger label-white middle">Inactivo</span></a>';
+															echo '<a href="'.base_url().'index.php/habilitar_proveedor/'.$pr->idproveedor.'"><span class="label label-danger label-white middle">Inactivo</span></a>';
 															}?></td>
 											<td style="width: 5%;">
 												<div class="hidden-sm hidden-xs btn-group">

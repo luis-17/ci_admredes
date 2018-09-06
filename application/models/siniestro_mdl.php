@@ -156,7 +156,6 @@
 
 	$medicamento = $this->db->get();
 	 return $medicamento->result_array();	
-
 	}
 
 

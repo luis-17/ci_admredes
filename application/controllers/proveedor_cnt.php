@@ -61,13 +61,13 @@ class Proveedor_cnt extends CI_Controller {
 	public function habilitar($id)
 	{
 		$anular_proveedor = $this->proveedor_mdl->habilitar($id);
-		redirect ('proveedor');
+		redirect ('index.php/proveedor');
 	}
 
 	public function inhabilitar($id)
 	{
 		$anular_proveedor = $this->proveedor_mdl->inhabilitar($id);
-		redirect ('proveedor');
+		redirect ('index.php/proveedor');
 	}
 
 	public function nuevo()
@@ -182,7 +182,7 @@ class Proveedor_cnt extends CI_Controller {
 				$this->proveedor_mdl->in_proveedor($data);	
 
 				echo "<script>
-				alert('Los datos del proveedor han sido registrados con éxito.');window.location.assign('".base_url()."proveedor')
+				alert('Los datos del proveedor han sido registrados con éxito.');window.location.assign('".base_url()."index.php/proveedor')
 				</script>";
 
 			}else{
@@ -190,7 +190,7 @@ class Proveedor_cnt extends CI_Controller {
 				$this->proveedor_mdl->up_usuario($data);
 				$this->proveedor_mdl->up_proveedor($data);
 				echo "<script>
-				alert('Los datos del proveedor han sido actualizados con éxito.');window.location.assign('".base_url()."proveedor')
+				alert('Los datos del proveedor han sido actualizados con éxito.');window.location.assign('".base_url()."index.php/proveedor')
 				</script>";
 			}
 				
@@ -268,13 +268,13 @@ class Proveedor_cnt extends CI_Controller {
 		if($data['idcp']==0){
 			$this->proveedor_mdl->add_contacto($data);
 			echo "<script>
-				alert('Los datos del contacto han sido registrados con éxito.');window.location.assign('".base_url()."proveedor_contactos/".$data['idp']."')
+				alert('Los datos del contacto han sido registrados con éxito.');window.location.assign('".base_url()."index.php/proveedor_contactos/".$data['idp']."')
 				</script>";
 
 		}else{
 			$this->proveedor_mdl->up_contacto($data);
 			echo "<script>
-				alert('Los datos del contacto han sido actualizados con éxito.');window.location.assign('".base_url()."proveedor_contactos/".$data['idp']."')
+				alert('Los datos del contacto han sido actualizados con éxito.');window.location.assign('".base_url()."index.php/proveedor_contactos/".$data['idp']."')
 				</script>";
 		}
 
@@ -283,13 +283,13 @@ class Proveedor_cnt extends CI_Controller {
 	public function contacto_anular($idcp,$idp)
 	{
 		$this->proveedor_mdl->anularc($idcp);
-		redirect("proveedor_contactos/$idp");
+		redirect("index.php/proveedor_contactos/$idp");
 	}
 
 	public function contacto_activar($idcp,$idp)
 	{
 		$this->proveedor_mdl->activarc($idcp);
-		redirect("proveedor_contactos/$idp");
+		redirect("index.php/proveedor_contactos/$idp");
 	}
 
 }

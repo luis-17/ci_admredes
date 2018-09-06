@@ -63,7 +63,7 @@
 										<table id="example" class="table table-striped table-bordered table-hover">
 											<thead>
 													<tr>
-														<th></th>
+														<th>ID</th>
 														<th>Num. Certificado</th>
 														<th>DNI</th>
 														<th>Contratante</th>
@@ -74,16 +74,16 @@
 												</thead>
 
 												<tbody>
-													<?php $cont=0;
+													<?php 
 													foreach ($cobros as $co):
 													$importe=$co->cob_importe;
 													$importe=$importe/100;
 													$importe=number_format((float)$importe, 2, '.', '');
 													$fecha=$co->cob_fechCob;
 													$fecha=date("d/m/Y", strtotime($fecha));
-													$cont=$cont+1;?>
+													?>
 													<tr>
-														<td align="right"><?=$cont;?></td>
+														<td align="right"><?=$co->cert_id;?></td>
 														<td><?=$co->cert_num;?></td>
 														<td><?=$co->cont_numDoc;?></td>
 														<td><?=$co->contratante;?></td>

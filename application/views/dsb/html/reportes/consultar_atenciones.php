@@ -65,6 +65,11 @@
 		<script src="<?=  base_url()?>public/assets/js/ace-extra.js"></script>
 
 		<!-- HTML5shiv and Respond.js for IE8 to support HTML5 elements and media queries -->
+		<!-- para paginacion -->
+		<script src="<?=base_url()?>public/pagination/jquery.dataTables.min.css"></script>
+		<script src="<?=base_url()?>public/pagination/jquery-1.12.4.js"></script>
+		<script src="<?=base_url()?>public/pagination/jquery.dataTables.min.js"></script>
+		<script src="<?=base_url()?>public/pagination/dataTables.bootstrap.min.js"></script>
 
 	</head>
 	<body class="no-skin">
@@ -98,7 +103,7 @@
 							</li>
 							<li>
 							<a href="<?=base_url()?>index.php/index">Reportes</a></li>
-							<li class="active">Consultar Cobros</li>
+							<li class="active">Consultar Atenciones</li>
 						</ul><!-- /.breadcrumb -->
 
 						<!-- /section:basics/content.searchbox -->
@@ -110,7 +115,7 @@
 						<!-- /section:settings.box -->
 						<div class="page-header">
 							<h1>
-								Consultar Cobros
+								Consultar Atenciones
 								<small>
 									<i class="ace-icon fa fa-angle-double-right"></i>									
 								</small>
@@ -126,10 +131,10 @@
 											<div class="profile-user-info profile-user-info-striped">
 												<div class="profile-info-row">
 
-												<form name="form" id="form" method="post" action="<?=base_url()?>index.php/consultar_cobros_buscar" class="form-horizontal">
+												<form name="form" id="form" method="post" action="<?=base_url()?>index.php/consultar_atenciones_buscar" class="form-horizontal">
 													<div class="profile-info-name"> Canal: </div>
 													<div class="profile-info-name">
-														<select name="canal" id="canal" required="Seleccione una opción de la lista" class="form-control"  style="width: 150px;">
+														<select name="canal" id="canal" required="Seleccione una opción de la lista" class="form-control" style="width: 150px;">
 															<option value="">Seleccione</option>
 															<?php foreach ($canales as $c):
 																if($canal==$c->idclienteempresa):
@@ -143,7 +148,7 @@
 													</div>
 													<div class="profile-info-name"> Plan: </div>
 													<div class="profile-info-name">
-														<select name="plan" id="plan" required="Seleccione una opción de la lista"  class="form-control"  style="width: 150px;">											
+														<select name="plan" id="plan" required="Seleccione una opción de la lista"  class="form-control" style="width: 150px;">											
 															<option value="">Seleccione</option>
 															<?php 
 																$cancelar='N';
@@ -173,7 +178,7 @@
 														<i class="ace-icon glyphicon glyphicon-search bigger-110 icon-only"></i>
 													</button>
 													</form>	
-													<a href="<?php echo base_url(); ?>exportar2excel" target="_blank"><button class="btn btn-info" type="button" onclick="exportar_cobros()" style="">Descargar excel</button>	</a>													
+													<button onclick="exportar_cobros()" style="display: none;">exportar</button>														
 													</div>
 												</div>
 											</div>
@@ -185,81 +190,89 @@
 								<br/>		
 								</div><!-- PAGE CONTENT ENDS -->
 								<br />
-								<div  align="center" >
+								<div>
 								<div style="display: <?=$estilo;?>;">
 									<!-- star table -->		
 										<div  align="center" class="col-xs-12">
-											<table align="center" id="simple-table" class="table table-striped table-bordered table-hover">
+											<table align="center" id="example" class="table table-striped table-bordered table-hover">
 												<thead>
 													<tr>
-														<th>Descripción</th>
-														<th>Importe (S/.)</th>
-														<th>Número de Primas</th>
-														<th>Sub Total (S/.)</th>
-														<th></th>
+														<th>N° Atención</th>
+														<th>Fecha</th>
+														<th>N° Documento (S/.)</th>
+														<th>Afiliado</th>
+														<th>Tipo</th>
+														<th>N° Teléfono</th>
+														<th>Centro Médico</th>
+														<th>Especialidad</th>
+														<th>Estado</th>
 													</tr>
 												</thead>
 
 												<tbody>
 													<?php $tot=0; $totcant=0;
-													foreach ($cobros as $co){
-													$importe=$co->cob_importe;
-													$importe=$importe/100;
-													$importe=number_format((float)$importe, 2, '.', ',');
-													$cant=$co->cant;
-													$cant2=number_format((float)$cant, 0, '', ',');
-													$totcant=$totcant+$cant;
-													$sub=$cant*$importe;
-													$sub2=number_format((float)$sub, 2, '.', ',');
-													$tot=$tot+$sub;
-													$desc=$co->descripcion;
+													foreach ($atenciones as $a):
+														if($a->estado_atencion=='P'){
+															switch ($a->estado_cita):
+																case 0: 
+																	$estadoa='Reserva Anulada';
+																	$class="label label-danger label-white middle";
+																	$e1=0;
+																break;
+																case 1:
+																	$estadoa='Reserva Por Confirmar';
+																	$e1=1;
+																	$class="label label-warning label-white middle";
+																break;
+																case 2:
+																	$estadoa='Reserva Confirmada';
+																	$e1=2;
+																	$class="label label-success label-white middle";
+																break;
+															endswitch;
+														}else{
+															switch($a->estado_siniestro):
+																case 0: 
+																	$estadoa='Atención Anulada';
+																	$e2=0;
+																	$class="label label-danger label-white middle";
+																break;
+																case 1:
+																	$estadoa='Atención Abierta';
+																	$e2=1;
+																	$class="label label-info label-white middle";
+																break;
+																case 2:
+																	$estadoa='Atención Cerrada';
+																	$e2=2;
+																	$class="label label-purple label-white middle";
+																break;
+															endswitch;
+														}
 													?>
 													<tr>
-														<td><?=$desc;?></td>
-														<td align="right"><?=$importe;?></td>	
-														<td align="right"><?=$cant2;?></td>
-														<td align="right"><?=$sub2;?></td>
-														<td>
-															<div class="hidden-sm hidden-xs btn-group">
-																<div title="Ver Detalle de Cobros" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
-																<a class="boton fancybox" href="<?=base_url()?>index.php/consultar_detalle_cobros/<?=$co->cob_importe;?>/<?=$plan_id;?>/<?=$fecinicio;?>/<?=$fecfin?>" data-fancybox-width="950" data-fancybox-height="690">
-																	<i class="ace-icon fa fa-eye bigger-120"></i>
-																</a>
-																</div>
-															</div>
-
-															<div class="hidden-md hidden-lg">
-																<div class="inline pos-rel">
-																	<button class="btn btn-minier btn-primary dropdown-toggle" data-toggle="dropdown" data-position="auto">
-																		<i class="ace-icon fa fa-cog icon-only bigger-110"></i>
-																	</button>
-
-																	<ul class="dropdown-menu dropdown-only-icon dropdown-yellow dropdown-menu-right dropdown-caret dropdown-close">
-																			<li>
-																				<div title="Ver Detalle de Cobros" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
-																				<a class="boton fancybox" href="<?=base_url()?>index.php/consultar_detalle_cobros/<?=$co->cob_importe;?>/<?=$plan_id;?>/<?=$fecinicio;?>/<?=$fecfin?>" data-fancybox-width="950" data-fancybox-height="690">
-																					<i class="ace-icon fa fa-eye bigger-120"></i>
-																				</a>
-																				</div>
-																			</li>				
-																		</ul>
-																	</div>
-																</div>
-														</td>
+														<td><?=$a->tipo_atencion;?></td>	
+														<td><?php echo date("d-m-Y",strtotime($a->fecha_atencion));?></td>
+														<td><?=$a->aseg_numDoc;?></td>
+														<td><?=$a->asegurado;?></td>
+														<td><?=$a->tipo_afiliado;?></td>
+														<td><?=$a->aseg_telf;?></td>
+														<td><?=$a->nombre_comercial_pr;?></td>
+														<td><?=$a->nombre_esp;?></td>
+														<td><span class="<?=$class;?>"><?=$estadoa;?></span></td>														
 													</tr>
-													<?php } ?>
-												</tbody>
-												<?php 
-													$tot=number_format((float)$tot, 2, '.', ',');
-													$totcant=number_format((float)$totcant, 0, '', ',');?>
-												<tbody>
-													<td colspan="2"><b>TOTAL</b></td>
-													<td align="right"><b><?=$totcant;?></b></td>
-													<td align="right"><b><?=$tot;?></b></td>
-													<td></td>
-												</tbody>
+													<?php endforeach; ?>
+												</tbody>												
 											</table>
 										</div>
+										<script>			
+										//para paginacion
+										$(document).ready(function() {
+										$('#example').DataTable( {
+										"pagingType": "full_numbers"
+										} );
+									} );
+									</script>	
 										</div>
 										<!-- end table -->
 								</div>

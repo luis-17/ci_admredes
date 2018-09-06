@@ -106,14 +106,14 @@ class Certificadodetalle_cnt extends CI_Controller {
 	public function activar_certificado($id,$doc)
 	{
 		$activar_certificado = $this->certificado_mdl->activar_certificado($id);
-		$ruta='certificado_detalle/'.$id.'/'.$doc;
+		$ruta='index.php/certificado_detalle/'.$id.'/'.$doc;
 		redirect ($ruta);
 	}
 
 	public function cancelar_certificado($id,$doc)
 	{
 		$cancelar_certificado = $this->certificado_mdl->cancelar_certificado($id);
-		$ruta='certificado_detalle/'.$id.'/'.$doc;
+		$ruta='index.php/certificado_detalle/'.$id.'/'.$doc;
 		redirect ($ruta);
 	}
 
@@ -123,7 +123,7 @@ class Certificadodetalle_cnt extends CI_Controller {
 		$data['aseg_id'] =$idaseg;
 		$data['cita'] = $cita;
 		$data['certase_id'] = $certase_id;
-		$data['fin'] = $fin;
+		$data['max'] = $fin;
 
 		$asegurado = $this->certificado_mdl->getAsegurado($id);
 		$data['asegurado'] = $asegurado;
@@ -153,6 +153,8 @@ class Certificadodetalle_cnt extends CI_Controller {
 		$cert_id = $_POST['cert_id'];
 		$data['aseg_id'] = $_POST['aseg_id'];
 		$data['cert_id'] = $_POST['cert_id'];
+		$data['inicio'] = $_POST['inicio'];
+		$data['fin'] = $_POST['fin'];
 		$data['certase_id'] = $_POST['certase_id'];
 		$data['idproveedor'] = $_POST['proveedor'];	
 		$data['idespecialidad'] = $_POST['producto'];	
@@ -213,7 +215,7 @@ class Certificadodetalle_cnt extends CI_Controller {
 		$doc = $_POST['doc'];
 
 		$this->certificado_mdl->cont_save($data);
-		redirect("certificado_detalle/".$id2."/".$doc);
+		redirect("index.php/certificado_detalle/".$id2."/".$doc);
 	}
 
 	public function cert_aseg_up(){
