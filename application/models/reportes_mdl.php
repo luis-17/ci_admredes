@@ -75,5 +75,16 @@
  	$query = $this->db->get();
  	return $query->result();
  	}
+
+ 	function cons_afiliados($data){
+ 		$this->db->select("c.plan_id,c.cert_id, cert_num, a.aseg_numDoc, concat(COALESCE(a.aseg_ape1,''),' ',COALESCE(aseg_ape2,''),' ',COALESCE(aseg_nom1,''),' ',COALESCE(aseg_nom2,'')) as asegurado, aseg_telf, case when a.aseg_numDoc=co.cont_numDoc then 'Titular' else 'Dependiente' end as tipo");
+ 		$this->db->from("asegurado a");
+ 		$this->db->join("certificado_asegurado ca","a.aseg_id=ca.aseg_id");
+ 		$this->db->join("certificado c","c.cert_id=ca.cert_id");
+ 		$this->db->join("contratante co","co.cont_id=c.cont_id");
+ 		$this->db->where("c.plan_id=".$data['plan']." and ca.cert_estado=".$data['tipo']." and cert_num <> '777777' and cont_numDoc not in (16678790,16658405,16678789,07269819,16678783,16442021,16405620,45645645,46448942,16427997,45636363, 56565656,54545454,42450852,16678785,16678784,16678787,16678788,16678786,30303030,00212121,42611112,46736156,18756402, 46736156)");
+ 	$query = $this->db->get();
+ 	return $query->result();
+ 	}
 }
 ?>

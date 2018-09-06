@@ -276,4 +276,48 @@ class Reportes_cnt extends CI_Controller {
 			redirect('/');
 		}
 	}
+
+	public function consultar_afiliados_buscar()
+	{
+		//load session library
+		$this->load->library('session');
+
+		//restrict users to go to home if not logged in
+		if($this->session->userdata('user')){
+			//$this->load->view('home');
+
+			$user = $this->session->userdata('user');
+			extract($user);
+
+			$menuLista = $this->menu_mdl->getMenu($idusuario);
+			$data['menu1'] = $menuLista;
+
+			$submenuLista = $this->menu_mdl->getSubMenu($idusuario);
+			$data['menu2'] = $submenuLista;
+
+			$data['canal'] = $_POST['canal'];
+			$data['plan'] = $_POST['plan'];
+			$datos['canal'] = $_POST['canal'];
+			$datos['plan'] = $_POST['plan'];
+			$datos['tipo'] = $_POST['tipo'];
+
+			$data['plan_id'] = $_POST['plan'];		
+			$data['tipo'] = $_POST['tipo'];
+
+			$afiliados = $this->reportes_mdl->cons_afiliados($datos);
+			$data['afiliados'] = $afiliados;	
+
+			$data['canales'] = $this->reportes_mdl->getCanales();
+			$planes = $this->reportes_mdl->getPlanes2($datos['canal']);
+			$data['planes'] = $planes;
+
+			$data['estilo'] = 'block';
+
+
+			$this->load->view('dsb/html/reportes/consultar_afiliados.php',$data);
+		}
+		else{
+			redirect('/');
+		}
+	}
 }
