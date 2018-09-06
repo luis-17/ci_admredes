@@ -73,8 +73,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 $active_group = 'default';
 $query_builder = TRUE;
 
-/* bbdd desarrollo new redes
-
+/* bbdd desarrollo new redes */
 	$db['default'] = array(
 	'dsn'	=> '',
 	'hostname' => '192.168.10.131:3306',
@@ -95,17 +94,19 @@ $query_builder = TRUE;
 	'stricton' => FALSE,
 	'failover' => array(),
 	'save_queries' => TRUE
-);*/
+);
 
-	/* bbdd produccion godaddy redes new */
+
+	/* bbdd produccion godaddy redes new
+	
 	$active_group = 'default';
 	$query_builder = TRUE;
 	$db['default'] = array(
 	'dsn'	=> '',
 	'hostname' => '50.62.209.11:3306',
-	'username' => 'redperu_admin',
-	'password' => 'du2las0de1r8@peru',
-	'database' => 'new_redes_admin',
+	'username' => 'dev_user_rs',
+	'password' => 'redsaludRS@2018',
+	'database' => 'db_devrs',
 	'dbdriver' => 'mysqli',
 	'dbprefix' => '',
 	'pconnect' => FALSE,
@@ -120,7 +121,7 @@ $query_builder = TRUE;
 	'stricton' => FALSE,
 	'failover' => array(),
 	'save_queries' => TRUE
-);
+); */
 
 
 /* bbdd desarrollo redes new 

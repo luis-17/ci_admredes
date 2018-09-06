@@ -56,92 +56,10 @@
 		<script src="<?=base_url()?>public/pagination/dataTables.bootstrap.min.js"></script>
 
 	</head>
-	<body class="no-skin">
+		<body class="no-skin">
 		<!-- #section:basics/navbar.layout -->
-		<div id="navbar" class="navbar navbar-default">
-			<script type="text/javascript">
-				try{ace.settings.check('navbar' , 'fixed')}catch(e){}
-			</script>
-
-			<div class="navbar-container" id="navbar-container">
-				<!-- #section:basics/sidebar.mobile.toggle -->
-				<button type="button" class="navbar-toggle menu-toggler pull-left" id="menu-toggler" data-target="#sidebar">
-					<span class="sr-only">Toggle sidebar</span>
-
-					<span class="icon-bar"></span>
-
-					<span class="icon-bar"></span>
-
-					<span class="icon-bar"></span>
-				</button>
-
-				<!-- /section:basics/sidebar.mobile.toggle -->
-				<div class="navbar-header pull-left">
-					<!-- #section:basics/navbar.layout.brand -->
-					<a href="#" class="navbar-brand">
-						<small>
-							<i class="fa fa-leaf"></i>
-							RED SALUD
-						</small>
-					</a>
-
-					<!-- /section:basics/navbar.layout.brand -->
-
-					<!-- #section:basics/navbar.toggle -->
-
-					<!-- /section:basics/navbar.toggle -->
-				</div>
-
-				<!-- #section:basics/navbar.dropdown -->
-				<div class="navbar-buttons navbar-header pull-right" role="navigation">
-					<ul class="nav ace-nav">
-
-						<!-- #section:basics/navbar.user_menu -->
-						<li class="light-blue">
-							<a data-toggle="dropdown" href="#" class="dropdown-toggle">
-								<img class="nav-user-photo" src="<?=base_url()?>public/assets/avatars/user.jpg" alt="Jason's Photo" />
-								<span class="user-info">
-									<small>Bienvenido,</small>
-									acavero
-								</span>
-
-								<i class="ace-icon fa fa-caret-down"></i>
-							</a>
-
-							<ul class="user-menu dropdown-menu-right dropdown-menu dropdown-yellow dropdown-caret dropdown-close">
-								<li>
-									<a href="#">
-										<i class="ace-icon fa fa-cog"></i>
-										Settings
-									</a>
-								</li>
-
-								<li>
-									<a href="profile.html">
-										<i class="ace-icon fa fa-user"></i>
-										Profile
-									</a>
-								</li>
-
-								<li class="divider"></li>
-
-								<li>
-									<a href="#">
-										<i class="ace-icon fa fa-power-off"></i>
-										Logout
-									</a>
-								</li>
-							</ul>
-						</li>
-
-						<!-- /section:basics/navbar.user_menu -->
-					</ul>
-				</div>
-
-				<!-- /section:basics/navbar.dropdown -->
-			</div><!-- /.navbar-container -->
-		</div>
-
+		<?php include ("/../headBar.php");?>
+		<!-- #section:basics/navbar.layout -->
 		<!-- /section:basics/navbar.layout -->
 		<div class="main-container" id="main-container">
 			<script type="text/javascript">
@@ -149,96 +67,13 @@
 			</script>
 
 			<!-- #section:basics/sidebar -->
-			<div id="sidebar" class="sidebar                  responsive">
-				<script type="text/javascript">
-					try{ace.settings.check('sidebar' , 'fixed')}catch(e){}
-				</script>
-
-				<div class="sidebar-shortcuts" id="sidebar-shortcuts">
-
-					<div class="sidebar-shortcuts-mini" id="sidebar-shortcuts-mini">
-						<span class="btn btn-success"></span>
-
-						<span class="btn btn-info"></span>
-
-						<span class="btn btn-warning"></span>
-
-						<span class="btn btn-danger"></span>
-					</div>
-				</div><!-- /.sidebar-shortcuts -->
-
-				<ul class="nav nav-list">
-					<li class="active">
-						<a href="<?=base_url()?>index">
-							<i class="menu-icon fa fa-tachometer"></i>
-							<span class="menu-text"> Menú </span>
-						</a>
-
-						<b class="arrow"></b>
-					</li>
-
-					<?php foreach ($menu1 as $u):
-						$idmenu1=$u->Id;
-					?>
-
-					<li class="">
-						<a href="#" class="dropdown-toggle">
-							<i class="menu-icon fa <?=$u->icono;?>"></i>
-							<span class="menu-text">
-								<?=$u->menu; ?>
-							</span>
-
-							<b class="arrow fa fa-angle-down"></b>
-						</a>
-						<b class="arrow"></b>
-
-						<?php foreach ($menu2 as $uv):
-							if ($idmenu1==$uv->idmenu) : ?>
-
-								<ul class="submenu">
-									<li class="">
-
-										<a href="<?php echo base_url($uv->archivo)?>">
-											<i class="menu-icon fa fa-caret-right"></i>
-
-											<?=$uv->submenu;?>
-										</a>
-
-										<!-- <a href="<?php //echo base_url().$uv->archivo; ?>">
-											<i class="menu-icon fa fa-caret-right"></i>
-
-											<?=$uv->submenu;?>
-											
-											<b class="arrow fa fa-angle-down"></b>
-										</a> -->
-
-										<b class="arrow"></b>
-									</li>
-								</ul>
-						<?php  
-						endif;
-
-						endforeach; ?>
-
-					</li>
-
-					<?php endforeach; ?>
-				</ul>
-
-				<!-- #section:basics/sidebar.layout.minimize -->
-				<div class="sidebar-toggle sidebar-collapse" id="sidebar-collapse">
-					<i class="ace-icon fa fa-angle-double-left" data-icon1="ace-icon fa fa-angle-double-left" data-icon2="ace-icon fa fa-angle-double-right"></i>
-				</div>
-
-				<!-- /section:basics/sidebar.layout.minimize -->
-				<script type="text/javascript">
-					try{ace.settings.check('sidebar' , 'collapsed')}catch(e){}
-				</script>
-			</div>
+			<?php include ("/../sideBar.php");?>
 			<!-- end nav. -->
 
+			<!-- /section:basics/sidebar -->
 			<div class="main-content">
 				<div class="main-content-inner">
+					<!-- #section:basics/content.breadcrumbs -->
 					<!-- #section:basics/content.breadcrumbs -->
 					<div class="breadcrumbs" id="breadcrumbs">
 						<script type="text/javascript">
@@ -257,118 +92,300 @@
 
 						<!-- /section:basics/content.searchbox -->
 					</div>
+					
+					<!-- /section:basics/content.breadcrumbs -->
+					
 					<div class="page-content">
+						<!-- /section:settings.box -->
 						<div class="page-header">
 							<h1>
 								Ventas
 								<small>
 									<i class="ace-icon fa fa-angle-double-right"></i>
+									
 								</small>
 							</h1>
-						</div>
-					</div>
-					<div class="row">
-						<div class="col-xs-12">
-							<!-- PAGE CONTENT BEGINS -->						
-								<div align="center">								
-									<div class="col-xs-9 col-sm-12">
-										<div class="widget-box transparent">
-												
-												<form name="formCategoria" id="formCategoria" method="post" action='<?=base_url()."index.php/ventas"?>'>
+						</div><!-- /.page-header -->
 
-													<div class="profile-user-info profile-user-info-striped">
-														<div class="profile-info-row">
 
-															<div class="profile-info-name"> Canal: </div>
-															<div class="profile-info-name">
-																<select name="canales" id="canales" required="Seleccione una opción de la lista">
-																	<option value=0>Seleccione</option>
-																	<?php foreach ($canales as $c):
-																		if($idclienteempresa==$c->idclienteempresa):
-																			$estp='selected';
-																		else:
-																			$estp='';
-																		endif;?>
-																		<option value="<?=$c->idclienteempresa;?>" <?=$estp?> ><?=$c->nombre_comercial_cli?></option>
-																	<?php endforeach; ?>
-																</select>
-															</div>
-															<div class="profile-info-name"> Documento: </div>
-															<div class="profile-info-name">
-																<select name="documento" id="documento" required="Seleccione una opción de la lista">
-																</select>
-															</div>
-															<div class="profile-info-name"> Inicio: </div>
-															<div class="profile-info-name">
-																<input class="form-control input-mask-date" type="date" id="fechainicio" name="fechainicio" required="Seleccione una fecha de inicio" value="<?=$fecinicio;?>">
-															</div>
-															<div class="profile-info-name"> Fin: </div>
-															<div class="profile-info-name">
-																<input class="form-control input-mask-date" type="date" id="fechafin" name="fechafin" required="Seleccione una fecha de fin" value="<?=$fecfin;?>">					
-															</div>	
-															<div class="profile-info-name">
-																<button type="button" id="buttonBuscar" class="btn btn-info btn-xs">Buscar 
-																	<i class="ace-icon glyphicon glyphicon-search bigger-110 icon-only"></i>
-																</button>
-															</div>
-														</div>											
-													</div>	
-													<div id="accionesTabla">
-														<hr>
+						<div class="row">
+							<div class="col-xs-12">
+								<!-- PAGE CONTENT BEGINS -->
+								<div class="tabbable">
+									<!-- #section:pages/faq -->
+									<ul class="nav nav-tabs padding-18 tab-size-bigger" id="myTab">
+										<li class="active">
+											<a data-toggle="tab" href="#faq-tab-1">
+												Ventas
+											</a>
+										</li>
+										<li>
+											<a data-toggle="tab" href="#faq-tab-2">
+												Emitir Boletas y Facturas
+											</a>
+										</li>									
+									</ul>
 
-														<div class="profile-user-info profile-user-info-striped">
-															<div  class="profile-info-row">
-																<div class="profile-info-name"> Correlativo: </div>
-																<div class="profile-info-name">
-																    <input class="form-control" name="correlativo" type="number" value="1" id="correlativo">
-																</div>
-																<div class="profile-info-name"> Correlativo actual: </div>
-																<div class="profile-info-name" id="correActual" name="correActual">
-																    <!--<input class="form-control" name="correlativoActual" type="text" value="" id="correlativoActual" disabled>-->
-																</div>
-																<div class="profile-info-name">
-																	<!--<a class="boton fancybox" href="javascript:;" data-fancybox-width="600" data-fancybox-height="490">-->
-																		<button type="button" id="buttonModal" name="buttonModal" class="btn btn-white btn-info btn-bold btn-xs" data-toggle="modal" data-target="#saveModal"> Generar Comprobante de Pago <i class="ace-icon glyphicon glyphicon-save bigger-110 icon-only"></i>
-																		</button>
-																	<!--</a>-->
-																</div>
-																<div class="profile-info-name"></div>
+									<!-- /section:pages/faq -->
+									<div class="tab-content no-border padding-24">
+
+										<div id="faq-tab-1" class="tab-pane fade in active">	
+											<div class="row">
+												<div class="col-xs-12">
+													<!-- PAGE CONTENT BEGINS -->						
+													<div align="center">								
+														<div class="col-xs-9 col-sm-12">
+															<div class="widget-box transparent">
+																	
+																<form name="formCategoria" id="formCategoria" method="post" action='<?=base_url()."index.php/ventas"?>'>
+
+																	<div class="profile-user-info profile-user-info-striped">
+																		<div class="profile-info-row">
+
+																			<div class="profile-info-name"> Canal: </div>
+																			<div class="profile-info-name">
+																				<select name="canales" id="canales" required="Seleccione una opción de la lista">
+																					<option value=0>Seleccione</option>
+																					<?php foreach ($canales as $c):
+																						if($idclienteempresa==$c->idclienteempresa):
+																							$estp='selected';
+																						else:
+																							$estp='';
+																						endif;?>
+																						<option value="<?=$c->idclienteempresa;?>" <?=$estp?> ><?=$c->nombre_comercial_cli?></option>
+																					<?php endforeach; ?>
+																				</select>
+																			</div>
+																			<div class="profile-info-name"> Documento: </div>
+																			<div class="profile-info-name">
+																				<select name="documento" id="documento" required="Seleccione una opción de la lista">
+																				</select>
+																			</div>
+																			<div class="profile-info-name"> Inicio: </div>
+																			<div class="profile-info-name">
+																				<input class="form-control input-mask-date" type="date" id="fechainicio" name="fechainicio" required="Seleccione una fecha de inicio" value="<?=$fecinicio;?>">
+																			</div>
+																			<div class="profile-info-name"> Fin: </div>
+																			<div class="profile-info-name">
+																				<input class="form-control input-mask-date" type="date" id="fechafin" name="fechafin" required="Seleccione una fecha de fin" value="<?=$fecfin;?>">					
+																			</div>	
+																			<div class="profile-info-name">
+																				<button type="button" id="buttonBuscar" class="btn btn-info btn-xs">Buscar 
+																					<i class="ace-icon glyphicon glyphicon-search bigger-110 icon-only"></i>
+																				</button>
+																			</div>
+																		</div>											
+																	</div>				
+																	<div id="resp4"></div>	
+																	<div id="accionesTabla">
+																		<hr>
+
+																		<div class="profile-user-info profile-user-info-striped">
+																			<div  class="profile-info-row">
+																				<div class="profile-info-name"> Correlativo: </div>
+																				<div class="profile-info-name">
+																				    <input class="form-control" name="correlativo" type="number" value="1" id="correlativo">
+																				</div>
+																				<div class="profile-info-name"> Correlativo actual: </div>
+																				<div class="profile-info-name" id="correActual" name="correActual">
+																				    <!--<input class="form-control" name="correlativoActual" type="text" value="" id="correlativoActual" disabled>-->
+																				</div>
+																				<div class="profile-info-name">
+																					<!--<a class="boton fancybox" href="javascript:;" data-fancybox-width="600" data-fancybox-height="490">-->
+																						<button type="button" id="buttonModal" name="buttonModal" class="btn btn-white btn-info btn-bold btn-xs" data-toggle="modal" data-target="#saveModal"> Generar Comprobante de Pago <i class="ace-icon glyphicon glyphicon-save bigger-110 icon-only"></i>
+																						</button>
+																					<!--</a>-->
+																				</div>
+																				<div class="profile-info-name"></div>
+																			</div>
+																		</div>
+																	</div>	
+																	<div id="resp2"></div>							
+																	<div id="resp3"></div>		
+
+																	<!-- Modal -->
+																	<div class="modal fade" id="saveModal" name="saveModal" tabindex="-1" role="dialog" aria-labelledby="saveModalLabel" aria-hidden="true">
+																	  <div class="modal-dialog" role="document">
+																	    <div class="modal-content">
+																	      <div class="modal-header">
+																	        <h5 class="modal-title" id="saveModalLabel">Generar Comprobantes</h5>
+																	        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+																	          <span aria-hidden="true">&times;</span>
+																	        </button>
+																	      </div>
+																	      <div class="modal-body">
+																	       ¿Seguro que desea generar los comprobantes de pago?
+																	      </div>
+																	      <div class="modal-footer">
+																	        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+																	        <button type="button" id="buttonGenerar" name="buttonGenerar" class="btn btn-primary">Aceptar</button>
+																	      </div>
+																	    </div>
+																	  </div>
+																	</div>
+																	
+																</form>
 															</div>
 														</div>
 													</div>
-													<div id="resp2"></div>							
-													<div id="resp3"></div>		
+												</div>									
+												<br/>		
+												<br/>
+												<br/>		
+											</div>			
+										</div>
 
-													<!-- Modal -->
-													<div class="modal fade" id="saveModal" name="saveModal" tabindex="-1" role="dialog" aria-labelledby="saveModalLabel" aria-hidden="true">
-													  <div class="modal-dialog" role="document">
-													    <div class="modal-content">
-													      <div class="modal-header">
-													        <h5 class="modal-title" id="saveModalLabel">Generar Comprobantes</h5>
-													        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-													          <span aria-hidden="true">&times;</span>
-													        </button>
-													      </div>
-													      <div class="modal-body">
-													       ¿Seguro que desea generar los comprobantes de pago?
-													      </div>
-													      <div class="modal-footer">
-													        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-													        <button type="button" id="buttonGenerar" name="buttonGenerar" class="btn btn-primary">Aceptar</button>
-													      </div>
-													    </div>
-													  </div>
+										<div id="faq-tab-2" class="tab-pane fade">
+											<div class="row">
+												<div class="col-xs-12">
+													<!-- PAGE CONTENT BEGINS -->						
+													<div align="center">								
+														<div class="col-xs-9 col-sm-12">
+															<div class="widget-box transparent">
+																	
+																<form name="formCategoriaDos" id="formCategoriaDos" method="post" action='<?=base_url()."index.php/boleta/crearXml/"?>'>
+
+																	<div class="profile-user-info profile-user-info-striped">
+																		<div class="profile-info-row">
+
+																			<div class="profile-info-name"> Plan: </div>
+																			<div class="profile-info-name">
+																				<select name="canalesDos" id="canalesDos" required="Seleccione una opción de la lista">
+																					<option value=0>Seleccione</option>
+																					<?php foreach ($canales as $c):
+																						if($idclienteempresa==$c->idclienteempresa):
+																							$estp='selected';
+																						else:
+																							$estp='';
+																						endif;?>
+																						<option value="<?=$c->idclienteempresa;?>" <?=$estp?> ><?=$c->nombre_comercial_cli?></option>
+																					<?php endforeach; ?>
+																				</select>
+																			</div>
+																			<div class="profile-info-name"> Inicio: </div>
+																			<div class="profile-info-name">
+																				<input class="form-control input-mask-date" type="date" id="fechainicioDos" name="fechainicioDos" required="Seleccione una fecha de inicio" value="<?=$fecinicio;?>">
+																			</div>
+																			<div class="profile-info-name"> Fin: </div>
+																			<div class="profile-info-name">
+																				<input class="form-control input-mask-date" type="date" id="fechafinDos" name="fechafinDos" required="Seleccione una fecha de fin" value="<?=$fecfin;?>">					
+																			</div>	
+
+																			<div class="profile-info-name"></div>
+																			<div class="profile-info-name">
+																				<button type="button" id="buttonBuscarDos" class="btn btn-info btn-xs">Buscar 
+																					<i class="ace-icon glyphicon glyphicon-search bigger-110 icon-only"></i>
+																				</button>
+																			</div>
+																			<div class="profile-info-name"></div>
+																		</div>											
+																	</div>	
+																	<div id="resp10"></div>
+																	<br/><br/><br/>
+																	<div id="resp40"></div>
+																	<div id="resp20"></div>
+
+																	<div id="accionesTablaEmitido">
+																		<hr>
+
+																		<div class="profile-user-info profile-user-info-striped">
+																			<div  class="profile-info-row">
+																				<div class="profile-info-name"></div>
+																				<div class="profile-info-name">
+																					<button type="button" id="buttonDbf" name="buttonDbf" class="btn btn-white btn-info btn-bold btn-xs"> Generar Anexos Concar <i class="ace-icon fa fa fa-file-o bigger-110 icon-only"></i>
+																					</button>
+																				</div>
+																				<div class="profile-info-name"></div>
+																				<div class="profile-info-name">
+																					<button type="button" id="buttonExcel" name="buttonExcel" class="btn btn-white btn-info btn-bold btn-xs"> Generar archivo Excel <i class="ace-icon fa fa-file-excel-o bigger-110 icon-only"></i>
+																					</button>
+																				</div>
+																				<!--<div class="profile-info-name"></div>
+																				<div class="profile-info-name">
+																					<button type="button" id="buttonPdf" name="buttonPdf" class="btn btn-white btn-info btn-bold btn-xs"> Enviar archivos PDF <i class="ace-icon fa fa-file-pdf-o bigger-110 icon-only"></i>
+																					</button>
+																				</div>-->
+																				<div class="profile-info-name"></div>
+																				<div class="profile-info-name">
+																					<button type="button" id="buttonComprobante" name="buttonComprobante" class="btn btn-white btn-info btn-bold btn-xs" data-toggle="modal" data-target="#modalXML"> Emitir Comprobante <i class="ace-icon fa fa-file-code-o bigger-110 icon-only"></i>
+																					</button>
+																				</div>
+																				<div class="profile-info-name"></div>
+																			</div>
+																		</div>
+																	</div>				
+																	<div id="resp3"></div>
+
+																</form>
+
+																<div class="modal fade" id="modalXML" name="modalXML" tabindex="-1" role="dialog" aria-labelledby="saveModalLabel" aria-hidden="true">
+																	  <div class="modal-dialog" role="document">
+																	    <div class="modal-content">
+																	      <div class="modal-header">
+																	        <h5 class="modal-title" id="saveModalLabel">Emitir Comprobantes</h5>
+																	        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+																	          <span aria-hidden="true">&times;</span>
+																	        </button>
+																	      </div>
+																	      <div class="modal-body">
+																	       ¿Seguro que desea emitir los comprobantes de pago electrónicos?
+																	      </div>
+																	      <div class="modal-footer">
+																	        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+																	        <button type="button" id="buttonEmitir" name="buttonEmitir" class="btn btn-primary">Aceptar</button>
+																	      </div>
+																	    </div>
+																	  </div>
+																	</div>
+
+																<div class="modal fade" id="modalExcel" role="dialog">
+																    <div class="modal-dialog">
+																        <div class="modal-content">
+																            <div class="modal-header">
+																                <button type="button" class="close" data-dismiss="modal">&times;</button>
+																                <h3 class="modal-title">Se generaró el Excel correctamente.</h3>
+																            </div>
+																            <div class="modal-footer">
+																                <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+																            </div>
+																        </div>
+
+																    </div>
+																</div>
+
+																<div class="modal fade" id="modalAnexo" role="dialog">
+																    <div class="modal-dialog">
+																        <div class="modal-content">
+																            <div class="modal-header">
+																                <button type="button" class="close" data-dismiss="modal">&times;</button>
+																                <h3 class="modal-title">Se envió lista de anexos correctamente.</h3>
+																            </div>
+																            <div class="modal-footer">
+																                <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+																            </div>
+																        </div>
+
+																    </div>
+																</div>
+
+															</div>
+														</div>
 													</div>
-													
-												</form>
+												</div>									
+												<br/>		
+												<br/>
+												<br/>		
 											</div>
 										</div>
+
 									</div>
-								</div>									
-								<br/>		
-								<br/>
-								<br/>		
-							</div>
+								<!-- PAGE CONTENT ENDS -->
+								</div><!-- /.col -->
+							</div><!-- /.row -->
+						</div><!-- /.page-content -->
+
+
+
 					</div>
 				</div>
 			</div>
@@ -454,6 +471,7 @@
 				$("#accionesTabla").hide();
 				//funcion para enviar datos de la vista al controlador
 				//para generar los checkbox dinámicos
+				//VENTAS
 				$("#canales").change(function() {
 					var canales = $("#canales").val();
 					//ajax para pasar los parámetros
@@ -487,12 +505,16 @@
 			           	url: "<?= BASE_URL()?>ventas_cnt/mostrarDatos",   
 			           	type: 'POST',
 			           	dataType: 'json',                                 
-			           	data: $("#formCategoria").serialize(), 
+			           	data: $("#formCategoria").serialize(),
+			           	beforeSend: function(){
+			           		$("#accionesTabla").hide();
+				            $('#resp2').html("<br><br><img src='<?=base_url()."public/assets/img/loading2.gif"?>'>");
+				        },
 			           	success: function(data)             
 			           	{
 
 			           		$("#resp2").html(null);
-			             	$('#resp2').html(data); 
+			             	$('#resp2').html(data);
 							$("#correlativoActual").html(data);
 			             	$("#accionesTabla").show();
 
@@ -522,16 +544,163 @@
 			    		type: 'POST',
 			    		dataType: 'json',
 			    		data: $("#formCategoria").serialize(),
+			    		beforeSend: function(){
+				            $('#resp4').html("<br><br><img src='<?=base_url()."public/assets/img/loading2.gif"?>'>");
+				        },
+				        complete:function() {
+					        $("#resp4").remove();
+					        alert("Comprobante de pago generado.");
+			    			location.reload();
+					    },
 			    		success: function(data)
-			    		{
+			    		{	
 			    			
 			    		}
 			    	});
 			    	$("#saveModal").modal('hide');
-			    	alert("Comprobante de pago emitido");
-			    	location.reload();
+			    	//alert("Comprobante de pago generado");
+			    	//location.reload();
 			    	$('#canales').val() == 0;
 			    	return false;
+			    });
+
+//---------------------------------------------------------------------------------------------------------------------
+			    //BOLETAJE
+
+			    $("#accionesTablaEmitido").hide();
+			    $("#canalesDos").change(function() {
+					var canales = $("#canalesDos").val();
+					//ajax para pasar los parámetros
+					$.ajax({
+						url: "<?= BASE_URL()?>ventas_cnt/generarLista",
+						type: 'POST',
+						dataType: 'json',
+						data: {canales:canales},
+						beforeSend: function(){
+				            $('#resp10').html("<br><br><img src='<?=base_url()."public/assets/img/loading2.gif"?>'>");
+				        },
+						success: function(data)
+						{
+							//#resp es el id del div donde se van a crear los checkbozx
+							if ($('#canalesDos').val() == 0) {
+						       	$("#resp10").html(null);
+								$("#resp20").html(null);
+						    } else {
+								$("#resp10").html(null);
+								$("#resp20").html(null);
+								$("#resp10").html(data);
+						    }
+
+							$("#accionesTablaEmitido").hide();
+						}
+					});
+					return false;
+				});
+
+				//función para enviar datos a la tabla dinámica que se va a generar    
+			    $('#buttonBuscarDos').click(function(){
+			        $.ajax({                        
+			           	url: "<?= BASE_URL()?>ventas_cnt/mostrarDatosComprobantes",   
+			           	type: 'POST',
+			           	dataType: 'json',                                 
+			           	data: $("#formCategoriaDos").serialize(),
+			           	beforeSend: function(){
+				            $('#resp20').html("<br><br><img src='<?=base_url()."public/assets/img/loading2.gif"?>'>");
+				        },
+			           	success: function(data)             
+			           	{
+			           		$("#resp20").html(null);
+			             	$('#resp20').html(data); 
+			             	$("#accionesTablaEmitido").show();
+			             	$('#tablaDatos').DataTable( {
+								"pagingType": "full_numbers"
+							} );
+			           	}
+			       	});
+			       	return false;
+			    });
+
+			    $('#buttonExcel').click(function(){
+
+			    	var fechainicio = $("#fechainicioDos").val();
+			    	var fechafin = $("#fechafinDos").val();
+			    	var numSerie = $("#numSerie").val();
+			    	var canales = $("#canalesDos").val();
+
+			        $.ajax({                        
+			           	url: "<?= BASE_URL()?>ventas_cnt/generarExcel",   
+			           	type: 'POST',
+			           	dataType: 'json',                                 
+			           	data: {fechainicio:fechainicio,
+			           			fechafin:fechafin,
+			           			numSerie:numSerie,
+			           			canales:canales}
+			       	}).done(function(data){
+					    var $a = $("<a>");
+					    $a.attr("href",data.file);
+					    $("body").append($a);
+					    $a.attr("download","file.xls");
+					    $a[0].click();
+					    $a.remove();
+					});
+			    });
+
+				$(function() {
+				    $("#buttonExcel").click(function(){    
+				    	//location.reload(true);    
+				      $('#modalExcel').modal('show');
+				    });
+				});
+
+				$(function() {
+				    $("#buttonDbf").click(function(){    
+				    	//location.reload(true);    
+				      $('#modalAnexo').modal('show');
+				    });
+				});
+
+				$(function() {
+				    $("#buttonEmitir").click(function(){    
+				    	//location.reload(true);    
+				      $('#modalXML').modal('hide');
+				    });
+				});
+
+				$('#buttonDbf').click(function(){
+			        $.ajax({                        
+			           	url: "<?= BASE_URL()?>ventas_cnt/generarArchivoDbf",   
+			           	type: 'POST',
+			           	dataType: 'json',                                 
+			           	data: $("#formCategoriaDos").serialize(), 
+			           	success: function(data)             
+			           	{
+
+			           	}
+			       	});
+			       	return false;
+			    });
+
+			    $('#buttonEmitir').click(function(){
+			        $.ajax({                        
+			           	url: "<?= BASE_URL()?>ventas_cnt/crearXml",   
+			           	type: 'POST',
+			           	dataType: 'json',                                 
+			           	data: $("#formCategoriaDos").serialize(),
+			           	beforeSend: function(){
+				            $('#resp40').html("<img src='<?=base_url()."public/assets/img/loading2.gif"?>'><br><br>");
+				        },
+				        complete:function() {
+					        $("#resp40").remove();
+					        alert("Comprobante electrónico emitido.");
+			    			location.reload();
+					    },
+					    success: function(data)
+					    {
+			           		
+					    }
+			       	});
+			    	$('#canales').val() == 0;
+			       	return false;
 			    });
 
 			});
