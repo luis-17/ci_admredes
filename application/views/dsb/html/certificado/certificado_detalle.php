@@ -179,16 +179,12 @@
 													if($cert->cert_estado==1){
 														$e=1;
 														$estado="Vigente";	
-														$fin3=$finvig;
-
 														}elseif($hoy<=$finvig){
 															$estado="Vigente";
 															$e=1;
-															$fin3=date("d-m-Y", strtotime($fin2));
 															}else{
 																$estado="Cancelado";
 																$e=3;	
-																$fin3=date("d-m-Y", strtotime($fin2));					
 															}	
 
 													if($e==1){
@@ -219,12 +215,14 @@
 																$e2=3;
 															}
 														}
+													$fin3=date("Y-m-d", strtotime($fin2));
 													}else{
 														$estado2="Inactivo";
 														$boton="";
 														$titulo="";
 														$ruta="";
 														$e2=3;
+													$fin3=date("Y-m-d", strtotime($finvig));
 													}
 													?>
 														<div class="col-xs-9 col-sm-12">
@@ -482,7 +480,7 @@
 																	<td><?=$aseg->aseg_telf;?></td>
 																	<td><?=$aseg->aseg_email;?></td>
 																	<td>
-																		<div class="hidden-sm hidden-xs btn-group">
+																		<?=$fin3;?><div class="hidden-sm hidden-xs btn-group">
 																				<div title="Editar Asegurado" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
 																					&nbsp;<a class="boton fancybox" href="<?=  base_url()?>index.php/aseg_editar/<?=$idaseg?>" data-fancybox-width="950" data-fancybox-height="690">
 																						<i class="ace-icon fa fa-pencil bigger-120"></i>
@@ -561,6 +559,7 @@
 														<table id="example" class="table table-striped table-bordered table-hover">
 															<thead>
 																<tr>
+																	<th>ID</th>
 																	<th>Fecha Cobro</th>
 																	<th>Vez Cobro</th>
 																	<th>Importe</th>
@@ -579,6 +578,7 @@
 															$fin2=date("d/m/Y", strtotime($fin2));
 															?>
 																<tr>
+																	<td><?=$cob->cob_id?></td>
 																	<td><?=$cobro;?></td>
 																	<td><?=$cob->cob_vezCob;?></td>
 																	<td><?=$cob->importe;?></td>

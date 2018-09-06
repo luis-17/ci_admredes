@@ -90,6 +90,8 @@ $route['historial_compras'] = 'historial_compras_cnt/index';
 $route['historial_ventas'] = 'historial_ventas_cnt/index';
 $route['cobros'] = 'cobros_cnt/index';
 $route['consultar_cobros'] = 'Reportes_cnt/index';
+$route['consultar_atenciones'] = 'Reportes_cnt/consultar_atenciones';
+$route['consultar_afiliados'] = 'Reportes_cnt/consultar_afiliados';
 $route['afiliacion'] = 'Afiliacion_cnt/index';
 
 $route['planes'] = 'Afiliacion_cnt/plan';
@@ -172,6 +174,8 @@ $route['seleccionar_cobertura/(:any)/(:any)/(:any)'] = 'plan_cnt/seleccionar_cob
 $route['consultar_cobros_buscar'] = 'Reportes_cnt/buscar';
 $route['consultar_detalle_cobros/(:any)/(:any)/(:any)/(:any)'] = 'Reportes_cnt/detalle_cobros/$1/$2/$3/$4';
 $route['exc_cobros/(:any)/(:any)/(:any)'] = 'Reportes_cnt/exc_cobros/$1/$2/$3';
+
+$route['consultar_atenciones_buscar'] = 'Reportes_cnt/consultar_atenciones_buscar';
 
 // Rutas Ariel (Escribir debajo)
 

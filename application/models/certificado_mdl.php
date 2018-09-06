@@ -92,7 +92,7 @@
 	}
 
 	function getCobros($id){
-		$this->db->select("cob_fechCob,cob_vezCob,concat(round((cob_importe/100),2),' ',cob_moneda) as importe, cob_iniCobertura,cob_finCobertura");
+		$this->db->select("cob_id,cob_fechCob,cob_vezCob,concat(round((cob_importe/100),2),' ',cob_moneda) as importe, cob_iniCobertura,cob_finCobertura");
 		$this->db->from("cobro");
 		$this->db->where('cert_id', $id);
 		$this->db->order_by("cob_fechCob", "desc");
@@ -177,6 +177,7 @@
 	function getProveedores(){
 		$this->db->select("idproveedor, nombre_comercial_pr");
 		$this->db->from("proveedor");
+		$this->db->where("estado_pr",1);
 		$this->db->order_by("nombre_comercial_pr");
 
 	$proveedores=$this->db->get();
@@ -227,6 +228,8 @@
 				 'idcertificadoasegurado' => $data['certase_id'],
 				 'idproveedor' => $data['idproveedor'],
 				 'idusuario' => $data['idusuario'],
+				 'hora_cita_inicio' => $data['inicio'],
+				 'hora_cita_fin' => $data['fin'],
 				 'idempresaadmin' => 1,
 				 'fecha_cita' => $data['fecha_cita'],
 				 'idespecialidad' => $data['idespecialidad'],
@@ -242,6 +245,8 @@
 				 'idcertificadoasegurado' => $data['certase_id'],
 				 'idproveedor' => $data['idproveedor'],
 				 'idusuario' => $data['idusuario'],
+				 'hora_cita_inicio' => $data['inicio'],
+				 'hora_cita_fin' => $data['fin'],
 				 'idempresaadmin' => 1,
 				 'fecha_cita' => $data['fecha_cita'],
 				 'idespecialidad' => $data['idespecialidad'],

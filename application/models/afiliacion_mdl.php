@@ -1,7 +1,7 @@
 <?php
  class Afiliacion_mdl extends CI_Model {
 
- function Menu_mdl() {
+ function Afiliacion_mdl() {
  parent::__construct(); //llamada al constructor de Model.
  $this->load->database();
  }

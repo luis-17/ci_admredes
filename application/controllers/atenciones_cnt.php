@@ -110,7 +110,7 @@ class Atenciones_cnt extends CI_Controller {
 	public function orden($id,$est)
 	{
 		$orden = $this->atencion_mdl->orden($id,$est);
-		redirect ('atenciones');
+		redirect ('index.php/atenciones');
 	}
 
 }

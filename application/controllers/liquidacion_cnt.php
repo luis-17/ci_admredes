@@ -110,7 +110,7 @@ class Liquidacion_cnt extends CI_Controller {
 		    $this->liquidacion_mdl->updateEstadoLiqdetalle($data);
 
 			//$this->load->view('dsb/html/liquidacion',$data);
-			redirect(base_url()."liquidacion/");
+			redirect(base_url()."index.php/liquidacion/");
 
 			//$this->load->view('dsb/html/atencion/test.php',$data);
 		}
@@ -124,7 +124,7 @@ class Liquidacion_cnt extends CI_Controller {
 	public function orden($id,$est)
 	{
 		$orden = $this->atencion_mdl->orden($id,$est);
-		redirect ('atenciones');
+		redirect ('index.php/atenciones');
 	}
 
 }

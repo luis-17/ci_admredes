@@ -197,9 +197,9 @@
 
 														<?php foreach ($contactos as $c){
 															if($c->estado_cp==1){
-																$boton= '<a href="'.base_url().'contacto_anular/'.$c->idcontactoproveedor.'/'.$c->idproveedor.'"><span class="label label-info label-white middle">Activo</span></a>';
+																$boton= '<a href="'.base_url().'index.php/contacto_anular/'.$c->idcontactoproveedor.'/'.$c->idproveedor.'"><span class="label label-info label-white middle">Activo</span></a>';
 																}else{
-																	$boton='<a href="'.base_url().'contacto_activar/'.$c->idcontactoproveedor.'/'.$c->idproveedor.'"><span class="label label-danger label-white middle">Inactivo</span></a>';
+																	$boton='<a href="'.base_url().'index.php/contacto_activar/'.$c->idcontactoproveedor.'/'.$c->idproveedor.'"><span class="label label-danger label-white middle">Inactivo</span></a>';
 																	} ?>
 														<tbody  style="font-size: 12px;">
 														

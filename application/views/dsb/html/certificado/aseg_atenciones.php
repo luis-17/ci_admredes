@@ -63,6 +63,7 @@
 							<table id="example" class="table table-striped table-bordered table-hover">
 								<thead  style="font-size: 12px;">
 									<tr>
+										<th>ID</th>
 										<th>Num. Orden</th>
 										<th>Fecha Atención</th>
 										<th>Centro Médico</th>
@@ -121,6 +122,7 @@
 									}?>
 																					
 									<tr>
+										<td><?=$a->idsiniestro?></td>
 										<td><?=$atencion?></td>
 										<td><?=$fecha?></td>
 										<td><?=$a->nombre_comercial_pr;?></td>
@@ -131,7 +133,7 @@
 											
 												<?php if($e1!=0&&$mostrar=='S'){ ?>
 												<div title="Editar Reserva" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
-													<a class="boton fancybox" href="<?=  base_url()?>index.php/reservar_cita/<?=$a->idcertificado?>/<?=$a->idasegurado?>/<?=$a->idcita?>/<?=$a->idcertificadoasegurado?>" data-fancybox-width="950" data-fancybox-height="690">
+													<a class="boton fancybox" href="<?=  base_url()?>index.php/reservar_cita/<?=$a->idcertificado?>/<?=$a->idasegurado?>/<?=$a->idcita?>/<?=$a->idcertificadoasegurado?>/null" data-fancybox-width="950" data-fancybox-height="690">
 														<i class="ace-icon glyphicon glyphicon-pencil bigger-120"></i>
 													</a>
 												</div>
@@ -153,7 +155,7 @@
 														<ul class="dropdown-menu dropdown-only-icon dropdown-yellow dropdown-menu-right dropdown-caret dropdown-close">
 															<li>
 																<div title="Editar Reserva" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
-																	<a class="boton fancybox" href="<?=  base_url()?>index.php/reservar_cita/<?=$a->idcertificado?>/<?=$a->idasegurado?>/<?=$a->idcita?>/<?=$a->idcertificadoasegurado?>" data-fancybox-width="950" data-fancybox-height="690">
+																	<a class="boton fancybox" href="<?=  base_url()?>index.php/reservar_cita/<?=$a->idcertificado?>/<?=$a->idasegurado?>/<?=$a->idcita?>/<?=$a->idcertificadoasegurado?>/null" data-fancybox-width="950" data-fancybox-height="690">
 																		<i class="ace-icon glyphicon glyphicon-pencil bigger-120"></i>
 																	</a>
 																</div>

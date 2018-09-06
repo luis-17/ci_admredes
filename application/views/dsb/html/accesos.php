@@ -87,7 +87,7 @@
 							<div class="col-xs-12">
 								<!-- PAGE CONTENT BEGINS -->
 								<div align="center">
-									<img class="" src="public/assets/images/mantenimiento.jpg" alt="" />
+									<img class="" src="<?=base_url();?>public/assets/images/mantenimiento.jpg" alt="" />
 								</div><!-- PAGE CONTENT ENDS -->
 							</div><!-- /.col -->
 						</div><!-- /.row -->

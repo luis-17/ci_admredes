@@ -98,7 +98,7 @@
 							</li>
 							<li>
 							<a href="<?=base_url()?>index.php/index">Reportes</a></li>
-							<li class="active">Consultar Cobros</li>
+							<li class="active">Consultar Afiliados</li>
 						</ul><!-- /.breadcrumb -->
 
 						<!-- /section:basics/content.searchbox -->
@@ -110,7 +110,7 @@
 						<!-- /section:settings.box -->
 						<div class="page-header">
 							<h1>
-								Consultar Cobros
+								Consultar Afiliados
 								<small>
 									<i class="ace-icon fa fa-angle-double-right"></i>									
 								</small>
@@ -126,10 +126,10 @@
 											<div class="profile-user-info profile-user-info-striped">
 												<div class="profile-info-row">
 
-												<form name="form" id="form" method="post" action="<?=base_url()?>index.php/consultar_cobros_buscar" class="form-horizontal">
+												<form name="form" id="form" method="post" action="<?=base_url()?>index.php/consultar_afiliados" class="form-horizontal">
 													<div class="profile-info-name"> Canal: </div>
 													<div class="profile-info-name">
-														<select name="canal" id="canal" required="Seleccione una opción de la lista" class="form-control"  style="width: 150px;">
+														<select name="canal" id="canal" required="Seleccione una opción de la lista" class="form-control">
 															<option value="">Seleccione</option>
 															<?php foreach ($canales as $c):
 																if($canal==$c->idclienteempresa):
@@ -139,11 +139,11 @@
 																endif;?>
 																<option value="<?=$c->idclienteempresa;?>" <?=$estc?> ><?=$c->nombre_comercial_cli?> </option>
 															<?php endforeach; ?>
-													</select>
+														</select>
 													</div>
 													<div class="profile-info-name"> Plan: </div>
 													<div class="profile-info-name">
-														<select name="plan" id="plan" required="Seleccione una opción de la lista"  class="form-control"  style="width: 150px;">											
+														<select name="plan" id="plan" required="Seleccione una opción de la lista"  class="form-control">											
 															<option value="">Seleccione</option>
 															<?php 
 																$cancelar='N';
@@ -204,17 +204,16 @@
 													foreach ($cobros as $co):
 													$importe=$co->cob_importe;
 													$importe=$importe/100;
-													$importe=number_format((float)$importe, 2, '.', ',');
+													$importe=number_format((float)$importe, 2, '.', '');
 													$cant=$co->cant;
-													$cant2=number_format((float)$cant, 0, '', ',');
 													$totcant=$totcant+$cant;
 													$sub=$cant*$importe;
-													$sub=number_format((float)$sub, 2, '.', ',');
+													$sub=number_format((float)$sub, 2, '.', '');
 													$tot=$tot+$sub;
 													?>
 													<tr>
 														<td align="right"><?=$importe;?></td>	
-														<td align="right"><?=$cant2;?></td>
+														<td align="right"><?=$cant;?></td>
 														<td align="right"><?=$sub;?></td>
 														<td>
 															<div class="hidden-sm hidden-xs btn-group">
@@ -247,8 +246,7 @@
 													<?php endforeach; ?>
 												</tbody>
 												<?php 
-													$tot=number_format((float)$tot, 2, '.', ',');
-													$totcant=number_format((float)$totcant, 0, '', ',');?>
+													$tot=number_format((float)$tot, 2, '.', '');?>
 												<tbody>
 													<td><b>TOTAL</b></td>
 													<td align="right"><b><?=$totcant;?></b></td>
