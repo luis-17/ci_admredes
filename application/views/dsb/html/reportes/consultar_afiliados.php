@@ -127,7 +127,7 @@
 						<div class="row">
 							<div class="col-xs-12">
 								<!-- PAGE CONTENT BEGINS -->						
-								<div align="center">								
+								<div>								
 									<div class="col-xs-9 col-sm-12">
 										<div class="widget-box transparent">
 											<div class="profile-user-info profile-user-info-striped">

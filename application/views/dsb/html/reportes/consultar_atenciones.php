@@ -190,7 +190,7 @@
 								<br/>		
 								</div><!-- PAGE CONTENT ENDS -->
 								<br />
-								<div  align="center" >
+								<div>
 								<div style="display: <?=$estilo;?>;">
 									<!-- star table -->		
 										<div  align="center" class="col-xs-12">

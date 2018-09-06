@@ -173,7 +173,7 @@
 														<i class="ace-icon glyphicon glyphicon-search bigger-110 icon-only"></i>
 													</button>
 													</form>	
-													<button onclick="exportar_cobros()" style="display: none;">exportar</button>														
+													<a href="<?php echo base_url(); ?>exportar2excel" target="_blank"><button class="btn btn-info" type="button" onclick="exportar_cobros()" style="">Descargar excel</button>	</a>													
 													</div>
 												</div>
 											</div>
@@ -192,6 +192,7 @@
 											<table align="center" id="simple-table" class="table table-striped table-bordered table-hover">
 												<thead>
 													<tr>
+														<th>Descripción</th>
 														<th>Importe (S/.)</th>
 														<th>Número de Primas</th>
 														<th>Sub Total (S/.)</th>
@@ -201,7 +202,7 @@
 
 												<tbody>
 													<?php $tot=0; $totcant=0;
-													foreach ($cobros as $co):
+													foreach ($cobros as $co){
 													$importe=$co->cob_importe;
 													$importe=$importe/100;
 													$importe=number_format((float)$importe, 2, '.', ',');
@@ -209,13 +210,15 @@
 													$cant2=number_format((float)$cant, 0, '', ',');
 													$totcant=$totcant+$cant;
 													$sub=$cant*$importe;
-													$sub=number_format((float)$sub, 2, '.', ',');
+													$sub2=number_format((float)$sub, 2, '.', ',');
 													$tot=$tot+$sub;
+													$desc=$co->descripcion;
 													?>
 													<tr>
+														<td><?=$desc;?></td>
 														<td align="right"><?=$importe;?></td>	
 														<td align="right"><?=$cant2;?></td>
-														<td align="right"><?=$sub;?></td>
+														<td align="right"><?=$sub2;?></td>
 														<td>
 															<div class="hidden-sm hidden-xs btn-group">
 																<div title="Ver Detalle de Cobros" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
@@ -244,13 +247,13 @@
 																</div>
 														</td>
 													</tr>
-													<?php endforeach; ?>
+													<?php } ?>
 												</tbody>
 												<?php 
 													$tot=number_format((float)$tot, 2, '.', ',');
 													$totcant=number_format((float)$totcant, 0, '', ',');?>
 												<tbody>
-													<td><b>TOTAL</b></td>
+													<td colspan="2"><b>TOTAL</b></td>
 													<td align="right"><b><?=$totcant;?></b></td>
 													<td align="right"><b><?=$tot;?></b></td>
 													<td></td>

@@ -10,7 +10,6 @@ class Reportes_cnt extends CI_Controller {
         // $this->sessionRS = @$this->session->userdata('sess_reds_'.substr(base_url(),-20,7));
         //$this->sessionRS = @$this->session->userdata('sess_reds_'.substr(base_url(),-20,7));
         //$this->load->helper(array('fechas','otros')); 
-		$this->load->library('export_excel');
         $this->load->model('menu_mdl');
         $this->load->model('reportes_mdl');
     }
@@ -320,4 +319,21 @@ class Reportes_cnt extends CI_Controller {
 			redirect('/');
 		}
 	}
+
+	public function exportar2excel(){		
+		$this->load->library('excel');
+        $this->excel->setActiveSheetIndex(0);
+        $this->excel->getActiveSheet()->setTitle('test worksheet');
+        $this->excel->getActiveSheet()->setCellValue('A1', 'Un poco de texto');
+        $this->excel->getActiveSheet()->getStyle('A1')->getFont()->setSize(20);
+        $this->excel->getActiveSheet()->getStyle('A1')->getFont()->setBold(true);
+        $this->excel->getActiveSheet()->mergeCells('A1:D1');
+ 
+        header('Content-Type: application/vnd.ms-excel');
+        header('Content-Disposition: attachment;filename="nombredelfichero.xls"');
+        header('Cache-Control: max-age=0'); //no cache
+        $objWriter = PHPExcel_IOFactory::createWriter($this->excel, 'Excel5');
+        // Forzamos a la descarga
+        $objWriter->save('php://output');
+    }
 }

@@ -20,8 +20,9 @@
  	} 	
 
  	function getImportes($datos){
- 		$this->db->select("count(c1.cob_id)as cant,cob_importe"); 		
+ 		$this->db->select("count(c1.cob_id)as cant,cob_importe, case when cob_importe=round(prima_monto*100) then 'Titular' else concat('Titular + ',ROUND((cob_importe-(prima_monto*100))/(prima_adicional*100))) end as descripcion"); 		
  		$this->db->from('cobro c1'); 	
+ 		$this->db->join("plan p","p.idplan=c1.plan_id");
  		$this->db->where("cob_fechCob>='".$datos['inicio']."' and cob_fechCob<='".$datos['fin']."' and c1.plan_id=".$datos['plan']);
  		$this->db->group_by("cob_importe");
 
