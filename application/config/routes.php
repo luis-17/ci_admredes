@@ -179,7 +179,6 @@ $route['exc_cobros/(:any)/(:any)/(:any)'] = 'Reportes_cnt/exc_cobros/$1/$2/$3';
 
 $route['consultar_atenciones_buscar'] = 'Reportes_cnt/consultar_atenciones_buscar';
 $route['consultar_afiliados_buscar'] = 'Reportes_cnt/consultar_afiliados_buscar';
-$route['exportar2excel'] = 'Reportes_cnt/exportar2excel';
 
 // Rutas Ariel (Escribir debajo)
 

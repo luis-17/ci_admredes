@@ -174,24 +174,36 @@
 														<input class="form-control input-mask-date" type="date" id="fechafin" name="fechafin" required="Seleccione una fecha de fin" value="<?=$fecfin;?>">														
 													</div>
 													<div  class="profile-info-name">
-													<button type="submit" class="btn btn-info btn-xs">Buscar 
+													<button type="submit" class="btn btn-info btn-xs" name="accion" value="buscar">Buscar 
 														<i class="ace-icon glyphicon glyphicon-search bigger-110 icon-only"></i>
 													</button>
-													</form>	
-													<button onclick="exportar_cobros()" style="display: none;">exportar</button>														
 													</div>
+													<div  class="profile-info-name">
+													<button class="btn btn-info btn-xs" type="submit" name="accion" value="exportar">Exportar
+														<i class="ace-icon fa fa-download bigger-110 icon-only"></i>
+													</button>
+													</div>
+													</form>	
 												</div>
 											</div>
 										</div>
 									</div>			
 								
 								<br/>		
-								<br/>
-								<br/>		
+								<br/>	
 								</div><!-- PAGE CONTENT ENDS -->
 								<br />
 								<div>
 								<div style="display: <?=$estilo;?>;">
+								<p><div class="profile-info-row">
+									&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="label label-danger label-white middle">RA = Reserva Anulada</span>&nbsp;&nbsp;
+									<span class="label label-warning label-white middle">RPC = Reserva Por Confirmar</span>&nbsp;&nbsp;
+									<span class="label label-success label-white middle">RC = Reserva Confirmada</span>&nbsp;&nbsp;
+									<span class="label label-info label-white middle">AA = Atención Abierta</span>&nbsp;&nbsp;
+									<span class="label label-purple label-white middle">AC = Aención Cerrada</span>&nbsp;&nbsp;
+									<span class="label label-danger label-white middle">AAN = Atención Anulada</span>
+								</div>
+								</p>
 									<!-- star table -->		
 										<div  align="center" class="col-xs-12">
 											<table align="center" id="example" class="table table-striped table-bordered table-hover">
@@ -199,10 +211,10 @@
 													<tr>
 														<th>N° Atención</th>
 														<th>Fecha</th>
-														<th>N° Documento (S/.)</th>
+														<th>N° Documento</th>
 														<th>Afiliado</th>
-														<th>Tipo</th>
 														<th>N° Teléfono</th>
+														<th>Atendido por</th>
 														<th>Centro Médico</th>
 														<th>Especialidad</th>
 														<th>Estado</th>
@@ -215,17 +227,17 @@
 														if($a->estado_atencion=='P'){
 															switch ($a->estado_cita):
 																case 0: 
-																	$estadoa='Reserva Anulada';
+																	$estadoa='RA';
 																	$class="label label-danger label-white middle";
 																	$e1=0;
 																break;
 																case 1:
-																	$estadoa='Reserva Por Confirmar';
+																	$estadoa='RPC';
 																	$e1=1;
 																	$class="label label-warning label-white middle";
 																break;
 																case 2:
-																	$estadoa='Reserva Confirmada';
+																	$estadoa='RC';
 																	$e1=2;
 																	$class="label label-success label-white middle";
 																break;
@@ -233,17 +245,17 @@
 														}else{
 															switch($a->estado_siniestro):
 																case 0: 
-																	$estadoa='Atención Anulada';
+																	$estadoa='AAN';
 																	$e2=0;
 																	$class="label label-danger label-white middle";
 																break;
 																case 1:
-																	$estadoa='Atención Abierta';
+																	$estadoa='AA';
 																	$e2=1;
 																	$class="label label-info label-white middle";
 																break;
 																case 2:
-																	$estadoa='Atención Cerrada';
+																	$estadoa='AC';
 																	$e2=2;
 																	$class="label label-purple label-white middle";
 																break;
@@ -254,9 +266,9 @@
 														<td><?=$a->tipo_atencion;?></td>	
 														<td><?php echo date("d-m-Y",strtotime($a->fecha_atencion));?></td>
 														<td><?=$a->aseg_numDoc;?></td>
-														<td><?=$a->asegurado;?></td>
-														<td><?=$a->tipo_afiliado;?></td>
+														<td><?=$a->asegurado;?></td>														
 														<td><?=$a->aseg_telf;?></td>
+														<td><?php if($a->username == ""){ echo "redes";}else{echo $a->username;} ?></td>
 														<td><?=$a->nombre_comercial_pr;?></td>
 														<td><?=$a->nombre_esp;?></td>
 														<td><span class="<?=$class;?>"><?=$estadoa;?></span></td>														

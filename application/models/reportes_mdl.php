@@ -19,6 +19,19 @@
 	return $cobros->result();
  	} 	
 
+ 	function getCobros2($datos){
+ 		$this->db->select("c2.cert_id, c1.cert_num, cob_fechCob, cob_vezCob, cob_importe, cont_numDoc, concat(coalesce(cont_ape1,''),' ',coalesce(cont_ape2,''),' ',coalesce(cont_nom1,''),' ',coalesce(cont_nom2,'')) as contratante");
+ 		$this->db->select("(select count(certase_id) from certificado_asegurado ca where ca.cert_id=c1.cert_id group by ca.cert_id) as num_afiliados");
+ 		$this->db->from('cobro c1');
+ 		$this->db->join("certificado c2","c1.cert_id=c2.cert_id");
+ 		$this->db->join("contratante c3","c2.cont_id=c3.cont_id");
+ 		$this->db->where("cob_fechCob>='".$datos['inicio']."' and cob_fechCob<='".$datos['fin']."' and c1.plan_id=".$datos['plan']);
+ 		$this->db->order_by("cob_fechCob");
+
+ 	$cobros = $this->db->get();
+	return $cobros->result();
+ 	} 	
+
  	function getImportes($datos){
  		$this->db->select("count(c1.cob_id)as cant,cob_importe, case when cob_importe=round(prima_monto*100) then 'Titular' else concat('Titular + ',ROUND((cob_importe-(prima_monto*100))/(prima_adicional*100))) end as descripcion"); 		
  		$this->db->from('cobro c1'); 	
@@ -62,9 +75,10 @@
  	}
 
  	function cons_atenciones($data){
- 		$this->db->select("case when s.idcita is null then concat('OA',num_orden_atencion) else concat('PO',num_orden_atencion) end as tipo_atencion, fecha_atencion, aseg_numDoc, concat(COALESCE(a.aseg_ape1,''),' ',COALESCE(aseg_ape2,''),' ',COALESCE(aseg_nom1,''),' ',COALESCE(aseg_nom2,'')) as asegurado, case when aseg_numDoc=cont_numDoc then 'Titular' else 'Dependiente' end as tipo_afiliado, aseg_telf, p.nombre_comercial_pr, e.nombre_esp, estado_cita, fase_atencion, estado_atencion, estado_siniestro");
+ 		$this->db->select("case when s.idcita is null then concat('OA',num_orden_atencion) else concat('PO',num_orden_atencion) end as tipo_atencion, fecha_atencion, aseg_numDoc, concat(COALESCE(a.aseg_ape1,''),' ',COALESCE(aseg_ape2,''),' ',COALESCE(aseg_nom1,''),' ',COALESCE(aseg_nom2,'')) as asegurado, case when aseg_numDoc=cont_numDoc then 'Titular' else 'Dependiente' end as tipo_afiliado, aseg_telf, p.nombre_comercial_pr, e.nombre_esp, estado_cita, fase_atencion, estado_atencion, estado_siniestro, username");
  		$this->db->from("siniestro s");
  		$this->db->join("cita ci","ci.idcita=s.idcita","left");
+ 		$this->db->join("usuario u ","u.idusuario=ci.idusuario","left");
  		$this->db->join("asegurado a","s.idasegurado=a.aseg_id");
  		$this->db->join("certificado_asegurado ca","ca.aseg_id=a.aseg_id");
  		$this->db->join("certificado c","ca.cert_id=c.cert_id");

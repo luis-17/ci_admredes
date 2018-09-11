@@ -69,7 +69,7 @@ class Afiliacion_cnt extends CI_Controller {
 	{
 		$canal = $_POST['canal'];
 
-		$options='<option>Seleccionar</option>';
+		$options='<option value="">Seleccionar</option>';
 		$planes = $this->afiliacion_mdl->getPlanes2($canal);
 
 		foreach ($planes as $p) {

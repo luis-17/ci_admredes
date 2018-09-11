@@ -73,7 +73,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 $active_group = 'default';
 $query_builder = TRUE;
 
-/* bbdd desarrollo new redes */
+/* bbdd desarrollo new redes
 	$db['default'] = array(
 	'dsn'	=> '',
 	'hostname' => '192.168.10.131:3306',
@@ -94,10 +94,10 @@ $query_builder = TRUE;
 	'stricton' => FALSE,
 	'failover' => array(),
 	'save_queries' => TRUE
-);
+); */
 
 
-	/* bbdd produccion godaddy redes new
+	/* bbdd produccion godaddy redes new*/
 	
 	$active_group = 'default';
 	$query_builder = TRUE;
@@ -121,7 +121,7 @@ $query_builder = TRUE;
 	'stricton' => FALSE,
 	'failover' => array(),
 	'save_queries' => TRUE
-); */
+); 
 
 
 /* bbdd desarrollo redes new 
