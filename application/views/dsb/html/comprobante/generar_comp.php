@@ -129,7 +129,8 @@
 									<!-- /section:pages/faq -->
 									<div class="tab-content no-border padding-24">
 
-										<div id="faq-tab-1" class="tab-pane fade in active">	
+										<div id="faq-tab-1" class="tab-pane fade in active">
+											<div class="space-8"></div>
 											<div class="row">
 												<div class="col-xs-12">
 													<!-- PAGE CONTENT BEGINS -->						
@@ -182,24 +183,17 @@
 
 																		<div class="profile-user-info profile-user-info-striped">
 																			<div  class="profile-info-row">
-																				<div class="profile-info-name"> Correlativo: </div>
-																				<div class="profile-info-name">
-																				    <input class="form-control" name="correlativo" type="number" value="1" id="correlativo">
-																				</div>
 																				<div class="profile-info-name"> Correlativo actual: </div>
 																				<div class="profile-info-name" id="correActual" name="correActual">
-																				    <!--<input class="form-control" name="correlativoActual" type="text" value="" id="correlativoActual" disabled>-->
 																				</div>
 																				<div class="profile-info-name">
-																					<!--<a class="boton fancybox" href="javascript:;" data-fancybox-width="600" data-fancybox-height="490">-->
-																						<button type="button" id="buttonModal" name="buttonModal" class="btn btn-white btn-info btn-bold btn-xs" data-toggle="modal" data-target="#saveModal"> Generar Comprobante de Pago <i class="ace-icon glyphicon glyphicon-save bigger-110 icon-only"></i>
-																						</button>
-																					<!--</a>-->
+																					<button type="button" id="buttonModal" name="buttonModal" class="btn btn-white btn-info btn-bold btn-xs" data-toggle="modal" data-target="#saveModal"> Generar Comprobante de Pago <i class="ace-icon glyphicon glyphicon-save bigger-110 icon-only"></i>
+																					</button>
 																				</div>
 																				<div class="profile-info-name"></div>
 																			</div>
 																		</div>
-																	</div>	
+																	</div>
 																	<div id="resp2"></div>							
 																	<div id="resp3"></div>		
 
@@ -236,6 +230,7 @@
 										</div>
 
 										<div id="faq-tab-2" class="tab-pane fade">
+											<div class="space-8"></div>
 											<div class="row">
 												<div class="col-xs-12">
 													<!-- PAGE CONTENT BEGINS -->						
@@ -248,7 +243,7 @@
 																	<div class="profile-user-info profile-user-info-striped">
 																		<div class="profile-info-row">
 
-																			<div class="profile-info-name"> Plan: </div>
+																			<div class="profile-info-name"> Canal: </div>
 																			<div class="profile-info-name">
 																				<select name="canalesDos" id="canalesDos" required="Seleccione una opción de la lista">
 																					<option value=0>Seleccione</option>
@@ -277,6 +272,10 @@
 																					<i class="ace-icon glyphicon glyphicon-search bigger-110 icon-only"></i>
 																				</button>
 																			</div>
+																			<div class="profile-info-name">
+																				<button type="button" id="buttonDbf" name="buttonDbf" class="btn btn-info btn-xs"> Anexos Concar <i class="ace-icon fa fa fa-file-o bigger-110 icon-only"></i>
+																					</button>
+																			</div>
 																			<div class="profile-info-name"></div>
 																		</div>											
 																	</div>	
@@ -290,26 +289,21 @@
 
 																		<div class="profile-user-info profile-user-info-striped">
 																			<div  class="profile-info-row">
-																				<div class="profile-info-name"></div>
+																				<!--<div class="profile-info-name"></div>
 																				<div class="profile-info-name">
 																					<button type="button" id="buttonDbf" name="buttonDbf" class="btn btn-white btn-info btn-bold btn-xs"> Generar Anexos Concar <i class="ace-icon fa fa fa-file-o bigger-110 icon-only"></i>
 																					</button>
-																				</div>
+																				</div>-->
 																				<div class="profile-info-name"></div>
 																				<div class="profile-info-name">
 																					<button type="button" id="buttonExcel" name="buttonExcel" class="btn btn-white btn-info btn-bold btn-xs"> Generar archivo Excel <i class="ace-icon fa fa-file-excel-o bigger-110 icon-only"></i>
 																					</button>
 																				</div>
-																				<!--<div class="profile-info-name"></div>
-																				<div class="profile-info-name">
-																					<button type="button" id="buttonPdf" name="buttonPdf" class="btn btn-white btn-info btn-bold btn-xs"> Enviar archivos PDF <i class="ace-icon fa fa-file-pdf-o bigger-110 icon-only"></i>
-																					</button>
-																				</div>-->
-																				<div class="profile-info-name"></div>
 																				<div class="profile-info-name">
 																					<button type="button" id="buttonComprobante" name="buttonComprobante" class="btn btn-white btn-info btn-bold btn-xs" data-toggle="modal" data-target="#modalXML"> Emitir Comprobante <i class="ace-icon fa fa-file-code-o bigger-110 icon-only"></i>
 																					</button>
 																				</div>
+																				<div class="profile-info-name"></div>
 																				<div class="profile-info-name"></div>
 																			</div>
 																		</div>
@@ -493,6 +487,7 @@
 						    }
 
 							$("#accionesTabla").hide();
+
 						}
 					});
 					return false;
@@ -512,12 +507,10 @@
 				        },
 			           	success: function(data)             
 			           	{
-
 			           		$("#resp2").html(null);
 			             	$('#resp2').html(data);
 							$("#correlativoActual").html(data);
-			             	$("#accionesTabla").show();
-
+			             	$("#accionesTabla").show();							
 			           	}
 			       	});
 			       	return false;
@@ -554,7 +547,7 @@
 					    },
 			    		success: function(data)
 			    		{	
-			    			
+		
 			    		}
 			    	});
 			    	$("#saveModal").modal('hide');
@@ -590,7 +583,6 @@
 								$("#resp20").html(null);
 								$("#resp10").html(data);
 						    }
-
 							$("#accionesTablaEmitido").hide();
 						}
 					});
@@ -606,15 +598,16 @@
 			           	data: $("#formCategoriaDos").serialize(),
 			           	beforeSend: function(){
 				            $('#resp20').html("<br><br><img src='<?=base_url()."public/assets/img/loading2.gif"?>'>");
+				            $("#accionesTablaEmitido").hide();
 				        },
 			           	success: function(data)             
 			           	{
 			           		$("#resp20").html(null);
 			             	$('#resp20').html(data); 
 			             	$("#accionesTablaEmitido").show();
-			             	$('#tablaDatos').DataTable( {
+			             	$('#tablaDatos').DataTable({
 								"pagingType": "full_numbers"
-							} );
+							});
 			           	}
 			       	});
 			       	return false;
@@ -639,7 +632,7 @@
 					    var $a = $("<a>");
 					    $a.attr("href",data.file);
 					    $("body").append($a);
-					    $a.attr("download","file.xls");
+					    $a.attr("download","file"+numSerie+".xls");
 					    $a[0].click();
 					    $a.remove();
 					});

@@ -66,7 +66,7 @@
 						<div class="row">
 							<div class="col-xs-12">
 								<!-- PAGE CONTENT BEGINS -->
-								<form class="form-horizontal" name="formPdf" id="formPdf" role="form" method="post" action="<?=base_url()."boletaje_cnt/envioEmail/".$idcomprobante."/".$canales;?>">	
+								<form class="form-horizontal" name="formPdf" id="formPdf" role="form" method="post" action="<?=base_url()."ventas_cnt/envioEmail/".$idcomprobante."/".$canalesDos;?>">	
 
 									<div class='form-group'>
 										<label class='col-sm-3 control-label no-padding-right' for='form-field-1'>Correo electrónico:</label>
@@ -75,11 +75,12 @@
 											<input type='text' id='correo' name='correo' class='col-xs-12 col-sm-12' value=''>
 										</div>
 									</div>
+									<div id="resp4" align="center"></div>
 									<div class='clearfix form-actions'>
 										<div class='col-md-offset-3 col-md-9' style='text-align: right;'>
 											<input type='text' class='hidden' id='idcomprobante' name='idcomprobante' value="<?=$idcomprobante;?>">
-											<input type='text' class='hidden' id='canales' name='canales' value="<?=$canales;?>">
-											<button class='btn btn-info' type='submit' id='buttonPdfCorreo' href='<?=base_url()."boletaje_cnt/enviarPdf/".$email."/".$idcomprobante."/".$canales;?>' onclick="guardar()">
+											<input type='text' class='hidden' id='canales' name='canales' value="<?=$canalesDos;?>">
+											<button class='btn btn-info' type='submit' id='buttonPdfCorreo' href='<?=base_url()."ventas_cnt/enviarPdf/".$email."/".$idcomprobante."/".$canalesDos;?>'>
 												<i class='ace-icon fa fa-paper-plane bigger-110'></i> Enviar
 											</button>
 										</div>
@@ -134,10 +135,6 @@
 		<script src="<?=  base_url()?>public/assets/js/ace/ace.searchbox-autocomplete.js"></script>
 
 		<script type="text/javascript">
-			function guardar() {
-				//parent.location.reload(true);
-				parent.$.fancybox.close();
-			}
 		</script>
 
 		<!-- the following scripts are used in demo only for onpage help and you don't need them -->
@@ -168,6 +165,34 @@
 			       	});
 			       	return false;
 			    });*/
+
+				 $('#buttonPdfCorreo').click(function(){
+			    	$.ajax({
+			    		url: "<?= BASE_URL()?>ventas_cnt/envioEmail",
+			    		type: 'POST',
+			    		dataType: 'json',
+			    		data: $("#formCategoria").serialize(),
+			    		beforeSend: function(){
+				            $('#resp4').html("<br><br><img src='<?=base_url()."public/assets/img/loading2.gif"?>'>");
+				        },
+				        complete:function() {
+					        $("#resp4").remove();
+					        try{
+						        parent.jQuery.fancybox.close();
+						    }catch(err){
+						        parent.$('#fancybox-overlay').hide();
+						        parent.$('#fancybox-wrap').hide();
+						    }
+					        alert("Correo enviado correctamente.");
+			    			location.reload();
+					    },
+			    		success: function(data)
+			    		{	
+			    			
+			    		}
+			    	});
+			    	return false;
+			    });
 			});
 		</script>
 	</body>

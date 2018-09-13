@@ -138,13 +138,9 @@
 									<div class="tab-content no-border padding-24">
 										
 										<div id="faq-tab-1" class="tab-pane fade in active">
-											<h4 class="blue">
-												<i class="ace-icon fa fa-file-text bigger-110"></i>
-												Nota de Crédito
-											</h4>
 											<div class="space-8"></div>
 											<div id="faq-list-1" class="panel-group accordion-style1 accordion-style2">
-												<form action="" method="post">
+												<form action="" name="formNotaCredito" id="formNotaCredito" method="post">
 													<div class="form-row">
 
 													  	<div class="profile-user-info profile-user-info-striped">
@@ -159,7 +155,114 @@
 																			else:
 																				$estp='';
 																			endif;?>
-																			<option value="<?=$s->numero_serie;?>" <?=$estp?> ><?=$s->numero_serie?></option>
+																			<option value="<?=$s->numero_serie;?>" <?=$estp?> ><?=$s->numero_serie." - ".$s->descripcion_ser?></option>
+																		<?php endforeach; ?>
+																	</select>
+																</div>
+																<div class="profile-info-name"> Correlativo: </div>
+																<div class="profile-info-name">
+																	<input type="number" class="form-control" id="correlativoDoc" name="correlativoDoc" required="Ingrese número correlativo" value="<?=$correlativoDoc?>">
+																</div>
+																<div class="profile-info-name"> Fecha: </div>
+																<div class="profile-info-name">
+																	<input class="form-control input-mask-date" type="date" id="fechaDoc" name="fechaDoc" required="Seleccione una fecha de inicio" value="<?=$fechaDoc;?>">
+																</div>
+																<div class="profile-info-name">
+																	<button type="button" id="buttonBuscarCredito" class="btn btn-info btn-xs">Buscar 
+																		<i class="ace-icon glyphicon glyphicon-search bigger-110 icon-only"></i>
+																	</button>
+																</div>
+																<div class="profile-info-name"></div>
+															</div>											
+														</div>	
+														<br>
+														<div id="respCredito"></div>
+														<div class="form-row">
+															<input type='text' class='hidden' id='idcliente' name='idcliente' value=''>
+															<input type='text' class='hidden' id='idplan' name='idplan' value=''>
+														  	<div class="form-group col-md-9">
+														    	<b class="text-primary">Nombre de Cliente</b>
+														    	<input type="text" class="form-control" name="nomCliente" id="nomCliente" value="" readonly>
+															</div>
+
+															<div class="form-group col-md-3">
+														    	<b class="text-primary">DNI/RUC</b>
+														   		<input type="text" class="form-control" name="dniRuc" id="dniRuc" value="" readonly>
+															</div>
+														</div>
+
+														<div class="form-row">
+														  	<div class="form-group col-md-6">
+														    	<b class="text-primary">Serie y Correlativo</b>
+														    	<input type="text" class="form-control" name="numDoc" id="numDoc" value="" readonly>
+															</div>
+
+															<div class="form-group col-md-3">
+														    	<b class="text-primary">Importe Total</b>
+														   		<input type="text" class="form-control" name="impTotal" id="impTotal" value="" readonly>
+															</div>
+
+															<div class="form-group col-md-3">
+														    	<b class="text-primary">Tipo de Moneda</b>
+														   		<input type="text" class="form-control" name="tipoMoneda" id="tipoMoneda" value="" readonly>
+															</div>
+														</div>
+														<div class="form-group col-md-12">
+															<b class="text-primary">COMPLETAR DATOS</b>
+														</div>
+														<div class="form-row">
+														  	<div class="form-group col-md-3">
+														    	<b class="text-primary">Serie de Nota de Crédito</b>
+														    	<input type="text" class="form-control" name="numSerie" id="numSerie" value="" readonly>
+															</div>
+
+															<div class="form-group col-md-4">
+														    	<b class="text-primary">Correlativo Generado</b>
+														   		<input type="text" class="form-control" name="correGen" id="correGen" value="" readonly>
+															</div>
+
+															<div class="form-group col-md-5">
+														    	<b class="text-primary">Importe de Nota de Crédito</b>
+														   		<input type="number" class="form-control" name="impNota" id="impNota" required="Ingrese importe de la nota de crédito" value="">
+															</div>
+														</div>
+														<div class="form-row">
+														  	<div class="form-group col-md-12">
+														    	<b class="text-primary">Motivo de Nota de Crédito</b>
+														   		<textarea type="textarea" class="form-control" name="motivo" id="motivo" value="" required="Ingrese el motivo de la nota de crédito"></textarea>
+															</div>										
+														</div>
+														<div class="form-row" align="center">
+														  	<div class="form-group col-md-12">
+														    	<button type="button" id="buttonGuardarCredito" class="btn btn-info">Guardar</button>
+																<button type="button" id="buttonCancelarCredito" class="btn btn-info">Cancelar</button>
+															</div>										
+														</div>
+
+												  	</div>
+												</form>
+											</div>
+										</div>
+
+										<div id="faq-tab-2" class="tab-pane fade">
+											<div class="space-8"></div>
+											<div id="faq-list-1" class="panel-group accordion-style1 accordion-style2">
+												<form action="" name="formNotaDebito" id="formNotaDebito" method="post">
+													<div class="form-row">
+
+													  	<div class="profile-user-info profile-user-info-striped">
+															<div class="profile-info-row">
+																<div class="profile-info-name"> Serie: </div>
+																<div class="profile-info-name">
+																	<select name="serie" id="serie" required="Seleccione una opción de la lista">
+																		<option value=0>Seleccione</option>
+																		<?php foreach ($serie as $s):
+																			if($idserie==$s->idserie):
+																				$estp='selected';
+																			else:
+																				$estp='';
+																			endif;?>
+																			<option value="<?=$s->numero_serie;?>" <?=$estp?> ><?=$s->numero_serie." - ".$s->descripcion_ser?></option>
 																		<?php endforeach; ?>
 																	</select>
 																</div>
@@ -172,33 +275,84 @@
 																	<input class="form-control input-mask-date" type="date" id="fechaDoc" name="fechaDoc" required="Seleccione una fecha de inicio" value="<?=$fechaDoc;?>">
 																</div>
 																<div class="profile-info-name">
-																	<button type="button" id="buttonBuscar" class="btn btn-info btn-xs">Buscar 
+																	<button type="button" id="buttonBuscarDebito" class="btn btn-info btn-xs">Buscar 
 																		<i class="ace-icon glyphicon glyphicon-search bigger-110 icon-only"></i>
 																	</button>
 																</div>
 																<div class="profile-info-name"></div>
 															</div>											
 														</div>	
+														<br>
+														<div id="respDebito"></div>
+														<div class="form-row">
+															<input type='text' class='hidden' id='idclienteD' name='idcliente' value=''>
+															<input type='text' class='hidden' id='idplanD' name='idplan' value=''>
+														  	<div class="form-group col-md-9">
+														    	<b class="text-primary">Nombre de Cliente</b>
+														    	<input type="text" class="form-control" name="nomClienteD" id="nomClienteD" value="" readonly>
+															</div>
+
+															<div class="form-group col-md-3">
+														    	<b class="text-primary">DNI/RUC</b>
+														   		<input type="text" class="form-control" name="dniRucD" id="dniRucD" value="" readonly>
+															</div>
+														</div>
+
+														<div class="form-row">
+														  	<div class="form-group col-md-6">
+														    	<b class="text-primary">Serie y Correlativo</b>
+														    	<input type="text" class="form-control" name="numDocD" id="numDocD" value="" readonly>
+															</div>
+
+															<div class="form-group col-md-3">
+														    	<b class="text-primary">Importe Total</b>
+														   		<input type="text" class="form-control" name="impTotalD" id="impTotalD" value="" readonly>
+															</div>
+
+															<div class="form-group col-md-3">
+														    	<b class="text-primary">Tipo de Moneda</b>
+														   		<input type="text" class="form-control" name="tipoMonedaD" id="tipoMonedaD" value="" readonly>
+															</div>
+														</div>
+														<div class="form-group col-md-12">
+															<b class="text-primary">COMPLETAR DATOS</b>
+														</div>
+														<div class="form-row">
+														  	<div class="form-group col-md-3">
+														    	<b class="text-primary">Serie de Nota de Débito</b>
+														    	<input type="text" class="form-control" name="numSeriesD" id="numSeriesD" value="" readonly>
+															</div>
+
+															<div class="form-group col-md-4">
+														    	<b class="text-primary">Correlativo Generado</b>
+														   		<input type="text" class="form-control" name="numCorreD" id="numCorreD" value="" readonly>
+															</div>
+
+															<div class="form-group col-md-5">
+														    	<b class="text-primary">Importe de Nota de Débito</b>
+														   		<input type="number" class="form-control" name="impNotaD" id="impNotaD" required="Ingrese importe de la nota de crédito" value="">
+															</div>
+														</div>
+														<div class="form-row">
+														  	<div class="form-group col-md-12">
+														    	<b class="text-primary">Motivo de Nota de Débito</b>
+														   		<textarea type="textarea" class="form-control" name="motivoD" id="motivoD" value="" required="Ingrese el motivo de la nota de crédito"></textarea>
+															</div>										
+														</div>
+														<div class="form-row" align="center">
+														  	<div class="form-group col-md-12">
+														    	<button type="button" id="buttonGuardarDebito" class="btn btn-info">Guardar</button>
+																<button type="button" id="buttonCancelarDebito" class="btn btn-info">Cancelar</button>
+															</div>										
+														</div>
 
 												  	</div>
 												</form>
 											</div>
 										</div>
 
-										<div id="faq-tab-2" class="tab-pane fade">
-											<h4 class="blue">
-												<i class="ace-icon fa fa-file-text-o bigger-110"></i>
-												Nota de Débito
-											</h4>
-											<div class="space-8"></div>
-											<div id="faq-list-1" class="panel-group accordion-style1 accordion-style2">
-												<form action="" method="post">
-													
-												</form>
-											</div>
-										</div>
-
 										<div id="faq-tab-3" class="tab-pane fade">
+											<div class="space-8"></div>
 											<div class="row">
 												<div class="col-xs-12">
 													<!-- PAGE CONTENT BEGINS -->						
@@ -206,22 +360,22 @@
 														<div class="col-xs-9 col-sm-12">
 															<div class="widget-box transparent">
 																	
-																<form name="formCategoria" id="formCategoria" method="post" action='<?=base_url()."index.php/boleta/crearXml/"?>'>
+																<form name="formCategoriaEmitir" id="formCategoriaEmitir" method="post" action='<?=base_url()."index.php/boleta/crearXml/"?>'>
 
 																	<div class="profile-user-info profile-user-info-striped">
 																		<div class="profile-info-row">
-
-																			<div class="profile-info-name"> Plan: </div>
+																			<div class="profile-info-name"></div>
+																			<div class="profile-info-name">Tipo de documento: </div>
 																			<div class="profile-info-name">
 																				<select name="canales" id="canales" required="Seleccione una opción de la lista">
 																					<option value=0>Seleccione</option>
-																					<?php foreach ($canales as $c):
-																						if($idclienteempresa==$c->idclienteempresa):
+																					<?php foreach ($serieDos as $sd):
+																						if($idserie==$sd->idserie):
 																							$estp='selected';
 																						else:
 																							$estp='';
 																						endif;?>
-																						<option value="<?=$c->idclienteempresa;?>" <?=$estp?> ><?=$c->nombre_comercial_cli?></option>
+																						<option value="<?=$sd->numero_serie;?>" <?=$estp?> ><?=$sd->numero_serie." - ". $sd->descripcion_ser?></option>
 																					<?php endforeach; ?>
 																				</select>
 																			</div>
@@ -236,7 +390,7 @@
 
 																			<div class="profile-info-name"></div>
 																			<div class="profile-info-name">
-																				<button type="button" id="buttonBuscar" class="btn btn-info btn-xs">Buscar 
+																				<button type="button" id="buttonBuscarEmision" class="btn btn-info btn-xs">Buscar 
 																					<i class="ace-icon glyphicon glyphicon-search bigger-110 icon-only"></i>
 																				</button>
 																			</div>
@@ -244,8 +398,6 @@
 																		</div>											
 																	</div>	
 																	<div id="resp1"></div>
-																	<br/><br/><br/>
-																	<div id="resp4"></div>
 																	<div id="resp2"></div>
 
 																	<div id="accionesTablaEmitido">
@@ -255,24 +407,15 @@
 																			<div  class="profile-info-row">
 																				<div class="profile-info-name"></div>
 																				<div class="profile-info-name">
-																					<button type="button" id="buttonDbf" name="buttonDbf" class="btn btn-white btn-info btn-bold btn-xs"> Generar Anexos Concar <i class="ace-icon fa fa fa-file-o bigger-110 icon-only"></i>
-																					</button>
-																				</div>
-																				<div class="profile-info-name"></div>
-																				<div class="profile-info-name">
 																					<button type="button" id="buttonExcel" name="buttonExcel" class="btn btn-white btn-info btn-bold btn-xs"> Generar archivo Excel <i class="ace-icon fa fa-file-excel-o bigger-110 icon-only"></i>
 																					</button>
 																				</div>
-																				<!--<div class="profile-info-name"></div>
-																				<div class="profile-info-name">
-																					<button type="button" id="buttonPdf" name="buttonPdf" class="btn btn-white btn-info btn-bold btn-xs"> Enviar archivos PDF <i class="ace-icon fa fa-file-pdf-o bigger-110 icon-only"></i>
-																					</button>
-																				</div>-->
 																				<div class="profile-info-name"></div>
 																				<div class="profile-info-name">
 																					<button type="button" id="buttonComprobante" name="buttonComprobante" class="btn btn-white btn-info btn-bold btn-xs" data-toggle="modal" data-target="#modalXML"> Emitir Comprobante <i class="ace-icon fa fa-file-code-o bigger-110 icon-only"></i>
 																					</button>
 																				</div>
+																				<div class="profile-info-name"></div>
 																				<div class="profile-info-name"></div>
 																			</div>
 																		</div>
@@ -424,82 +567,158 @@
 	    <script>
 			$(document).ready(function(){
 
-				/*$("#canales").change(function() {
-					var canales = $("#canales").val();
-					//ajax para pasar los parámetros
-					$.ajax({
-						url: "<?= BASE_URL()?>notas_cnt/index",
-						type: 'POST',
-						dataType: 'json',
-						data: {canales:canales},
-						success: function(data)
-						{
-							//#resp es el id del div donde se van a crear los checkbozx
-							if ($('#canales').val() == 0) {
-						       	$("#correlativoDoc").html(null);
-								$("#resp2").html(null);
-						    } else {
-								$("#resp").html(null);
-								$("#resp2").html(null);
-								$("#correlativoDoc").html(data);
-						    }
-
-							$("#accionesTabla").hide();
-						}
-					});
-					return false;
-				});*/
-				
-//------------------------------------------------------------------------------------------------------------------------------
 				//NOTAS DE CRÉDITO Y NOTAS DE DÉBITO
-			    $("#accionesTablaEmitido").hide();
-			    $("#canales").change(function() {
-					var canales = $("#canales").val();
-					//ajax para pasar los parámetros
-					$.ajax({
-						url: "<?= BASE_URL()?>notas_cnt/generarLista",
-						type: 'POST',
-						dataType: 'json',
-						data: {canales:canales},
-						beforeSend: function(){
-				            $('#resp10').html("<br><br><img src='<?=base_url()."public/assets/img/loading2.gif"?>'>");
-				        },
-						success: function(data)
-						{
-							//#resp es el id del div donde se van a crear los checkbozx
-							if ($('#canales').val() == 0) {
-						       	$("#resp1").html(null);
-								$("#resp2").html(null);
-						    } else {
-								$("#resp1").html(null);
-								$("#resp2").html(null);
-								$("#resp1").html(data);
-						    }
-
-							$("#accionesTablaEmitido").hide();
-						}
-					});
-					return false;
-				});
-
 				//función para enviar datos a la tabla dinámica que se va a generar    
-			    $('#buttonBuscar').click(function(){
+			    $('#buttonBuscarCredito').click(function(){
 			        $.ajax({                        
-			           	url: "<?= BASE_URL()?>notas_cnt/mostrarDatosComprobantes",   
+			           	url: "<?= BASE_URL()?>notas_cnt/mostrarDocumentoNotaCredito",   
 			           	type: 'POST',
 			           	dataType: 'json',                                 
-			           	data: $("#formCategoria").serialize(),
+			           	data: $("#formNotaCredito").serialize(),
 			           	beforeSend: function(){
-				            $('#resp2').html("<br><br><img src='<?=base_url()."public/assets/img/loading2.gif"?>'>");
+				            $('#respCredito').html("<br><br><img src='<?=base_url()."public/assets/img/loading2.gif"?>'>");
+				        },
+				        complete:function() {
+					        $("#respCredito").remove();
+					    },
+			           	success: function(data)             
+			           	{
+			           		$('#numDoc').val(data.seriecorrelativo);
+			           		$('#nomCliente').val(data.nombre_comercial_cli);
+			           		$('#dniRuc').val(data.numero_documento_cli);
+			           		$('#impTotal').val(data.importe_total);
+			           		$('#tipoMoneda').val(data.tipo_moneda);
+			           		$('#numSerie').val(data.serie);
+			           		$('#correGen').val(data.correlativo);
+			           		$('#idcliente').val(data.id_contratante);
+			           		$('#idplan').val(data.idplan);
+			           	}
+			       	});
+			       	return false;
+			    });
+
+			    $('#buttonCancelarCredito').click(function() {
+				    $('#numDoc').val('');
+	           		$('#nomCliente').val('');
+	           		$('#dniRuc').val('');
+	           		$('#impTotal').val('');
+	           		$('#tipoMoneda').val('');
+	           		$('#numSerie').val('');
+	           		$('#correGen').val('');
+	           		$('#impNota').val('');
+	           		$('#motivo').val('');
+	           		$('#idcliente').val('');
+	           		$('#idplan').val('');
+	           		$('#serie').val(0);
+	           		$('#correlativoDoc').val('');
+	           		$('#fechaDoc').date('dd/mm/yyyy');
+				});
+
+				$('#buttonGuardarCredito').click(function(){
+			        $.ajax({                        
+			           	url: "<?= BASE_URL()?>notas_cnt/guardarDocumentoNotaCredito",   
+			           	type: 'POST',
+			           	dataType: 'json',                                 
+			           	data: $("#formNotaCredito").serialize(),
+			           	beforeSend: function(){
+				            $('#respCredito').html("<br><br><img src='<?=base_url()."public/assets/img/loading2.gif"?>'>");
+				        },
+				        complete:function() {
+					        $("#respCredito").remove();
+					    },
+			           	success: function(data)             
+			           	{
+
+			           	}
+			       	});
+			       	return false;
+			    });
+
+
+			    $('#buttonBuscarDebito').click(function(){
+			        $.ajax({                        
+			           	url: "<?= BASE_URL()?>notas_cnt/mostrarDocumentoNotaDebito",   
+			           	type: 'POST',
+			           	dataType: 'json',                                 
+			           	data: $("#formNotaDebito").serialize(),
+			           	beforeSend: function(){
+				            $('#respDebito').html("<br><br><img src='<?=base_url()."public/assets/img/loading2.gif"?>'>");
+				        },
+				        complete:function() {
+					        $("#respDebito").remove();
+					    },
+			           	success: function(data)             
+			           	{
+			           		$('#numDocD').val(data.seriecorrelativo);
+			           		$('#nomClienteD').val(data.nombre_comercial_cli);
+			           		$('#dniRucD').val(data.numero_documento_cli);
+			           		$('#impTotalD').val(data.importe_total);
+			           		$('#tipoMonedaD').val(data.tipo_moneda);
+			           		$('#numSeriesD').val(data.serie);
+			           		$('#numCorreD').val(data.correlativo);
+			           		$('#idclienteD').val(data.id_contratante);
+			           		$('#idplanD').val(data.idplan);
+			           	}
+			       	});
+			       	return false;
+			    });
+
+			    $('#buttonCancelarDebito').click(function() {
+				    $('#numDocD').val('');
+	           		$('#nomClienteD').val('');
+	           		$('#dniRucD').val('');
+	           		$('#impTotalD').val('');
+	           		$('#tipoMonedaD').val('');
+	           		$('#numSeriesD').val('');
+	           		$('#numCorreD').val('');
+	           		$('#impNotaD').val('');
+	           		$('#motivoD').val('');
+	           		$('#idclienteD').val('');
+	           		$('#idplanD').val('');
+	           		$('#serie').val(0);
+				 });
+
+			    $('#buttonGuardarDebito').click(function(){
+			        $.ajax({                        
+			           	url: "<?= BASE_URL()?>notas_cnt/guardarDocumentoNotaDebito",   
+			           	type: 'POST',
+			           	dataType: 'json',                                 
+			           	data: $("#formNotaDebito").serialize(),
+			           	beforeSend: function(){
+				            $('#respDebito').html("<br><br><img src='<?=base_url()."public/assets/img/loading2.gif"?>'>");
+				        },
+				        complete:function() {
+					        $("#respDebito").remove();
+					    },
+			           	success: function(data)             
+			           	{
+
+			           	}
+			       	});
+			       	return false;
+			    });
+
+//------------------------------------------------------------------------------------------------------------------------------
+				//EMITIR NOTA DE CRÉDITO Y DÉBITO
+				$("#accionesTablaEmitido").hide();
+				//función para enviar datos a la tabla dinámica que se va a generar   
+			    $('#buttonBuscarEmision').click(function(){
+			        $.ajax({                        
+			           	url: "<?= BASE_URL()?>notas_cnt/mostrarDocumentoGenerado",   
+			           	type: 'POST',
+			           	dataType: 'json',                                 
+			           	data: $("#formCategoriaEmitir").serialize(),
+			           	beforeSend: function(){
+				            $("#resp2").html("<br><br><img src='<?=base_url()."public/assets/img/loading2.gif"?>'>");
 				        },
 			           	success: function(data)             
 			           	{
 			           		$("#resp2").html(null);
-			             	$('#resp2').html(data); 
+			             	$("#resp2").html(data); 
 			             	$("#accionesTablaEmitido").show();
-			             	$('#tablaDatos').DataTable( {
+			             	$("#tablaDatos").DataTable({
 								"pagingType": "full_numbers"
-							} );
+							});
 			           	}
 			       	});
 			       	return false;
@@ -581,7 +800,7 @@
 					    },
 					    success: function(data)
 					    {
-			           		
+
 					    }
 			       	});
 			    	$('#canales').val() == 0;
