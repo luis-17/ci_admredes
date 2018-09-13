@@ -167,7 +167,7 @@
 																<?php endforeach; ?>				
 														</select>
 													</div>
-													<div class="profile-info-name"> Plan: </div>
+													<div class="profile-info-name"> Estado: </div>
 													<div class="profile-info-name">
 														<select name="tipo" id="tipo" required="Seleccione una opción de la lista"  class="form-control"   style="width: 200px;">											
 															<option value="1">Vigentes</option>
@@ -175,12 +175,16 @@
 														</select>
 													</div>
 													<div  class="profile-info-name">
-													<button type="submit" class="btn btn-info btn-xs">Buscar 
+													<button type="submit" class="btn btn-info btn-xs" name="accion" value="buscar">Buscar 
 														<i class="ace-icon glyphicon glyphicon-search bigger-110 icon-only"></i>
 													</button>
-													</form>	
-													<button onclick="exportar_cobros()" style="display: none;">exportar</button>														
 													</div>
+													<div  class="profile-info-name">
+													<button class="btn btn-info btn-xs" type="submit" name="accion" value="exportar">Exportar
+														<i class="ace-icon fa fa-download bigger-110 icon-only"></i>
+													</button>
+													</div>
+													</form>
 												</div>
 											</div>
 										</div>
