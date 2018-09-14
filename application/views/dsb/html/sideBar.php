@@ -18,14 +18,6 @@
 				</div><!-- /.sidebar-shortcuts -->
 
 				<ul class="nav nav-list">
-					<li class="active">
-						<a href="<?=base_url();?>">
-							<i class="menu-icon fa fa-tachometer"></i>
-							<span class="menu-text"> Menú </span>
-						</a>
-
-						<b class="arrow"></b>
-					</li>
 
 					<?php foreach ($menu1 as $u):
 						$idmenu1=$u->Id;

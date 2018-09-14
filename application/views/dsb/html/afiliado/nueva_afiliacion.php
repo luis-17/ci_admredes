@@ -138,8 +138,9 @@
 						<ul class="breadcrumb">
 							<li>
 								<i class="ace-icon fa fa-home home-icon"></i>
-								<a href="#">Herramienta de Afiliación / Desafiliación</a>
+								<a href="<?=base_url()?>">Inicio</a>
 							</li>
+							<li>Afiliación / Desafiliación</li>
 						</ul><!-- /.breadcrumb -->
 
 						<!-- /section:basics/content.searchbox -->

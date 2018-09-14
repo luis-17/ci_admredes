@@ -101,7 +101,7 @@
 						<!-- /section:settings.box -->
 						<div class="page-header">
 							<h1>
-								Planes
+								Consolidado de Planes
 								<small>
 									<i class="ace-icon fa fa-angle-double-right"></i>
 								</small>
@@ -156,12 +156,17 @@
 														<a class="boton fancybox" href="<?=base_url()?>index.php/plan_cobertura/<?=$p->idplan?>/<?=$p->nombre_plan?>" data-fancybox-width="950" data-fancybox-height="690">
 															<i class="ace-icon fa fa-eye bigger-120"></i>
 														</a>
-													</div>
-													<div title="Editar Plan" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
-														&nbsp;<a href="<?=base_url()?>index.php/plan_editar/<?=$p->idplan?>/<?=$p->nombre_plan?>">
-															<i class="ace-icon fa fa-pencil bigger-120"></i>
+														</div>
+														<div title="Editar Plan" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
+															&nbsp;<a href="<?=base_url()?>index.php/plan_editar/<?=$p->idplan?>/<?=$p->nombre_plan?>">
+																<i class="ace-icon fa fa-pencil bigger-120"></i>
+															</a>
+														</div>
+														<div title="Editar Email" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
+															&nbsp;<a class="boton fancybox" href="<?=base_url()?>index.php/plan_email/<?=$p->idplan?>/<?=$p->nombre_plan?>" data-fancybox-width="950" data-fancybox-height="490">
+															<i class="ace-icon fa fa-envelope bigger-120"></i>
 														</a>
-													</div>
+														</div>
 													</div>
 
 														<div class="hidden-md hidden-lg">
@@ -182,6 +187,13 @@
 																			<div title="Editar Plan" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
 																				&nbsp;<a href="<?=base_url()?>index.php/plan_editar/<?=$p->idplan?>/<?=$p->nombre_plan?>">
 																					<i class="ace-icon fa fa-pencil bigger-120"></i>
+																				</a>
+																			</div>
+																		</li>
+																		<li>
+																			<div title="Editar Email" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
+																				&nbsp;<a class="boton fancybox" href="<?=base_url()?>index.php/plan_email/<?=$p->idplan?>/<?=$p->nombre_plan?>" data-fancybox-width="950" data-fancybox-height="490">
+																					<i class="ace-icon fa fa-envelope bigger-120"></i>
 																				</a>
 																			</div>
 																		</li>	

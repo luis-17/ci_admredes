@@ -107,4 +107,29 @@ class Login_cnt extends CI_Controller {
 		redirect('/');
 	}
 
+	public function denegado($desc){
+		//load session library
+		$this->load->library('session');
+
+		//restrict users to go to home if not logged in
+		if($this->session->userdata('user')){
+			//$this->load->view('home');
+
+			$user = $this->session->userdata('user');
+			extract($user);
+
+			$menuLista = $this->menu_mdl->getMenu($idusuario);
+			$data['menu1'] = $menuLista;
+
+			$submenuLista = $this->menu_mdl->getSubMenu($idusuario);
+			$data['menu2'] = $submenuLista;	
+			$data['id'] = "";	
+			$data['nom'] = $desc;
+			$this->load->view('dsb/html/denegado.php', $data);
+		}
+		else{
+			redirect('/');
+		}		
+	}
+
 }

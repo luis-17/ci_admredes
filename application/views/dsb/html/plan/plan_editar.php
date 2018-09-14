@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html lang="en">
 	<head>
 		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
@@ -19,6 +19,28 @@
 
 		<!-- ace styles -->
 		<link rel="stylesheet" href="<?=  base_url()?>public/assets/css/ace.css" class="ace-main-stylesheet" id="main-ace-style" />
+
+		<!-- jQuery library is required, see http://jquery.com/ -->
+		<script type="text/javascript" src="<?=base_url()?>public/assets/js/jquery/jquery.js"></script>
+		<!-- WYMeditor main JS file, minified version -->
+		<script type="text/javascript" src="<?=base_url()?>public/assets/js/wymeditor/jquery.wymeditor.min.js"></script>
+
+		<script type="text/javascript">
+
+		/* Here we replace each element with class 'wymeditor'
+		 * (typically textareas) by a WYMeditor instance.
+		 * 
+		 * We could use the 'html' option, to initialize the editor's content.
+		 * If this option isn't set, the content is retrieved from
+		 * the element being replaced.
+		 */
+
+		jQuery(function() {
+		    jQuery('.wymeditor').wymeditor();
+		});
+
+		</script>
+
 		<script type="text/javascript" src="<?=  base_url()?>public/fancybox/lib/jquery.mousewheel-3.0.6.pack.js"></script>
 		<!-- FancyBox -->
 		<!-- Add jQuery library -->
@@ -186,14 +208,6 @@
 											<input type="number" id="prima" name="prima" class="col-xs-10 col-sm-5" value="<?=$prima;?>">
 										</div>
 									</div>
-									<div class="form-group">
-										<label class="col-sm-3 control-label no-padding-right" for="form-field-1">Contenido email: </label>
-
-										<div class="col-sm-9">
-											<textarea class="form-control" id="form-field-8" name="cuerpo" ><?=$cuerpo;?></textarea>
-										</div>
-									</div>
-
 
 									<div class="clearfix form-actions">
 										<div class="col-md-offset-3 col-md-9">

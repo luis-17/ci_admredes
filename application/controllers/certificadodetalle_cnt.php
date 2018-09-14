@@ -12,6 +12,7 @@ class Certificadodetalle_cnt extends CI_Controller {
         //$this->load->helper(array('fechas','otros')); 
         $this->load->model('menu_mdl');
         $this->load->model('certificado_mdl');
+        $this->load->library('My_PHPMailer');
 
     }
 
@@ -182,6 +183,52 @@ class Certificadodetalle_cnt extends CI_Controller {
 			$data['mensaje'] = 3;
 		}
 		
+		if($data['estado']==2){
+
+		$mail = new PHPMailer;
+
+		$tipo="'Century Gothic'";
+		// Armo el FROM y el TO
+		$mail->setFrom('pvigil@red-salud.com', 'Red Salud');
+		$mail->addAddress('pvigil@red-salud.com', 'Red Salud');
+		// El asunto
+		$mail->Subject = "RESERVACI&Oacute;N DE CONSULTA M&Eacute;DICA";
+		// El cuerpo del mail (puede ser HTML)
+		$mail->Body = '<!DOCTYPE html>
+				<head>
+                <meta charset="UTF-8" />
+                </head>
+                <body style="font-size: 1.5vw; width: 100%; font-family: '.$tipo.', CenturyGothic, AppleGothic, sans-serif;">
+                <div><img src="http://www.red-salud.com/gestion_afiliados/public/assets/images/desafiliacion.png" style="float:left; margin:10px; width: 13%; padding-left: 10%"></div>
+                <div style="padding-top: 2%; text-align: right; padding-right: 15%;"><img src="http://www.red-salud.com/mail/logo.png" width="17%" style="text-align: right;"></img>
+                </div>
+                <div style="padding-right: 15%; padding-left: 8%;"><b><label style="color: #000000;"> </b></div>
+                <div style="padding-right: 15%; padding-left: 8%; padding-bottom: 1%; color: #12283E;">
+                <p>Te informamos que tu solicitud ha sido recibida. Lamentamos la cancelaci&oacute;n de tu </p>
+                <p>&iexcl;Recuerda que siempre es momento de pensar en tu salud!</p>                
+                </div>
+                <br>
+                <br>
+                <br>
+                <br>
+                <br>
+                <div style="background-color: #BF3434; padding-top: 0.5%; padding-bottom: 0.5%">
+                <div style="text-align: center;"><b><a href="https://www.google.com/maps/place/Red+Salud/@-12.11922,-77.0370327,17z/data=!3m1!4b1!4m5!3m4!1s0x9105c83d49a4312b:0xf0959641cc08826!8m2!3d-12.11922!4d-77.034844" style="text-decoration-color: #FFFFFF; text-decoration: none; color:  #FFFFFF;">Av. Jos&eacute; Pardo Nro 601 Of. 502, Miraflores - Lima.</a></b></div>
+                <div style="text-align: center;"><b><a href="http://www.red-salud.com" style="text-decoration-color: #FFFFFF; text-decoration: none; color:  #FFFFFF;">www.red-salud.com</a></b></div>
+                </div>
+                <div style=""><img src="http://www.red-salud.com/mail/bottom.png" width="50%"></img></div>
+                </div>
+            </body>
+			</html>';
+		$mail->IsHTML(true);
+		// Los archivos adjuntos
+		//$mail->addAttachment('adjunto/'.$plan.'.pdf', 'Condicionado.pdf');
+		//$mail->addAttachment('adjunto/RED_MEDICA_2018.pdf', 'Red_Medica.pdf');
+		// Enviar
+		$mail->send(); 
+
+		}
+
 		$this->load->view('dsb/html/mensaje.php', $data);
 	}
 

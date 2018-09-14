@@ -208,6 +208,7 @@
 														<th>Afiliado</th>
 														<th>N° Teléfono</th>
 														<th>Tipo</th>
+														<th>Afiliado por</th>
 													</tr>
 												</thead>
 
@@ -222,6 +223,7 @@
 														<td><?=$a->asegurado;?></td>
 														<td><?=$a->aseg_telf;?></td>
 														<td><?=$a->tipo;?></td>
+														<td><?=$a->username?></td>
 													</tr>
 													<?php endforeach; ?>
 												</tbody>

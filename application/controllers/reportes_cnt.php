@@ -626,9 +626,10 @@ class Reportes_cnt extends CI_Controller {
 		        $this->excel->getActiveSheet()->setCellValue('D1', 'N° Teléfono');
 		        $this->excel->getActiveSheet()->setCellValue('E1', 'Tipo');
 		        $this->excel->getActiveSheet()->setCellValue('F1', 'Estado');
+		        $this->excel->getActiveSheet()->setCellValue('G1', 'Afiliado por');
 		        //$this->excel->getActiveSheet()->getStyle('A1')->getFont()->setSize(20);
-		        $this->excel->getActiveSheet()->getStyle('A1:F1')->getFont()->setBold(true);
-		        $this->excel->getActiveSheet()->getStyle('A1:F1')->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()->setRGB('E0E0E0');
+		        $this->excel->getActiveSheet()->getStyle('A1:G1')->getFont()->setBold(true);
+		        $this->excel->getActiveSheet()->getStyle('A1:G1')->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()->setRGB('E0E0E0');
 		        //$this->excel->getActiveSheet()->mergeCells('A1:D1');
 		        $nom_plan="";
 		        foreach ($planes as $p) {
@@ -650,6 +651,7 @@ class Reportes_cnt extends CI_Controller {
 			        $this->excel->getActiveSheet()->setCellValue('D'.$cont, $a->aseg_telf);
 			        $this->excel->getActiveSheet()->setCellValue('E'.$cont, $a->tipo);
 			        $this->excel->getActiveSheet()->setCellValue('F'.$cont, $estado);
+			        $this->excel->getActiveSheet()->setCellValue('G'.$cont, $a->username);
 			        $cont=$cont+1;
 		        }
 
@@ -660,6 +662,7 @@ class Reportes_cnt extends CI_Controller {
 		        	$this->excel->getActiveSheet()->getStyle('D'.$i)->applyFromArray($estilo);
 		        	$this->excel->getActiveSheet()->getStyle('E'.$i)->applyFromArray($estilo);
 		        	$this->excel->getActiveSheet()->getStyle('F'.$i)->applyFromArray($estilo);
+		        	$this->excel->getActiveSheet()->getStyle('G'.$i)->applyFromArray($estilo);
 		        }
 		 
 		        header('Content-Type: application/vnd.ms-excel');

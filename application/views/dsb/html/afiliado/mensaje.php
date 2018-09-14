@@ -73,7 +73,7 @@
 											if($tipomen==1){ 
 												echo "Los datos del afiliado <b>".$ape1." ".$ape2." ".$nom1." ".$nom2."</b> han sido actualizados con éxito";
 											} else {
-												echo "El afiliado <b>".$afiliado."</b> ha sido registrado con éxito";
+												echo "El afiliado <b>".$ape1." ".$ape2." ".$nom1." ".$nom2."</b> ha sido registrado con éxito";
 											}
 										}elseif($mensaje==2){
 											echo "Se ha registrado la reserva de atención con éxito";

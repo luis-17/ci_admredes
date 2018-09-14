@@ -24,7 +24,6 @@
 					<!-- #section:basics/navbar.layout.brand -->
 					<a href="#" class="navbar-brand">
 						<small>
-							<i class="fa fa-leaf"></i>
 							RED SALUD
 						</small>
 					</a>

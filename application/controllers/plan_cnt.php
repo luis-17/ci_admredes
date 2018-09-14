@@ -155,7 +155,6 @@ class plan_cnt extends CI_Controller {
 		$data['mora'] = $_POST['mora'];
 		$data['atencion'] = $_POST['atencion'];
 		$data['prima'] = $_POST['prima'];
-		$data['contenido'] = $_POST['cuerpo'];
 
 		if($_POST['idplan']==0):
 			$this->plan_mdl->insert_plan($data);
@@ -260,5 +259,24 @@ class plan_cnt extends CI_Controller {
 		$data['items'] = $items;
 
 		$this->load->view('dsb/html/plan/plan_cobertura.php',$data);
+ 	}
+
+ 	function plan_email($id,$nom)
+ 	{
+ 		$data['idplan'] = $id;
+ 		$data['nom'] = $nom;
+ 		$plan = $this->plan_mdl->getPlan($id);
+		$data['plan'] = $plan;	
+
+ 		$this->load->view('dsb/html/plan/plan_email.php',$data);
+ 	}
+
+ 	function guardar_email()
+ 	{
+ 		$data['cuerpo_mail'] = $_POST['cuerpo_mail'];
+ 		$data['idplan'] = $_POST['idplan'];
+
+ 		$this->plan_mdl->save_mail($data);
+
  	}
 }

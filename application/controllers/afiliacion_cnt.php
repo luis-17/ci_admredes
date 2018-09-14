@@ -127,7 +127,6 @@ class Afiliacion_cnt extends CI_Controller {
 		else{
 			redirect('/');
 		}
-
 	}
 
 	public function cont_save()
@@ -283,6 +282,7 @@ class Afiliacion_cnt extends CI_Controller {
 		$data['ec'] = $_POST['ec'];
 		$op = $_POST['tipoop'];
 		$data['tipomen'] = 1;
+		$data['mensaje'] = 1;
 		
 		$this->afiliacion_mdl->up_aseg($data);
 		$this->load->view('dsb/html/mensaje.php', $data);
@@ -313,6 +313,7 @@ class Afiliacion_cnt extends CI_Controller {
 		$data['idusuario'] = $idusuario;
 		$data['id'] = $id;
 		$data['cert'] = $cert;
+		$data['mensaje'] = 1;
 
 		switch ($op) {
 			case 2:
@@ -450,7 +451,7 @@ class Afiliacion_cnt extends CI_Controller {
 
                 <div style="padding-right: 15%; padding-left: 8%;"><b><label style="color: #000000;">'.$tit.', </b></div>
                 <div  style="padding-right: 15%; padding-left: 8%; padding-bottom: 1%; color: #12283E;">
-                <p>Te informamos que tu solicitud ha sido recibida. Lamentamos la cancelaci&oacute;n de tu '.$plan.'.</p>
+                <p>Te informamos que tu solicitud ha sido procesada. Lamentamos la cancelaci&oacute;n de tu '.$plan.'.</p>
                 <p>&iexcl;Recuerda que siempre es momento de pensar en tu salud!</p>                
                 </div>
                 <br>

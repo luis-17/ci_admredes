@@ -140,7 +140,7 @@
 						<div class="row">
 							<div class="col-xs-12">
 								<!-- PAGE CONTENT BEGINS -->
-								<form class="form-horizontal" name="aseg" id="aseg" role="form" method="post" action="<?=base_url()?>aseg_save">					
+								<form class="form-horizontal" name="aseg" id="aseg" role="form" method="post" action="<?=base_url()?>index.php/aseg_save">					
 									
 									<input type="hidden" id="aseg_id" name="aseg_id" value="<?=$asegurado;?>" />
 									<input type="hidden" name="cert_id" id="cert_id" value="<?=$cert_id;?>">

@@ -52,9 +52,8 @@
 						<ul class="breadcrumb">
 							<li>
 								<i class="ace-icon fa fa-home home-icon"></i>
-								<a href="#">Inicio</a>
+								<a href="<?=base_url()?>">Inicio</a>
 							</li>
-							<li class="active">Menú</li>
 						</ul><!-- /.breadcrumb -->
 
 						<!-- /section:basics/content.searchbox -->
@@ -63,29 +62,19 @@
 					<!-- /section:basics/content.breadcrumbs -->
 					<div class="page-content">
 
-						<!-- /section:settings.box -->
-						<div class="page-header">
-							<h1>Red Salud Admin <small></small></h1>
-						</div><!-- /.page-header -->
-
 						<div class="row">
 							<div class="col-xs-12">
 								<!-- PAGE CONTENT BEGINS -->
 								<div class="widget-main">
-									<p class="alert alert-info">
-									<button type="button" class="close" data-dismiss="alert">
-										<i class="ace-icon fa fa-times"></i>
-									</button>
+									<div class="col-xs-12"></br>
+										<div class="col-xs-3"> <img style="width: 90%;" src="<?=base_url()?>public/assets/images/3.png"/></div>								
+			  							<div class="col-xs-9"><h2 style="font-family: 'Montserrat', sans-serif; font-size:36px; color: #161b52;">Hola <?php $user = strtoupper($username);
+			  							echo $user; ?>!!</h2></div> <br>
 
-									<i class="ace-icon fa fa-check blue"></i>
+			  							<div class="col-xs-3"><h2></h2></div>
+			  							<div class="col-xs-9"> <h2 style="color: #B61414;">¡Te damos la bienvenida al sistema Red Salud Admin!</h2> <br>
 
-								  	Bienvenido a 
-								  	<strong class="blue">
-									  Red-Salud Admin
-									  <small>V1.1</small>
-									</strong>,
-									Administrador de Aplicaciones y procesos.
-									</p>
+			  							</div>
 								</div>
 
 								<!-- /.row -->

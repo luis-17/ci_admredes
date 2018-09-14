@@ -95,6 +95,7 @@ $route['consultar_cobros'] = 'Reportes_cnt/index';
 $route['consultar_atenciones'] = 'Reportes_cnt/consultar_atenciones';
 $route['consultar_afiliados'] = 'Reportes_cnt/consultar_afiliados';
 $route['afiliacion'] = 'Afiliacion_cnt/index';
+$route['denegado/(:any)'] = 'login_cnt/denegado/$1';
 
 $route['planes'] = 'Afiliacion_cnt/plan';
 $route['buscar'] = 'Afiliacion_cnt/buscar';
@@ -169,6 +170,8 @@ $route['plan_guardar'] = 'plan_cnt/plan_guardar';
 $route['guardar_cobertura'] = 'plan_cnt/guardar_cobertura';
 $route['plan_anular/(:any)'] = 'plan_cnt/plan_anular/$1';
 $route['plan_activar/(:any)'] = 'plan_cnt/plan_activar/$1';
+$route['plan_email/(:any)/(:any)'] = 'plan_cnt/plan_email/$1/$2';
+$route['guardar_email'] = 'plan_cnt/guardar_email';
 $route['cobertura_anular/(:any)/(:any)/(:any)'] = 'plan_cnt/cobertura_anular/$1/$2/$3';
 $route['cobertura_activar/(:any)/(:any)/(:any)'] = 'plan_cnt/cobertura_activar/$1/$2/$3';
 $route['seleccionar_cobertura/(:any)/(:any)/(:any)'] = 'plan_cnt/seleccionar_cobertura/$1/$2/$3';

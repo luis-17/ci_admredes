@@ -63,8 +63,7 @@
 			'dias_carencia' => $data['carencia'],
 			'dias_mora' => $data['mora'],
 			'dias_atencion' => $data['atencion'],
-			'prima_monto' => $data['prima'],
-			'cuerpo_mail' => $data['contenido']
+			'prima_monto' => $data['prima']
 		);
 		$this->db->where('idplan',$data['idplan']);
 		return $this->db->update('plan', $array);
@@ -79,7 +78,6 @@
 			'dias_mora' => $data['mora'],
 			'dias_atencion' => $data['atencion'],
 			'prima_monto' => $data['prima'],
-			'cuerpo_mail' => $data['contenido'],
 			'idred' => 1
  				 );
 		$this->db->insert('plan',$array);
@@ -150,6 +148,15 @@
  		$this->db->where("idplandetalle",$id);
  	$cobertura = $this->db->get();
 	return $cobertura->result();
+ 	}
+
+ 	function save_mail($data){
+ 		$array = array
+ 		(
+ 			'cuerpo_mail' => $data['cuerpo_mail'] 
+ 		);
+ 		$this->db->where('idplan',$data['idplan']);
+ 		$this->db->update('plan',$array);
  	}
 }
 ?>
