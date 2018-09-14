@@ -2,6 +2,7 @@
 ini_set('max_execution_time', 6000); 
 ini_set("soap.wsdl_cache_enabled", 0);
 ini_set('soap.wsdl_cache_ttl',0); 
+date_default_timezone_set('America/Lima');
 defined('BASEPATH') OR exit('No direct script access allowed');
 use RobRichards\XMLSecLibs\XMLSecurityDSig;
 use RobRichards\XMLSecLibs\XMLSecurityKey;
@@ -170,6 +171,7 @@ class verificar_cnt extends CI_Controller {
 								if ($descripcion == 'La Boleta numero '.$nameDoc.', ha sido aceptada') {
 									$html .= "<td align='left' class='success'>".$descripcion."</td>";
 								} else {
+									$this->comprobante_pago_mdl->updateEstadocobroComprobante();
 									$html .= "<td align='left' class='danger'>".$descripcion."</td>";
 								}
 							$html .= "</tr>";
@@ -242,6 +244,7 @@ class verificar_cnt extends CI_Controller {
 									if ($descripcion == 'La Factura numero '.$nameDoc.', ha sido aceptada') {
 										$html .= "<td align='left' class='success'>".$descripcion."</td>";
 									} else {
+										$this->comprobante_pago_mdl->updateEstadocobroComprobante();
 										$html .= "<td align='left' class='danger'>".$descripcion."</td>";
 									}
 								$html .= "</tr>";
