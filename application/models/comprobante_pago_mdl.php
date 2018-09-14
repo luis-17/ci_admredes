@@ -237,8 +237,8 @@ class Comprobante_pago_mdl extends CI_model {
  	}
 
  	function getDatosExcelBoletas($inicio, $fin, $serie){
- 		$this->db->select("CONCAT(REPEAT( '0', 2 - LENGTH( MONTH(CURDATE())) ) , MONTH(CURDATE())) as mes, CONCAT(REPEAT( '0', 4 - LENGTH( correlativo) ) , correlativo) as correlativo, fecha_emision, TRUNCATE(importe_total,2) as total, TRUNCATE((importe_total/1.18) ,2) as neto, TRUNCATE((importe_total - TRUNCATE((importe_total/1.18) ,2)) ,2) as igv, c.serie, p.nombre_plan, c1.descripcion, c1.centro_costo, c2.cont_numDoc");
- 		$this->db->from("Comprobante_pago c");
+ 		$this->db->select("CONCAT(REPEAT( '0', 2 - LENGTH( MONTH(fecha_emision)) ) , MONTH(fecha_emision)) as mes, CONCAT(REPEAT( '0', 4 - LENGTH( correlativo) ) , correlativo) as correlativo, fecha_emision, TRUNCATE(importe_total,2) as total, TRUNCATE((importe_total/1.18) ,2) as neto, TRUNCATE((importe_total - TRUNCATE((importe_total/1.18) ,2)) ,2) as igv, c.serie, p.nombre_plan, c1.descripcion, c1.centro_costo, c2.cont_numDoc");
+ 		$this->db->from("comprobante_pago c");
 		$this->db->join("plan p","c.idplan=p.idplan");
  		$this->db->join("centro_costo c1","p.idcentrocosto=c1.idcentrocosto");	
  		$this->db->join("contratante c2","c.id_contratante=c2.cont_id");
@@ -249,9 +249,9 @@ class Comprobante_pago_mdl extends CI_model {
 		return $data->result();
  	}
 
-	function getDatosExcelFacturas($inicio, $fin, $serie){
- 		$this->db->select("CONCAT(REPEAT( '0', 2 - LENGTH( MONTH(CURDATE())) ) , MONTH(CURDATE())) as mes, CONCAT(REPEAT( '0', 4 - LENGTH( correlativo) ) , correlativo) as correlativo, c.fecha_emision, TRUNCATE(importe_total,2) as total, TRUNCATE((importe_total/1.18) ,2) as neto, TRUNCATE((importe_total - TRUNCATE((importe_total/1.18) ,2)) ,2) as igv, c.serie, p.nombre_plan, c1.descripcion, c1.centro_costo, c2.numero_documento_cli");
- 		$this->db->from("Comprobante_pago c");
+ 	function getDatosExcelFacturas($inicio, $fin, $serie){
+ 		$this->db->select("CONCAT(REPEAT( '0', 2 - LENGTH( MONTH(fecha_emision)) ) , MONTH(fecha_emision)) as mes, CONCAT(REPEAT( '0', 4 - LENGTH( correlativo) ) , correlativo) as correlativo, c.fecha_emision, TRUNCATE(importe_total,2) as total, TRUNCATE((importe_total/1.18) ,2) as neto, TRUNCATE((importe_total - TRUNCATE((importe_total/1.18) ,2)) ,2) as igv, c.serie, p.nombre_plan, c1.descripcion, c1.centro_costo, c2.numero_documento_cli");
+ 		$this->db->from("comprobante_pago c");
 		$this->db->join("plan p","c.idplan=p.idplan");
  		$this->db->join("centro_costo c1","p.idcentrocosto=c1.idcentrocosto");	
  		$this->db->join("cliente_empresa c2","c.id_cliente_empresa=c2.idclienteempresa");	
@@ -263,7 +263,7 @@ class Comprobante_pago_mdl extends CI_model {
 
  	function getDatosPdfBoletas($idcomprobante){
  		$this->db->select("c.idcomprobante, CONCAT(REPEAT( '0', 2 - LENGTH( MONTH(CURDATE())) ) , MONTH(CURDATE())) as mes, CONCAT(REPEAT( '0', 8 - LENGTH( correlativo) ) , correlativo) as correlativo, fecha_emision, TRUNCATE(importe_total,2) as total, TRUNCATE((importe_total/1.18) ,2) as neto, TRUNCATE((importe_total - TRUNCATE((importe_total/1.18) ,2)) ,2) as igv, c.serie, p.nombre_plan, c1.descripcion, c1.centro_costo, c2.cont_numDoc, CONCAT(c2.cont_ape1,' ',c2.cont_ape2,' ',c2.cont_nom1,' ',c2.cont_nom2) as contratante, c2.cont_numDoc");
- 		$this->db->from("Comprobante_pago c");
+ 		$this->db->from("comprobante_pago c");
 		$this->db->join("plan p","c.idplan=p.idplan");
  		$this->db->join("centro_costo c1","p.idcentrocosto=c1.idcentrocosto");	
  		$this->db->join("contratante c2","c.id_contratante=c2.cont_id");		
@@ -275,7 +275,7 @@ class Comprobante_pago_mdl extends CI_model {
 
  	 function getDatosPdfFacturas($idcomprobante){
  		$this->db->select("c.idcomprobante, CONCAT(REPEAT( '0', 2 - LENGTH( MONTH(CURDATE())) ) , MONTH(CURDATE())) as mes, CONCAT(REPEAT( '0', 8 - LENGTH( correlativo) ) , correlativo) as correlativo, c.fecha_emision, TRUNCATE(importe_total,2) as total, TRUNCATE((importe_total/1.18) ,2) as neto, TRUNCATE((importe_total - TRUNCATE((importe_total/1.18) ,2)) ,2) as igv, c.serie, p.nombre_plan, c1.descripcion, c1.centro_costo, c2.numero_documento_cli, c2.razon_social_cli, c2.numero_documento_cli");
- 		$this->db->from("Comprobante_pago c");
+ 		$this->db->from("comprobante_pago c");
 		$this->db->join("plan p","c.idplan=p.idplan");
  		$this->db->join("centro_costo c1","p.idcentrocosto=c1.idcentrocosto");	
  		$this->db->join("cliente_empresa c2","c.id_cliente_empresa=c2.idclienteempresa");	
@@ -287,7 +287,7 @@ class Comprobante_pago_mdl extends CI_model {
 
  	function getDatosXmlBoletas($inicio, $fin, $serie, $idPlan){
  		$this->db->select("CONCAT(REPEAT( '0', 2 - LENGTH( MONTH(CURDATE())) ) , MONTH(CURDATE())) as mes, CONCAT(REPEAT( '0', 8 - LENGTH( correlativo) ) , correlativo) as correlativo, c.correlativo as corre, fecha_emision, CONCAT(SUBSTRING(c.fecha_emision,6,2),SUBSTRING(c.fecha_emision,1,4)) as mesanio, TRUNCATE(importe_total,2) as total, TRUNCATE((importe_total/1.18) ,2) as neto, TRUNCATE((importe_total/1.18)*0.18 ,2) as igv, c.serie, p.nombre_plan, c1.descripcion, c1.centro_costo, c2.cont_numDoc, CONCAT(cont_ape1,' ',cont_ape2,' ',cont_nom1,' ',cont_nom2) as contratante");
- 		$this->db->from("Comprobante_pago c");
+ 		$this->db->from("comprobante_pago c");
 		$this->db->join("plan p","c.idplan=p.idplan");
  		$this->db->join("centro_costo c1","p.idcentrocosto=c1.idcentrocosto");	
  		$this->db->join("contratante c2","c.id_contratante=c2.cont_id");		
@@ -299,7 +299,7 @@ class Comprobante_pago_mdl extends CI_model {
 
  	 function getDatosXmlFacturas($inicio, $fin, $serie, $idPlan){
  		$this->db->select("CONCAT(REPEAT( '0', 2 - LENGTH( MONTH(CURDATE())) ) , MONTH(CURDATE())) as mes, CONCAT(REPEAT( '0', 8 - LENGTH( correlativo) ) , correlativo) as correlativo, c.correlativo as corre, c.fecha_emision, CONCAT(SUBSTRING(c.fecha_emision,6,2),SUBSTRING(c.fecha_emision,1,4)) as mesanio, TRUNCATE(importe_total,2) as total, TRUNCATE((importe_total/1.18) ,2) as neto, TRUNCATE((importe_total - TRUNCATE((importe_total/1.18) ,2)) ,2) as igv, c.serie, p.nombre_plan, c1.descripcion, c1.centro_costo, c2.numero_documento_cli, c2.razon_social_cli, c2.nombre_comercial_cli");
- 		$this->db->from("Comprobante_pago c");
+ 		$this->db->from("comprobante_pago c");
 		$this->db->join("plan p","c.idplan=p.idplan");
  		$this->db->join("centro_costo c1","p.idcentrocosto=c1.idcentrocosto");	
  		$this->db->join("cliente_empresa c2","c.id_cliente_empresa=c2.idclienteempresa");	

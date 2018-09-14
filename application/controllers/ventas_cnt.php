@@ -526,22 +526,26 @@ class ventas_cnt extends CI_Controller {
 		//Definición de la base de datos  
 		$def = array( 
 			array("AVANEXO", "C", 1),
-			array("ACODANE", "N", 8, 0), 
-			array("ADESANE", "C", 80), 
-			array("AREFANE", "C", 120), 
-			array("ARUC", "C", 1),
-			array("ACODMON", "C", 1),
-			array("AESTADO", "C", 5)
+			array("ACODANE", "C", 18), 
+			array("ADESANE", "C", 40), 
+			array("AREFANE", "C", 50), 
+			array("ARUC", "C", 18),
+			array("ACODMON", "C", 2),
+			array("AESTADO", "C", 1),
+			array("ADATE", "D", 8),
+			array("AHORA", "C", 6),
+			array("AVERETE", "C", 1),
+			array("APORRE", "N", 10, 3)
 		);
 
 		// creación
-		dbase_create('adjunto/dbf/anexo.dbf', $def);
+		dbase_create('adjunto/dbf/CAN03.dbf', $def);
 
-		$db = dbase_open('adjunto/dbf/anexo.dbf', 2);
+		$db = dbase_open('adjunto/dbf/CAN03.dbf', 2);
 		$anexos = $this->comprobante_pago_mdl->getDatosContratante($inicio, $fin);
 
 		foreach ($anexos as $a) {
-			dbase_add_record($db, array('C', $a->cont_numDoc, $a->nombre, $a->cont_direcc, '', '', 'v'));
+			dbase_add_record($db, array('C', $a->cont_numDoc, $a->nombre, $a->cont_direcc, '', '', 'V', '', '', 'S', 0));
 		}
 
 		dbase_close($db);
@@ -560,7 +564,7 @@ class ventas_cnt extends CI_Controller {
         $mail->AltBody    = "Se adjunta archivo DBF.";
         $mail->AddAddress('dcaceda@red-salud.com');
 
-       	$mail->AddAttachment("adjunto/dbf/anexo.dbf", "anexo.dbf");
+       	$mail->AddAttachment("adjunto/dbf/CAN03.dbf", "CAN03.dbf");
 
         $estadoEnvio = $mail->Send(); 
 
@@ -1072,15 +1076,18 @@ class ventas_cnt extends CI_Controller {
 	    }
 	}
 
-	public function enviarPdf($idcomprobante, $canales){
+	public function enviarPdf($idcomprobante, $canalesDos){
 
 		$data['idcomprobante'] = $idcomprobante;
-		$data['canalesDos'] = $canales;
+		$data['canalesDos'] = $canalesDos;
 
 		$this->load->view('dsb/html/comprobante/enviar_pdf.php', $data);
 	}
 
-	public function envioEmail($idcomprobante, $canales){
+	public function envioEmail(){
+
+		$idcomprobante=$_POST['idcomprobante'];
+		$canalesDos=$_POST['canales'];
 
 		include ('./application/libraries/xmldsig/src/XMLSecurityDSig.php');
     	include ('./application/libraries/xmldsig/src/XMLSecurityKey.php');
@@ -1109,7 +1116,7 @@ class ventas_cnt extends CI_Controller {
 	    $this->pdf->AliasNbPages();
 	    //$this->pdf->Image(base_url().'/public/assets/avatars/user.jpg','0','0','150','150','JPG');
 
-	    if ($canales == 1 || $canales == 2 || $canales == 3 || $canales == 6 || $canales == 7) {
+	    if ($canalesDos == 1 || $canalesDos == 2 || $canalesDos == 3 || $canalesDos == 6 || $canalesDos == 7) {
 	    	foreach ($boletas as $b){
 
 	    		$fechaFormato = date("d/m/Y", strtotime($b->fecha_emision));
@@ -1349,7 +1356,7 @@ class ventas_cnt extends CI_Controller {
 		    unlink("adjunto/comprobantes/".$b->mes."".$b->serie."".$b->correlativo.".pdf");
 			unlink("adjunto/comprobantes/".$filename.".xml");
 	    
-	    } elseif ($canales == 4) {
+	    } elseif ($canalesDos == 4) {
 	    	foreach ($facturas as $f){
 
 	    		$fechaFormato = date("d/m/Y", strtotime($f->fecha_emision));

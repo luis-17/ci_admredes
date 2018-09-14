@@ -171,7 +171,7 @@
 			    		url: "<?= BASE_URL()?>ventas_cnt/envioEmail",
 			    		type: 'POST',
 			    		dataType: 'json',
-			    		data: $("#formCategoria").serialize(),
+			    		data: $("#formPdf").serialize(),
 			    		beforeSend: function(){
 				            $('#resp4').html("<br><br><img src='<?=base_url()."public/assets/img/loading2.gif"?>'>");
 				        },
