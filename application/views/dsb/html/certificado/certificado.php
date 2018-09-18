@@ -82,7 +82,7 @@
 						<!-- /section:settings.box -->
 						<div class="page-header">
 							<h1>
-								Certificado
+								Búsqueda de Certificado
 								<small>
 									<i class="ace-icon fa fa-angle-double-right"></i>
 									

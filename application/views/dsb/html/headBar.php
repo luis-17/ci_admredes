@@ -60,7 +60,7 @@
 								</li>
 
 								<li>
-									<a href="profile.html">
+									<a href="<?=base_url()?>index.php/cambiar_pass">
 										<i class="ace-icon fa fa-user"></i>
 										Actualizar Contraseña
 									</a>

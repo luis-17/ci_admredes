@@ -182,6 +182,8 @@ $route['exc_cobros/(:any)/(:any)/(:any)'] = 'Reportes_cnt/exc_cobros/$1/$2/$3';
 
 $route['consultar_atenciones_buscar'] = 'Reportes_cnt/consultar_atenciones_buscar';
 $route['consultar_afiliados_buscar'] = 'Reportes_cnt/consultar_afiliados_buscar';
+$route['actualizar_pass'] = 'Perfil/actualizar_pass';
+$route['cambiar_pass'] = 'Perfil/cambiar_pass';
 
 // Rutas Ariel (Escribir debajo)
 

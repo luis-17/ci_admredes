@@ -277,6 +277,5 @@ class plan_cnt extends CI_Controller {
  		$data['idplan'] = $_POST['idplan'];
 
  		$this->plan_mdl->save_mail($data);
-
  	}
 }

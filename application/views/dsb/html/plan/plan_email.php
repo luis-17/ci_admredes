@@ -20,26 +20,19 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>WYMeditor</title>
-<!-- jQuery library is required, see http://jquery.com/ -->
-<script type="text/javascript" src="<?=base_url()?>public/assets/js/jquery/jquery.js"></script>
-<!-- WYMeditor main JS file, minified version -->
-<script type="text/javascript" src="<?=base_url()?>public/assets/js/wymeditor/jquery.wymeditor.min.js"></script>
+<meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
+<meta name="author" content="The Man in Blue" />
+<meta name="robots" content="all" />
+<meta name="MSSmartTagsPreventParsing" content="true" />
+<meta name="description" content="" />
+<meta name="keywords" content="" />
 
-<script type="text/javascript">
+<style type="text/css" media="all">
+	@import "<?=base_url()?>public/assets/css/main.css";
+	@import "<?=base_url()?>public/assets/css/widgEditor.css";
+</style>
 
-/* Here we replace each element with class 'wymeditor'
- * (typically textareas) by a WYMeditor instance.
- * 
- * We could use the 'html' option, to initialize the editor's content.
- * If this option isn't set, the content is retrieved from
- * the element being replaced.
- */
-
-jQuery(function() {
-    jQuery('.wymeditor').wymeditor();
-});
-
-</script>
+<script type="text/javascript" src="<?=base_url()?>public/assets/scripts/widgEditor.js"></script>
 
 <!-- bootstrap & fontawesome -->
 		<link rel="stylesheet" href="<?=  base_url()?>public/assets/css/bootstrap.css" />
@@ -76,13 +69,13 @@ jQuery(function() {
 				</div>
 				<p>Digita el contenido del email de confirmación de reserva para Proveedores.</p>
 				<form method="post" action="<?=base_url()?>index.php/guardar_email">
+					<fieldset>
 					<input type="hidden" name="idplan" value="<?=$idplan?>">
-					<textarea class="wymeditor" name="cuerpo_mail"><?=$p->cuerpo_mail?></textarea>
-					<br>
-					<button class="btn btn-info" type="submit">
-						<i class="ace-icon fa fa-check bigger-110"></i>
-						Guardar
-					</button>
+						<textarea id="cuerpo_mail" name="cuerpo_mail" class="widgEditor nothing"></textarea>
+					</fieldset>
+					<fieldset class="submit">
+						<button class="btn btn-info" type="submit">Guardar</button>
+					</fieldset>
 				</form>
 				<?php } ?>
 			</div>
