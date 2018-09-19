@@ -68,7 +68,7 @@
 								<div class="widget-main">
 									<div class="col-xs-12"></br>
 										<div class="col-xs-3"> <img style="width: 90%;" src="<?=base_url()?>public/assets/images/3.png"/></div>								
-			  							<div class="col-xs-9"><h2 style="font-family: 'Montserrat', sans-serif; font-size:36px; color: #161b52;">Hola <?php $user = strtoupper($username);
+			  							<div class="col-xs-9"><h2 style="font-family: 'Montserrat', sans-serif; font-size:36px; color: #161b52;">Hola <?php $user = strtoupper($nombres_col);
 			  							echo $user; ?>!!</h2></div> <br>
 
 			  							<div class="col-xs-3"><h2></h2></div>

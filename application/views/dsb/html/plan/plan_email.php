@@ -1,3 +1,7 @@
+<?php
+				$user = $this->session->userdata('user');
+				extract($user);
+			?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <!--
  * WYMeditor : what you see is What You Mean web-based editor
@@ -67,12 +71,36 @@
 						</small>
 					</h1>
 				</div>
-				<p>Digita el contenido del email de confirmación de reserva para Proveedores.</p>
+				<p>Estimada, [Nombre Centro Médico]</p>
+				<p>Por medio de éste correo electrónico se confirma la reserva de atención médica ambulatoria con los siguientes datos:</p>
+				<table align="center" border="1" width="90%">
+					<tr>
+						<th>DNI Afiliado:</th>
+						<td>[N° Documento del afiliado]</td>
+						<th>Nombre del Afiliado:</th>
+						<td>[Nombres del Afiliado]</td>
+					</tr>
+					<tr>
+						<th>Plan:</th>
+						<td>[Nombre del plan]</td>
+						<th>Especialidad:</th>
+						<td>[Nombre de la especialidad]</td>
+					</tr>
+					<tr>
+						<th>Fecha y Hora de reserva: </th>
+						<td>[Fecha y Hora reservada]</td>
+						<th>Observaciones:</th>
+						<td>[Observaciones digitadas al realizar la reserva]</td>
+					</tr>
+				</table>
 				<form method="post" action="<?=base_url()?>index.php/guardar_email">
 					<fieldset>
 					<input type="hidden" name="idplan" value="<?=$idplan?>">
-						<textarea id="cuerpo_mail" name="cuerpo_mail" class="widgEditor nothing"></textarea>
-					</fieldset>
+						<textarea id="cuerpo_mail" name="cuerpo_mail" class="widgEditor nothing" placeholder="Digitar el contenido adicional del email  según el plan"><?=$p->cuerpo_mail;?></textarea>
+					</fieldset>	
+					<p>Para dudas &oacute; consultas comun&iacute;quese a nuestra central en Lima: 01-445-3019 &oacute; provincia: 0800-47676</p>				
+					<p>Saludos cordiales,</p>
+					<p>Atte. <?php echo strtoupper($nombres_col.' '.$ap_paterno_col.' '.$ap_materno_col); ?></p>
 					<fieldset class="submit">
 						<button class="btn btn-info" type="submit">Guardar</button>
 					</fieldset>

@@ -173,13 +173,13 @@ class plan_cnt extends CI_Controller {
 		$data['descripcion'] = $_POST['descripcion'];
 		$data['visible'] = $_POST['visible'];
 		$data['flg_liqui'] = $_POST['flg_liqui'];
-		if($_POST['flg_liqui']=='No'):
+		if($_POST['flg_liqui']=='No'){
 			$data['valor'] = '';
 			$data['operador'] = '';
-			else:
+			}else{
 				$data['valor'] = $_POST['valor'];
 				$data['operador'] = $_POST['operador'];
-		endif;
+		}
 
 		if($_POST['idplandetalle']==0):
 			$this->plan_mdl->insert_cobertura($data);
@@ -277,5 +277,11 @@ class plan_cnt extends CI_Controller {
  		$data['idplan'] = $_POST['idplan'];
 
  		$this->plan_mdl->save_mail($data);
+
+ 		echo "<script>
+				alert('El contenido del email ha sido actualizado con éxito.');
+				parent.location.reload(true);
+				parent.$.fancybox.close();
+				</script>";
  	}
 }
