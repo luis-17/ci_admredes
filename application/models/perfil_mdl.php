@@ -30,7 +30,8 @@
 	function actualizar_pass($data)
 	{
     	$array = array(
-    	'password_view' => $data['passnew']
+    	'password_view' => $data['passnew'],
+    	'password' => md5($data['passnew'])
     	);
     	$this->db->where("password_view",$data['passold']);
 		$this->db->where("idusuario",$data['id']);

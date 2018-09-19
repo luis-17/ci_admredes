@@ -143,9 +143,6 @@
 																$e=1;
 																$estado="Vigente";	
 
-																}elseif($hoy<=$fin2){
-																	$estado="Vigente";
-																	$e=1;
 																	}else{
 																		$estado="Cancelado";
 																		$e=3;													

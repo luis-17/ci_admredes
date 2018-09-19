@@ -100,7 +100,7 @@
 		(
 			'idtipoproveedor' => $data['tipoproveedor'], 
 			'idtipodocumentoidentidad' => 3,
-			'idusuario' => $data['idusuario'],
+			'idusuario' => $data['idusuario2'],
 			'razon_social_pr' => $data['razonsocial'],
 			'nombre_comercial_pr' => $data['nombrecomercial'],
 			'numero_documento_pr' => $data['ruc'],
@@ -120,7 +120,7 @@
 		(
 			'idtipoproveedor' => $data['tipoproveedor'], 
 			'idtipodocumentoidentidad' => 3,
-			'idusuario' => $data['idusuario'],
+			'idusuario' => $data['idusuario2'],
 			'razon_social_pr' => $data['razonsocial'],
 			'nombre_comercial_pr' => $data['nombrecomercial'],
 			'numero_documento_pr' => $data['ruc'],
@@ -144,7 +144,7 @@
 			'password' => md5($data['contrasena']),
 			'password_view' => $data['contrasena']
 		);
-		$this->db->where('idusuario',$data['idusuario']);
+		$this->db->where('idusuario',$data['idusuario2']);
 		return $this->db->update("usuario",$array);
 	}
 
