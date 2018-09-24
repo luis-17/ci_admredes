@@ -59,19 +59,19 @@ class Comprobante_pago_mdl extends CI_model {
  		return $data->result();
 	}*/
 
-	function getUltimoCorrelativo($inicio, $fin, $serie){
+	function getUltimoCorrelativo($serie){
 		$this->db->select("case when max(correlativo) is null then 0 else max(correlativo) end as correlativo");
 		$this->db->from("comprobante_pago");
-		$this->db->where("fecha_emision>='".$inicio."' and fecha_emision<='".$fin."' and serie='".$serie."'");
+		$this->db->where("serie='".$serie."'");
 
 		$data = $this->db->get();
  		return $data->result();		
 	}
 
-		function getUltimoCorrelativoMasUno($inicio, $fin, $serie){
-		$this->db->select("case when max(correlativo) is null then 1 else (max(correlativo)+1) end as correlativo");
+		function getUltimoCorrelativoMasUno($serie){
+		$this->db->select("case when max(correlativo) is null then 1 else max(correlativo)+1 end as correlativo");
 		$this->db->from("comprobante_pago");
-		$this->db->where("fecha_emision>='".$inicio."' and fecha_emision<='".$fin."' and serie='".$serie."'");
+		$this->db->where("serie='".$serie."'");
 
 		$data = $this->db->get();
  		return $data->result();		
@@ -224,13 +224,13 @@ class Comprobante_pago_mdl extends CI_model {
 		return $data->result();
  	}
 
- 	function getDatosContratante($inicio, $fin){
+ 	function getDatosContratante($inicio, $fin, $serie){
  		$this->db->distinct("cont_numDoc");
  		$this->db->select("cont_numDoc, CONCAT(cont_ape1,' ',cont_ape2,' ',cont_nom1,' ',cont_nom2) as nombre, cont_direcc");
  		$this->db->from("contratante c");
  		$this->db->join("comprobante_pago c1","c.cont_id=c1.id_contratante");
  		$this->db->join("cobro c2","c1.idcobro=c2.cob_id");
- 		$this->db->where("c2.cob_vezCob=1 and c1.fecha_emision>='".$inicio."' and c1.fecha_emision<='".$fin."'");
+ 		$this->db->where("c2.cob_vezCob=1 and c1.fecha_emision>='".$inicio."' and c1.fecha_emision<='".$fin."' and serie = '".$serie."'");
 
 		$data = $this->db->get();
 		return $data->result();
@@ -334,7 +334,7 @@ class Comprobante_pago_mdl extends CI_model {
  		$this->db->select("CONCAT(serie,'-',CONCAT(REPEAT('0', 8-LENGTH( correlativo)),correlativo)) as seriecorrelativo, importe_total, tipo_moneda, CONCAT(cont_ape1,' ',cont_ape2,' ',cont_nom1,' ',cont_nom2) as contratante, c1.cont_numDoc, id_contratante, idplan");
 		$this->db->from("comprobante_pago c");
 		$this->db->join("contratante c1","c.id_contratante=c1.cont_id");
-		$this->db->where("serie='".$serie."' and correlativo=".$correlativo." and fecha_emision='".$fecha_emision."'");
+		$this->db->where("serie='".$serie."' and correlativo=".$correlativo." and fecha_emision='".$fecha_emision."' and idestadocobro=3");
 
 		$data = $this->db->get();
 		return $data->result();
@@ -344,13 +344,13 @@ class Comprobante_pago_mdl extends CI_model {
  		$this->db->select("CONCAT(serie,'-',CONCAT(REPEAT('0', 8-LENGTH( correlativo)),correlativo)) as seriecorrelativo, importe_total, tipo_moneda, c1.nombre_comercial_cli, c1.numero_documento_cli, id_cliente_empresa, idplan");
 		$this->db->from("comprobante_pago c");
 		$this->db->join("cliente_empresa c1","c.id_cliente_empresa=c1.idclienteempresa");
-		$this->db->where("serie='".$serie."' and correlativo=".$correlativo." and fecha_emision='".$fecha_emision."'");
+		$this->db->where("serie='".$serie."' and correlativo=".$correlativo." and fecha_emision='".$fecha_emision."' and idestadocobro=3");
 
 		$data = $this->db->get();
 		return $data->result();
  	}
 
- 	function insertDatosBoletasNotas($fechaEmi, $serie, $correlativo, $idCliente, $tipoDocumento, $importeTotal, $idPlan, $serieDoc, $correlativoDoc, $sustento){
+ 	function insertDatosBoletasNotas($fechaEmi, $serie, $correlativo, $idCliente, $tipoDocumento, $importeTotal, $idPlan, $serieDoc, $correlativoDoc, $sustento, $fechaDoc){
  		$this->db->set("fecha_emision" , $fechaEmi);
  		$this->db->set("serie" , $serie);
  		$this->db->set("correlativo" , $correlativo);
@@ -366,10 +366,11 @@ class Comprobante_pago_mdl extends CI_model {
  		$this->db->set("correlativo_doc", $correlativoDoc);
  		$this->db->set("sustento_nota", $sustento);
  		$this->db->set("idestadocobro" , 2);
+ 		$this->db->set("fecha_doc", $fechaDoc);
  		$this->db->insert("comprobante_pago");
  	}
 
- 	function insertDatosFacturasNotas($fechaEmi, $serie, $correlativo, $idCliente, $tipoDocumento, $importeTotal, $idPlan, $serieDoc, $correlativoDoc, $sustento){
+ 	function insertDatosFacturasNotas($fechaEmi, $serie, $correlativo, $idCliente, $tipoDocumento, $importeTotal, $idPlan, $serieDoc, $correlativoDoc, $sustento, $fechaDoc){
  		$this->db->set("fecha_emision" , $fechaEmi);
  		$this->db->set("serie" , $serie);
  		$this->db->set("correlativo" , $correlativo);
@@ -385,6 +386,7 @@ class Comprobante_pago_mdl extends CI_model {
 		$this->db->set("correlativo_doc" , $correlativoDoc);
 		$this->db->set("sustento_nota" , $sustento);
  		$this->db->set("idestadocobro" , 2);
+ 		$this->db->set("fecha_doc", $fechaDoc);
  		$this->db->insert("comprobante_pago");
  		$this->db->group_by("fecha_emision");
  	}
@@ -415,6 +417,20 @@ class Comprobante_pago_mdl extends CI_model {
  		$this->db->set("idestadocobro", 2);
 		$this->db->where("idestadocobro=3");
 		$this->db->update("comprobante_pago"); 
+ 	}
+
+ 	 function insertDatosComprobanteManual($fechaEmi, $serie, $correlativo, $tipoDoc, $importeTotal){
+ 		$this->db->set("fecha_emision" , $fechaEmi);
+ 		$this->db->set("serie" , $serie);
+ 		$this->db->set("correlativo" , $correlativo);
+ 		$this->db->set("id_tipo_documento_mov", $tipoDoc);
+ 		$this->db->set("importe_total" , $importeTotal);
+ 		$this->db->set("tipo_moneda" , "PEN");
+ 		$this->db->set("unidad_medida" , "Unidad");
+ 		$this->db->set("cantidad" , 1);
+ 		$this->db->set("num_orden" , 1);
+ 		$this->db->set("idestadocobro" , 2);
+ 		$this->db->insert("comprobante_pago");
  	}
 
 }

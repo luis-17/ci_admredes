@@ -39,15 +39,20 @@ class ventas_cnt extends CI_Controller {
 	      	$day = date("d", mktime(0,0,0, $month+1, 0, $year));
 
 			$data['idclienteempresa'] = 0;
-
+			$data['idserie'] = 0;
+			$data['fechaDoc'] = date('Y-m-d');
 			$data['fecinicio'] = date('Y-m-d', mktime(0,0,0, $month, 1, $year));
 			$data['fecfin'] = date('Y-m-d', mktime(0,0,0, $month, $day, $year));
-
+			$data['correlativoDoc'] = "";
+			//$data['fecemisi'] = date('Y-m-d');
 			$submenuLista = $this->menu_mdl->getSubMenu($idusuario);
 			$data['menu2'] = $submenuLista;
 
 			$canales = $this->comprobante_pago_mdl->getCanales();
 			$data['canales'] = $canales;
+
+			$serie = $this->comprobante_pago_mdl->getSerie();
+			$data['serie'] = $serie;
 
 			$this->load->view('dsb/html/comprobante/generar_comp.php',$data);
 
@@ -91,18 +96,10 @@ class ventas_cnt extends CI_Controller {
 
 	public function mostrarCorrelativo(){
 
-		$month = date('m');
-      	$year = date('Y');
-      	$day = date("d", mktime(0,0,0, $month+1, 0, $year));
-
-		$data['fecinicio'] = date('Y-m-d', mktime(0,0,0, $month, 1, $year));
-		$fecinicio=$data['fecinicio'];
-		$data['fecfin'] = date('Y-m-d', mktime(0,0,0, $month, $day, $year));
-		$fecfin=$data['fecfin'];
 		$html=null;
 		$serie=$_POST['documento'];
 
-		$correlativo=$this->comprobante_pago_mdl->getUltimoCorrelativo($fecinicio, $fecfin, $serie);
+		$correlativo=$this->comprobante_pago_mdl->getUltimoCorrelativo($serie);
 
 		foreach ($correlativo as $c):
 
@@ -112,8 +109,6 @@ class ventas_cnt extends CI_Controller {
 
 		echo json_encode($html);
 	}
-
-	
 
 	public function mostrarDatos(){
 		
@@ -125,7 +120,6 @@ class ventas_cnt extends CI_Controller {
       	$day = date("d");
 
 		$data['fechaEmision'] = date('Y-m-d');
-		//date('Y-m-d', mktime(0,0,0, $month, $day, $year));
 
 		$fecemi = $data['fechaEmision'];
 
@@ -135,9 +129,6 @@ class ventas_cnt extends CI_Controller {
 		$inicio = $_POST['fechainicio'];
 		$fin = $_POST['fechafin'];
 
-		//$data['nameCheck'] = $_POST['nameCheck'];
-		//$plan = $data['nameCheck'];
-
 		$data['documento'] = $_POST['documento'];
 		$serie = $data['documento'];
 
@@ -146,6 +137,13 @@ class ventas_cnt extends CI_Controller {
 		if ($canales == 1 || $canales == 2 || $canales == 3 || $canales == 6 || $canales == 7) {
 
 			//html de tabla dinámica que se va a generar
+			$html .= "<hr>";
+			$boletaSuma = $this->comprobante_pago_mdl->getDatosSumaBoleta($inicio, $fin, $canales, $serie);
+			foreach ($boletaSuma as $bs):
+				$suma=$bs->suma;
+				$sumaDos=number_format((float)$suma, 2, '.', ',');
+				$html .="<H1><span class='label label-succes label-white middle'><b>Total de cobros Boletas: S/. ".$sumaDos."</b></span></H1>";
+			endforeach;
 			$html .= "<div  align='center' class='col-xs-12'>";
 				$html .= "<table align='center' id='tablaDatos' class='table table-striped table-bordered table-hover' style='width:100%'>";
 					$html .= "<thead>";
@@ -161,25 +159,16 @@ class ventas_cnt extends CI_Controller {
 					$html .= "</thead>";
 					$html .= "<tbody>";
 
-						$boletaSuma = $this->comprobante_pago_mdl->getDatosSumaBoleta($inicio, $fin, $canales, $serie);
-						foreach ($boletaSuma as $bs):
-							$suma=$bs->suma;
-							$sumaDos=number_format((float)$suma, 2, '.', ',');
-							$html .="<tr>";
-								$html .="<td colspan=5 align='left'><b>Total de cobro Boletas: </b></td>";
-								$html .="<td colspan=2 align='right'><b>S/. ".$bs->suma."</b></td>";
-							$html .="</tr>";
-						endforeach;
-
 						$boleta = $this->comprobante_pago_mdl->getDatosBoleta($inicio, $fin, $canales, $serie);
 						foreach ((array) $boleta as $b):
 
 							$importe = $b->cob_importe;
 							$importe = $importe/100;
-							$importe2=number_format((float)$importe, 2, '.', '');
+							$importe2=number_format((float)$importe, 2, '.', ',');
+							$newDate = date("d/m/Y", strtotime($b->cob_fechCob));
 
 							$html .= "<tr>";
-								$html .= "<td align='left'>".$b->cob_fechCob."<input type='text' class='hidden' id='fechaEmi' name='fechaEmi[]' value='".$b->cob_fechCob."'></td>";
+								$html .= "<td align='left'>".$newDate."<input type='text' class='hidden' id='fechaEmi' name='fechaEmi[]' value='".$b->cob_fechCob."'></td>";
 
 								$html .= "<td align='left'>".$b->cert_num."<input type='text' class='hidden' id='numSerie' name='numSerie[]' value='".$b->numero_serie."'></td>";
 
@@ -201,11 +190,20 @@ class ventas_cnt extends CI_Controller {
 
 		} elseif ($canales == 4) {
 
+			$html .= "<hr>";
+
+			$facturaSuma = $this->comprobante_pago_mdl->getDatosSumaFacturas($inicio, $fin, $canales, $serie);
+			foreach ($facturaSuma as $fs):
+				$suma=$fs->suma;
+				$sumaDos=number_format((float)$suma, 2, '.', ',');
+				$html .="<H1><span class='label label-succes label-white middle'><b>Total de cobros Facturas: S/. ".$sumaDos."</b></span></H1>";
+			endforeach;
+
 			$html .= "<div  align='center' class='col-xs-12'>";
 				$html .= "<table align='center' id='tablaDatos' class='table table-striped table-bordered table-hover'>";
 					$html .= "<thead>";
 						$html .="<tr>";
-							$html .="<th>Fecha para emisión</th>";
+							$html .="<th>Fecha de emisión</th>";
 							$html .="<th>Razon Social</th>";
 							$html .="<th>Nombre Comercial</th>";
 							$html .="<th>RUC</th>";
@@ -216,16 +214,6 @@ class ventas_cnt extends CI_Controller {
 						$html .="</tr>";
 					$html .= "</thead>";
 					$html .= "<tbody>";
-
-						$facturaSuma = $this->comprobante_pago_mdl->getDatosSumaFacturas($inicio, $fin, $canales, $serie);
-						foreach ($facturaSuma as $fs):
-							$suma=$fs->suma;
-							$sumaDos=number_format((float)$suma, 2, '.', ',');
-							$html .= "<tr>";
-								$html .= "<td colspan=6 align='left'><b>Total de cobros de Facturas: </b></td>";
-								$html .= "<td colspan=2 align='right'><b>S/. ".$sumaDos."</b></td>";
-							$html .= "</tr>";
-						endforeach;
 
 						$factura = $this->comprobante_pago_mdl->getDatosFacturas($inicio, $fin, $canales, $serie);
 
@@ -290,19 +278,29 @@ class ventas_cnt extends CI_Controller {
 
 		if ($canales == 1 || $canales == 2 || $canales == 3 || $canales == 6 || $canales == 7) {
 			
-			$cobro = $_POST['cobro'];
-			$fechaEmi = $_POST['fechaEmi'];
-			$idContratante = $_POST['contratante'];
+			//$cobro = $_POST['cobro'];
+			//$fechaEmi = $_POST['fechaEmi'];
+			//$idContratante = $_POST['contratante'];
 
 			$idTipoDoc = 3;
+			for ($i=0; $i < count($canales); $i++) {
+			$boleta = $this->comprobante_pago_mdl->getDatosBoleta($inicio, $fin, $canales, $serie[$i]);
+			foreach ((array) $boleta as $b){
 
-			//for para recorrer los datos de la tabla y hacer el insert en la bd
-			for ($i=0; $i < count($cobro); $i++) {
+				$importe = $b->cob_importe;
+				$importe = $importe/100;
+				$importe2=number_format((float)$importe, 2, '.', ',');
+				$newDate = date("d/m/Y", strtotime($b->cob_fechCob));
+
+				//for para recorrer los datos de la tabla y hacer el insert en la bd
+				//for ($i=0; $i < count($cobro); $i++) {
 
 				$correlativo = $correlativo+1;
-				$this->comprobante_pago_mdl->insertDatosBoletas($inicio, $fin, $fechaEmi[$i], $serie[$i], $correlativo, $idContratante[$i], $importeTotal[$i], $cobro[$i], $idPlan[$i]);
-			}
+				$this->comprobante_pago_mdl->insertDatosBoletas($inicio, $fin, $b->cob_fechCob, $b->numero_serie, $correlativo, $b->cont_id, $importe2, $b->cob_id, $b->idplan);
+				//}
 
+				}
+			}
 		} elseif ($canales == 4) {
 
 			$fechaEmi = $_POST['fechaEmi'];
@@ -326,7 +324,18 @@ class ventas_cnt extends CI_Controller {
 		}
 	}
 
-//----------------------------------------------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------------------------------------------------------
+
+	public function guardarComprobanteManual(){
+
+		$fechaEmi=$_POST['fechaDoc'];
+		$serie=$_POST['serie'];
+		$correlativo=$_POST['correlativoDoc'];
+		$importeTotal=$_POST['impTotalD'];
+		
+	}
+
+//-----------------------------------------------------------------------------------------------------------------------------
 
 	public function generarLista(){
 
@@ -337,9 +346,6 @@ class ventas_cnt extends CI_Controller {
 		$data['canales'] = $canales;
 
 		$planes = $this->comprobante_pago_mdl->getPlanes($canales);
-
-		//print_r($planes);
-		//exit();
 
 		//se generan los checkbox dinámicos a través de ajax
 		$html .= "<div class='col-sm-12'>";
@@ -366,7 +372,6 @@ class ventas_cnt extends CI_Controller {
       	$day = date("d");
 
 		$data['fechaEmision'] = date('Y-m-d');
-		//date('Y-m-d', mktime(0,0,0, $month, $day, $year));
 
 		$fecemi = $data['fechaEmision'];
 
@@ -384,7 +389,6 @@ class ventas_cnt extends CI_Controller {
 		if ($canales == 1 || $canales == 2 || $canales == 3 || $canales == 6 || $canales == 7) {
 
 			//html de tabla dinámica que se va a generar
-			//$html .="<hr>";
 			$html .= "<div  align='center' class='col-xs-12'>";
 				$html .= "<table align='center' id='tablaDatos' class='table table-striped table-bordered table-hover'>";
 					$html .= "<thead>";
@@ -411,9 +415,10 @@ class ventas_cnt extends CI_Controller {
 							$importe2=number_format((float)$importe, 2, '.', ',');
 
 							$estado = $b->idestadocobro;
+							$newDate = date("d/m/Y", strtotime($b->fecha_emision));
 
 							$html .= "<tr>";
-								$html .= "<td align='left'>".$b->fecha_emision."</td>";
+								$html .= "<td align='left'>".$newDate."</td>";
 								$html .= "<td align='left'>".$b->serie." - ".$b->correlativo."<input type='text' class='hidden' id='numSerie' name='numSerie[]' value='".$b->serie."'></td>";
 								$html .= "<td align='left'>".$b->contratante."<input type='text' class='hidden' id='idcomprobante' name='idcomprobante[]' value='".$b->idcomprobante."'></td>";
 								$html .= "<td align='left'>".$b->cont_numDoc."</td>";
@@ -421,23 +426,33 @@ class ventas_cnt extends CI_Controller {
 								$html .= "<td align='center'>S/. ".$importe2."</td>";
 								if ($estado == 2) {
 									$html .= "<td align='center' class='danger'>".$b->descripcion."</td>";
-								} elseif ($estado == 3) {
-									$html .= "<td align='center' class='success'>".$b->descripcion."</td>";
-								}
-								$html .= "<td align='left'>";
-									$html .= "<ul class='ico-stack'>";
-										$html .="<div title='ver PDF' id='pdfButton' onclick=''>";
-											$html .="<a class='boton fancybox' href='".base_url()."ventas_cnt/generarPdf/".$b->idcomprobante."/".$canales."' data-fancybox-width='950' data-fancybox-height='800' target='_blank'>";
-												$html .= "<i class='ace-icon fa fa-file-pdf-o bigger-120'></i>";
-											$html .="</a>";
-										$html .="</div>";
-											$html .="<div title='enviar PDF' id='pdfButtonEnviar' onclick=''>";
-												$html .="<a class='boton fancybox' href='".base_url()."ventas_cnt/enviarPdf/".$b->idcomprobante."/".$canales."' data-fancybox-width='750' data-fancybox-height='275' target='_blank'>";
-													$html .= "<i class='ace-icon fa fa-envelope bigger-120'></i>";
+									$html .= "<td align='left'>";
+										$html .= "<ul class='ico-stack'>";
+											$html .="<div title='ver PDF' id='pdfButton' onclick=''>";
+												$html .="<a class='boton fancybox' href='".base_url()."ventas_cnt/generarPdf/".$b->idcomprobante."/".$canales."' data-fancybox-width='950' data-fancybox-height='800' target='_blank'>";
+													$html .= "<i class='ace-icon fa fa-file-pdf-o bigger-120'></i>";
 												$html .="</a>";
 											$html .="</div>";
-									$html .= "</ul>";
-								$html .="</td>";
+										$html .= "</ul>";
+									$html .="</td>";
+								} elseif ($estado == 3) {
+									$html .= "<td align='center' class='success'>".$b->descripcion."</td>";
+									$html .= "<td align='left'>";
+										$html .= "<ul class='ico-stack'>";
+											$html .="<div title='ver PDF' id='pdfButton' onclick=''>";
+												$html .="<a class='boton fancybox' href='".base_url()."ventas_cnt/generarPdf/".$b->idcomprobante."/".$canales."' data-fancybox-width='950' data-fancybox-height='800' target='_blank'>";
+													$html .= "<i class='ace-icon fa fa-file-pdf-o bigger-120'></i>";
+												$html .="</a>";
+											$html .="</div>";
+												$html .="<div title='enviar PDF' id='pdfButtonEnviar' onclick=''>";
+													$html .="<a class='boton fancybox' href='".base_url()."ventas_cnt/enviarPdf/".$b->idcomprobante."/".$canales."' data-fancybox-width='750' data-fancybox-height='275' target='_blank'>";
+														$html .= "<i class='ace-icon fa fa-envelope bigger-120'></i>";
+													$html .="</a>";
+												$html .="</div>";
+										$html .= "</ul>";
+									$html .="</td>";
+								}
+								
 							$html .= "</tr>";
 
 						endforeach;
@@ -476,8 +491,10 @@ class ventas_cnt extends CI_Controller {
 							$importeDos = $f->importe_total;
 							$importe2=number_format((float)$importeDos, 2, '.', ',');
 							$estado = $f->idestadocobro;
+							$newDate = date("d/m/Y", strtotime($f->fecha_emision));
+
 								$html .= "<tr>";
-									$html .= "<td align='left'>".$f->fecha_emision."</td>";
+									$html .= "<td align='left'>".$newDate."</td>";
 									$html .= "<td align='center'>".$f->serie." - ".$f->correlativo."<input type='text' class='hidden' id='numSerie' name='numSerie' value='".$f->serie."'></td>";
 									$html .= "<td align='left'>".$f->razon_social_cli."<input type='text' class='hidden' id='idcomprobante' name='idcomprobante' value='".$f->idcomprobante."'></td>";
 									$html .= "<td align='left'>".$f->numero_documento_cli."</td>";
@@ -485,23 +502,32 @@ class ventas_cnt extends CI_Controller {
 									$html .= "<td align='center'>S/. ".$importe2."</td>";
 									if ($estado == 2) {
 										$html .= "<td align='center' class='danger'>".$f->descripcion."</td>";
+										$html .= "<td align='left'>";
+											$html .= "<ul class='ico-stack'>";
+												$html .="<div title='ver PDF' id='pdfButton' onclick=''>";
+													$html .="<a class='boton fancybox' href='".base_url()."ventas_cnt/generarPdf/".$f->idcomprobante."/".$canales."' data-fancybox-width='950' data-fancybox-height='800' target='_blank'>";
+														$html .= "<i class='ace-icon fa fa-file-pdf-o bigger-120'></i>";
+													$html .="</a>";
+												$html .="</div>";
+											$html .= "</ul>";
+										$html .="</td>";
 									} elseif ($estado == 3) {
 										$html .= "<td align='center' class='success'>".$f->descripcion."</td>";
+										$html .= "<td align='left'>";
+											$html .= "<ul class='ico-stack'>";
+												$html .="<div title='ver PDF' id='pdfButton' onclick=''>";
+													$html .="<a class='boton fancybox' href='".base_url()."ventas_cnt/generarPdf/".$f->idcomprobante."/".$canales."' data-fancybox-width='950' data-fancybox-height='800' target='_blank'>";
+														$html .= "<i class='ace-icon fa fa-file-pdf-o bigger-120'></i>";
+													$html .="</a>";
+												$html .="</div>";
+												$html .="<div title='enviar PDF' id='pdfButtonEnviar' onclick=''>";
+													$html .="<a class='boton fancybox' href='".base_url()."ventas_cnt/enviarPdf/".$f->idcomprobante."/".$canales."' data-fancybox-width='750' data-fancybox-height='275' target='_blank'>";
+														$html .= "<i class='ace-icon fa fa-envelope bigger-120'></i>";
+													$html .="</a>";
+												$html .="</div>";
+											$html .= "</ul>";
+										$html .="</td>";
 									}
-									$html .= "<td align='left'>";
-										$html .= "<ul class='ico-stack'>";
-											$html .="<div title='ver PDF' id='pdfButton' onclick=''>";
-												$html .="<a class='boton fancybox' href='".base_url()."ventas_cnt/generarPdf/".$f->idcomprobante."/".$canales."' data-fancybox-width='950' data-fancybox-height='800' target='_blank'>";
-													$html .= "<i class='ace-icon fa fa-file-pdf-o bigger-120'></i>";
-												$html .="</a>";
-											$html .="</div>";
-											$html .="<div title='enviar PDF' id='pdfButtonEnviar' onclick=''>";
-												$html .="<a class='boton fancybox' href='".base_url()."ventas_cnt/enviarPdf/".$f->idcomprobante."/".$canales."' data-fancybox-width='750' data-fancybox-height='275' target='_blank'>";
-													$html .= "<i class='ace-icon fa fa-envelope bigger-120'></i>";
-												$html .="</a>";
-											$html .="</div>";
-										$html .= "</ul>";
-									$html .="</td>";
 								$html .= "</tr>";
 
 						endforeach;
@@ -514,73 +540,17 @@ class ventas_cnt extends CI_Controller {
 		}
 
 		echo json_encode($html);
-	} 
-
-	public function generarArchivoDbf(){
-
-		$mail = new PHPMailer();
-
-		$inicio=$_POST['fechainicioDos'];
-		$fin=$_POST['fechafinDos'];
-
-		//Definición de la base de datos  
-		$def = array( 
-			array("AVANEXO", "C", 1),
-			array("ACODANE", "C", 18), 
-			array("ADESANE", "C", 40), 
-			array("AREFANE", "C", 50), 
-			array("ARUC", "C", 18),
-			array("ACODMON", "C", 2),
-			array("AESTADO", "C", 1),
-			array("ADATE", "D", 8),
-			array("AHORA", "C", 6),
-			array("AVERETE", "C", 1),
-			array("APORRE", "N", 10, 3)
-		);
-
-		// creación
-		dbase_create('adjunto/dbf/CAN03.dbf', $def);
-
-		$db = dbase_open('adjunto/dbf/CAN03.dbf', 2);
-		$anexos = $this->comprobante_pago_mdl->getDatosContratante($inicio, $fin);
-
-		foreach ($anexos as $a) {
-			dbase_add_record($db, array('C', $a->cont_numDoc, $a->nombre, $a->cont_direcc, '', '', 'V', '', '', 'S', 0));
-		}
-
-		dbase_close($db);
-
-		$mail->IsSMTP();
-        $mail->SMTPAuth   = true;
-        $mail->SMTPSecure = "ssl";
-        $mail->Host       = "smtpout.secureserver.net";
-        $mail->Port       = 465; 
-        $mail->Username   = "dcaceda@red-salud.com"; 
-        $mail->Password   = "redsalud2018caceda"; 
-        $mail->SetFrom('dcaceda@red-salud.com', utf8_decode('RED SALUD'));
-        $mail->AddReplyTo('dcaceda@red-salud.com', utf8_decode('RED SALUD')); 
-        $mail->Subject    = "Archivos DBF";
-        $mail->Body 	  = "Se adjunta archivo DBF. <br>";
-        $mail->AltBody    = "Se adjunta archivo DBF.";
-        $mail->AddAddress('dcaceda@red-salud.com');
-
-       	$mail->AddAttachment("adjunto/dbf/CAN03.dbf", "CAN03.dbf");
-
-        $estadoEnvio = $mail->Send(); 
-
-        //unlink('adjunto/dbf/anexo.dbf');
-		//header("Content-disposition: attachment; filename=anexos.dbf");
-		//header("Content-type: MIME");
 	}
 
 	public function generarExcel(){
+
+		$mail = new PHPMailer();
 
 		$month = date('m');
       	$year = date('Y');
       	$day = date("d");
 
 		$data['fechaEmision'] = date('Y-m-d');
-		//date('Y-m-d', mktime(0,0,0, $month, $day, $year));
 
 		$fecemi = $data['fechaEmision'];
 
@@ -590,6 +560,7 @@ class ventas_cnt extends CI_Controller {
 		$fechafin = $_POST['fechafin'];
 
 		$numSerie = $_POST['numSerie'];	
+		$correlativoConcar = 0;
 			
 		$boletas = $this->comprobante_pago_mdl->getDatosExcelBoletas($fechainicio, $fechafin, $numSerie);
 		$facturas = $this->comprobante_pago_mdl->getDatosExcelFacturas($fechainicio, $fechafin, $numSerie);
@@ -600,7 +571,6 @@ class ventas_cnt extends CI_Controller {
 			$this->excel->getActiveSheet()->setTitle('Hoja 1');
 
 			//contador de filas
-			//$contador = 1;
 			$estiloBorde = array(
 			   'borders' => array(
 			     'allborders' => array(
@@ -779,9 +749,12 @@ class ventas_cnt extends CI_Controller {
 		        foreach($boletas as $b){
 
 		        	$formatoFecha = date("d/m/Y", strtotime($b->fecha_emision));
+		        	$correlativoConcar = $correlativoConcar+1;
+		        	$correConcar = str_pad($correlativoConcar, 4, "0", STR_PAD_LEFT);
+		        	
 		          	//Informacion de las filas de la consulta.
 					$this->excel->getActiveSheet()->setCellValue("B{$contador1}","05");
-					$this->excel->getActiveSheet()->setCellValue("C{$contador1}",$b->mes."".$b->correlativo);
+					$this->excel->getActiveSheet()->setCellValue("C{$contador1}",$b->mes."".$correConcar);
 					$this->excel->getActiveSheet()->setCellValue("D{$contador1}",$formatoFecha);
 					$this->excel->getActiveSheet()->setCellValue("E{$contador1}","MN");
 					$this->excel->getActiveSheet()->setCellValue("F{$contador1}","COBRO POR ".$b->nombre_plan);
@@ -792,13 +765,13 @@ class ventas_cnt extends CI_Controller {
 					$this->excel->getActiveSheet()->setCellValue("M{$contador1}",$b->centro_costo);
 					$this->excel->getActiveSheet()->setCellValue("N{$contador1}","D");
 					$this->excel->getActiveSheet()->setCellValue("O{$contador1}",$b->total);
-					$this->excel->getActiveSheet()->setCellValue("R{$contador1}","03");
+					$this->excel->getActiveSheet()->setCellValue("R{$contador1}","BV");
 					$this->excel->getActiveSheet()->setCellValue("S{$contador1}",$b->serie."-".$b->correlativo);
 					$this->excel->getActiveSheet()->setCellValue("T{$contador1}",$formatoFecha);
 					$this->excel->getActiveSheet()->setCellValue("W{$contador1}","COBRO POR ".$b->nombre_plan);
 
 					$this->excel->getActiveSheet()->setCellValue("B{$contador2}","05");
-					$this->excel->getActiveSheet()->setCellValue("C{$contador2}",$b->mes."".$b->correlativo);
+					$this->excel->getActiveSheet()->setCellValue("C{$contador2}",$b->mes."".$correConcar);
 					$this->excel->getActiveSheet()->setCellValue("D{$contador2}",$formatoFecha);
 					$this->excel->getActiveSheet()->setCellValue("E{$contador2}","MN");
 					$this->excel->getActiveSheet()->setCellValue("F{$contador2}","COBRO POR ".$b->nombre_plan);
@@ -809,13 +782,13 @@ class ventas_cnt extends CI_Controller {
 					$this->excel->getActiveSheet()->setCellValue("M{$contador2}",$b->centro_costo);
 					$this->excel->getActiveSheet()->setCellValue("N{$contador2}","H");
 					$this->excel->getActiveSheet()->setCellValue("O{$contador2}",$b->igv);
-					$this->excel->getActiveSheet()->setCellValue("R{$contador2}","03");
+					$this->excel->getActiveSheet()->setCellValue("R{$contador2}","BV");
 					$this->excel->getActiveSheet()->setCellValue("S{$contador2}",$b->serie."-".$b->correlativo);
 					$this->excel->getActiveSheet()->setCellValue("T{$contador2}",$formatoFecha);
 					$this->excel->getActiveSheet()->setCellValue("W{$contador2}","COBRO POR ".$b->nombre_plan);
 
 					$this->excel->getActiveSheet()->setCellValue("B{$contador3}","05");
-					$this->excel->getActiveSheet()->setCellValue("C{$contador3}",$b->mes."".$b->correlativo);
+					$this->excel->getActiveSheet()->setCellValue("C{$contador3}",$b->mes."".$correConcar);
 					$this->excel->getActiveSheet()->setCellValue("D{$contador3}",$formatoFecha);
 					$this->excel->getActiveSheet()->setCellValue("E{$contador3}","MN");
 					$this->excel->getActiveSheet()->setCellValue("F{$contador3}","COBRO POR ".$b->nombre_plan);
@@ -826,7 +799,7 @@ class ventas_cnt extends CI_Controller {
 					$this->excel->getActiveSheet()->setCellValue("M{$contador3}",$b->centro_costo);
 					$this->excel->getActiveSheet()->setCellValue("N{$contador3}","H");
 					$this->excel->getActiveSheet()->setCellValue("O{$contador3}",$b->neto);
-					$this->excel->getActiveSheet()->setCellValue("R{$contador3}","03");
+					$this->excel->getActiveSheet()->setCellValue("R{$contador3}","BV");
 					$this->excel->getActiveSheet()->setCellValue("S{$contador3}",$b->serie."-".$b->correlativo);
 					$this->excel->getActiveSheet()->setCellValue("T{$contador3}",$formatoFecha);
 					$this->excel->getActiveSheet()->setCellValue("W{$contador3}","COBRO POR ".$b->nombre_plan);
@@ -836,15 +809,88 @@ class ventas_cnt extends CI_Controller {
 		           $contador2=$contador2+3;
 		           $contador3=$contador3+3;
 		        }
+
+        		//Le ponemos un nombre al archivo que se va a generar.
+		        $objWriter = new PHPExcel_Writer_Excel5($this->excel);
+				ob_start();
+				$objWriter->save("php://output");
+				$xlsData = ob_get_contents();
+				ob_end_clean();
+
+				$response =  array(
+				        'op' => 'ok',
+				        'file' => "data:application/vnd.ms-excel;base64,".base64_encode($xlsData)
+				    );
+
+				//die(json_encode($response));
+				file_put_contents('adjunto/dbf/VENTAS'.$numSerie.'.xls', $xlsData);
+
+				//Definición de la base de datos  
+				$def = array( 
+					array("AVANEXO", "C", 1),
+					array("ACODANE", "C", 18), 
+					array("ADESANE", "C", 40), 
+					array("AREFANE", "C", 50), 
+					array("ARUC", "C", 18),
+					array("ACODMON", "C", 2),
+					array("AESTADO", "C", 1),
+					array("ADATE", "D", 8),
+					array("AHORA", "C", 6),
+					array("AVERETE", "C", 1),
+					array("APORRE", "N", 10, 3)
+				);
+
+				// creación
+				dbase_create('adjunto/dbf/CAN03.dbf', $def);
+
+				$db = dbase_open('adjunto/dbf/CAN03.dbf', 2);
+				$anexos = $this->comprobante_pago_mdl->getDatosContratante($fechainicio, $fechafin, $numSerie);
+
+				foreach ($anexos as $a) {
+					dbase_add_record($db, array('C', $a->cont_numDoc, $a->nombre, $a->cont_direcc, '', '', 'V', '', '', 'S', 0));
+				}
+
+				dbase_close($db);
+
+				$mail->IsSMTP();
+		        $mail->SMTPAuth   = true;
+		        $mail->SMTPSecure = "ssl";
+		        $mail->Host       = "smtpout.secureserver.net";
+		        $mail->Port       = 465; 
+		        $mail->Username   = "dcaceda@red-salud.com"; 
+		        $mail->Password   = "redsalud2018caceda"; 
+		        $mail->SetFrom('dcaceda@red-salud.com', utf8_decode('RED SALUD'));
+		        $mail->AddReplyTo('dcaceda@red-salud.com', utf8_decode('RED SALUD')); 
+		        $mail->Subject    = "Archivos CONCAR";
+		        $mail->Body 	  = "Se adjunta archivo DBF y Excel con serie ".$numSerie.". <br>";
+		        $mail->AltBody    = "Se adjunta archivo DBF y Excel con serie ".$numSerie.".";
+		        $mail->AddAddress('dcaceda@red-salud.com');
+
+		       	$mail->AddAttachment("adjunto/dbf/CAN03.dbf", "CAN03.dbf");
+		       	$mail->AddAttachment("adjunto/dbf/VENTAS".$numSerie.".xls", "VENTAS".$numSerie.".xls");
+
+		        $estadoEnvio = $mail->Send();
+		        if($estadoEnvio){
+				    echo"El correo fue enviado correctamente.";
+				} else {
+				    echo"Ocurrió un error inesperado. " . $mail->ErrorInfo;
+				}
+
+		        unlink("adjunto/dbf/VENTAS".$numSerie.".xls");
+				//header("Content-disposition: attachment; filename=anexos.dbf");
+				//header("Content-type: MIME");
+
 		    } elseif ($canales == 4) {
 
 		    	//Definimos la data del cuerpo.        
 		        foreach($facturas as $f){
 
 		        	$formatoFecha = date("d/m/Y", strtotime($f->fecha_emision));
+		        	$correlativoConcar = $correlativoConcar+1;
+		        	$correConcar = str_pad($correlativoConcar, 4, "0", STR_PAD_LEFT);
 		          	//Informacion de las filas de la consulta.
 					$this->excel->getActiveSheet()->setCellValue("B{$contador1}","04");
-					$this->excel->getActiveSheet()->setCellValue("C{$contador1}",$f->mes."".$f->correlativo);
+					$this->excel->getActiveSheet()->setCellValue("C{$contador1}",$f->mes."".$correConcar);
 					$this->excel->getActiveSheet()->setCellValue("D{$contador1}",$formatoFecha);
 					$this->excel->getActiveSheet()->setCellValue("E{$contador1}","MN");
 					$this->excel->getActiveSheet()->setCellValue("F{$contador1}","COBRO POR ".$f->nombre_plan);
@@ -855,13 +901,13 @@ class ventas_cnt extends CI_Controller {
 					$this->excel->getActiveSheet()->setCellValue("M{$contador1}",$f->centro_costo);
 					$this->excel->getActiveSheet()->setCellValue("N{$contador1}","D");
 					$this->excel->getActiveSheet()->setCellValue("O{$contador1}",$f->total);
-					$this->excel->getActiveSheet()->setCellValue("R{$contador1}","01");
+					$this->excel->getActiveSheet()->setCellValue("R{$contador1}","FT");
 					$this->excel->getActiveSheet()->setCellValue("S{$contador1}",$f->serie."-".$f->correlativo);
 					$this->excel->getActiveSheet()->setCellValue("T{$contador1}",$formatoFecha);
 					$this->excel->getActiveSheet()->setCellValue("W{$contador1}","COBRO POR ".$f->nombre_plan);
 
 					$this->excel->getActiveSheet()->setCellValue("B{$contador2}","04");
-					$this->excel->getActiveSheet()->setCellValue("C{$contador2}",$f->mes."".$f->correlativo);
+					$this->excel->getActiveSheet()->setCellValue("C{$contador2}",$f->mes."".$correConcar);
 					$this->excel->getActiveSheet()->setCellValue("D{$contador2}",$formatoFecha);
 					$this->excel->getActiveSheet()->setCellValue("E{$contador2}","MN");
 					$this->excel->getActiveSheet()->setCellValue("F{$contador2}","COBRO POR ".$f->nombre_plan);
@@ -872,13 +918,13 @@ class ventas_cnt extends CI_Controller {
 					$this->excel->getActiveSheet()->setCellValue("M{$contador2}",$f->centro_costo);
 					$this->excel->getActiveSheet()->setCellValue("N{$contador2}","H");
 					$this->excel->getActiveSheet()->setCellValue("O{$contador2}",$f->igv);
-					$this->excel->getActiveSheet()->setCellValue("R{$contador2}","01");
+					$this->excel->getActiveSheet()->setCellValue("R{$contador2}","FT");
 					$this->excel->getActiveSheet()->setCellValue("S{$contador2}",$f->serie."-".$f->correlativo);
 					$this->excel->getActiveSheet()->setCellValue("T{$contador2}",$formatoFecha);
 					$this->excel->getActiveSheet()->setCellValue("W{$contador2}","COBRO POR ".$f->nombre_plan);
 
 					$this->excel->getActiveSheet()->setCellValue("B{$contador3}","04");
-					$this->excel->getActiveSheet()->setCellValue("C{$contador3}",$f->mes."".$f->correlativo);
+					$this->excel->getActiveSheet()->setCellValue("C{$contador3}",$f->mes."".$correConcar);
 					$this->excel->getActiveSheet()->setCellValue("D{$contador3}",$formatoFecha);
 					$this->excel->getActiveSheet()->setCellValue("E{$contador3}","MN");
 					$this->excel->getActiveSheet()->setCellValue("F{$contador3}","COBRO POR ".$f->nombre_plan);
@@ -889,7 +935,7 @@ class ventas_cnt extends CI_Controller {
 					$this->excel->getActiveSheet()->setCellValue("M{$contador3}",$f->centro_costo);
 					$this->excel->getActiveSheet()->setCellValue("N{$contador3}","H");
 					$this->excel->getActiveSheet()->setCellValue("O{$contador3}",$f->neto);
-					$this->excel->getActiveSheet()->setCellValue("R{$contador3}","01");
+					$this->excel->getActiveSheet()->setCellValue("R{$contador3}","FT");
 					$this->excel->getActiveSheet()->setCellValue("S{$contador3}",$f->serie."-".$f->correlativo);
 					$this->excel->getActiveSheet()->setCellValue("T{$contador3}",$formatoFecha);
 					$this->excel->getActiveSheet()->setCellValue("W{$contador3}","COBRO POR ".$f->nombre_plan);
@@ -899,21 +945,50 @@ class ventas_cnt extends CI_Controller {
 		           $contador2=$contador2+3;
 		           $contador3=$contador3+3;
 		        }
+
+		        //Le ponemos un nombre al archivo que se va a generar.
+		        $objWriter = new PHPExcel_Writer_Excel5($this->excel);
+				ob_start();
+				$objWriter->save("php://output");
+				$xlsData = ob_get_contents();
+				ob_end_clean();
+
+				$response =  array(
+				        'op' => 'ok',
+				        'file' => "data:application/vnd.ms-excel;base64,".base64_encode($xlsData)
+				    );
+
+				//die(json_encode($response));
+				file_put_contents('adjunto/dbf/VENTAS'.$numSerie.'.xls', $xlsData);
+
+				$mail->IsSMTP();
+		        $mail->SMTPAuth   = true;
+		        $mail->SMTPSecure = "ssl";
+		        $mail->Host       = "smtpout.secureserver.net";
+		        $mail->Port       = 465; 
+		        $mail->Username   = "dcaceda@red-salud.com"; 
+		        $mail->Password   = "redsalud2018caceda"; 
+		        $mail->SetFrom('dcaceda@red-salud.com', utf8_decode('RED SALUD'));
+		        $mail->AddReplyTo('dcaceda@red-salud.com', utf8_decode('RED SALUD')); 
+		        $mail->Subject    = "Archivo CONCAR";
+		        $mail->Body 	  = "Se adjunta archivo Excel con serie ".$numSerie.". <br>";
+		        $mail->AltBody    = "Se adjunta archivo Excel con serie ".$numSerie.".";
+		        $mail->AddAddress('dcaceda@red-salud.com');
+
+		       	//$mail->AddAttachment("adjunto/dbf/CAN03.dbf", "CAN03.dbf");
+		       	$mail->AddAttachment("adjunto/dbf/VENTAS".$numSerie.".xls", "VENTAS".$numSerie.".xls");
+
+		        $estadoEnvio = $mail->Send();
+		        if($estadoEnvio){
+				    echo"El correo fue enviado correctamente.";
+				} else {
+				    echo"Ocurrió un error inesperado. " . $mail->ErrorInfo;
+				}
+
+		        unlink("adjunto/dbf/VENTAS".$numSerie.".xls");
+				//header("Content-disposition: attachment; filename=anexos.dbf");
+				//header("Content-type: MIME");
 		    }
-
-		//Le ponemos un nombre al archivo que se va a generar.
-        $objWriter = new PHPExcel_Writer_Excel5($this->excel);
-		ob_start();
-		$objWriter->save("php://output");
-		$xlsData = ob_get_contents();
-		ob_end_clean();
-
-		$response =  array(
-		        'op' => 'ok',
-		        'file' => "data:application/vnd.ms-excel;base64,".base64_encode($xlsData)
-		    );
-
-		die(json_encode($response));
 	}
 
 	public function generarPdf($idcomprobante, $canales){
@@ -967,30 +1042,6 @@ class ventas_cnt extends CI_Controller {
 	            $this->pdf->Cell(25,10,"S/. 0.00",1,0,'C');
 	            $this->pdf->Cell(30,10,"S/. ".$b->neto,1,0,'C');
 	            $this->pdf->Ln('20');
-	            $this->pdf->Cell(80);
-	            $this->pdf->Cell(80,10,"Operaciones gravadas",1,0,'C');
-	            $this->pdf->Cell(30,10,"S/. ".$b->neto." ",1,0,'R');
-	            $this->pdf->Ln('10');
-	            $this->pdf->Cell(80);
-	            $this->pdf->Cell(80,10,"Operaciones inafectas",1,0,'C');
-	            $this->pdf->Cell(30,10,"S/. 0.00 ",1,0,'R');
-	            $this->pdf->Ln('10');
-	            $this->pdf->Cell(80);
-	            $this->pdf->Cell(80,10,"Operaciones exoneradas",1,0,'C');
-	            $this->pdf->Cell(30,10,"S/. 0.00 ",1,0,'R');
-	            $this->pdf->Ln('10');
-	            $this->pdf->Cell(80);
-	            $this->pdf->Cell(80,10,"Operaciones gratuitas",1,0,'C');
-	            $this->pdf->Cell(30,10,"S/. 0.00 ",1,0,'R');
-	            $this->pdf->Ln('10');
-	            $this->pdf->Cell(80);
-	            $this->pdf->Cell(80,10,"Total de Descuentos",1,0,'C');
-	            $this->pdf->Cell(30,10,"S/. 0.00 ",1,0,'R');
-	            $this->pdf->Ln('10');
-	            $this->pdf->Cell(80);
-	            $this->pdf->Cell(80,10,"IGV",1,0,'C');
-	            $this->pdf->Cell(30,10,"S/. ".$b->igv." ",1,0,'R');
-	            $this->pdf->Ln('10');
 	            $this->pdf->Cell(80);
 	            $this->pdf->Cell(80,10,"Importe total de la venta",1,0,'C');
 	            $this->pdf->Cell(30,10,"S/. ".$b->total." ",1,0,'R');
@@ -1114,7 +1165,6 @@ class ventas_cnt extends CI_Controller {
         $this->pdf = new Pdf();
 	    $this->pdf->AddPage();
 	    $this->pdf->AliasNbPages();
-	    //$this->pdf->Image(base_url().'/public/assets/avatars/user.jpg','0','0','150','150','JPG');
 
 	    if ($canalesDos == 1 || $canalesDos == 2 || $canalesDos == 3 || $canalesDos == 6 || $canalesDos == 7) {
 	    	foreach ($boletas as $b){
@@ -1345,11 +1395,11 @@ class ventas_cnt extends CI_Controller {
 		       	$mail->AddAttachment("adjunto/comprobantes/".$filename.".xml", $filename.".xml", 'base64', 'application/xml');
 
 		        $estadoEnvio = $mail->Send(); 
-				/*if($estadoEnvio){
+				if($estadoEnvio){
 				    echo"El correo fue enviado correctamente.";
 				} else {
 				    echo"Ocurrió un error inesperado. " . $mail->ErrorInfo;
-				}*/
+				}
 
 			}
 
@@ -1814,11 +1864,11 @@ class ventas_cnt extends CI_Controller {
 					$archivo = fopen('adjunto/xml/boletas/'.$filecdr.'/'.'C'.$filename.'.xml','w+');
 					fputs($archivo, $status);
 					fclose($archivo);
+
 					//LEEMOS EL ARCHIVO XML
 					$responsexml = simplexml_load_file('adjunto/xml/boletas/'.$filecdr.'/'.'C'.$filename.'.xml');
-					//print_r($responsexml);
-					//exit();
 					foreach ($responsexml->xpath('//applicationResponse') as $response){ }
+
 					//AQUI DESCARGAMOS EL ARCHIVO CDR(CONSTANCIA DE RECEPCIÓN)
 					$cdr=base64_decode($response);
 					$archivo = fopen('adjunto/xml/boletas/'.$filecdr.'/'.'R-'.$filename.'.zip','w+');

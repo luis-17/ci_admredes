@@ -125,13 +125,14 @@ class verificar_cnt extends CI_Controller {
 							$html .="<th>Plan</th>";
 							$html .="<th>Importe (S/.)</th>";
 							$html .="<th>Mensaje Sunat</th>";
+							$html .="<th>Opciones</th>";
 						$html .="</tr>";
 					$html .= "</thead>";
 					$html .= "<tbody>";
 
 					for ($i=0; $i < count($idPlan); $i++) {
 
-							$boleta = $this->comprobante_pago_mdl->getDatosBoletaEmitida($inicio, $fin, $serie, $idPlan[$i]);
+						$boleta = $this->comprobante_pago_mdl->getDatosBoletaEmitida($inicio, $fin, $serie, $idPlan[$i]);
 
 						foreach ((array) $boleta as $b):
 
@@ -140,23 +141,17 @@ class verificar_cnt extends CI_Controller {
 							$filecdr=$b->mesanio.'-cdrboletas';
 							$carpetaCdr = 'adjunto/xml/boletas/'.$filecdr;
 
-							//descomprimir zip y leer xml
-							if (file_exists($carpetaCdr.'/R-'.$filename.'.zip')) {
-								if ($this->zip->open($carpetaCdr.'/R-'.$filename.'.zip') === TRUE) {
-								    $this->zip->extractTo($carpetaCdr.'/');
-								    $this->zip->close();
+							if (file_exists($carpetaCdr.'/R-'.$filename.'.xml')) {
+								$xml = file_get_contents($carpetaCdr.'/R-'.$filename.'.xml');
+								$DOM = new DOMDocument('1.0', 'utf-8');
+								$DOM->loadXML($xml);
+								$respuesta = $DOM->getElementsByTagName('Description');
+
+								foreach ($respuesta as $r) {
+									$descripcion = $r->nodeValue;
 								}
-								unlink($carpetaCdr.'/R-'.$filename.'.zip');
 							}
 
-							$xml = file_get_contents($carpetaCdr.'/R-'.$filename.'.xml');
-							$DOM = new DOMDocument('1.0', 'utf-8');
-							$DOM->loadXML($xml);
-							$respuesta = $DOM->getElementsByTagName('Description');
-
-							foreach ($respuesta as $r) {
-								$descripcion = $r->nodeValue;
-							}
 
 							$importe = $b->importe_total;
 							$importe2=number_format((float)$importe, 2, '.', ',');
@@ -168,12 +163,33 @@ class verificar_cnt extends CI_Controller {
 								$html .= "<td align='left'>".$b->cont_numDoc."</td>";
 								$html .= "<td align='left'>".utf8_decode($b->nombre_plan)."</td>";
 								$html .= "<td align='center'>S/. ".$importe2."</td>";
-								if ($descripcion == 'La Boleta numero '.$nameDoc.', ha sido aceptada') {
-									$html .= "<td align='left' class='success'>".$descripcion."</td>";
+								if (file_exists($carpetaCdr.'/R-'.$filename.'.xml')) {
+									if ($descripcion == 'La Boleta numero '.$nameDoc.', ha sido aceptada') {
+										$html .= "<td align='left' class='success'>".$descripcion."</td>";
+										$html .= "<td align='left'>";
+											$html .= "<ul class='ico-stack'>";
+												$html .="<div title='ver PDF' id='pdfButton' onclick=''>";
+													$html .="<a class='boton fancybox' href='".base_url()."ventas_cnt/generarPdf/".$b->idcomprobante."/".$canales."' data-fancybox-width='950' data-fancybox-height='800' target='_blank'>";
+														$html .= "<i class='ace-icon fa fa-file-pdf-o bigger-120'></i>";
+													$html .="</a>";
+												$html .="</div>";
+													$html .="<div title='enviar PDF' id='pdfButtonEnviar' onclick=''>";
+														$html .="<a class='boton fancybox' href='".base_url()."ventas_cnt/enviarPdf/".$b->idcomprobante."/".$canales."' data-fancybox-width='750' data-fancybox-height='275' target='_blank'>";
+															$html .= "<i class='ace-icon fa fa-envelope bigger-120'></i>";
+														$html .="</a>";
+													$html .="</div>";
+											$html .= "</ul>";
+										$html .="</td>";
+									} else {
+										$this->comprobante_pago_mdl->updateEstadocobroComprobante();
+										$html .= "<td align='left' class='danger'>".$descripcion."</td>";
+										$html .= "<td align='left'></td>";
+									}
 								} else {
-									$this->comprobante_pago_mdl->updateEstadocobroComprobante();
-									$html .= "<td align='left' class='danger'>".$descripcion."</td>";
+									$html .= "<td align='left' class='warning'>No se ha emitido el comprobante de pago.</td>";
+									$html .= "<td align='left'></td>";
 								}
+									
 							$html .= "</tr>";
 
 						endforeach;
@@ -198,13 +214,14 @@ class verificar_cnt extends CI_Controller {
 							$html .="<th>Plan</th>";
 							$html .="<th>Importe (S/.)</th>";
 							$html .="<th>Mensaje Sunat</th>";
+							$html .="<th>Opciones</th>";
 						$html .="</tr>";
 					$html .= "</thead>";
 					$html .= "<tbody>";
 
 					for ($i=0; $i < count($idPlan); $i++) {
 
-							$factura = $this->comprobante_pago_mdl->getDatosFacturaEmitidaFinal($inicio, $fin, $serie, $idPlan[$i]);
+						$factura = $this->comprobante_pago_mdl->getDatosFacturaEmitidaFinal($inicio, $fin, $serie, $idPlan[$i]);
 
 						foreach ((array)$factura as $f):
 
@@ -213,22 +230,15 @@ class verificar_cnt extends CI_Controller {
 							$filecdr=$f->mesanio.'-cdrfacturas';
 							$carpetaCdr = 'adjunto/xml/facturas/'.$filecdr;
 
-							//descomprimir zip y leer xml
-							if (file_exists($carpetaCdr.'/R-'.$filename.'.zip')) {
-								if ($this->zip->open($carpetaCdr.'/R-'.$filename.'.zip') === TRUE) {
-								    $this->zip->extractTo($carpetaCdr.'/');
-								    $this->zip->close();
+							if (file_exists($carpetaCdr.'/R-'.$filename.'.xml')) {
+								$xml = file_get_contents($carpetaCdr.'/R-'.$filename.'.xml');
+								$DOM = new DOMDocument('1.0', 'utf-8');
+								$DOM->loadXML($xml);
+								$respuesta = $DOM->getElementsByTagName('Description');
+
+								foreach ($respuesta as $r) {
+									$descripcion = $r->nodeValue;
 								}
-								unlink($carpetaCdr.'/R-'.$filename.'.zip');
-							}
-
-							$xml = file_get_contents($carpetaCdr.'/R-'.$filename.'.xml');
-							$DOM = new DOMDocument('1.0', 'utf-8');
-							$DOM->loadXML($xml);
-							$respuesta = $DOM->getElementsByTagName('Description');
-
-							foreach ($respuesta as $r) {
-								$descripcion = $r->nodeValue;
 							}
 
 							$importeDos = $f->importe_total;
@@ -241,12 +251,33 @@ class verificar_cnt extends CI_Controller {
 									$html .= "<td align='left'>".$f->numero_documento_cli."</td>";
 									$html .= "<td align='left'>".$f->nombre_plan."</td>";
 									$html .= "<td align='center'>S/. ".$importe2."</td>";
-									if ($descripcion == 'La Factura numero '.$nameDoc.', ha sido aceptada') {
-										$html .= "<td align='left' class='success'>".$descripcion."</td>";
+									if (file_exists($carpetaCdr.'/R-'.$filename.'.xml')) {
+										if ($descripcion == 'La Factura numero '.$nameDoc.', ha sido aceptada') {
+											$html .= "<td align='left' class='success'>".$descripcion."</td>";
+											$html .= "<td align='left'>";
+												$html .= "<ul class='ico-stack'>";
+													$html .="<div title='ver PDF' id='pdfButton' onclick=''>";
+														$html .="<a class='boton fancybox' href='".base_url()."ventas_cnt/generarPdf/".$f->idcomprobante."/".$canales."' data-fancybox-width='950' data-fancybox-height='800' target='_blank'>";
+															$html .= "<i class='ace-icon fa fa-file-pdf-o bigger-120'></i>";
+														$html .="</a>";
+													$html .="</div>";
+														$html .="<div title='enviar PDF' id='pdfButtonEnviar' onclick=''>";
+															$html .="<a class='boton fancybox' href='".base_url()."ventas_cnt/enviarPdf/".$f->idcomprobante."/".$canales."' data-fancybox-width='750' data-fancybox-height='275' target='_blank'>";
+																$html .= "<i class='ace-icon fa fa-envelope bigger-120'></i>";
+															$html .="</a>";
+														$html .="</div>";
+												$html .= "</ul>";
+											$html .="</td>";
+										} else {
+											$this->comprobante_pago_mdl->updateEstadocobroComprobante();
+											$html .= "<td align='left' class='danger'>".$descripcion."</td>";
+											$html .= "<td align='left'></td>";
+										}
 									} else {
-										$this->comprobante_pago_mdl->updateEstadocobroComprobante();
-										$html .= "<td align='left' class='danger'>".$descripcion."</td>";
+										$html .= "<td align='left' class='warning'>No se ha emitido el comprobante de pago.</td>";
+										$html .= "<td align='left'></td>";
 									}
+
 								$html .= "</tr>";
 
 						endforeach;

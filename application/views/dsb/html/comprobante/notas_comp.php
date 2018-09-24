@@ -175,8 +175,9 @@
 																<div class="profile-info-name"></div>
 															</div>											
 														</div>	
-														<br>
+														
 														<div id="respCredito"></div>
+														<br>
 														<div class="form-row">
 															<input type='text' class='hidden' id='idcliente' name='idcliente' value=''>
 															<input type='text' class='hidden' id='idplan' name='idplan' value=''>
@@ -625,6 +626,21 @@
 				        },
 				        complete:function() {
 					        $("#respCredito").remove();
+					        alert("Nota de Crédito generada.");
+					        $('#numDoc').val('');
+			           		$('#nomCliente').val('');
+			           		$('#dniRuc').val('');
+			           		$('#impTotal').val('');
+			           		$('#tipoMoneda').val('');
+			           		$('#numSerie').val('');
+			           		$('#correGen').val('');
+			           		$('#impNota').val('');
+			           		$('#motivo').val('');
+			           		$('#idcliente').val('');
+			           		$('#idplan').val('');
+			           		$('#serie').val(0);
+			           		$('#correlativoDoc').val('');
+			           		$('#fechaDoc').date('dd/mm/yyyy');
 					    },
 			           	success: function(data)             
 			           	{
@@ -676,19 +692,34 @@
 	           		$('#idclienteD').val('');
 	           		$('#idplanD').val('');
 	           		$('#serie').val(0);
-				 });
+				});
 
 			    $('#buttonGuardarDebito').click(function(){
 			        $.ajax({                        
 			           	url: "<?= BASE_URL()?>notas_cnt/guardarDocumentoNotaDebito",   
 			           	type: 'POST',
-			           	dataType: 'json',                                 
+			           	dataType: 'json',
 			           	data: $("#formNotaDebito").serialize(),
 			           	beforeSend: function(){
 				            $('#respDebito').html("<br><br><img src='<?=base_url()."public/assets/img/loading2.gif"?>'>");
 				        },
 				        complete:function() {
 					        $("#respDebito").remove();
+					        alert("Nota de Débito generada.");
+					        $('#numDoc').val('');
+			           		$('#nomCliente').val('');
+			           		$('#dniRuc').val('');
+			           		$('#impTotal').val('');
+			           		$('#tipoMoneda').val('');
+			           		$('#numSerie').val('');
+			           		$('#correGen').val('');
+			           		$('#impNota').val('');
+			           		$('#motivo').val('');
+			           		$('#idcliente').val('');
+			           		$('#idplan').val('');
+			           		$('#serie').val(0);
+			           		$('#correlativoDoc').val('');
+			           		$('#fechaDoc').date('dd/mm/yyyy');
 					    },
 			           	success: function(data)             
 			           	{

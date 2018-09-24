@@ -121,6 +121,11 @@
 										</li>
 										<li>
 											<a data-toggle="tab" href="#faq-tab-2">
+												Comprabantes manuales
+											</a>
+										</li>
+										<li>
+											<a data-toggle="tab" href="#faq-tab-3">
 												Emitir Boletas y Facturas
 											</a>
 										</li>									
@@ -159,7 +164,7 @@
 																			</div>
 																			<div class="profile-info-name"> Documento: </div>
 																			<div class="profile-info-name">
-																				<select name="documento" id="documento" required="Seleccione una opción de la lista">
+																				<select name="documento" id="documento" required="Seleccione una opción de la lista" class="form-control">
 																				</select>
 																			</div>
 																			<div class="profile-info-name"> Inicio: </div>
@@ -178,14 +183,32 @@
 																		</div>											
 																	</div>				
 																	<div id="resp4"></div>	
-																	<div id="accionesTabla">
-																		<hr>
-
+																	<!--<div id="fechaEmiSelec">
 																		<div class="profile-user-info profile-user-info-striped">
 																			<div  class="profile-info-row">
+																				<div class="profile-info-name"></div>
+																				<div class="profile-info-name">Seleccione una fecha de Emisión.</div>
+																				<div class="profile-info-name">
+																					<input class="form-control input-mask-date" type="date" id="fecemisi" name="fecemisi" required="Seleccione una fecha de emisión" value="<?=$fecemisi;?>">
+																				</div>
+																				<div class="profile-info-name"></div>
+																			</div>
+																		</div>
+																	</div>-->
+																	<div id="resp2"></div>
+																	<div id="accionesTabla">
+																		
+																		<div class="profile-user-info profile-user-info-striped">
+																			<div  class="profile-info-row">
+																				<div class="profile-info-name"></div>
+																				<!--<div class="profile-info-name"> Fecha de emisión: </div>
+																				<div class="profile-info-name">
+																					<input class="form-control input-mask-date" type="date" id="fechaEmiFac" name="fechaEmiFac" required="Seleccione una fecha de inicio" value="<?=$fechaEmision;?>">
+																				</div>-->
 																				<div class="profile-info-name"> Correlativo actual: </div>
 																				<div class="profile-info-name" id="correActual" name="correActual">
 																				</div>
+																				<div class="profile-info-name"></div>
 																				<div class="profile-info-name">
 																					<button type="button" id="buttonModal" name="buttonModal" class="btn btn-white btn-info btn-bold btn-xs" data-toggle="modal" data-target="#saveModal"> Generar Comprobante de Pago <i class="ace-icon glyphicon glyphicon-save bigger-110 icon-only"></i>
 																					</button>
@@ -193,9 +216,7 @@
 																				<div class="profile-info-name"></div>
 																			</div>
 																		</div>
-																	</div>
-																	<div id="resp2"></div>							
-																	<div id="resp3"></div>		
+																	</div>		
 
 																	<!-- Modal -->
 																	<div class="modal fade" id="saveModal" name="saveModal" tabindex="-1" role="dialog" aria-labelledby="saveModalLabel" aria-hidden="true">
@@ -230,6 +251,58 @@
 										</div>
 
 										<div id="faq-tab-2" class="tab-pane fade">
+											<div class="space-8"></div>
+											<div id="faq-list-1" class="panel-group accordion-style1 accordion-style2">
+												<form action="" name="formNotaDebito" id="formNotaDebito" method="post">
+													<div class="form-row">
+														<div id="respDebito"></div>
+														<div class="form-row">
+															<div class="form-group col-md-6">
+														    	<b class="text-primary">Serie</b>
+														    	<select name="serie" id="serie" required="Seleccione una opción de la lista" class="form-control">
+																	<option value=0>Seleccione</option>
+																	<?php foreach ($serie as $s):
+																		if($idserie==$s->idserie):
+																			$estp='selected';
+																		else:
+																			$estp='';
+																		endif;?>
+																		<option value="<?=$s->numero_serie;?>" <?=$estp?> ><?=$s->numero_serie." - ".$s->descripcion_ser?></option>
+																	<?php endforeach; ?>
+																</select>
+															</div>
+															<div class="form-group col-md-3">
+														    	<b class="text-primary">Correlativo</b>
+														    	<input type="text" class="form-control" id="correlativoDoc" name="correlativoDoc" required="Ingrese número correlativo" value="<?=$correlativoDoc?>" readonly>
+															</div>
+															<div class="form-group col-md-3">
+														    	<b class="text-primary">Fecha</b>
+														    	<input class="form-control input-mask-date" type="date" id="fechaDoc" name="fechaDoc" required="Seleccione una fecha de inicio" value="<?=$fechaDoc;?>">
+															</div>
+														</div>
+														<div class="form-row">
+															<input type='text' class='hidden' id='idplan' name='idplan' value=''>
+														  	<div class="form-group col-md-9">
+														    	<b class="text-primary">Nombre de Cliente</b>
+														    	<input type="text" class="form-control" name="nomClienteD" id="nomClienteD" value="">
+															</div>
+															<div class="form-group col-md-3">
+														    	<b class="text-primary">Importe Total</b>
+														   		<input type="number" class="form-control" name="impTotalD" id="impTotalD" value="">
+															</div>
+														</div>
+														<div class="form-row" align="center">
+														  	<div class="form-group col-md-12">
+														    	<button type="button" id="buttonGuardarDebito" class="btn btn-info">Guardar</button>
+																<button type="button" id="buttonCancelarDebito" class="btn btn-info">Cancelar</button>
+															</div>										
+														</div>
+												  	</div>
+												</form>
+											</div>
+										</div>
+
+										<div id="faq-tab-3" class="tab-pane fade">
 											<div class="space-8"></div>
 											<div class="row">
 												<div class="col-xs-12">
@@ -272,10 +345,10 @@
 																					<i class="ace-icon glyphicon glyphicon-search bigger-110 icon-only"></i>
 																				</button>
 																			</div>
-																			<div class="profile-info-name">
+																			<!--<div class="profile-info-name">
 																				<button type="button" id="buttonDbf" name="buttonDbf" class="btn btn-info btn-xs"> Anexos Concar <i class="ace-icon fa fa fa-file-o bigger-110 icon-only"></i>
 																					</button>
-																			</div>
+																			</div>-->
 																			<div class="profile-info-name"></div>
 																		</div>											
 																	</div>	
@@ -296,7 +369,7 @@
 																				</div>-->
 																				<div class="profile-info-name"></div>
 																				<div class="profile-info-name">
-																					<button type="button" id="buttonExcel" name="buttonExcel" class="btn btn-white btn-info btn-bold btn-xs"> Generar archivo Excel <i class="ace-icon fa fa-file-excel-o bigger-110 icon-only"></i>
+																					<button type="button" id="buttonExcel" name="buttonExcel" class="btn btn-white btn-info btn-bold btn-xs"> Enviar archivos Concar <i class="ace-icon fa fa-file-excel-o bigger-110 icon-only"></i>
 																					</button>
 																				</div>
 																				<div class="profile-info-name">
@@ -337,22 +410,7 @@
 																        <div class="modal-content">
 																            <div class="modal-header">
 																                <button type="button" class="close" data-dismiss="modal">&times;</button>
-																                <h3 class="modal-title">Se generaró el Excel correctamente.</h3>
-																            </div>
-																            <div class="modal-footer">
-																                <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
-																            </div>
-																        </div>
-
-																    </div>
-																</div>
-
-																<div class="modal fade" id="modalAnexo" role="dialog">
-																    <div class="modal-dialog">
-																        <div class="modal-content">
-																            <div class="modal-header">
-																                <button type="button" class="close" data-dismiss="modal">&times;</button>
-																                <h3 class="modal-title">Se envió lista de anexos correctamente.</h3>
+																                <h3 class="modal-title">Se enviaron los archivos CONCAR al correo.</h3>
 																            </div>
 																            <div class="modal-footer">
 																                <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
@@ -510,7 +568,10 @@
 			           		$("#resp2").html(null);
 			             	$('#resp2').html(data);
 							$("#correlativoActual").html(data);
-			             	$("#accionesTabla").show();							
+			             	$("#accionesTabla").show();	
+			             	$('#tablaDatos').DataTable({
+								"pagingType": "full_numbers"
+							});						
 			           	}
 			       	});
 			       	return false;
@@ -547,7 +608,7 @@
 					    },
 			    		success: function(data)
 			    		{	
-		
+							
 			    		}
 			    	});
 			    	$("#saveModal").modal('hide');
@@ -613,42 +674,11 @@
 			       	return false;
 			    });
 
-			    $('#buttonExcel').click(function(){
-
-			    	var fechainicio = $("#fechainicioDos").val();
-			    	var fechafin = $("#fechafinDos").val();
-			    	var numSerie = $("#numSerie").val();
-			    	var canales = $("#canalesDos").val();
-
-			        $.ajax({                        
-			           	url: "<?= BASE_URL()?>ventas_cnt/generarExcel",   
-			           	type: 'POST',
-			           	dataType: 'json',                                 
-			           	data: {fechainicio:fechainicio,
-			           			fechafin:fechafin,
-			           			numSerie:numSerie,
-			           			canales:canales}
-			       	}).done(function(data){
-					    var $a = $("<a>");
-					    $a.attr("href",data.file);
-					    $("body").append($a);
-					    $a.attr("download","file"+numSerie+".xls");
-					    $a[0].click();
-					    $a.remove();
-					});
-			    });
 
 				$(function() {
 				    $("#buttonExcel").click(function(){    
 				    	//location.reload(true);    
 				      $('#modalExcel').modal('show');
-				    });
-				});
-
-				$(function() {
-				    $("#buttonDbf").click(function(){    
-				    	//location.reload(true);    
-				      $('#modalAnexo').modal('show');
 				    });
 				});
 
@@ -659,12 +689,21 @@
 				    });
 				});
 
-				$('#buttonDbf').click(function(){
+				$('#buttonExcel').click(function(){
+
+					var fechainicio = $("#fechainicioDos").val();
+			    	var fechafin = $("#fechafinDos").val();
+			    	var numSerie = $("#numSerie").val();
+			    	var canales = $("#canalesDos").val();
+
 			        $.ajax({                        
-			           	url: "<?= BASE_URL()?>ventas_cnt/generarArchivoDbf",   
+			           	url: "<?= BASE_URL()?>ventas_cnt/generarExcel",   
 			           	type: 'POST',
 			           	dataType: 'json',                                 
-			           	data: $("#formCategoriaDos").serialize(), 
+			           	data:  {fechainicio:fechainicio,
+			           			fechafin:fechafin,
+			           			numSerie:numSerie,
+			           			canales:canales}, 
 			           	success: function(data)             
 			           	{
 
