@@ -135,6 +135,7 @@
 															$inicio=$c->cert_iniVig;										
 															$inicio2= strtotime($inicio);
 															$fin=$c->cert_finVig;
+															$finvig=$c->cert_finVig;
 															$fin2= strtotime($fin); 
 															$cert=$c->cert_id;
 															$act_man=$c->cert_upProv;
@@ -142,10 +143,12 @@
 															if($c->cert_estado==1){
 																$e=1;
 																$estado="Vigente";	
-
+																}elseif($hoy<=$finvig){
+																	$estado="Vigente";
+																	$e=1;
 																	}else{
 																		$estado="Cancelado";
-																		$e=3;													
+																		$e=3;	
 																	}	
 
 															if($e==1){

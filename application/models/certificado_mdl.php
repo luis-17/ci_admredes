@@ -405,6 +405,7 @@
 		$this->db->select("email_cp, concat(coalesce(nombres_cp,''),' ',coalesce(apellidos_cp,''))as nombres");
 		$this->db->from("contacto_proveedor");
 		$this->db->where("envio_correo_cita",1);
+		$this->db->where("estado_cp",1);
 		$this->db->where("idproveedor",$data['idproveedor']);
 
 		$query = $this->db->get();

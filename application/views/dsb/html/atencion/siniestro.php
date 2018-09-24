@@ -364,11 +364,11 @@
 						<ul class="breadcrumb">
 							<li>
 								<i class="ace-icon fa fa-home home-icon"></i>
-								<a href="<?=base_url()?>">Home</a>
+								<a href="<?=base_url()?>">Inicio</a>
 							</li>
 
 							<li>
-								<a href="<?=base_url()?>inex.php/atenciones">Atenciones</a>
+								<a href="<?=base_url()?>index.php/atenciones">Atenciones</a>
 							</li>
 
 							<li class="active">

@@ -479,9 +479,6 @@
 		$this->db->where('idtratamiento', $data['idtratamiento']);
 		$this->db->delete('tratamiento'); 
 	}
-
-
-	
 	
 }
 ?>
