@@ -1,9 +1,13 @@
+<?php
+	$user = $this->session->userdata('user');
+	extract($user);
+?>
 <!DOCTYPE html>
 <html lang="en">
 	<head>
 		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 		<meta charset="utf-8" />
-		<title>Sistema para la Gestión de Planes de Salud</title>
+		<title>Dashboard - Redes Admin</title>
 
 		<meta name="description" content="overview &amp; stats" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
@@ -20,7 +24,28 @@
 		<!-- ace styles -->
 		<link rel="stylesheet" href="<?=base_url()?>public/assets/css/ace.css" class="ace-main-stylesheet" id="main-ace-style" />
 
-		
+
+	
+		<link rel="stylesheet" href="<?=base_url()?>public/assets/css/jquery-ui.custom.css" />
+		<link rel="stylesheet" href="<?=base_url()?>public/assets/css/jquery.gritter.css" />
+		<link rel="stylesheet" href="<?=base_url()?>public/assets/css/select2.css" />
+		<link rel="stylesheet" href="<?=base_url()?>public/assets/css/datepicker.css" />
+		<link rel="stylesheet" href="<?=base_url()?>public/assets/css/bootstrap-editable.css" />
+
+		<!-- text fonts -->
+		<link rel="stylesheet" href="<?=base_url()?>public/assets/css/ace-fonts.css" />
+
+		<!-- ace styles -->
+		<link rel="stylesheet" href="<?=base_url()?>public/assets/css/ace.css" class="ace-main-stylesheet" id="main-ace-style" />
+
+		<!--[if lte IE 9]>
+			<link rel="stylesheet" href="public/assets/css/ace-part2.css" class="ace-main-stylesheet" />
+		<![endif]-->
+
+		<!--[if lte IE 9]>
+		  <link rel="stylesheet" href="public/assets/css/ace-ie.css" />
+		<![endif]-->
+
 		<!-- inline styles related to this page -->
 
 		<!-- ace settings handler -->
@@ -28,6 +53,10 @@
 
 		<!-- HTML5shiv and Respond.js for IE8 to support HTML5 elements and media queries -->
 
+		<!--[if lte IE 8]>
+		<script src="public/assets/js/html5shiv.js"></script>
+		<script src="public/assets/js/respond.js"></script>
+		<![endif]-->
 	</head>
 
 	<body class="no-skin">
@@ -44,7 +73,6 @@
 			<?php include ("/sideBar.php");?>
 			<!-- end nav. -->
 
-
 			<!-- /section:basics/sidebar -->
 			<div class="main-content">
 				<div class="main-content-inner">
@@ -57,55 +85,63 @@
 						<ul class="breadcrumb">
 							<li>
 								<i class="ace-icon fa fa-home home-icon"></i>
-								<a href="<?=base_url()?>">Inicio</a>
+								<a href="<?=base_url();?>">Inicio</a>
 							</li>
-							<li class="active"><?=str_replace("%20"," ",$nom);?></li>
+							<li class="active">Mi Perfil</li>
 						</ul><!-- /.breadcrumb -->
-
-						<!-- /section:basics/content.searchbox -->
 					</div>
 
 					<!-- /section:basics/content.breadcrumbs -->
-					<div class="page-content">	
+					<div class="page-content">
+						<!-- /section:settings.box -->
+						<div class="page-header">
+							<h1>
+								Cambiar Contraseña
+								<small>
+									<i class="ace-icon fa fa-angle-double-right"></i>
+								</small>
+							</h1>
+						</div><!-- /.page-header -->
 
 						<div class="row">
-							<div class="col-xs-12">
-								<!-- PAGE CONTENT BEGINS -->
-								<div class="error-container">
-									<div class="well">
-										<h1 class="grey lighter smaller">
-											<span class="blue bigger-125">
-												<i class="ace-icon fa fa-ban"></i>
-												Acceso restringido
-											</span>
-										</h1>
+									<div class="col-xs-12">	
+													<form class="form-horizontal" method="post" action="<?=base_url()?>index.php/actualizar_pass">
+													<div class="form-group">
+														<label class="col-sm-3 control-label no-padding-right" for="form-field-1"> Contraseña actual: </label>
 
-										<hr />
-										<h3 class="lighter smaller">
-											Solicite los permisos para poder visualizar ésta opción del menú.
-											<i class="ace-icon fa fa-wrench icon-animated-wrench bigger-125"></i>
-										</h3>
+														<div class="col-sm-4">
+															<input type="password" id="passold" name="passold" required value="<?=$oldpass?>">
+														</div><label style="color: #E41919;"><?=$mensaje1?></label>
+													</div>
 
-										<div class="space"></div>
+													<div class="form-group">
+														<label class="col-sm-3 control-label no-padding-right" for="form-field-1"> Nueva contraseña: </label>
 
-										<hr />
-										<div class="space"></div>
+														<div class="col-sm-4">
+															<input type="password" id="passnew" name="passnew" required value="<?=$newpass?>">
+														</div><label style="color: #E41919;"></label>
+													</div>
 
-										<div class="center">
-											<a href="javascript:history.back()" class="btn btn-grey">
-												<i class="ace-icon fa fa-arrow-left"></i>
-												Regresar
-											</a>
+													<div class="form-group">
+														<label class="col-sm-3 control-label no-padding-right" for="form-field-1"> Repetir Nueva contraseña: </label>
 
-											<a href="<?=base_url()?>" class="btn btn-info">
-												<i class="ace-icon fa fa-tachometer"></i>
-												Inicio
-											</a>
+														<div class="col-sm-4">
+															<input type="password" id="passnew2" name="passnew2" required value="<?=$newpass2?>">
+														</div><label style="color: #E41919;"><?=$mensaje2?></label>
+													</div>
+
+													<div class="">
+														<div class="col-md-offset-3 col-md-9">
+															<button class="btn btn-info" type="submit" >
+																<i class="ace-icon fa fa-check bigger-110"></i>
+																Guardar
+															</button>
+														</div>
+													</div>
+														
+													</form>
 										</div>
-									</div>
-								</div>
-
-							</div><!-- /.col -->
+								<!-- PAGE CONTENT ENDS -->
 						</div><!-- /.row -->
 					</div><!-- /.page-content -->
 				</div>
@@ -117,21 +153,13 @@
 					<div class="footer-content">
 						<span class="bigger-120">
 							<span class="blue bolder">Red Salud</span>
-							Application &copy; 2018
+							Admin &copy; 2018
 						</span>
 
 						&nbsp; &nbsp;
 						<span class="action-buttons">
-							<a href="#">
-								<i class="ace-icon fa fa-twitter-square light-blue bigger-150"></i>
-							</a>
-
-							<a href="#">
+							<a href="https://www.facebook.com/RedSaludPeru/?ref=hl">
 								<i class="ace-icon fa fa-facebook-square text-primary bigger-150"></i>
-							</a>
-
-							<a href="#">
-								<i class="ace-icon fa fa-rss-square orange bigger-150"></i>
 							</a>
 						</span>
 					</div>
@@ -171,11 +199,17 @@
 		<![endif]-->
 		<script src="<?=base_url()?>public/assets/js/jquery-ui.custom.js"></script>
 		<script src="<?=base_url()?>public/assets/js/jquery.ui.touch-punch.js"></script>
+		<script src="<?=base_url()?>public/assets/js/jquery.gritter.js"></script>
+		<script src="<?=base_url()?>public/assets/js/bootbox.js"></script>
 		<script src="<?=base_url()?>public/assets/js/jquery.easypiechart.js"></script>
-		<script src="<?=base_url()?>public/assets/js/jquery.sparkline.js"></script>
-		<script src="<?=base_url()?>public/assets/js/flot/jquery.flot.js"></script>
-		<script src="<?=base_url()?>public/assets/js/flot/jquery.flot.pie.js"></script>
-		<script src="<?=base_url()?>public/assets/js/flot/jquery.flot.resize.js"></script>
+		<script src="<?=base_url()?>public/assets/js/date-time/bootstrap-datepicker.js"></script>
+		<script src="<?=base_url()?>public/assets/js/jquery.hotkeys.js"></script>
+		<script src="<?=base_url()?>public/assets/js/bootstrap-wysiwyg.js"></script>
+		<script src="<?=base_url()?>public/assets/js/select2.js"></script>
+		<script src="<?=base_url()?>public/assets/js/fuelux/fuelux.spinner.js"></script>
+		<script src="<?=base_url()?>public/assets/js/x-editable/bootstrap-editable.js"></script>
+		<script src="<?=base_url()?>public/assets/js/x-editable/ace-editable.js"></script>
+		<script src="<?=base_url()?>public/assets/js/jquery.maskedinput.js"></script>
 
 		<!-- ace scripts -->
 		<script src="<?=base_url()?>public/assets/js/ace/elements.scroller.js"></script>
@@ -199,6 +233,7 @@
 		<script src="<?=base_url()?>public/assets/js/ace/ace.settings-skin.js"></script>
 		<script src="<?=base_url()?>public/assets/js/ace/ace.widget-on-reload.js"></script>
 		<script src="<?=base_url()?>public/assets/js/ace/ace.searchbox-autocomplete.js"></script>
+		
 
 		<!-- the following scripts are used in demo only for onpage help and you don't need them -->
 		<link rel="stylesheet" href="<?=base_url()?>public/assets/css/ace.onpage-help.css" />

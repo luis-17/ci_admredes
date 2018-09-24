@@ -385,5 +385,31 @@
 		$this->db->where('aseg_id',$data['aseg_id']);
 		return $this->db->update('asegurado', $array);
 	}
+
+	function contenido_mail($data){
+		$this->db->select("aseg_numDoc, concat(COALESCE(aseg_ape1,''),' ', COALESCE(aseg_ape2,''),' ',COALESCE(aseg_nom1,''),' ',COALESCE(aseg_nom2,'')) as afiliado, concat(SUBSTR(aseg_fechNac,1,4),'-',SUBSTR(aseg_fechNac,5,2),'-',SUBSTR(aseg_fechNac,7,2)) as aseg_fechNac, nombre_comercial_pr, aseg_email, nombre_plan, e.nombre_esp, fecha_cita, hora_cita_inicio, observaciones_cita, cuerpo_mail");
+		$this->db->from("cita c");
+		$this->db->join("proveedor p","p.idproveedor=c.idproveedor");
+		$this->db->join("especialidad e","e.idespecialidad=c.idespecialidad");
+		$this->db->join("certificado_asegurado ca","ca.certase_id=c.idcertificadoasegurado");
+		$this->db->join("certificado ce","ce.cert_id=ca.cert_id");
+		$this->db->join("asegurado a","a.aseg_id=ca.aseg_id");
+		$this->db->join("plan pl","pl.idplan = ce.plan_id");
+		$this->db->where("idcita",$data['idcita']);
+
+		$query = $this->db->get();
+		return $query->result();
+	}
+
+	function destinatarios($data){
+		$this->db->select("email_cp, concat(coalesce(nombres_cp,''),' ',coalesce(apellidos_cp,''))as nombres");
+		$this->db->from("contacto_proveedor");
+		$this->db->where("envio_correo_cita",1);
+		$this->db->where("estado_cp",1);
+		$this->db->where("idproveedor",$data['idproveedor']);
+
+		$query = $this->db->get();
+		return $query->result();
+	}
 }
 ?>

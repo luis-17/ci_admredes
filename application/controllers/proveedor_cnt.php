@@ -178,7 +178,7 @@ class Proveedor_cnt extends CI_Controller {
 
 			if($data['id']==0){
 				$this->proveedor_mdl->in_usuario($data);
-				$data['idusuario'] = $this->db->insert_id();
+				$data['idusuario2'] = $this->db->insert_id();
 				$this->proveedor_mdl->in_proveedor($data);	
 
 				echo "<script>
@@ -186,7 +186,7 @@ class Proveedor_cnt extends CI_Controller {
 				</script>";
 
 			}else{
-				$data['idusuario'] = $_POST['idusuario'];
+				$data['idusuario2'] = $_POST['user_id'];
 				$this->proveedor_mdl->up_usuario($data);
 				$this->proveedor_mdl->up_proveedor($data);
 				echo "<script>

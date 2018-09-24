@@ -7,7 +7,13 @@
 }
 
 public function login($email, $password){
-	$query = $this->db->get_where('usuario', array('emailusuario'=>$email, 'password_view'=>$password, 'estado_us'=> 1));
+	$this->db->select("*");
+	$this->db->from("usuario u");
+	$this->db->join("colaborador c","u.idusuario=c.idusuario");
+	$this->db->where("username",$email);
+	$this->db->where("password",md5($password));
+
+	$query=$this->db->get();
 	return $query->row_array();
 }
 

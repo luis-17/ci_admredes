@@ -239,7 +239,7 @@
 																		<div class="profile-info-value">
 																			<span class="editable editable-click" id="username"><?=$estado2;?></span>
 																				<?php if($cert->flg_activar=='S' && $e==1):?>
-																				<a href="<?=  base_url()?><?=$ruta?>/<?=$id?>/<?=$doc?>" title="<?=$titulo;?>">
+																				<a href="<?=  base_url()?>index.php/<?=$ruta?>/<?=$id?>/<?=$doc?>" title="<?=$titulo;?>">
 																						<span class="<?=$boton ?>"></span>
 																				</a>
 																			<?php endif; ?>

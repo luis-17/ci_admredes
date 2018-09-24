@@ -129,6 +129,7 @@
 										$dist=$dg->cod_distrito_pr;
 										$user=$dg->username;
 										$pass=$dg->password_view;
+										$user_id=$dg->idusuario;
 									endforeach;
 								else:
 									$idt1="";
@@ -144,6 +145,7 @@
 									$dist="";
 									$user="";
 									$pass="";
+									$user_id="";
 								endif;
 							?>
 					<div class="page-content">
@@ -162,6 +164,7 @@
 								<!-- PAGE CONTENT BEGINS -->
 								<form class="form-horizontal" role="form" method="post" action="<?=base_url()?>index.php/proveedor_guardar">
 									<input type="hidden" id="idproveedor" name="idproveedor" value="<?=$id;?>" >
+									<input type="hidden" id="user_id" name="user_id" value="<?=$user_id;?>">
 									<input type="hidden" name="idusuario" name="idusuario" value="<?=$idusuario?>">
 
 									<div class="form-group">
@@ -303,7 +306,7 @@
 										<label class="control-label col-xs-12 col-sm-3 no-padding-right" for="name">Contraseña:</label>
 										<div class="col-xs-12 col-sm-9">
 											<div class="clearfix">
-												<input  required="true" type="password" id="contrasena" name="contrasena" class="col-xs-12 col-sm-5" value="<?=$pass?>">
+												<input  required="true" type="text" id="contrasena" name="contrasena" class="col-xs-12 col-sm-5" value="<?=$pass?>">
 											</div>
 										</div>																
 									</div>

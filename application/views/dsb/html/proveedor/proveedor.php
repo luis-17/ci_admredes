@@ -97,7 +97,7 @@
 						<!-- /section:settings.box -->
 						<div class="page-header">
 							<h1>
-								Proveedores
+								Consolidado de Proveedores
 								<small>
 									<i class="ace-icon fa fa-angle-double-right"></i>
 								</small>
