@@ -85,10 +85,6 @@ $route['plan'] = 'plan_cnt/index';
 $route['compras'] = 'compras_cnt/index';
 
 $route['ventas'] = 'ventas_cnt/index';
-$route['ventas'] = 'ventas_cnt/mostrarDocumento';
-$route['ventas'] = 'ventas_cnt/mostrarDatos';
-$route['ventas'] = 'ventas_cnt/mostrarCorrelativo';
-$route['ventas'] = 'ventas_cnt/generarComprobante';
 
 $route['boletaje'] = 'boletaje_cnt/index';
 $route['comprobantes_series'] = 'comprobantes_series_cnt/index';

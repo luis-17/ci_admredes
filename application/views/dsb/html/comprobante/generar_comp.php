@@ -253,9 +253,11 @@
 										<div id="faq-tab-2" class="tab-pane fade">
 											<div class="space-8"></div>
 											<div id="faq-list-1" class="panel-group accordion-style1 accordion-style2">
-												<form action="" name="formNotaDebito" id="formNotaDebito" method="post">
+												<form action="" name="formNotaManual" id="formNotaManual" method="post">
+													<div id="respManual"></div>
+													<br>
 													<div class="form-row">
-														<div id="respDebito"></div>
+														<div id="respManual"></div>
 														<div class="form-row">
 															<div class="form-group col-md-6">
 														    	<b class="text-primary">Serie</b>
@@ -273,7 +275,7 @@
 															</div>
 															<div class="form-group col-md-3">
 														    	<b class="text-primary">Correlativo</b>
-														    	<input type="text" class="form-control" id="correlativoDoc" name="correlativoDoc" required="Ingrese número correlativo" value="<?=$correlativoDoc?>" readonly>
+														    	<input type="text" class="form-control" id="correlativoDoc" name="correlativoDoc" required="Ingrese número correlativo" value="" readonly>
 															</div>
 															<div class="form-group col-md-3">
 														    	<b class="text-primary">Fecha</b>
@@ -283,8 +285,8 @@
 														<div class="form-row">
 															<input type='text' class='hidden' id='idplan' name='idplan' value=''>
 														  	<div class="form-group col-md-9">
-														    	<b class="text-primary">Nombre de Cliente</b>
-														    	<input type="text" class="form-control" name="nomClienteD" id="nomClienteD" value="">
+														    	<b class="text-primary">Descripción</b>
+														    	<input type="text" class="form-control" name="descripcionManual" id="descripcionManual" value="">
 															</div>
 															<div class="form-group col-md-3">
 														    	<b class="text-primary">Importe Total</b>
@@ -293,8 +295,8 @@
 														</div>
 														<div class="form-row" align="center">
 														  	<div class="form-group col-md-12">
-														    	<button type="button" id="buttonGuardarDebito" class="btn btn-info">Guardar</button>
-																<button type="button" id="buttonCancelarDebito" class="btn btn-info">Cancelar</button>
+														    	<button type="button" id="buttonGuardarManual" class="btn btn-info">Guardar</button>
+																<button type="button" id="buttonCancelarManual" class="btn btn-info">Cancelar</button>
 															</div>										
 														</div>
 												  	</div>
@@ -528,7 +530,7 @@
 					var canales = $("#canales").val();
 					//ajax para pasar los parámetros
 					$.ajax({
-						url: "<?= BASE_URL()?>ventas_cnt/mostrarDocumento",
+						url: "<?= BASE_URL()?>index.php/ventas_cnt/mostrarDocumento",
 						type: 'POST',
 						dataType: 'json',
 						data: {canales:canales},
@@ -555,7 +557,7 @@
 				//función para enviar datos a la tabla dinámica que se va a generar    
 			    $('#buttonBuscar').click(function(){
 			        $.ajax({                        
-			           	url: "<?= BASE_URL()?>ventas_cnt/mostrarDatos",   
+			           	url: "<?= BASE_URL()?>index.php/ventas_cnt/mostrarDatos",   
 			           	type: 'POST',
 			           	dataType: 'json',                                 
 			           	data: $("#formCategoria").serialize(),
@@ -579,7 +581,7 @@
 
 			    $('#buttonBuscar').click(function(){
 			        $.ajax({                        
-			           	url: "<?= BASE_URL()?>ventas_cnt/mostrarCorrelativo",   
+			           	url: "<?= BASE_URL()?>index.php/ventas_cnt/mostrarCorrelativo",   
 			           	type: 'POST',
 			           	dataType: 'json',                                 
 			           	data: $("#formCategoria").serialize(), 
@@ -594,7 +596,7 @@
 
 			    $('#buttonGenerar').click(function(){
 			    	$.ajax({
-			    		url: "<?= BASE_URL()?>ventas_cnt/generarComprobante",
+			    		url: "<?= BASE_URL()?>index.php/ventas_cnt/generarComprobante",
 			    		type: 'POST',
 			    		dataType: 'json',
 			    		data: $("#formCategoria").serialize(),
@@ -618,7 +620,60 @@
 			    	return false;
 			    });
 
-//---------------------------------------------------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------------------------
+				//Boletaje Manual
+
+				$("#serie").change(function() {
+					var serie = $("#serie").val();
+					//ajax para pasar los parámetros
+					$.ajax({
+						url: "<?= BASE_URL()?>index.php/ventas_cnt/mostrarCorrelativoManual",
+						type: 'POST',
+						dataType: 'json',
+						data: {serie:serie},
+						success: function(data)
+						{
+							//#resp es el id del div donde se van a crear los checkbozx
+							if ($('#serie').val() == 0) {
+						       	$("#correlativoDoc").html(null);
+						    } else {
+								$("#correlativoDoc").html(data);
+						    }
+
+							$("#accionesTabla").hide();
+
+						}
+					});
+					return false;
+				});
+
+				$('#buttonGuardarManual').click(function(){
+			        $.ajax({                        
+			           	url: "<?= BASE_URL()?>index.php/ventas_cnt/guardarComprobanteManual",   
+			           	type: 'POST',
+			           	dataType: 'json',                                 
+			           	data: $("#formNotaManual").serialize(),
+			           	beforeSend: function(){
+				            $('#respManual').html("<br><br><img src='<?=base_url()."public/assets/img/loading2.gif"?>'>");
+				        },
+				        complete:function() {
+					        $("#respManual").remove();
+					        alert("Comprobante de pago generado.");
+					        $('#descripcionManual').val('');
+			           		$('#impTotal').val('');
+			           		$('#serie').val(0);
+			           		$('#correlativoDoc').val('');
+			           		$('#fechaDoc').date('dd/mm/yyyy');
+					    },
+			           	success: function(data)             
+			           	{
+
+			           	}
+			       	});
+			       	return false;
+			    });
+
+//------------------------------------------------------------------------------------------------------------------------------
 			    //BOLETAJE
 
 			    $("#accionesTablaEmitido").hide();
@@ -626,7 +681,7 @@
 					var canales = $("#canalesDos").val();
 					//ajax para pasar los parámetros
 					$.ajax({
-						url: "<?= BASE_URL()?>ventas_cnt/generarLista",
+						url: "<?= BASE_URL()?>index.php/ventas_cnt/generarLista",
 						type: 'POST',
 						dataType: 'json',
 						data: {canales:canales},
@@ -653,7 +708,7 @@
 				//función para enviar datos a la tabla dinámica que se va a generar    
 			    $('#buttonBuscarDos').click(function(){
 			        $.ajax({                        
-			           	url: "<?= BASE_URL()?>ventas_cnt/mostrarDatosComprobantes",   
+			           	url: "<?= BASE_URL()?>index.php/ventas_cnt/mostrarDatosComprobantes",   
 			           	type: 'POST',
 			           	dataType: 'json',                                 
 			           	data: $("#formCategoriaDos").serialize(),
@@ -697,7 +752,7 @@
 			    	var canales = $("#canalesDos").val();
 
 			        $.ajax({                        
-			           	url: "<?= BASE_URL()?>ventas_cnt/generarExcel",   
+			           	url: "<?= BASE_URL()?>index.php/ventas_cnt/generarExcel",   
 			           	type: 'POST',
 			           	dataType: 'json',                                 
 			           	data:  {fechainicio:fechainicio,
@@ -714,7 +769,7 @@
 
 			    $('#buttonEmitir').click(function(){
 			        $.ajax({                        
-			           	url: "<?= BASE_URL()?>ventas_cnt/crearXml",   
+			           	url: "<?= BASE_URL()?>index.php/ventas_cnt/crearXml",   
 			           	type: 'POST',
 			           	dataType: 'json',                                 
 			           	data: $("#formCategoriaDos").serialize(),
