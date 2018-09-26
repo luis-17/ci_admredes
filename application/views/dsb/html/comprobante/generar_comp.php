@@ -660,7 +660,7 @@
 					        $("#respManual").remove();
 					        alert("Comprobante de pago generado.");
 					        $('#descripcionManual').val('');
-			           		$('#impTotal').val('');
+			           		$('#impTotalD').val('');
 			           		$('#serie').val(0);
 			           		$('#correlativoDoc').val('');
 			           		$('#fechaDoc').date('dd/mm/yyyy');

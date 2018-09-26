@@ -286,11 +286,11 @@ class Comprobante_pago_mdl extends CI_model {
  	}
 
  	function getDatosXmlBoletas($inicio, $fin, $serie){
- 		$this->db->select("CONCAT(REPEAT( '0', 2 - LENGTH( MONTH(CURDATE())) ) , MONTH(CURDATE())) as mes, CONCAT(REPEAT( '0', 8 - LENGTH( correlativo) ) , correlativo) as correlativo, c.correlativo as corre, fecha_emision, CONCAT(SUBSTRING(c.fecha_emision,6,2),SUBSTRING(c.fecha_emision,1,4)) as mesanio, TRUNCATE(importe_total,2) as total, TRUNCATE((importe_total/1.18) ,2) as neto, TRUNCATE((importe_total/1.18)*0.18 ,2) as igv, c.serie, p.nombre_plan, c1.descripcion, c1.centro_costo, c2.cont_numDoc, CONCAT(cont_ape1,' ',cont_ape2,' ',cont_nom1,' ',cont_nom2) as contratante");
+ 		$this->db->select("CONCAT(REPEAT( '0', 2 - LENGTH( MONTH(CURDATE())) ) , MONTH(CURDATE())) as mes, CONCAT(REPEAT( '0', 8 - LENGTH( correlativo) ) , correlativo) as correlativo, c.correlativo as corre, fecha_emision, CONCAT(SUBSTRING(c.fecha_emision,6,2),SUBSTRING(c.fecha_emision,1,4)) as mesanio, TRUNCATE(importe_total,2) as total, TRUNCATE((importe_total/1.18) ,2) as neto, TRUNCATE((importe_total/1.18)*0.18 ,2) as igv, c.serie, case when p.nombre_plan is null then 'OTROS INGRESOS' else p.nombre_plan end as nombre_plan, c1.descripcion, c1.centro_costo, c2.cont_numDoc, case when CONCAT(c2.cont_ape1,' ',c2.cont_ape2,' ',c2.cont_nom1,' ',c2.cont_nom2) is null then 'CLIENTES VARIOS' else CONCAT(c2.cont_ape1,' ',c2.cont_ape2,' ',c2.cont_nom1,' ',c2.cont_nom2) end as contratante");
  		$this->db->from("comprobante_pago c");
-		$this->db->join("plan p","c.idplan=p.idplan");
- 		$this->db->join("centro_costo c1","p.idcentrocosto=c1.idcentrocosto");	
- 		$this->db->join("contratante c2","c.id_contratante=c2.cont_id");		
+		$this->db->join("plan p","c.idplan=p.idplan" , "left");
+ 		$this->db->join("centro_costo c1","p.idcentrocosto=c1.idcentrocosto" , "left");	
+ 		$this->db->join("contratante c2","c.id_contratante=c2.cont_id" , "left");		
  		$this->db->where("fecha_emision>='".$inicio."' and fecha_emision<='".$fin."' and serie = '".$serie."'");
  		
 		$data = $this->db->get();
