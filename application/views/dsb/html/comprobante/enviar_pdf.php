@@ -66,7 +66,7 @@
 						<div class="row">
 							<div class="col-xs-12">
 								<!-- PAGE CONTENT BEGINS -->
-								<form class="form-horizontal" name="formPdf" id="formPdf" role="form" method="post" action="<?=base_url()."ventas_cnt/envioEmail/".$idcomprobante."/".$canalesDos;?>">	
+								<form class="form-horizontal" name="formPdf" id="formPdf" role="form" method="post" action="<?=base_url()."index.php/ventas_cnt/envioEmail/".$idcomprobante."/".$canalesDos;?>">	
 
 									<div class='form-group'>
 										<label class='col-sm-3 control-label no-padding-right' for='form-field-1'>Correo electrónico:</label>
@@ -80,7 +80,7 @@
 										<div class='col-md-offset-3 col-md-9' style='text-align: right;'>
 											<input type='text' class='hidden' id='idcomprobante' name='idcomprobante' value="<?=$idcomprobante;?>">
 											<input type='text' class='hidden' id='canales' name='canales' value="<?=$canalesDos;?>">
-											<button class='btn btn-info' type='submit' id='buttonPdfCorreo' href='<?=base_url()."ventas_cnt/enviarPdf/".$email."/".$idcomprobante."/".$canalesDos;?>'>
+											<button class='btn btn-info' type='submit' id='buttonPdfCorreo' href='<?=base_url()."index.php/ventas_cnt/enviarPdf/".$email."/".$idcomprobante."/".$canalesDos;?>'>
 												<i class='ace-icon fa fa-paper-plane bigger-110'></i> Enviar
 											</button>
 										</div>
@@ -168,7 +168,7 @@
 
 				 $('#buttonPdfCorreo').click(function(){
 			    	$.ajax({
-			    		url: "<?= BASE_URL()?>ventas_cnt/envioEmail",
+			    		url: "<?= BASE_URL()?>index.php/ventas_cnt/envioEmail",
 			    		type: 'POST',
 			    		dataType: 'json',
 			    		data: $("#formPdf").serialize(),

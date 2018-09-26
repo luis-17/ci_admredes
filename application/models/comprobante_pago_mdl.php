@@ -197,20 +197,20 @@ class Comprobante_pago_mdl extends CI_model {
 		$this->db->update("cobro"); 
  	}
 
- 	function getDatosBoletaEmitida($inicio, $fin, $serie, $idPlan){
- 		$this->db->select("c1.idcomprobante, c1.id_contratante, c1.fecha_emision, c1.serie, CONCAT(REPEAT( '0', 8 - LENGTH( c1.correlativo) ) , c1.correlativo) as correlativo, c1.importe_total, c1.idplan, CONCAT(c2.cont_ape1,' ',c2.cont_ape2,' ',c2.cont_nom1,' ',c2.cont_nom2) as contratante, c2.cont_numDoc, p.nombre_plan, c1.idestadocobro, e.descripcion, CONCAT(SUBSTRING(c1.fecha_emision,6,2),SUBSTRING(c1.fecha_emision,1,4)) as mesanio");
+ 	function getDatosBoletaEmitida($inicio, $fin, $serie){
+ 		$this->db->select("c1.idcomprobante, c1.id_contratante, c1.fecha_emision, c1.serie, CONCAT(REPEAT( '0', 8 - LENGTH( c1.correlativo) ) , c1.correlativo) as correlativo, c1.importe_total, c1.idplan, case when CONCAT(c2.cont_ape1,' ',c2.cont_ape2,' ',c2.cont_nom1,' ',c2.cont_nom2) is null then 'CLIENTES VARIOS' else CONCAT(c2.cont_ape1,' ',c2.cont_ape2,' ',c2.cont_nom1,' ',c2.cont_nom2) end as contratante, case when c2.cont_numDoc is null then '99999999' else c2.cont_numDoc end as cont_numDoc, case when p.nombre_plan is null then 'OTROS INGRESOS' else p.nombre_plan end as nombre_plan, c1.idestadocobro, e.descripcion, CONCAT(SUBSTRING(c1.fecha_emision,6,2),SUBSTRING(c1.fecha_emision,1,4)) as mesanio");
  		$this->db->from("comprobante_pago c1");
- 		$this->db->join("contratante c2" , "c1.id_contratante=c2.cont_id");
- 		$this->db->join("plan p" , "c1.idplan=p.idplan");
- 		$this->db->join("cobro c3" , "c1.idcobro=c3.cob_id");
- 		$this->db->join("estado_emision e" , "c1.idestadocobro=e.idestadocobro");
- 		$this->db->where("c1.fecha_emision>='".$inicio."' and c1.fecha_emision<='".$fin."' and c1.serie='".$serie."' and plan_id=".$idPlan);
+ 		$this->db->join("contratante c2" , "c1.id_contratante=c2.cont_id" , "left");
+ 		$this->db->join("plan p" , "c1.idplan=p.idplan" , "left");
+ 		$this->db->join("cobro c3" , "c1.idcobro=c3.cob_id" , "left");
+ 		$this->db->join("estado_emision e" , "c1.idestadocobro=e.idestadocobro" , "left");
+ 		$this->db->where("c1.fecha_emision>='".$inicio."' and c1.fecha_emision<='".$fin."' and c1.serie='".$serie."'");
 
 		$data = $this->db->get();
 		return $data->result();
  	}
 
- 	function getDatosFacturaEmitida($inicio, $fin, $serie, $idPlan){
+ 	function getDatosFacturaEmitida($inicio, $fin, $serie){
  		$this->db->distinct("c1.idcomprobante");
  		$this->db->select("c1.idcomprobante, c1.id_cliente_empresa, c1.fecha_emision, c1.serie, CONCAT(REPEAT( '0', 8 - LENGTH( c1.correlativo) ) , c1.correlativo) as correlativo, c1.importe_total, c1.idplan, c2.razon_social_cli, c2.numero_documento_cli, p.nombre_plan, c1.idestadocobro, e.descripcion, CONCAT(SUBSTRING(c1.fecha_emision,6,2),SUBSTRING(c1.fecha_emision,1,4)) as mesanio");
  		$this->db->from("comprobante_pago c1");
@@ -218,7 +218,7 @@ class Comprobante_pago_mdl extends CI_model {
  		$this->db->join("plan p" , "c1.idplan=p.idplan");
  		$this->db->join("cobro c3" , "p.idplan=c3.plan_id");
  		$this->db->join("estado_emision e" , "c1.idestadocobro=e.idestadocobro");
- 		$this->db->where("c1.fecha_emision>='".$inicio."' and c1.fecha_emision<='".$fin."' and c1.serie='".$serie."' and plan_id=".$idPlan);
+ 		$this->db->where("c1.fecha_emision>='".$inicio."' and c1.fecha_emision<='".$fin."' and c1.serie='".$serie."'");
  		
 		$data = $this->db->get();
 		return $data->result();
@@ -285,25 +285,25 @@ class Comprobante_pago_mdl extends CI_model {
 		return $data->result();
  	}
 
- 	function getDatosXmlBoletas($inicio, $fin, $serie, $idPlan){
+ 	function getDatosXmlBoletas($inicio, $fin, $serie){
  		$this->db->select("CONCAT(REPEAT( '0', 2 - LENGTH( MONTH(CURDATE())) ) , MONTH(CURDATE())) as mes, CONCAT(REPEAT( '0', 8 - LENGTH( correlativo) ) , correlativo) as correlativo, c.correlativo as corre, fecha_emision, CONCAT(SUBSTRING(c.fecha_emision,6,2),SUBSTRING(c.fecha_emision,1,4)) as mesanio, TRUNCATE(importe_total,2) as total, TRUNCATE((importe_total/1.18) ,2) as neto, TRUNCATE((importe_total/1.18)*0.18 ,2) as igv, c.serie, p.nombre_plan, c1.descripcion, c1.centro_costo, c2.cont_numDoc, CONCAT(cont_ape1,' ',cont_ape2,' ',cont_nom1,' ',cont_nom2) as contratante");
  		$this->db->from("comprobante_pago c");
 		$this->db->join("plan p","c.idplan=p.idplan");
  		$this->db->join("centro_costo c1","p.idcentrocosto=c1.idcentrocosto");	
  		$this->db->join("contratante c2","c.id_contratante=c2.cont_id");		
- 		$this->db->where("fecha_emision>='".$inicio."' and fecha_emision<='".$fin."' and serie = '".$serie."' and c.idPlan=".$idPlan);
+ 		$this->db->where("fecha_emision>='".$inicio."' and fecha_emision<='".$fin."' and serie = '".$serie."'");
  		
 		$data = $this->db->get();
 		return $data->result();
  	}
 
- 	 function getDatosXmlFacturas($inicio, $fin, $serie, $idPlan){
+ 	 function getDatosXmlFacturas($inicio, $fin, $serie){
  		$this->db->select("CONCAT(REPEAT( '0', 2 - LENGTH( MONTH(CURDATE())) ) , MONTH(CURDATE())) as mes, CONCAT(REPEAT( '0', 8 - LENGTH( correlativo) ) , correlativo) as correlativo, c.correlativo as corre, c.fecha_emision, CONCAT(SUBSTRING(c.fecha_emision,6,2),SUBSTRING(c.fecha_emision,1,4)) as mesanio, TRUNCATE(importe_total,2) as total, TRUNCATE((importe_total/1.18) ,2) as neto, TRUNCATE((importe_total - TRUNCATE((importe_total/1.18) ,2)) ,2) as igv, c.serie, p.nombre_plan, c1.descripcion, c1.centro_costo, c2.numero_documento_cli, c2.razon_social_cli, c2.nombre_comercial_cli");
  		$this->db->from("comprobante_pago c");
 		$this->db->join("plan p","c.idplan=p.idplan");
  		$this->db->join("centro_costo c1","p.idcentrocosto=c1.idcentrocosto");	
  		$this->db->join("cliente_empresa c2","c.id_cliente_empresa=c2.idclienteempresa");	
- 		$this->db->where("fecha_emision>='".$inicio."' and fecha_emision<='".$fin."' and serie = '".$serie."' and c.idPlan=".$idPlan);
+ 		$this->db->where("fecha_emision>='".$inicio."' and fecha_emision<='".$fin."' and serie = '".$serie."'");
  		
 		$data = $this->db->get();
 		return $data->result();
@@ -419,7 +419,7 @@ class Comprobante_pago_mdl extends CI_model {
 		$this->db->update("comprobante_pago"); 
  	}
 
- 	 function insertDatosComprobanteManual($fechaEmi, $serie, $correlativo, $tipoDoc, $importeTotal){
+ 	function insertDatosComprobanteManual($fechaEmi, $serie, $correlativo, $tipoDoc, $importeTotal, $sustento){
  		$this->db->set("fecha_emision" , $fechaEmi);
  		$this->db->set("serie" , $serie);
  		$this->db->set("correlativo" , $correlativo);
@@ -429,6 +429,7 @@ class Comprobante_pago_mdl extends CI_model {
  		$this->db->set("unidad_medida" , "Unidad");
  		$this->db->set("cantidad" , 1);
  		$this->db->set("num_orden" , 1);
+ 		$this->db->set("sustento_nota" , $sustento);
  		$this->db->set("idestadocobro" , 2);
  		$this->db->insert("comprobante_pago");
  	}

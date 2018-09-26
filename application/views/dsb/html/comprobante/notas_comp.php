@@ -572,7 +572,7 @@
 				//función para enviar datos a la tabla dinámica que se va a generar    
 			    $('#buttonBuscarCredito').click(function(){
 			        $.ajax({                        
-			           	url: "<?= BASE_URL()?>notas_cnt/mostrarDocumentoNotaCredito",   
+			           	url: "<?= BASE_URL()?>index.php/notas_cnt/mostrarDocumentoNotaCredito",   
 			           	type: 'POST',
 			           	dataType: 'json',                                 
 			           	data: $("#formNotaCredito").serialize(),
@@ -617,7 +617,7 @@
 
 				$('#buttonGuardarCredito').click(function(){
 			        $.ajax({                        
-			           	url: "<?= BASE_URL()?>notas_cnt/guardarDocumentoNotaCredito",   
+			           	url: "<?= BASE_URL()?>index.php/notas_cnt/guardarDocumentoNotaCredito",   
 			           	type: 'POST',
 			           	dataType: 'json',                                 
 			           	data: $("#formNotaCredito").serialize(),
@@ -653,7 +653,7 @@
 
 			    $('#buttonBuscarDebito').click(function(){
 			        $.ajax({                        
-			           	url: "<?= BASE_URL()?>notas_cnt/mostrarDocumentoNotaDebito",   
+			           	url: "<?= BASE_URL()?>index.php/notas_cnt/mostrarDocumentoNotaDebito",   
 			           	type: 'POST',
 			           	dataType: 'json',                                 
 			           	data: $("#formNotaDebito").serialize(),
@@ -696,7 +696,7 @@
 
 			    $('#buttonGuardarDebito').click(function(){
 			        $.ajax({                        
-			           	url: "<?= BASE_URL()?>notas_cnt/guardarDocumentoNotaDebito",   
+			           	url: "<?= BASE_URL()?>index.php/notas_cnt/guardarDocumentoNotaDebito",   
 			           	type: 'POST',
 			           	dataType: 'json',
 			           	data: $("#formNotaDebito").serialize(),
@@ -735,7 +735,7 @@
 				//función para enviar datos a la tabla dinámica que se va a generar   
 			    $('#buttonBuscarEmision').click(function(){
 			        $.ajax({                        
-			           	url: "<?= BASE_URL()?>notas_cnt/mostrarDocumentoGenerado",   
+			           	url: "<?= BASE_URL()?>index.php/notas_cnt/mostrarDocumentoGenerado",   
 			           	type: 'POST',
 			           	dataType: 'json',                                 
 			           	data: $("#formCategoriaEmitir").serialize(),
@@ -763,7 +763,7 @@
 			    	var canales = $("#canales").val();
 
 			        $.ajax({                        
-			           	url: "<?= BASE_URL()?>notas_cnt/generarExcel",   
+			           	url: "<?= BASE_URL()?>index.php/notas_cnt/generarExcel",   
 			           	type: 'POST',
 			           	dataType: 'json',                                 
 			           	data: {fechainicio:fechainicio,
@@ -803,7 +803,7 @@
 
 				$('#buttonDbf').click(function(){
 			        $.ajax({                        
-			           	url: "<?= BASE_URL()?>notas_cnt/generarArchivoDbf",   
+			           	url: "<?= BASE_URL()?>index.php/notas_cnt/generarArchivoDbf",   
 			           	type: 'POST',
 			           	dataType: 'json',                                 
 			           	data: $("#formCategoria").serialize(), 
@@ -817,7 +817,7 @@
 
 			    $('#buttonEmitir').click(function(){
 			        $.ajax({                        
-			           	url: "<?= BASE_URL()?>notas_cnt/crearXml",   
+			           	url: "<?= BASE_URL()?>index.php/notas_cnt/crearXml",   
 			           	type: 'POST',
 			           	dataType: 'json',                                 
 			           	data: $("#formCategoria").serialize(),

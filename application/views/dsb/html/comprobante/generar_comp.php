@@ -253,7 +253,7 @@
 										<div id="faq-tab-2" class="tab-pane fade">
 											<div class="space-8"></div>
 											<div id="faq-list-1" class="panel-group accordion-style1 accordion-style2">
-												<form action="" name="formNotaManual" id="formNotaManual" method="post">
+												<form action="" name="formComprobanteManual" id="formComprobanteManual" method="post">
 													<div id="respManual"></div>
 													<br>
 													<div class="form-row">
@@ -354,8 +354,10 @@
 																			<div class="profile-info-name"></div>
 																		</div>											
 																	</div>	
-																	<div id="resp10"></div>
-																	<br/><br/><br/>
+																	<div id="resp10">
+																		<input type='text' class='hidden' id='numeroSerie' name='numeroSerie' value=''>
+																	</div>
+																	<br/>
 																	<div id="resp40"></div>
 																	<div id="resp20"></div>
 
@@ -635,12 +637,10 @@
 						{
 							//#resp es el id del div donde se van a crear los checkbozx
 							if ($('#serie').val() == 0) {
-						       	$("#correlativoDoc").html(null);
+						       	$("#correlativoDoc").val(null);
 						    } else {
-								$("#correlativoDoc").html(data);
+								$("#correlativoDoc").val(data.correlativoDoc);
 						    }
-
-							$("#accionesTabla").hide();
 
 						}
 					});
@@ -652,7 +652,7 @@
 			           	url: "<?= BASE_URL()?>index.php/ventas_cnt/guardarComprobanteManual",   
 			           	type: 'POST',
 			           	dataType: 'json',                                 
-			           	data: $("#formNotaManual").serialize(),
+			           	data: $("#formComprobanteManual").serialize(),
 			           	beforeSend: function(){
 				            $('#respManual').html("<br><br><img src='<?=base_url()."public/assets/img/loading2.gif"?>'>");
 				        },
@@ -677,7 +677,7 @@
 			    //BOLETAJE
 
 			    $("#accionesTablaEmitido").hide();
-			    $("#canalesDos").change(function() {
+			   /* $("#canalesDos").change(function() {
 					var canales = $("#canalesDos").val();
 					//ajax para pasar los parámetros
 					$.ajax({
@@ -700,6 +700,28 @@
 								$("#resp10").html(data);
 						    }
 							$("#accionesTablaEmitido").hide();
+						}
+					});
+					return false;
+				});*/
+
+				$("#canalesDos").change(function() {
+					var canales = $("#canalesDos").val();
+					//ajax para pasar los parámetros
+					$.ajax({
+						url: "<?= BASE_URL()?>index.php/ventas_cnt/generarLista",
+						type: 'POST',
+						dataType: 'json',
+						data: {canales:canales},
+						success: function(data)
+						{
+							//#resp es el id del div donde se van a crear los checkbozx
+							if ($('#canalesDos').val() == 0) {
+						       	$("#numeroSerie").val(null);
+						    } else {
+								$("#numeroSerie").val(data.numeroSerie);
+						    }
+
 						}
 					});
 					return false;
