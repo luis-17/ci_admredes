@@ -252,7 +252,7 @@
 					var canales = $("#canales").val();
 					//ajax para pasar los parámetros
 					$.ajax({
-						url: "<?= BASE_URL()?>verificar_cnt/generarLista",
+						url: "<?= BASE_URL()?>index.php/verificar_cnt/generarLista",
 						type: 'POST',
 						dataType: 'json',
 						data: {canales:canales},
@@ -278,7 +278,7 @@
 				//función para enviar datos a la tabla dinámica que se va a generar    
 			    $('#buttonBuscar').click(function(){
 			        $.ajax({                        
-			           	url: "<?= BASE_URL()?>verificar_cnt/mostrarDatosComprobantesEmitidos",   
+			           	url: "<?= BASE_URL()?>index.php/verificar_cnt/mostrarDatosComprobantesEmitidos",   
 			           	type: 'POST',
 			           	dataType: 'json',                                 
 			           	data: $("#formCategoria").serialize(),
