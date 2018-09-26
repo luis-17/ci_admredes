@@ -154,6 +154,7 @@
 													</h4>
 													<?php 
 													$id=$cert->cert_id;
+													$canal=$cert->idclienteempresa;
 													$num=$cert->dias_atencion;
 													$hoy= time();
 													$inicio=$cert->cert_ini;	
@@ -480,7 +481,7 @@
 																	<td><?=$aseg->aseg_telf;?></td>
 																	<td><?=$aseg->aseg_email;?></td>
 																	<td>
-																		<?=$fin3;?><div class="hidden-sm hidden-xs btn-group">
+																		<div class="hidden-sm hidden-xs btn-group">
 																				<div title="Editar Asegurado" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
 																					&nbsp;<a class="boton fancybox" href="<?=  base_url()?>index.php/aseg_editar/<?=$idaseg?>" data-fancybox-width="950" data-fancybox-height="690">
 																						<i class="ace-icon fa fa-pencil bigger-120"></i>
@@ -565,6 +566,7 @@
 																	<th>Importe</th>
 																	<th>Inicio Cobertura</th>
 																	<th>Fin Cobertura</th>
+																	<th>Ver Boleta</th>
 																</tr>
 															</thead>
 
@@ -584,6 +586,45 @@
 																	<td><?=$cob->importe;?></td>
 																	<td><?=$inicio2;?></td>
 																	<td><?=$fin2;?></td>
+																	<td><?php if($cob->idcomprobante!='0'){ ?>
+																	<div class="hidden-sm hidden-xs btn-group">
+																		<div title="Ver Boleta" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
+																			&nbsp;<a class="boton fancybox" href="<?=  base_url()?>index.php/generarPdf/<?=$cob->idcomprobante?>/<?=$canal?>" data-fancybox-width="950" data-fancybox-height="690">
+																				<i class="ace-icon fa fa-file-pdf-o bigger-120"></i>
+																			</a>
+																		</div>
+																		<div title="Enviar por Correo" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
+																			&nbsp;<a class="boton fancybox" href="<?=  base_url()?>index.php/enviarPdf/<?=$cob->idcomprobante?>/<?=$canal?>" data-fancybox-width="950" data-fancybox-height="290">
+																				<i class="ace-icon fa fa-envelope bigger-120"></i>
+																			</a>
+																		</div>
+																	</div>
+																	<div class="hidden-md hidden-lg">
+																			<div class="inline pos-rel">
+																				<button class="btn btn-minier btn-info dropdown-toggle" data-toggle="dropdown" data-position="auto">
+																					<i class="ace-icon fa fa-cog icon-only bigger-110"></i>
+																				</button>
+
+																				<ul class="dropdown-menu dropdown-only-icon dropdown-yellow dropdown-menu-right dropdown-caret dropdown-close">			
+																					<li>
+																					<div title="Ver Boleta" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
+																					&nbsp;<a class="boton fancybox" href="<?=  base_url()?>index.php/generarPdf/<?=$cob->idcomprobante?>/<?=$plan?>" data-fancybox-width="950" data-fancybox-height="690">
+																						<i class="ace-icon fa fa-file-pdf-o bigger-120"></i>
+																			</a>
+																		</div>
+																					</li>
+																					<li>
+																					<div title="Enviar por Correo" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
+																			&nbsp;<a class="boton fancybox" href="<?=  base_url()?>index.php/enviarPdf/<?=$cob->idcomprobante?>/<?=$plan?>" data-fancybox-width="950" data-fancybox-height="290">
+																				<i class="ace-icon fa fa-envelope bigger-120"></i>
+																			</a>
+																		</div>
+																					</li>
+																				</ul>
+																	</div>
+
+
+																		<?php } ?></td>
 																</tr>
 															<?php endforeach;?>
 															</tbody>

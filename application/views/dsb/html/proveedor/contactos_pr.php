@@ -158,7 +158,7 @@
 											<input type="radio" id="envio1" name="envio" value="1" <?php if($envio==1){echo "checked";} ?> >
 											<label for="envio1">Sí </label>
 											&nbsp;&nbsp;
-											<input  type="radio" id="envio2" name="envio" value="2" <?php if($envio==2){echo "checked";} ?> >
+											<input  type="radio" id="envio2" name="envio" value="2" <?php if($envio==2){echo "checked";} ?> required="required" >
 											<label for="envio2">No</label>
 										</div>
 									</div>

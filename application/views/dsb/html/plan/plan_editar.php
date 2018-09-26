@@ -127,6 +127,11 @@
 									$atencion="";
 									$prima="";
 									$cuerpo="";
+									$prima_ad="";
+									$num_afiliados="";
+									$flg_activar="";
+									$flg_dependientes="";
+									$flg_cancelar="";
 									else:
 										foreach ($plan as $p):
 											$cliente=$p->idclienteempresa;
@@ -137,6 +142,11 @@
 											$atencion=$p->dias_atencion;
 											$prima=$p->prima_monto;
 											$cuerpo=$p->cuerpo_mail;
+											$prima_ad=$p->prima_adicional*1;
+											$num_afiliados=$p->num_afiliados;
+											$flg_activar=$p->flg_activar;
+											$flg_dependientes=$p->flg_dependientes;
+											$flg_cancelar=$p->flg_cancelar;
 											endforeach;
 								endif; ?>
 								<!-- PAGE CONTENT BEGINS -->
@@ -206,6 +216,14 @@
 
 										<div class="col-sm-9">
 											<input type="number" id="prima" name="prima" class="col-xs-10 col-sm-5" value="<?=$prima;?>">
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label class="col-sm-3 control-label no-padding-right" for="form-field-1">Prima por Adicional (S/.): </label>
+
+										<div class="col-sm-9">
+											<input type="number" id="prima_adicional" name="prima_adicional" class="col-xs-10 col-sm-5" value="<?=$prima_ad;?>">
 										</div>
 									</div>
 

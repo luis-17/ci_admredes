@@ -139,6 +139,8 @@ $route['reservar_cita/(:any)/(:any)/(:any)/(:any)/(:any)'] = 'certificadodetalle
 $route['save_cita'] ='certificadodetalle_cnt/save_cita';
 $route['anular_cita/(:any)/(:any)/(:any)'] = 'certificadodetalle_cnt/anular_cita/$1/$2/$3';
 $route['eliminar_cita'] = 'certificadodetalle_cnt/eliminar_cita';
+$route['generarPdf/(:any)/(:any)'] = 'ventas_cnt/generarPdf/$1/$2';
+$route['enviarPdf/(:any)/(:any)'] = 'ventas_cnt/enviarPdf/$1/$2';
 
 $route['cert_cont_save'] = 'certificadodetalle_cnt/cert_cont_save';
 $route['cert_aseg_save'] = 'certificadodetalle_cnt/cert_aseg_up';

@@ -189,7 +189,7 @@
 																<td>
 																	<div class="hidden-md hidden-lg">
 																		<div class="inline pos-rel">
-																			<button class="btn btn-minier btn-primary dropdown-toggle" data-toggle="dropdown" data-position="auto">
+																			<button class="btn btn-minier btn-info dropdown-toggle" data-toggle="dropdown" data-position="auto">
 																				<i class="ace-icon fa fa-cog icon-only bigger-110"></i>
 																			</button>
 
