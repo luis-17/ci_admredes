@@ -1,5 +1,6 @@
 <?php
 ini_set('max_execution_time', 6000); 
+ini_set('memory_limit', -1);
 ini_set("soap.wsdl_cache_enabled", 0);
 ini_set('soap.wsdl_cache_ttl',0); 
 date_default_timezone_set('America/Lima');

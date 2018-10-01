@@ -121,7 +121,7 @@
 										</li>
 										<li>
 											<a data-toggle="tab" href="#faq-tab-2">
-												Comprabantes manuales
+												Comprobantes manuales
 											</a>
 										</li>
 										<li>
@@ -183,31 +183,15 @@
 																		</div>											
 																	</div>				
 																	<div id="resp4"></div>	
-																	<!--<div id="fechaEmiSelec">
-																		<div class="profile-user-info profile-user-info-striped">
-																			<div  class="profile-info-row">
-																				<div class="profile-info-name"></div>
-																				<div class="profile-info-name">Seleccione una fecha de Emisión.</div>
-																				<div class="profile-info-name">
-																					<input class="form-control input-mask-date" type="date" id="fecemisi" name="fecemisi" required="Seleccione una fecha de emisión" value="<?=$fecemisi;?>">
-																				</div>
-																				<div class="profile-info-name"></div>
-																			</div>
-																		</div>
-																	</div>-->
 																	<div id="resp2"></div>
 																	<div id="accionesTabla">
 																		
 																		<div class="profile-user-info profile-user-info-striped">
 																			<div  class="profile-info-row">
 																				<div class="profile-info-name"></div>
-																				<!--<div class="profile-info-name"> Fecha de emisión: </div>
-																				<div class="profile-info-name">
-																					<input class="form-control input-mask-date" type="date" id="fechaEmiFac" name="fechaEmiFac" required="Seleccione una fecha de inicio" value="<?=$fechaEmision;?>">
-																				</div>-->
-																				<div class="profile-info-name"> Correlativo actual: </div>
-																				<div class="profile-info-name" id="correActual" name="correActual">
-																				</div>
+																					<div class="profile-info-name"> Correlativo actual: </div>
+																					<div class="profile-info-name" id="correActual" name="correActual">
+																					</div>
 																				<div class="profile-info-name"></div>
 																				<div class="profile-info-name">
 																					<button type="button" id="buttonModal" name="buttonModal" class="btn btn-white btn-info btn-bold btn-xs" data-toggle="modal" data-target="#saveModal"> Generar Comprobante de Pago <i class="ace-icon glyphicon glyphicon-save bigger-110 icon-only"></i>
@@ -347,10 +331,6 @@
 																					<i class="ace-icon glyphicon glyphicon-search bigger-110 icon-only"></i>
 																				</button>
 																			</div>
-																			<!--<div class="profile-info-name">
-																				<button type="button" id="buttonDbf" name="buttonDbf" class="btn btn-info btn-xs"> Anexos Concar <i class="ace-icon fa fa fa-file-o bigger-110 icon-only"></i>
-																					</button>
-																			</div>-->
 																			<div class="profile-info-name"></div>
 																		</div>											
 																	</div>	
@@ -366,11 +346,6 @@
 
 																		<div class="profile-user-info profile-user-info-striped">
 																			<div  class="profile-info-row">
-																				<!--<div class="profile-info-name"></div>
-																				<div class="profile-info-name">
-																					<button type="button" id="buttonDbf" name="buttonDbf" class="btn btn-white btn-info btn-bold btn-xs"> Generar Anexos Concar <i class="ace-icon fa fa fa-file-o bigger-110 icon-only"></i>
-																					</button>
-																				</div>-->
 																				<div class="profile-info-name"></div>
 																				<div class="profile-info-name">
 																					<button type="button" id="buttonExcel" name="buttonExcel" class="btn btn-white btn-info btn-bold btn-xs"> Enviar archivos Concar <i class="ace-icon fa fa-file-excel-o bigger-110 icon-only"></i>
@@ -770,7 +745,7 @@
 
 					var fechainicio = $("#fechainicioDos").val();
 			    	var fechafin = $("#fechafinDos").val();
-			    	var numSerie = $("#numSerie").val();
+			    	var numeroSerie = $("#numeroSerie").val();
 			    	var canales = $("#canalesDos").val();
 
 			        $.ajax({                        
@@ -779,7 +754,7 @@
 			           	dataType: 'json',                                 
 			           	data:  {fechainicio:fechainicio,
 			           			fechafin:fechafin,
-			           			numSerie:numSerie,
+			           			numeroSerie:numeroSerie,
 			           			canales:canales}, 
 			           	success: function(data)             
 			           	{
