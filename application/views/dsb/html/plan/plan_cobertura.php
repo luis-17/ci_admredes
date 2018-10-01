@@ -68,6 +68,8 @@
 										$chk='';
 										$op='';
 										$val='';
+										$tiempo="";
+										$num_eventos='';
 										else:
 											foreach ($detalle as $det) :
 												$item=$det->idvariableplan;
@@ -76,6 +78,8 @@
 												$flg=$det->flg_liquidacion;
 												$op=$det->simbolo_detalle;
 												$val=$det->valor_detalle;
+												$tiempo= $det->tiempo;
+												$num_eventos=$det->num_eventos;
 												if($flg=='Sí'):
 													$chk="checked";
 													$style='';
@@ -123,16 +127,40 @@
 										</div>
 									</div>
 
+									<div class="form-group">
+										<label class="col-sm-3 control-label no-padding-right" for="form-field-1">Eventos: </label>
+
+											<div class="col-sm-9">											
+												<select id="eventos" name="eventos" value="" onchange="tiempo(this.value)">
+													<option <?php if($tiempo==''): echo "selected"; endif; ?> value="">Ilimintados</option>
+													<option <?php if($tiempo=='1M'): echo "selected"; endif; ?> value="1M">Mensuales</option>
+													<option <?php if($tiempo=='2M'): echo "selected"; endif; ?> value="2M">Bimestrales</option>
+													<option <?php if($tiempo=='3M'): echo "selected"; endif; ?> value="3M">Trimestrales</option>
+													<option <?php if($tiempo=='6M'): echo "selected"; endif; ?> value="6M">Semestrales</option>
+													<option <?php if($tiempo=='1Y'): echo "selected"; endif; ?> value="1Y">Anuales</option>
+												</select>
+												<input disabled=<?php if($tiempo==''){echo 'true';}else{echo 'false';
+												}?> type="text" id="num_eventos" name="num_eventos" value="<?=$num_eventos?>" size="4">
+											</div>
+									</div>
+
 									<div class="form-group">										
 											<label class="col-sm-3 control-label no-padding-right" for="form-field-1"><input type="checkbox" name="flag" id="flag
 											" <?=$chk;?> onchange="habilitar(this.checked);"> Validación:</label><input type="hidden" name="flg_liqui" value="No">
 
 										<div class="col-sm-9">
-											<input type="text" name="operador" id="operador
-											" <?=$style;?> placeholder="Operador" value="<?=$op;?>">
-											<input type="text" name="valor" id="valor
-											" <?=$style;?> placeholder="Valor" value="<?=$val;?>">
+											<select <?=$style;?> id="operador" name="operador" required="Seleccionar una de las opciones de la lista">
+												<option value="">Seleccionar</option>
+												<?php foreach ($operador as $ope) { ?>
+													<option <?php if($op==$ope->idoperador){echo "selected";}?> value='<?=$ope->idoperador?>'><?=$ope->descripcion?></option>
+												<?php }
+												 ?>
+											</select>
+											<input type="text" name="valor" id="valor" <?=$style;?> placeholder="Valor" value="<?=$val;?>" size="4">
 										</div>
+
+
+
 									</div>
 										<div class="col-md-offset-3 col-md-9" align="center">
 											<button class="btn btn-info" type="submit">
@@ -153,6 +181,7 @@
 																<th>Descripción</th>
 																<th>Visible</th>
 																<th>Validación</th>
+																<th>Eventos</th>
 																<th>Estado</th>
 																<th></th>
 															</tr>
@@ -184,7 +213,29 @@
 																<td><?=$c->nombre_var;?></td>
 																<td><?=$c->texto_web;?></td>
 																<td><?=$visible?></td>
-																<td><?=$c->flg_liquidacion;?>: <?=$c->simbolo_detalle;?> <?=$c->valor_detalle;?></td>
+																<td><?=$c->simbolo_detalle;?> <?=$c->valor_detalle;?></td>
+																<td><?php 
+																	switch ($c->tiempo) {
+																		case '1M':
+																			$tiempo= "Menual(es)";
+																			break;															
+																		case '2M':
+																			$tiempo= "Bimestral(es)";
+																			break;
+																		case '3M':
+																			$tiempo= "Trimestral(es)";
+																			break;
+																		case '6M':
+																			$tiempo= "Semestral(es)";
+																			break;
+																		case '1Y':
+																			$tiempo= "Anual(es)";
+																			break;
+																		default:
+																			$tiempo="Ilimitados";
+																			break;
+																	}
+																	echo $c->num_eventos.' '.$tiempo; ?></td>
 																<td><?=$estado;?></td>
 																<td>
 																	<div class="hidden-md hidden-lg">
@@ -249,6 +300,15 @@
 					document.form.valor.disabled=true;
 					document.form.valor.value='';
 					document.form.flg_liqui.value='No';
+				}
+			}
+
+			function tiempo(value)
+			{
+				if(value==''){
+					document.form.num_eventos.disabled=true;
+				}else{
+					document.form.num_eventos.disabled=false;
 				}
 			}
 		</script>

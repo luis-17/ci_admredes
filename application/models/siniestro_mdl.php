@@ -15,8 +15,7 @@
 		$this->db->join("tratamiento T","T.idsiniestrodiagnostico=SD.idsiniestrodiagnostico");
 		$this->db->join("siniestro_analisis SA","SA.idsiniestro=S.idsiniestro");
 		$this->db->join("proveedor P","P.idproveedor=S.idproveedor");
-		$this->db->where("S.idsiniestro = $id");		
-		
+		$this->db->where("S.idsiniestro = $id");
 
 	$infoSiniestro = $this->db->get();
 	 return $infoSiniestro->result();

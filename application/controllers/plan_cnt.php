@@ -13,7 +13,6 @@ class plan_cnt extends CI_Controller {
         $this->load->model('menu_mdl');
         $this->load->model('plan_mdl');
         $this->load->library("pagination");
-
     }
 
 	/**
@@ -66,6 +65,9 @@ class plan_cnt extends CI_Controller {
 
 		$items = $this->plan_mdl->getItems();
 		$data['items'] = $items;	
+
+		$operador=$this->plan_mdl->get_operador();
+		$data['operador'] = $operador;
 
 		$data['nom'] = $nom;
 		$data['id'] = $id;
@@ -155,6 +157,11 @@ class plan_cnt extends CI_Controller {
 		$data['mora'] = $_POST['mora'];
 		$data['atencion'] = $_POST['atencion'];
 		$data['prima'] = $_POST['prima'];
+		$data['prima_adicional'] = $_POST['prima_adicional'];
+		$data['num_afiliados'] = $_POST['num_afiliados'];
+		$data['flg_activar'] = $_POST['flg_activar'];
+		$data['flg_cancelar'] = $_POST['flg_cancelar'];
+		$data['flg_dependientes'] = $_POST['flg_dependientes'];
 
 		if($_POST['idplan']==0):
 			$this->plan_mdl->insert_plan($data);
@@ -173,6 +180,8 @@ class plan_cnt extends CI_Controller {
 		$data['descripcion'] = $_POST['descripcion'];
 		$data['visible'] = $_POST['visible'];
 		$data['flg_liqui'] = $_POST['flg_liqui'];
+		$data['tiempo'] = $_POST['eventos'];
+		$data['num_eventos'] = $_POST['num_eventos'];
 		if($_POST['flg_liqui']=='No'){
 			$data['valor'] = '';
 			$data['operador'] = '';
@@ -257,6 +266,9 @@ class plan_cnt extends CI_Controller {
 
 		$items = $this->plan_mdl->getItems();
 		$data['items'] = $items;
+
+		$operador=$this->plan_mdl->get_operador();
+		$data['operador'] = $operador;
 
 		$this->load->view('dsb/html/plan/plan_cobertura.php',$data);
  	}
