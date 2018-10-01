@@ -63,7 +63,12 @@
 			'dias_carencia' => $data['carencia'],
 			'dias_mora' => $data['mora'],
 			'dias_atencion' => $data['atencion'],
-			'prima_monto' => $data['prima']
+			'prima_monto' => $data['prima'],
+			'prima_adicional' => $data['prima_adicional'],
+			'num_afiliados' => $data['num_afiliados'],
+			'flg_activar' => $data['flg_activar'],
+			'flg_dependientes' => $data['flg_dependientes'],
+			'flg_cancelar' => $data['flg_cancelar']
 		);
 		$this->db->where('idplan',$data['idplan']);
 		return $this->db->update('plan', $array);
@@ -78,6 +83,11 @@
 			'dias_mora' => $data['mora'],
 			'dias_atencion' => $data['atencion'],
 			'prima_monto' => $data['prima'],
+			'prima_adicional' => $data['prima_adicional'],
+			'num_afiliados' => $data['num_afiliados'],
+			'flg_activar' => $data['flg_activar'],
+			'flg_dependientes' => $data['flg_dependientes'],
+			'flg_cancelar' => $data['flg_cancelar'],
 			'idred' => 1
  				 );
 		$this->db->insert('plan',$array);
@@ -91,7 +101,9 @@
 				 'visible' => $data['visible'],
 				 'flg_liquidacion' => $data['flg_liqui'],
 				 'simbolo_detalle' => $data['operador'],
-				 'valor_detalle' => $data['valor']
+				 'valor_detalle' => $data['valor'],
+				 'tiempo' => $data['tiempo'],
+				 'num_eventos' => $data['num_eventos']
  				 );
 		$this->db->insert('plan_detalle',$array);
  	}
@@ -104,7 +116,9 @@
 				 'visible' => $data['visible'],
 				 'flg_liquidacion' => $data['flg_liqui'],
 				 'simbolo_detalle' => $data['operador'],
-				 'valor_detalle' => $data['valor']
+				 'valor_detalle' => $data['valor'],
+				 'tiempo' => $data['tiempo'],
+				 'num_eventos' => $data['num_eventos']
  				 );
  		$this->db->where('idplandetalle',$data['iddet']);
 		return $this->db->update('plan_detalle', $array);
@@ -157,6 +171,14 @@
  		);
  		$this->db->where('idplan',$data['idplan']);
  		$this->db->update('plan',$array);
+ 	}
+
+ 	function get_operador(){
+ 		$this->db->select('*');
+ 		$this->db->from('operador');
+
+ 		$query=$this->db->get();
+ 		return $query->result();
  	}
 }
 ?>

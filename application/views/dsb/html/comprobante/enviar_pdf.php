@@ -80,7 +80,11 @@
 										<div class='col-md-offset-3 col-md-9' style='text-align: right;'>
 											<input type='text' class='hidden' id='idcomprobante' name='idcomprobante' value="<?=$idcomprobante;?>">
 											<input type='text' class='hidden' id='canales' name='canales' value="<?=$canalesDos;?>">
+<<<<<<< HEAD
+											<button class='btn btn-info' type='submit' id='buttonPdfCorreo'>
+=======
 											<button class='btn btn-info' type='submit' id='buttonPdfCorreo' href='<?=base_url()."index.php/ventas_cnt/enviarPdf/".$email."/".$idcomprobante."/".$canalesDos;?>'>
+>>>>>>> 3909e8139e06ab4029202cd5deec1da54a965b2f
 												<i class='ace-icon fa fa-paper-plane bigger-110'></i> Enviar
 											</button>
 										</div>

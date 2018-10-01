@@ -23,7 +23,7 @@
  	}
 	 
 	function getCertificado($id) {
-	 	$this->db->select("cert.cert_id, cert.cert_num, cert.plan_id, cert.cert_estado, cert.cert_upProv, DATE_ADD(cert.cert_iniVig, INTERVAL pl.dias_carencia DAY) as cert_ini, cert.cert_iniVig, DATE_ADD(cert.cert_finVig, INTERVAL pl.dias_mora DAY) AS cert_fin, cert_finVig, cl.nombre_comercial_cli, pl.nombre_plan, CONCAT(ROUND((pl.prima_monto+(pl.prima_adicional*num)),2),' PEN') as prima_monto, dias_atencion, (select cob_fechCob from cobro where cert_id=cert.cert_id order by cob_fechCob desc limit 1) AS ultimo_cobro, DATE_ADD((SELECT MAX(cob_finCobertura) FROM cobro co WHERE co.cert_id = cert.cert_id LIMIT 1),INTERVAL pl.dias_mora DAY) AS ultima_cobertura, (select can_finVig from cancelado where cert_id=".$id." order by can_id desc limit 1) as fec_can, flg_activar");
+	 	$this->db->select("cert.cert_id, cert.cert_num, cert.plan_id, cert.cert_estado, cert.cert_upProv, DATE_ADD(cert.cert_iniVig, INTERVAL pl.dias_carencia DAY) as cert_ini, cert.cert_iniVig, DATE_ADD(cert.cert_finVig, INTERVAL pl.dias_mora DAY) AS cert_fin, cert_finVig, cl.nombre_comercial_cli, pl.nombre_plan, CONCAT(ROUND((pl.prima_monto+(pl.prima_adicional*num)),2),' PEN') as prima_monto, dias_atencion, (select cob_fechCob from cobro where cert_id=cert.cert_id order by cob_fechCob desc limit 1) AS ultimo_cobro, DATE_ADD((SELECT MAX(cob_finCobertura) FROM cobro co WHERE co.cert_id = cert.cert_id LIMIT 1),INTERVAL pl.dias_mora DAY) AS ultima_cobertura, (select can_finVig from cancelado where cert_id=".$id." order by can_id desc limit 1) as fec_can, flg_activar, cl.idclienteempresa");
 	 	$this->db->from('certificado cert');
 	 	$this->db->join('contratante co', 'cert.cont_id=co.cont_id'); 
 	 	$this->db->join('plan pl', 'cert.plan_id = pl.idplan'); 	 
@@ -92,8 +92,9 @@
 	}
 
 	function getCobros($id){
-		$this->db->select("cob_id,cob_fechCob,cob_vezCob,concat(round((cob_importe/100),2),' ',cob_moneda) as importe, cob_iniCobertura,cob_finCobertura");
-		$this->db->from("cobro");
+		$this->db->select("coalesce(idcomprobante,0) as idcomprobante, cob_id,cob_fechCob,cob_vezCob,concat(round((cob_importe/100),2),' ',cob_moneda) as importe, cob_iniCobertura,cob_finCobertura");
+		$this->db->from("cobro co");
+		$this->db->join("comprobante_pago cp","co.cob_id=cp.idcobro","left");
 		$this->db->where('cert_id', $id);
 		$this->db->order_by("cob_fechCob", "desc");
 
@@ -291,8 +292,6 @@
 		$this->db->where('idsiniestro',$data['idsiniestro']);
 		return $this->db->update('siniestro', $array);
 	}
-
-
 
 	function eliminar_cita($data){
 		$array = array(

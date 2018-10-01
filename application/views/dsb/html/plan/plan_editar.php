@@ -127,6 +127,11 @@
 									$atencion="";
 									$prima="";
 									$cuerpo="";
+									$prima_ad="";
+									$num_afiliados="";
+									$flg_activar="";
+									$flg_dependientes="";
+									$flg_cancelar="";
 									else:
 										foreach ($plan as $p):
 											$cliente=$p->idclienteempresa;
@@ -137,6 +142,11 @@
 											$atencion=$p->dias_atencion;
 											$prima=$p->prima_monto;
 											$cuerpo=$p->cuerpo_mail;
+											$prima_ad=$p->prima_adicional*1;
+											$num_afiliados=$p->num_afiliados;
+											$flg_activar=$p->flg_activar;
+											$flg_dependientes=$p->flg_dependientes;
+											$flg_cancelar=$p->flg_cancelar;
 											endforeach;
 								endif; ?>
 								<!-- PAGE CONTENT BEGINS -->
@@ -206,6 +216,58 @@
 
 										<div class="col-sm-9">
 											<input type="number" id="prima" name="prima" class="col-xs-10 col-sm-5" value="<?=$prima;?>">
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label class="col-sm-3 control-label no-padding-right" for="form-field-1">Prima por Adicional (S/.): </label>
+
+										<div class="col-sm-9">
+											<input type="number" id="prima_adicional" name="prima_adicional" class="col-xs-10 col-sm-5" value="<?=$prima_ad;?>">
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label class="col-sm-3 control-label no-padding-right" for="form-field-1">Límite de afiliados: </label>
+
+										<div class="col-sm-9">
+											<input type="number" id="num_afiliados" name="num_afiliados" class="col-xs-10 col-sm-5" value="<?=$num_afiliados;?>">
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label class="col-sm-3 control-label no-padding-right" for="form-field-1">¿Permite activación manual? </label>
+
+										<div class="col-sm-9">
+											<input type="radio" id="res1" name="flg_activar" value="S" <?php if($flg_activar=='S'){echo "checked";} ?> required="required">
+											<label for="res1">Sí </label>
+											&nbsp;&nbsp;
+											<input  type="radio" id="res2" name="flg_activar" value="N" <?php if($flg_activar=='N'){echo "checked";} ?> required="required" >
+											<label for="res2">No</label>
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label class="col-sm-3 control-label no-padding-right" for="form-field-1">¿Permite afiliación de dependientes? </label>
+
+										<div class="col-sm-9">
+											<input type="radio" id="res3" name="flg_dependientes" value="S" <?php if($flg_dependientes=='S'){echo "checked";} ?> required="required">
+											<label for="res3">Sí </label>
+											&nbsp;&nbsp;
+											<input  type="radio" id="res4" name="flg_dependientes" value="N" <?php if($flg_dependientes=='N'){echo "checked";} ?> required="required" >
+											<label for="res2">No</label>
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label class="col-sm-3 control-label no-padding-right" for="form-field-1">¿Permite cancelar certificado? </label>
+
+										<div class="col-sm-9">
+											<input type="radio" id="res5" name="flg_cancelar" value="S" <?php if($flg_cancelar=='S'){echo "checked";} ?> required="required">
+											<label for="res5">Sí </label>
+											&nbsp;&nbsp;
+											<input  type="radio" id="res6" name="flg_cancelar" value="N" <?php if($flg_cancelar=='N'){echo "checked";} ?> required="required" >
+											<label for="res6">No</label>
 										</div>
 									</div>
 

@@ -155,10 +155,10 @@
 									<div class="form-group">
 										<label class="col-sm-3 control-label no-padding-right" for="form-field-1">Email de Citas: </label>
 										<div  class="col-sm-9">
-											<input type="radio" id="envio1" name="envio" value="1" <?php if($envio==1){echo "checked";} ?> >
+											<input type="radio" id="envio1" name="envio" value="1" <?php if($envio==1){echo "checked";} ?> required="required">
 											<label for="envio1">Sí </label>
 											&nbsp;&nbsp;
-											<input  type="radio" id="envio2" name="envio" value="2" <?php if($envio==2){echo "checked";} ?> >
+											<input  type="radio" id="envio2" name="envio" value="2" <?php if($envio==2){echo "checked";} ?> required="required" >
 											<label for="envio2">No</label>
 										</div>
 									</div>

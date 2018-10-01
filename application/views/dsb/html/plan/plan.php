@@ -127,9 +127,6 @@
 											<tr>
 												<th>Cliente</th>
 												<th>Plan</th>
-												<th>Carencia</th>
-												<th>Mora</th>
-												<th>Atención</th>
 												<th>Prima</th>
 												<th>Estado</th>
 												<th></th>
@@ -141,15 +138,13 @@
 											<tr>
 												<td><?=$p->nombre_comercial_cli?></td>
 												<td><?=$p->nombre_plan?></td>
-												<td><?=$p->dias_carencia?>días</td>
-												<td><?=$p->dias_mora?> días</td>
-												<td>cada <?=$p->dias_atencion?> días</td>
 												<td>S/. <?=$p->prima_monto?></td>
 												<td><?php if($p->estado_plan==1){
 													echo '<a href="'.base_url().'index.php/plan_anular/'.$p->idplan.'"><span class="label label-info label-white middle">Activo</span></a>';
 													}else{
 														echo '<a href="'.base_url().'index.php/plan_activar/'.$p->idplan.'"><span class="label label-danger label-white middle">Inactivo</span></a>';
-														}?></td>
+														}?>
+												</td>
 												<td>
 													<div class="hidden-sm hidden-xs btn-group">
 														<div title="Ver Cobertura" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">

@@ -47,9 +47,7 @@
 
 		    });
 		</script>
-
 		
-
 		<script type="text/javascript">
 			$(function() {  
 			  // Get the form fields and hidden div
@@ -368,7 +366,7 @@
 							</li>
 
 							<li>
-								<a href="<?=base_url()?>index.php/atenciones">Atenciones</a>
+								<a href="<?=base_url()?>ind.ex.php/atenciones">Atenciones</a>
 							</li>
 
 							<li class="active">
