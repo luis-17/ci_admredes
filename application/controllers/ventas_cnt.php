@@ -326,7 +326,7 @@ class ventas_cnt extends CI_Controller {
 		}
 	}
 
-//-----------------------------------------------------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
 	public function mostrarCorrelativoManual(){
 
@@ -366,7 +366,7 @@ class ventas_cnt extends CI_Controller {
 		}
 	}
 
-//-----------------------------------------------------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
 	public function generarLista(){
 
@@ -1093,6 +1093,30 @@ class ventas_cnt extends CI_Controller {
 	            $this->pdf->Cell(30,10,"S/. ".$neto,1,0,'C');
 	            $this->pdf->Ln('20');
 	            $this->pdf->Cell(80);
+	            $this->pdf->Cell(80,10,"Operaciones gravadas",1,0,'C');
+	            $this->pdf->Cell(30,10,"S/. ".$neto." ",1,0,'R');
+	            $this->pdf->Ln('10');
+	            $this->pdf->Cell(80);
+	            $this->pdf->Cell(80,10,"Operaciones inafectas",1,0,'C');
+	            $this->pdf->Cell(30,10,"S/. 0.00 ",1,0,'R');
+	            $this->pdf->Ln('10');
+	            $this->pdf->Cell(80);
+	            $this->pdf->Cell(80,10,"Operaciones exoneradas",1,0,'C');
+	            $this->pdf->Cell(30,10,"S/. 0.00 ",1,0,'R');
+	            $this->pdf->Ln('10');
+	            $this->pdf->Cell(80);
+	            $this->pdf->Cell(80,10,"Operaciones gratuitas",1,0,'C');
+	            $this->pdf->Cell(30,10,"S/. 0.00 ",1,0,'R');
+	            $this->pdf->Ln('10');
+	            $this->pdf->Cell(80);
+	            $this->pdf->Cell(80,10,"Total de Descuentos",1,0,'C');
+	            $this->pdf->Cell(30,10,"S/. 0.00 ",1,0,'R');
+	            $this->pdf->Ln('10');
+	            $this->pdf->Cell(80);
+	            $this->pdf->Cell(80,10,"IGV",1,0,'C');
+	            $this->pdf->Cell(30,10,"S/. ".$igvfinal." ",1,0,'R');
+	            $this->pdf->Ln('10');
+	            $this->pdf->Cell(80);
 	            $this->pdf->Cell(80,10,"Importe total de la venta",1,0,'C');
 	            $this->pdf->Cell(30,10,"S/. ".$total." ",1,0,'R');
 
@@ -1573,7 +1597,6 @@ class ventas_cnt extends CI_Controller {
   <cbc:ID>'.$f->serie.'-'.$f->correlativo.'</cbc:ID>
   <cbc:IssueDate>'.$f->fecha_emision.'</cbc:IssueDate>
   <cbc:InvoiceTypeCode listID="0101" listAgencyName="PE:SUNAT" listName="SUNAT:Identificador de Tipo de Documento" listURI="urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo01">01</cbc:InvoiceTypeCode>
-  <cbc:Note languageLocaleID="1000">SETENTA Y UN MIL TRESCIENTOS CINCUENTICUATRO Y 99/100</cbc:Note>
   <cbc:DocumentCurrencyCode listID="ISO 4217 Alpha" listName="Currency" listAgencyName="United Nations Economic Commission for Europe">PEN</cbc:DocumentCurrencyCode>
   <cbc:LineCountNumeric>1</cbc:LineCountNumeric>
   <cac:Signature>
@@ -1959,8 +1982,8 @@ class ventas_cnt extends CI_Controller {
 						$this->comprobante_pago_mdl->updateEstadoCobroEmitido($b->fecha_emision, $b->corre, $b->serie);
 					}
 					
-				//}
-			}
+				}
+			//}
 
     	} elseif ($canales == 4) {
 
@@ -1995,7 +2018,6 @@ class ventas_cnt extends CI_Controller {
   <cbc:ID>'.$f->serie.'-'.$f->correlativo.'</cbc:ID>
   <cbc:IssueDate>'.$f->fecha_emision.'</cbc:IssueDate>
   <cbc:InvoiceTypeCode listID="0101" listAgencyName="PE:SUNAT" listName="SUNAT:Identificador de Tipo de Documento" listURI="urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo01">01</cbc:InvoiceTypeCode>
-  <cbc:Note languageLocaleID="1000">SETENTA Y UN MIL TRESCIENTOS CINCUENTICUATRO Y 99/100</cbc:Note>
   <cbc:DocumentCurrencyCode listID="ISO 4217 Alpha" listName="Currency" listAgencyName="United Nations Economic Commission for Europe">PEN</cbc:DocumentCurrencyCode>
   <cbc:LineCountNumeric>1</cbc:LineCountNumeric>
   <cac:Signature>

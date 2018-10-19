@@ -16,6 +16,16 @@ class Comprobante_pago_mdl extends CI_model {
 	 	return $canales->result();
 	}
 
+	function getSerieVerificar(){
+		$this->db->select("s.idserie, s.numero_serie, s.descripcion_ser, c.idclienteempresa");
+		$this->db->from("serie s");
+		$this->db->join("cliente_empresa c" , "s.idserie=c.id_serie" , "left");
+		$this->db->where("idserie >= 3");
+
+		$data = $this->db->get();
+		return $data->result();
+	}
+
 	function getPlanes($canales){
 		$this->db->select("p.idplan, p.idclienteempresa, p.nombre_plan, p.codigo_plan, p.estado_plan, c.nombre_comercial_cli, s.numero_serie");
 		$this->db->from("plan p");
@@ -330,6 +340,8 @@ class Comprobante_pago_mdl extends CI_model {
 		return $data->result();
  	}
 
+ 	//--------------------------------------------------------------------------------------------------------------------------
+
  	function getDatosBoletaNota($serie, $correlativo, $fecha_emision){
  		$this->db->select("CONCAT(serie,'-',CONCAT(REPEAT('0', 8-LENGTH( correlativo)),correlativo)) as seriecorrelativo, importe_total, tipo_moneda, CONCAT(cont_ape1,' ',cont_ape2,' ',cont_nom1,' ',cont_nom2) as contratante, c1.cont_numDoc, id_contratante, idplan");
 		$this->db->from("comprobante_pago c");
@@ -448,6 +460,39 @@ class Comprobante_pago_mdl extends CI_model {
  		$this->db->set("sustento_nota" , $sustento);
  		$this->db->set("idestadocobro" , 2);
  		$this->db->insert("comprobante_pago");
+ 	}
+
+ 	function getDatosXmlNotasBoleta($inicio, $fin, $serie){
+ 		$this->db->select("CONCAT(REPEAT( '0', 2 - LENGTH( MONTH(CURDATE())) ) , MONTH(CURDATE())) as mes, CONCAT(REPEAT( '0', 8 - LENGTH( correlativo) ) , correlativo) as correlativo, c.correlativo as corre, fecha_emision, CONCAT(SUBSTRING(c.fecha_emision,6,2),SUBSTRING(c.fecha_emision,1,4)) as mesanio, TRUNCATE(importe_total,2) as total, TRUNCATE((importe_total/1.18) ,2) as neto, TRUNCATE((importe_total/1.18)*0.18 ,2) as igv, c.serie, p.nombre_plan, c1.descripcion, c1.centro_costo, c2.cont_numDoc, CONCAT(c2.cont_ape1,' ',c2.cont_ape2,' ',c2.cont_nom1,' ',c2.cont_nom2) as contratante, CONCAT(REPEAT( '0', 8 - LENGTH( correlativo_doc) ) , correlativo_doc) as correlativo_doc, c.sustento_nota, c.fecha_doc, c.serie_doc");
+ 		$this->db->from("comprobante_pago c");
+		$this->db->join("plan p" , "c.idplan=p.idplan" , "left");
+ 		$this->db->join("centro_costo c1" , "p.idcentrocosto=c1.idcentrocosto" , "left");	
+ 		$this->db->join("contratante c2" , "c.id_contratante=c2.cont_id" , "left");		
+ 		$this->db->where("fecha_emision>='".$inicio."' and fecha_emision<='".$fin."' and serie = '".$serie."'");
+ 		
+		$data = $this->db->get();
+		return $data->result();
+ 	}
+
+ 	function getDatosXmlNotasFactura($inicio, $fin, $serie){
+ 		$this->db->select("CONCAT(REPEAT( '0', 2 - LENGTH( MONTH(CURDATE())) ) , MONTH(CURDATE())) as mes, CONCAT(REPEAT( '0', 8 - LENGTH( correlativo) ) , correlativo) as correlativo, c.correlativo as corre, fecha_emision, CONCAT(SUBSTRING(c.fecha_emision,6,2),SUBSTRING(c.fecha_emision,1,4)) as mesanio, TRUNCATE(importe_total,2) as total, TRUNCATE((importe_total/1.18) ,2) as neto, TRUNCATE((importe_total/1.18)*0.18 ,2) as igv, c.serie, p.nombre_plan, c1.descripcion, c1.centro_costo, c2.numero_documento_cli, c2.razon_social_cli, CONCAT(REPEAT( '0', 8 - LENGTH( correlativo_doc) ) , correlativo_doc) as correlativo_doc, c.sustento_nota, c.fecha_doc, c.serie_doc");
+ 		$this->db->from("comprobante_pago c");
+		$this->db->join("plan p" , "c.idplan=p.idplan" , "left");
+ 		$this->db->join("centro_costo c1" , "p.idcentrocosto=c1.idcentrocosto" , "left");	
+ 		$this->db->join("cliente_empresa c2" , "c.id_cliente_empresa=c2.idclienteempresa" , "left");		
+ 		$this->db->where("fecha_emision>='".$inicio."' and fecha_emision<='".$fin."' and serie = '".$serie."'");
+ 		
+		$data = $this->db->get();
+		return $data->result();
+ 	}
+
+ 	 function getMesanio($inicio, $fin, $serie){
+ 		$this->db->select("DISTINCT CONCAT(SUBSTRING(fecha_emision,6,2),SUBSTRING(fecha_emision,1,4)) as mesanio");
+ 		$this->db->from("comprobante_pago");		
+ 		$this->db->where("fecha_emision>='".$inicio."' and fecha_emision<='".$fin."' and serie = '".$serie."'");
+ 		
+		$data = $this->db->get();
+		return $data->result();
  	}
 
 }

@@ -36,7 +36,7 @@ class verificar_cnt extends CI_Controller {
 			$data['menu1'] = $menuLista;
 			$submenuLista = $this->menu_mdl->getSubMenu($idusuario);
 			$data['menu2'] = $submenuLista;
-			$canales = $this->comprobante_pago_mdl->getCanales();
+			$canales = $this->comprobante_pago_mdl->getSerieVerificar();
 			$data['canales'] = $canales;
 
 			$month = date('m');
@@ -55,8 +55,20 @@ class verificar_cnt extends CI_Controller {
 		}
 	}
 
-
 	public function generarLista(){
+
+		$canales=$_POST['canales'];
+
+		$planes = $this->comprobante_pago_mdl->getPlanes($canales);
+
+		foreach ($planes as $p) {
+			$data['numeroSerie'] = $p->numero_serie;
+		}
+
+		echo json_encode($data);
+	}
+
+	/*public function generarLista(){
 
 		//se declara la variable para generar el html dinámico
 		$html = null;
@@ -73,16 +85,16 @@ class verificar_cnt extends CI_Controller {
 		$html .= "<div class='col-sm-12'>";
 			foreach ($planes as $p):
 				$html .= "<div class='form-check form-check-inline'>";
-				$html .= "<input class='form-check-input' type='checkbox' name='nameCheck[]' id='". $p->idplan ."' value='". $p->idplan ."'>";
-				$html .= "<label class='form-check-label right' for='". $p->idplan ."'>". $p->nombre_comercial_cli ." - ". $p->nombre_plan."</label>";
-				$html .="<input type='text' class='hidden' id='numeroSerie' name='numeroSerie' value='".$p->numero_serie."'>";
+				/*$html .= "<input class='form-check-input' type='checkbox' name='nameCheck[]' id='". $p->idplan ."' value='". $p->idplan ."'>";
+				$html .= "<label class='form-check-label right' for='". $p->idplan ."'>". $p->nombre_comercial_cli ." - ". $p->nombre_plan."</label>";*/
+				/*$html .= "<input type='text' class='hidden' id='numeroSerie' name='numeroSerie' value='".$p->numero_serie."'>";
 				$html .= "</div>";
 			endforeach;
 		$html .= "</div>";
 		$html .= "<hr>";
 
 		echo json_encode($html);
-	}
+	}*/
 
 	public function mostrarDatosComprobantesEmitidos(){
 
@@ -107,11 +119,11 @@ class verificar_cnt extends CI_Controller {
 		$fin = $_POST['fechafin'];
 
 		$serie = $_POST['numeroSerie'];	
-		$data['nameCheck'] = $_POST['nameCheck'];
-		$idPlan = $data['nameCheck'];
+		//$data['nameCheck'] = $_POST['nameCheck'];
+		//$idPlan = $data['nameCheck'];
 
 
-		if ($canales == 1 || $canales == 2 || $canales == 3 || $canales == 6 || $canales == 7) {
+		if ($canales == 'B001' || $canales == 'B002' || $canales == 'B003' || $canales == 'B004' || $canales == 'B005' || $canales == 'BC01' || $canales == 'BD01') {
 
 			//html de tabla dinámica que se va a generar
 			//$html .="<hr>";
@@ -126,21 +138,38 @@ class verificar_cnt extends CI_Controller {
 							$html .="<th>Plan</th>";
 							$html .="<th>Importe (S/.)</th>";
 							$html .="<th>Mensaje Sunat</th>";
-							$html .="<th>Opciones</th>";
+							//$html .="<th>Opciones</th>";
 						$html .="</tr>";
 					$html .= "</thead>";
 					$html .= "<tbody>";
 
-					for ($i=0; $i < count($idPlan); $i++) {
+					//for ($i=0; $i < count($idPlan); $i++) {
 
-						$boleta = $this->comprobante_pago_mdl->getDatosBoletaEmitida($inicio, $fin, $serie, $idPlan[$i]);
+						$boleta = $this->comprobante_pago_mdl->getDatosBoletaEmitida($inicio, $fin, $canales);
 
 						foreach ((array) $boleta as $b):
 
 							$nameDoc=$b->serie."-".$b->correlativo;
-							$filename="20600258894-03-".$b->serie."-".$b->correlativo;
-							$filecdr=$b->mesanio.'-cdrboletas';
-							$carpetaCdr = 'adjunto/xml/boletas/'.$filecdr;
+
+							if ($canales == 'BD01') {
+
+								$filename='20600258894-08-'.$b->serie.'-'.$b->correlativo;
+								$filecdr=$b->mesanio.'-cdrNotaDebitoBoleta';
+								$carpetaCdr = 'adjunto/xml/notasdedebito/'.$filecdr;
+
+							} elseif ($canales == 'BC01') {
+
+								$filename='20600258894-07-'.$b->serie.'-'.$b->correlativo;
+								$filecdr=$b->mesanio.'-cdrNotaCreditoBoleta';
+								$carpetaCdr = 'adjunto/xml/notasdecredito/'.$filecdr;
+
+							} else {
+
+								$filename='20600258894-03-'.$b->serie.'-'.$b->correlativo;
+								$filecdr=$b->mesanio.'-cdrboletas';
+								$carpetaCdr = 'adjunto/xml/boletas/'.$filecdr;
+
+							}
 
 							if (file_exists($carpetaCdr.'/R-'.$filename.'.xml')) {
 								$xml = file_get_contents($carpetaCdr.'/R-'.$filename.'.xml');
@@ -152,7 +181,6 @@ class verificar_cnt extends CI_Controller {
 									$descripcion = $r->nodeValue;
 								}
 							}
-
 
 							$importe = $b->importe_total;
 							$importe2=number_format((float)$importe, 2, '.', ',');
@@ -167,7 +195,7 @@ class verificar_cnt extends CI_Controller {
 								if (file_exists($carpetaCdr.'/R-'.$filename.'.xml')) {
 									if ($descripcion == 'La Boleta numero '.$nameDoc.', ha sido aceptada') {
 										$html .= "<td align='left' class='success'>".$descripcion."</td>";
-										$html .= "<td align='left'>";
+										/*$html .= "<td align='left'>";
 											$html .= "<ul class='ico-stack'>";
 												$html .="<div title='ver PDF' id='pdfButton' onclick=''>";
 													$html .="<a class='boton fancybox' href='".base_url()."index.php/ventas_cnt/generarPdf/".$b->idcomprobante."/".$canales."' data-fancybox-width='950' data-fancybox-height='800' target='_blank'>";
@@ -180,30 +208,30 @@ class verificar_cnt extends CI_Controller {
 														$html .="</a>";
 													$html .="</div>";
 											$html .= "</ul>";
-										$html .="</td>";
+										$html .="</td>";*/
 									} else {
 										$this->comprobante_pago_mdl->updateEstadocobroComprobante();
-										$html .= "<td align='left' class='danger'>".$descripcion."</td>";
-										$html .= "<td align='left'></td>";
+										$html .= "<td align='left' class='success'>".$descripcion."</td>";
+										//$html .= "<td align='left'></td>";
 									}
 								} else {
-									$html .= "<td align='left' class='warning'>No se ha emitido el comprobante de pago.</td>";
-									$html .= "<td align='left'></td>";
+									$html .= "<td align='left' class='danger'>No se ha emitido el comprobante de pago.</td>";
+									//$html .= "<td align='left'></td>";
 								}
 									
 							$html .= "</tr>";
 
 						endforeach;
 
-					}
+					//}
 				
 				$html .= "</tbody>";
 			$html .= "</table>";
 		$html .= "</div>";
 
-		} elseif ($canales == 4) {
+		} elseif ($canales == 'F001' || $canales == 'FC01' || $canales == 'FD01') {
 
-			$html .="<hr>";
+			//$html .="<hr>";
 			$html .= "<div  align='center' class='col-xs-12'>";
 				$html .= "<table align='center' id='tablaDatos' class='table table-striped table-bordered table-hover'>";
 					$html .= "<thead>";
@@ -215,14 +243,14 @@ class verificar_cnt extends CI_Controller {
 							$html .="<th>Plan</th>";
 							$html .="<th>Importe (S/.)</th>";
 							$html .="<th>Mensaje Sunat</th>";
-							$html .="<th>Opciones</th>";
+							//$html .="<th>Opciones</th>";
 						$html .="</tr>";
 					$html .= "</thead>";
 					$html .= "<tbody>";
 
-					for ($i=0; $i < count($idPlan); $i++) {
+					//for ($i=0; $i < count($idPlan); $i++) {
 
-						$factura = $this->comprobante_pago_mdl->getDatosFacturaEmitidaFinal($inicio, $fin, $serie, $idPlan[$i]);
+						$factura = $this->comprobante_pago_mdl->getDatosFacturaEmitida($inicio, $fin, $canales);
 
 						foreach ((array)$factura as $f):
 
@@ -255,7 +283,7 @@ class verificar_cnt extends CI_Controller {
 									if (file_exists($carpetaCdr.'/R-'.$filename.'.xml')) {
 										if ($descripcion == 'La Factura numero '.$nameDoc.', ha sido aceptada') {
 											$html .= "<td align='left' class='success'>".$descripcion."</td>";
-											$html .= "<td align='left'>";
+											/*$html .= "<td align='left'>";
 												$html .= "<ul class='ico-stack'>";
 													$html .="<div title='ver PDF' id='pdfButton' onclick=''>";
 														$html .="<a class='boton fancybox' href='".base_url()."index.php/ventas_cnt/generarPdf/".$f->idcomprobante."/".$canales."' data-fancybox-width='950' data-fancybox-height='800' target='_blank'>";
@@ -268,22 +296,22 @@ class verificar_cnt extends CI_Controller {
 															$html .="</a>";
 														$html .="</div>";
 												$html .= "</ul>";
-											$html .="</td>";
+											$html .="</td>";*/
 										} else {
 											$this->comprobante_pago_mdl->updateEstadocobroComprobante();
 											$html .= "<td align='left' class='danger'>".$descripcion."</td>";
-											$html .= "<td align='left'></td>";
+											//$html .= "<td align='left'></td>";
 										}
 									} else {
 										$html .= "<td align='left' class='warning'>No se ha emitido el comprobante de pago.</td>";
-										$html .= "<td align='left'></td>";
+										//$html .= "<td align='left'></td>";
 									}
 
 								$html .= "</tr>";
 
 						endforeach;
 					
-					}
+					//}
 
 				$html .= "</tbody>";
 			$html .= "</table>";
@@ -291,6 +319,64 @@ class verificar_cnt extends CI_Controller {
 		}
 
 		echo json_encode($html);
-	} 
+	}
+
+	public function descargarCDR(){
+
+		$this->zip = new ZipArchive();
+
+		$canales=$_POST['canales'];
+
+		$inicio = $_POST['fechainicio'];
+		$fin = $_POST['fechafin'];
+
+		$serie = $_POST['numeroSerie'];
+
+		$mesanio = $this->comprobante_pago_mdl->getMesanio($inicio, $fin, $serie);
+
+		foreach ($mesanio as $m) {
+
+			$nombreArch = $m->mesanio;
+
+			if ($canales == 1 || $canales == 2 || $canales == 3 || $canales == 6 || $canales == 7) {
+				$filecdr=$m->mesanio.'-cdrboletas';
+				$boletas = $this->comprobante_pago_mdl->getDatosBoletaEmitida($inicio, $fin, $serie);
+
+				if ($this->zip->open("adjunto/xml/boletas/".$filecdr."/cdr-".$m->mesanio.".zip", ZIPARCHIVE::CREATE)===true) {
+
+					foreach ($boletas as $b) {
+						$filename="R-20600258894-03-".$b->serie."-".$b->correlativo;
+						$this->zip->addFile("adjunto/xml/boletas/".$filecdr."/".$filename.'.xml', $filename.'.xml');
+					}
+
+					$this->zip->close();
+				}
+
+			} elseif ($canales == 4) {
+				$filecdr=$m->mesanio.'-cdrfacturas';
+				$facturas = $this->comprobante_pago_mdl->getDatosFacturaEmitida($inicio, $fin, $serie);
+
+				if ($this->zip->open("adjunto/xml/facturas/".$filecdr."/cdr-".$m->mesanio.".zip", ZIPARCHIVE::CREATE)===true) {
+
+					foreach ($facturas as $f) {
+						$filename="R-20600258894-01-".$f->serie."-".$f->correlativo;
+						$this->zip->addFile($filename.'.xml');
+					}
+
+					$this->zip->close();
+				} 
+				
+			}
+		}
+
+		$fileName = basename('cdr-'.$nombreArch.'.zip');
+		$filePath = 'adjunto/xml/boletas/'.$filecdr.'/cdr-'.$nombreArch.'.zip';
+		
+		header("Content-type: application/zip");
+		header("Content-Disposition: attachment; filename=cdr-".$nombreArch.".zip");
+		header("Cache-Control: no-cache, must-revalidate");
+		header("Expires: 0");
+		readfile("cdr-".$nombreArch.".zip");
+	}
 
 }

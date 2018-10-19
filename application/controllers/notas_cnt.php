@@ -1,6 +1,5 @@
 <?php
 ini_set('max_execution_time', 6000); 
-ini_set('memory_limit', -1);
 ini_set("soap.wsdl_cache_enabled", 0);
 ini_set('soap.wsdl_cache_ttl',0); 
 date_default_timezone_set('America/Lima');
@@ -126,7 +125,7 @@ class notas_cnt extends CI_Controller {
 		$month = date('m');
       	$year = date('Y');
       	$day = date("d", mktime(0,0,0, $month+1, 0, $year));
-		$fechaEmi = date('Y-m-d');
+		$fechaEmi = $_POST['fechEmiNota'];
 		$numSerie = $_POST['numSerie'];
 		$correGen = $_POST['correGen'];
 		$impTotal = $_POST['impNota'];
@@ -215,7 +214,7 @@ class notas_cnt extends CI_Controller {
 		$month = date('m');
       	$year = date('Y');
       	$day = date("d", mktime(0,0,0, $month+1, 0, $year));
-		$fechaEmi = date('Y-m-d');
+		$fechaEmi = $_POST['fechEmiNotaD'];
 		$numSerie = $_POST['numSeriesD'];
 		$correGen = $_POST['numCorreD'];
 		$impTotal = $_POST['impNotaD'];
@@ -299,15 +298,6 @@ class notas_cnt extends CI_Controller {
 							$html .= "<td align='left'>	".$b->sustento_nota."</td>";
 							if ($estado == 2) {
 								$html .= "<td align='center' class='danger'>Generado</td>";
-								$html .= "<td align='left'>";
-									$html .= "<ul class='ico-stack'>";
-										$html .="<div title='ver PDF' id='pdfButton' onclick=''>";
-											$html .="<a class='boton fancybox' href='' data-fancybox-width='950' data-fancybox-height='800' target='_blank'>";
-												$html .= "<i class='ace-icon fa fa-file-pdf-o bigger-120'></i>";
-											$html .="</a>";
-										$html .="</div>";
-									$html .= "</ul>";
-								$html .="</td>";
 							} elseif ($estado == 3) {
 								$html .= "<td align='center' class='success'>Emitido</td>";
 								$html .= "<td align='left'>";
@@ -374,15 +364,6 @@ class notas_cnt extends CI_Controller {
 							$html .= "<td align='left'>".$f->sustento_nota."</td>";
 							if ($estado == 2) {
 								$html .= "<td align='center' class='danger'>Generado</td>";
-								$html .= "<td align='left'>";
-									$html .= "<ul class='ico-stack'>";
-										$html .="<div title='ver PDF' id='pdfButton' onclick=''>";
-											$html .="<a class='boton fancybox' href='' data-fancybox-width='950' data-fancybox-height='800' target='_blank'>";
-												$html .= "<i class='ace-icon fa fa-file-pdf-o bigger-120'></i>";
-											$html .="</a>";
-										$html .="</div>";
-									$html .= "</ul>";
-								$html .="</td>";
 							} elseif ($estado == 3) {
 								$html .= "<td align='center' class='success'>Emitido</td>";
 								$html .= "<td align='left'>";
@@ -572,7 +553,7 @@ class notas_cnt extends CI_Controller {
 	    }
 	}*/
 
-		public function generarExcel(){
+	/*public function generarExcel(){
 
 		$month = date('m');
       	$year = date('Y');
@@ -913,6 +894,965 @@ class notas_cnt extends CI_Controller {
 		    );
 
 		die(json_encode($response));
-	}
+	}*/
 
+	public function generarXmlNotaCredito(){
+
+		include ('./application/libraries/xmldsig/src/XMLSecurityDSig.php');
+    	include ('./application/libraries/xmldsig/src/XMLSecurityKey.php');
+    	include ('./application/libraries/xmldsig/src/Sunat/SignedXml.php');
+    	include ('./application/libraries/CustomHeaders.php');
+
+    	$this->zip = new ZipArchive();
+
+    	$this->xml = new XMLWriter();
+
+    	//$numSerie = $this->input->post('numSerie');
+    	//$idPlan = $this->input->post('nameCheck');
+    	$canales = $this->input->post('canales');
+    	$fecinicio = $this->input->post('fechainicio');
+    	$fecfin = $this->input->post('fechafin');
+
+		if ($canales == 'BC01') {
+			$notaCredito = $this->comprobante_pago_mdl->getDatosXmlNotasBoleta($fecinicio, $fecfin, $canales);
+
+			foreach ($notaCredito as $nc) {
+				$filename="20600258894-07-".$nc->serie."-".$nc->correlativo;
+
+				$datos = '<CreditNote xmlns="urn:oasis:names:specification:ubl:schema:xsd:CreditNote-2"
+            xmlns:cac="urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2"
+            xmlns:cbc="urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2"
+            xmlns:ccts="urn:un:unece:uncefact:documentation:2"
+            xmlns:ds="http://www.w3.org/2000/09/xmldsig#"
+            xmlns:ext="urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2"
+            xmlns:qdt="urn:oasis:names:specification:ubl:schema:xsd:QualifiedDatatypes-2"
+            xmlns:sac="urn:sunat:names:specification:ubl:peru:schema:xsd:SunatAggregateComponents-1"
+            xmlns:udt="urn:un:unece:uncefact:data:specification:UnqualifiedDataTypesSchemaModule:2"
+            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <ext:UBLExtensions>
+    <ext:UBLExtension>
+      <ext:ExtensionContent>
+      </ext:ExtensionContent>
+    </ext:UBLExtension>
+  </ext:UBLExtensions>
+  <cbc:UBLVersionID>2.1</cbc:UBLVersionID>
+  <cbc:CustomizationID>2.0</cbc:CustomizationID>
+  <cbc:ID>'.$nc->serie.'-'.$nc->correlativo.'</cbc:ID>
+  <cbc:IssueDate>'.$nc->fecha_emision.'</cbc:IssueDate>
+  <cbc:DocumentCurrencyCode>PEN</cbc:DocumentCurrencyCode>
+  <cac:DiscrepancyResponse>
+    <cbc:ReferenceID>'.$nc->serie_doc.'-'.$nc->correlativo_doc.'</cbc:ReferenceID>
+    <cbc:ResponseCode>07</cbc:ResponseCode>
+    <cbc:Description>'.$nc->sustento_nota.'</cbc:Description>
+  </cac:DiscrepancyResponse>
+  <cac:BillingReference>
+    <cac:InvoiceDocumentReference>
+      <cbc:ID>'.$nc->serie_doc.'-'.$nc->correlativo_doc.'</cbc:ID>
+      <cbc:DocumentTypeCode>03</cbc:DocumentTypeCode>
+    </cac:InvoiceDocumentReference>
+  </cac:BillingReference>
+  <cac:Signature>
+    <cbc:ID>LlamaSign</cbc:ID>
+    <cac:SignatoryParty>
+      <cac:PartyIdentification>
+        <cbc:ID>20600258894</cbc:ID>
+      </cac:PartyIdentification>
+      <cac:PartyName>
+        <cbc:Name>HEALTH CARE ADMINISTRATION RED SALUD S.A.C.</cbc:Name>
+      </cac:PartyName>
+    </cac:SignatoryParty>
+    <cac:DigitalSignatureAttachment>
+      <cac:ExternalReference>
+        <cbc:URI>#LlamaSign</cbc:URI>
+      </cac:ExternalReference>
+    </cac:DigitalSignatureAttachment>
+  </cac:Signature>
+  <cac:AccountingSupplierParty>
+    <cac:Party>
+      <cac:PartyIdentification>
+        <cbc:ID schemeID="6" schemeName="SUNAT:Identificador de Documento de Identidad" schemeAgencyName="PE:SUNAT" schemeURI="urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo06">20600258894</cbc:ID>
+      </cac:PartyIdentification>
+      <cac:PartyName>
+        <cbc:Name>HEALTH CARE ADMINISTRATION RED SALUD S.A.C.</cbc:Name>
+      </cac:PartyName>
+      <cac:PartyLegalEntity>
+        <cbc:RegistrationName>HEALTH CARE ADMINISTRATION RED SALUD S.A.C.</cbc:RegistrationName>
+        <cac:RegistrationAddress>
+          <cbc:AddressTypeCode>0001</cbc:AddressTypeCode>
+        </cac:RegistrationAddress>
+      </cac:PartyLegalEntity>
+    </cac:Party>
+  </cac:AccountingSupplierParty>
+  <cac:AccountingCustomerParty>
+    <cac:Party>
+      <cac:PartyIdentification>
+        <cbc:ID schemeID="1" schemeName="SUNAT:Identificador de Documento de Identidad" schemeAgencyName="PE:SUNAT" schemeURI="urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo06">'.$nc->cont_numDoc.'</cbc:ID>
+      </cac:PartyIdentification>
+      <cac:PartyLegalEntity>
+        <cbc:RegistrationName>'.$nc->contratante.'</cbc:RegistrationName>
+      </cac:PartyLegalEntity>
+    </cac:Party>
+  </cac:AccountingCustomerParty>
+  <cac:TaxTotal>
+    <cbc:TaxAmount currencyID="PEN">'.$nc->igv.'</cbc:TaxAmount>
+    <cac:TaxSubtotal>
+      <cbc:TaxableAmount currencyID="PEN">'.$nc->neto.'</cbc:TaxableAmount>
+      <cbc:TaxAmount currencyID="PEN">'.$nc->igv.'</cbc:TaxAmount>
+      <cac:TaxCategory>
+        <cac:TaxScheme>
+          <cbc:ID schemeID="UN/ECE 5153" schemeAgencyID="6">1000</cbc:ID>
+          <cbc:Name>IGV</cbc:Name>
+          <cbc:TaxTypeCode>VAT</cbc:TaxTypeCode>
+        </cac:TaxScheme>
+      </cac:TaxCategory>
+    </cac:TaxSubtotal>
+  </cac:TaxTotal>
+  <cac:LegalMonetaryTotal>
+    <cbc:PayableAmount currencyID="PEN">'.$nc->total.'</cbc:PayableAmount>
+  </cac:LegalMonetaryTotal>
+  <cac:CreditNoteLine>
+    <cbc:ID>1</cbc:ID>
+    <cbc:CreditedQuantity unitCode="NIU">100</cbc:CreditedQuantity>
+    <cbc:LineExtensionAmount currencyID="PEN">'.$nc->neto.'</cbc:LineExtensionAmount>
+    <cac:PricingReference>
+      <cac:AlternativeConditionPrice>
+        <cbc:PriceAmount currencyID="PEN">'.$nc->total.'</cbc:PriceAmount>
+        <cbc:PriceTypeCode>01</cbc:PriceTypeCode>
+      </cac:AlternativeConditionPrice>
+    </cac:PricingReference>
+    <cac:TaxTotal>
+      <cbc:TaxAmount currencyID="PEN">'.$nc->igv.'</cbc:TaxAmount>
+      <cac:TaxSubtotal>
+        <cbc:TaxableAmount currencyID="PEN">'.$nc->neto.'</cbc:TaxableAmount>
+        <cbc:TaxAmount currencyID="PEN">'.$nc->igv.'</cbc:TaxAmount>
+        <cac:TaxCategory>
+          <cbc:Percent>18.00</cbc:Percent>
+          <cbc:TaxExemptionReasonCode>10</cbc:TaxExemptionReasonCode>
+          <cac:TaxScheme>
+            <cbc:ID>1000</cbc:ID>
+            <cbc:Name>IGV</cbc:Name>
+            <cbc:TaxTypeCode>VAT</cbc:TaxTypeCode>
+          </cac:TaxScheme>
+        </cac:TaxCategory>
+      </cac:TaxSubtotal>
+    </cac:TaxTotal>
+    <cac:Item>
+      <cbc:Description>'.$nc->sustento_nota.'</cbc:Description>
+    </cac:Item>
+    <cac:Price>
+      <cbc:PriceAmount currencyID="PEN">'.$nc->total.'</cbc:PriceAmount>
+    </cac:Price>
+  </cac:CreditNoteLine>
+</CreditNote>';
+
+				$nameDoc=$nc->serie."-".$nc->correlativo;
+				$filecdr=$nc->mesanio.'-cdrNotaCreditoBoleta';
+				$fileNota=$nc->mesanio.'-NotaCreditoBoleta';
+				$carpetaCdr = 'adjunto/xml/notasdecredito/'.$filecdr;
+		    	$carpetaNota = 'adjunto/xml/notasdecredito/'.$fileNota;
+
+		    	$tipodocumento = 'Nota de Credito';
+
+		    	if (!file_exists($carpetaCdr)) {
+				    mkdir($carpetaCdr, 0777, true);
+				}
+				
+				if (!file_exists($carpetaNota)) {
+				    mkdir($carpetaNota, 0777, true);
+				}
+
+				$doc = new DOMDocument(); 
+				$doc->loadxml($datos);
+				$doc->save($carpetaNota.'/'.$filename.'.xml');
+				$xmlPath = $carpetaNota.'/'.$filename.'.xml';
+				$certPath = 'adjunto/firma/LLAMA-PE-CERTIFICADO-DEMO-20600258894.pem'; // Convertir pfx to pem 
+				$signer = new SignedXml();
+				$signer->setCertificateFromFile($certPath);
+				$xmlSigned = $signer->signFromFile($xmlPath);
+				file_put_contents($filename.'.xml', $xmlSigned);
+
+				//echo $xmlSigned;
+				if ($this->zip->open($carpetaNota.'/'.$filename.".zip", ZIPARCHIVE::CREATE)===true) {
+					$this->zip->addFile($filename.'.xml');
+					$this->zip->close();
+					unlink($filename.".xml");
+					unlink($carpetaNota.'/'.$filename.".xml");
+				} else {
+					unlink($filename.".xml");
+					unlink($carpetaNota.'/'.$filename.".xml");
+				}
+
+				$service = 'https://e-beta.sunat.gob.pe/ol-ti-itcpfegem-beta/billService?wsdl';
+
+		    	$headers = new CustomHeaders('20600258894MODDATOS', 'moddatos'); 
+
+		    	$client = new SoapClient($service, array(
+		    		'cache_wsdl' => WSDL_CACHE_NONE,
+		    		'trace' => TRUE,
+		    		//'soap_version' => SOAP_1_2
+		    	));
+				//print_r($client);
+		    	//exit();
+		    	$client->__setSoapHeaders([$headers]); 
+		    	$fcs = $client->__getFunctions();
+		    	$zipXml = $filename.'.zip'; 
+		    	$params = array( 
+		    		'fileName' => $zipXml, 
+		    		'contentFile' => file_get_contents($carpetaNota.'/'.$zipXml) 
+		    	); 
+		    	
+		    	$client->sendBill($params);
+		    	$status = $client->__getLastResponse();
+
+		    	//Descargamos el Archivo Response
+				$archivo = fopen($carpetaCdr.'/'.'C'.$filename.'.xml','w+');
+				fputs($archivo, $status);
+				fclose($archivo);
+
+				//LEEMOS EL ARCHIVO XML
+				$responsexml = simplexml_load_file($carpetaCdr.'/'.'C'.$filename.'.xml');
+				foreach ($responsexml->xpath('//applicationResponse') as $response){ }
+				
+				//AQUI DESCARGAMOS EL ARCHIVO CDR(CONSTANCIA DE RECEPCIÓN)
+				$cdr=base64_decode($response);
+				$archivo = fopen($carpetaCdr.'/'.'R-'.$filename.'.zip','w+');
+				fputs($archivo,$cdr);
+				fclose($archivo);
+				$archivo2 = chmod($carpetaCdr.'/'.'R-'.$filename.'.zip', 0777);
+
+				unlink($carpetaCdr.'/'.'C'.$filename.'.xml');
+
+				//verificar respuesta SUNAT
+				if (file_exists($carpetaCdr.'/R-'.$filename.'.zip')) {
+					if ($this->zip->open($carpetaCdr.'/R-'.$filename.'.zip') === TRUE) {
+					    $this->zip->extractTo($carpetaCdr.'/');
+					    $this->zip->close();
+					}
+					unlink($carpetaCdr.'/R-'.$filename.'.zip');
+				}
+
+				$xml = file_get_contents($carpetaCdr.'/R-'.$filename.'.xml');
+				$DOM = new DOMDocument('1.0', 'utf-8');
+				$DOM->loadXML($xml);
+				$respuesta = $DOM->getElementsByTagName('Description');
+				foreach ($respuesta as $r) {
+					$descripcion = $r->nodeValue;
+				}
+				if ($descripcion == 'La '.$tipodocumento.' numero '.$nameDoc.', ha sido aceptada') {
+					$this->comprobante_pago_mdl->updateEstadoCobroEmitido($nc->fecha_emision, $nc->corre, $nc->serie);
+				}
+
+			}
+
+		} elseif ($canales == 'FC01') {
+
+			$notaCredito = $this->comprobante_pago_mdl->getDatosXmlNotasFactura($fecinicio, $fecfin, $canales);
+				
+			foreach ($notaCredito as $nc) {
+				$filename="20600258894-07-".$nc->serie."-".$nc->correlativo;
+
+				$datos = '<CreditNote xmlns="urn:oasis:names:specification:ubl:schema:xsd:CreditNote-2"
+            xmlns:cac="urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2"
+            xmlns:cbc="urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2"
+            xmlns:ccts="urn:un:unece:uncefact:documentation:2"
+            xmlns:ds="http://www.w3.org/2000/09/xmldsig#"
+            xmlns:ext="urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2"
+            xmlns:qdt="urn:oasis:names:specification:ubl:schema:xsd:QualifiedDatatypes-2"
+            xmlns:sac="urn:sunat:names:specification:ubl:peru:schema:xsd:SunatAggregateComponents-1"
+            xmlns:udt="urn:un:unece:uncefact:data:specification:UnqualifiedDataTypesSchemaModule:2"
+            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <ext:UBLExtensions>
+    <ext:UBLExtension>
+      <ext:ExtensionContent>
+      </ext:ExtensionContent>
+    </ext:UBLExtension>
+  </ext:UBLExtensions>
+  <cbc:UBLVersionID>2.1</cbc:UBLVersionID>
+  <cbc:CustomizationID>2.0</cbc:CustomizationID>
+  <cbc:ID>'.$nc->serie.'-'.$nc->correlativo.'</cbc:ID>
+  <cbc:IssueDate>'.$nc->fecha_emision.'</cbc:IssueDate>
+  <cbc:DocumentCurrencyCode>PEN</cbc:DocumentCurrencyCode>
+  <cac:DiscrepancyResponse>
+    <cbc:ReferenceID>'.$nc->serie_doc.'-'.$nc->correlativo_doc.'</cbc:ReferenceID>
+    <cbc:ResponseCode>07</cbc:ResponseCode>
+    <cbc:Description>'.$nc->sustento_nota.'</cbc:Description>
+  </cac:DiscrepancyResponse>
+  <cac:BillingReference>
+    <cac:InvoiceDocumentReference>
+      <cbc:ID>'.$nc->serie_doc.'-'.$nc->correlativo_doc.'</cbc:ID>
+      <cbc:DocumentTypeCode>03</cbc:DocumentTypeCode>
+    </cac:InvoiceDocumentReference>
+  </cac:BillingReference>
+  <cac:Signature>
+    <cbc:ID>LlamaSign</cbc:ID>
+    <cac:SignatoryParty>
+      <cac:PartyIdentification>
+        <cbc:ID>20600258894</cbc:ID>
+      </cac:PartyIdentification>
+      <cac:PartyName>
+        <cbc:Name>HEALTH CARE ADMINISTRATION RED SALUD S.A.C.</cbc:Name>
+      </cac:PartyName>
+    </cac:SignatoryParty>
+    <cac:DigitalSignatureAttachment>
+      <cac:ExternalReference>
+        <cbc:URI>#LlamaSign</cbc:URI>
+      </cac:ExternalReference>
+    </cac:DigitalSignatureAttachment>
+  </cac:Signature>
+  <cac:AccountingSupplierParty>
+    <cac:Party>
+      <cac:PartyIdentification>
+        <cbc:ID schemeID="6" schemeName="SUNAT:Identificador de Documento de Identidad" schemeAgencyName="PE:SUNAT" schemeURI="urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo06">20600258894</cbc:ID>
+      </cac:PartyIdentification>
+      <cac:PartyName>
+        <cbc:Name>HEALTH CARE ADMINISTRATION RED SALUD S.A.C.</cbc:Name>
+      </cac:PartyName>
+      <cac:PartyLegalEntity>
+        <cbc:RegistrationName>HEALTH CARE ADMINISTRATION RED SALUD S.A.C.</cbc:RegistrationName>
+        <cac:RegistrationAddress>
+          <cbc:AddressTypeCode>0001</cbc:AddressTypeCode>
+        </cac:RegistrationAddress>
+      </cac:PartyLegalEntity>
+    </cac:Party>
+  </cac:AccountingSupplierParty>
+  <cac:AccountingCustomerParty>
+    <cac:Party>
+      <cac:PartyIdentification>
+        <cbc:ID schemeID="6" schemeName="SUNAT:Identificador de Documento de Identidad" schemeAgencyName="PE:SUNAT" schemeURI="urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo06">'.$nc->numero_documento_cli.'</cbc:ID>
+      </cac:PartyIdentification>
+      <cac:PartyLegalEntity>
+        <cbc:RegistrationName>'.$nc->razon_social_cli.'</cbc:RegistrationName>
+      </cac:PartyLegalEntity>
+    </cac:Party>
+  </cac:AccountingCustomerParty>
+  <cac:TaxTotal>
+    <cbc:TaxAmount currencyID="PEN">'.$nc->igv.'</cbc:TaxAmount>
+    <cac:TaxSubtotal>
+      <cbc:TaxableAmount currencyID="PEN">'.$nc->neto.'</cbc:TaxableAmount>
+      <cbc:TaxAmount currencyID="PEN">'.$nc->igv.'</cbc:TaxAmount>
+      <cac:TaxCategory>
+        <cac:TaxScheme>
+          <cbc:ID schemeID="UN/ECE 5153" schemeAgencyID="6">1000</cbc:ID>
+          <cbc:Name>IGV</cbc:Name>
+          <cbc:TaxTypeCode>VAT</cbc:TaxTypeCode>
+        </cac:TaxScheme>
+      </cac:TaxCategory>
+    </cac:TaxSubtotal>
+  </cac:TaxTotal>
+  <cac:LegalMonetaryTotal>
+    <cbc:PayableAmount currencyID="PEN">'.$nc->total.'</cbc:PayableAmount>
+  </cac:LegalMonetaryTotal>
+  <cac:CreditNoteLine>
+    <cbc:ID>1</cbc:ID>
+    <cbc:CreditedQuantity unitCode="NIU">100</cbc:CreditedQuantity>
+    <cbc:LineExtensionAmount currencyID="PEN">'.$nc->neto.'</cbc:LineExtensionAmount>
+    <cac:PricingReference>
+      <cac:AlternativeConditionPrice>
+        <cbc:PriceAmount currencyID="PEN">'.$nc->total.'</cbc:PriceAmount>
+        <cbc:PriceTypeCode>01</cbc:PriceTypeCode>
+      </cac:AlternativeConditionPrice>
+    </cac:PricingReference>
+    <cac:TaxTotal>
+      <cbc:TaxAmount currencyID="PEN">'.$nc->igv.'</cbc:TaxAmount>
+      <cac:TaxSubtotal>
+        <cbc:TaxableAmount currencyID="PEN">'.$nc->neto.'</cbc:TaxableAmount>
+        <cbc:TaxAmount currencyID="PEN">'.$nc->igv.'</cbc:TaxAmount>
+        <cac:TaxCategory>
+          <cbc:Percent>18.00</cbc:Percent>
+          <cbc:TaxExemptionReasonCode>10</cbc:TaxExemptionReasonCode>
+          <cac:TaxScheme>
+            <cbc:ID>1000</cbc:ID>
+            <cbc:Name>IGV</cbc:Name>
+            <cbc:TaxTypeCode>VAT</cbc:TaxTypeCode>
+          </cac:TaxScheme>
+        </cac:TaxCategory>
+      </cac:TaxSubtotal>
+    </cac:TaxTotal>
+    <cac:Item>
+      <cbc:Description>'.$nc->sustento_nota.'</cbc:Description>
+    </cac:Item>
+    <cac:Price>
+      <cbc:PriceAmount currencyID="PEN">'.$nc->total.'</cbc:PriceAmount>
+    </cac:Price>
+  </cac:CreditNoteLine>
+</CreditNote>';
+
+				$nameDoc=$nc->serie."-".$nc->correlativo;
+				$filecdr=$nc->mesanio.'-cdrNotaCreditoFactura';
+				$fileNota=$nc->mesanio.'-NotaCreditoFactura';
+				$carpetaCdr = 'adjunto/xml/notasdecredito/'.$filecdr;
+		    	$carpetaNota = 'adjunto/xml/notasdecredito/'.$fileNota;
+
+		    	$tipodocumento = 'Nota de Credito';
+
+		    	if (!file_exists($carpetaCdr)) {
+				    mkdir($carpetaCdr, 0777, true);
+				}
+				
+				if (!file_exists($carpetaNota)) {
+				    mkdir($carpetaNota, 0777, true);
+				}
+
+				$doc = new DOMDocument(); 
+				$doc->loadxml($datos);
+				$doc->save($carpetaNota.'/'.$filename.'.xml');
+				$xmlPath = $carpetaNota.'/'.$filename.'.xml';
+				$certPath = 'adjunto/firma/LLAMA-PE-CERTIFICADO-DEMO-20600258894.pem'; // Convertir pfx to pem 
+				$signer = new SignedXml();
+				$signer->setCertificateFromFile($certPath);
+				$xmlSigned = $signer->signFromFile($xmlPath);
+				file_put_contents($filename.'.xml', $xmlSigned);
+
+				//echo $xmlSigned;
+				if ($this->zip->open($carpetaNota.'/'.$filename.".zip", ZIPARCHIVE::CREATE)===true) {
+					$this->zip->addFile($filename.'.xml');
+					$this->zip->close();
+					unlink($filename.".xml");
+					unlink($carpetaNota.'/'.$filename.".xml");
+				} else {
+					unlink($filename.".xml");
+					unlink($carpetaNota.'/'.$filename.".xml");
+				}
+
+				$service = 'https://e-beta.sunat.gob.pe/ol-ti-itcpfegem-beta/billService?wsdl';
+
+		    	$headers = new CustomHeaders('20600258894MODDATOS', 'moddatos'); 
+
+		    	$client = new SoapClient($service, array(
+		    		'cache_wsdl' => WSDL_CACHE_NONE,
+		    		'trace' => TRUE,
+		    		//'soap_version' => SOAP_1_2
+		    	));
+				//print_r($client);
+		    	//exit();
+		    	$client->__setSoapHeaders([$headers]); 
+		    	$fcs = $client->__getFunctions();
+		    	$zipXml = $filename.'.zip'; 
+		    	$params = array( 
+		    		'fileName' => $zipXml, 
+		    		'contentFile' => file_get_contents($carpetaNota.'/'.$zipXml) 
+		    	); 
+		    	
+		    	$client->sendBill($params);
+		    	$status = $client->__getLastResponse();
+
+		    	//Descargamos el Archivo Response
+				$archivo = fopen($carpetaCdr.'/'.'C'.$filename.'.xml','w+');
+				fputs($archivo, $status);
+				fclose($archivo);
+
+				//LEEMOS EL ARCHIVO XML
+				$responsexml = simplexml_load_file($carpetaCdr.'/'.'C'.$filename.'.xml');
+				foreach ($responsexml->xpath('//applicationResponse') as $response){ }
+				
+				//AQUI DESCARGAMOS EL ARCHIVO CDR(CONSTANCIA DE RECEPCIÓN)
+				$cdr=base64_decode($response);
+				$archivo = fopen($carpetaCdr.'/'.'R-'.$filename.'.zip','w+');
+				fputs($archivo,$cdr);
+				fclose($archivo);
+				$archivo2 = chmod($carpetaCdr.'/'.'R-'.$filename.'.zip', 0777);
+
+				unlink($carpetaCdr.'/'.'C'.$filename.'.xml');
+
+				//verificar respuesta SUNAT
+				if (file_exists($carpetaCdr.'/R-'.$filename.'.zip')) {
+					if ($this->zip->open($carpetaCdr.'/R-'.$filename.'.zip') === TRUE) {
+					    $this->zip->extractTo($carpetaCdr.'/');
+					    $this->zip->close();
+					}
+					unlink($carpetaCdr.'/R-'.$filename.'.zip');
+				}
+
+				$xml = file_get_contents($carpetaCdr.'/R-'.$filename.'.xml');
+				$DOM = new DOMDocument('1.0', 'utf-8');
+				$DOM->loadXML($xml);
+				$respuesta = $DOM->getElementsByTagName('Description');
+				foreach ($respuesta as $r) {
+					$descripcion = $r->nodeValue;
+				}
+				if ($descripcion == 'La '.$tipodocumento.' numero '.$nameDoc.', ha sido aceptada') {
+					$this->comprobante_pago_mdl->updateEstadoCobroEmitido($nc->fecha_emision, $nc->corre, $nc->serie);
+				}
+
+			}
+
+
+		} elseif ($canales == 'BD01') {
+			$notaDebito = $this->comprobante_pago_mdl->getDatosXmlNotasBoleta($fecinicio, $fecfin, $canales);
+
+			foreach ($notaDebito as $nd) {
+				$filename="20600258894-08-".$nd->serie."-".$nd->correlativo;
+
+				$datos = '<DebitNote xmlns="urn:oasis:names:specification:ubl:schema:xsd:DebitNote-2"
+           xmlns:cac="urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2"
+           xmlns:cbc="urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2"
+           xmlns:ccts="urn:un:unece:uncefact:documentation:2"
+           xmlns:ds="http://www.w3.org/2000/09/xmldsig#"
+           xmlns:ext="urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2"
+           xmlns:qdt="urn:oasis:names:specification:ubl:schema:xsd:QualifiedDatatypes-2"
+           xmlns:sac="urn:sunat:names:specification:ubl:peru:schema:xsd:SunatAggregateComponents-1"
+           xmlns:udt="urn:un:unece:uncefact:data:specification:UnqualifiedDataTypesSchemaModule:2"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <ext:UBLExtensions>
+    <ext:UBLExtension>
+      <ext:ExtensionContent>
+      </ext:ExtensionContent>
+    </ext:UBLExtension>
+  </ext:UBLExtensions>
+  <cbc:UBLVersionID>2.1</cbc:UBLVersionID>
+  <cbc:CustomizationID>2.0</cbc:CustomizationID>
+  <cbc:ID>'.$nd->serie.'-'.$nd->correlativo.'</cbc:ID>
+  <cbc:IssueDate>'.$nd->fecha_emision.'</cbc:IssueDate>
+  <cbc:DocumentCurrencyCode>PEN</cbc:DocumentCurrencyCode>
+  <cac:DiscrepancyResponse>
+    <cbc:ReferenceID>'.$nd->serie_doc.'-'.$nd->correlativo_doc.'</cbc:ReferenceID>
+    <cbc:ResponseCode>02</cbc:ResponseCode>
+    <cbc:Description>'.$nd->sustento_nota.'</cbc:Description>
+  </cac:DiscrepancyResponse>
+  <cac:BillingReference>
+    <cac:InvoiceDocumentReference>
+      <cbc:ID>'.$nd->serie_doc.'-'.$nd->correlativo_doc.'</cbc:ID>
+      <cbc:DocumentTypeCode>03</cbc:DocumentTypeCode>
+    </cac:InvoiceDocumentReference>
+  </cac:BillingReference>
+
+  <cac:Signature>
+    <cbc:ID>LlamaSign</cbc:ID>
+    <cac:SignatoryParty>
+      <cac:PartyIdentification>
+        <cbc:ID>20600258894</cbc:ID>
+      </cac:PartyIdentification>
+      <cac:PartyName>
+        <cbc:Name>HEALTH CARE ADMINISTRATION RED SALUD S.A.C.</cbc:Name>
+      </cac:PartyName>
+    </cac:SignatoryParty>
+    <cac:DigitalSignatureAttachment>
+      <cac:ExternalReference>
+        <cbc:URI>#LlamaSign</cbc:URI>
+      </cac:ExternalReference>
+    </cac:DigitalSignatureAttachment>
+  </cac:Signature>
+
+  <cac:AccountingSupplierParty>
+    <cac:Party>
+      <cac:PartyIdentification>
+        <cbc:ID schemeID="6"
+                schemeName="SUNAT:Identificador de Documento de Identidad"
+                schemeAgencyName="PE:SUNAT"
+                schemeURI="urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo06">20600258894</cbc:ID>
+      </cac:PartyIdentification>
+      <cac:PartyName>
+        <cbc:Name>HEALTH CARE ADMINISTRATION RED SALUD S.A.C.</cbc:Name>
+      </cac:PartyName>
+      <cac:PartyLegalEntity>
+        <cbc:RegistrationName>HEALTH CARE ADMINISTRATION RED SALUD S.A.C.</cbc:RegistrationName>
+        <cac:RegistrationAddress>
+          <cbc:AddressTypeCode>0001</cbc:AddressTypeCode>
+        </cac:RegistrationAddress>
+      </cac:PartyLegalEntity>
+    </cac:Party>
+  </cac:AccountingSupplierParty>
+  <cac:AccountingCustomerParty>
+    <cac:Party>
+      <cac:PartyIdentification>
+        <cbc:ID schemeID="1"
+                schemeName="SUNAT:Identificador de Documento de Identidad"
+                schemeAgencyName="PE:SUNAT"
+                schemeURI="urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo06">'.$nd->cont_numDoc.'</cbc:ID>
+      </cac:PartyIdentification>
+      <cac:PartyLegalEntity>
+        <cbc:RegistrationName>'.$nd->contratante.'</cbc:RegistrationName>
+      </cac:PartyLegalEntity>
+    </cac:Party>
+  </cac:AccountingCustomerParty>
+  <cac:TaxTotal>
+    <cbc:TaxAmount currencyID="PEN">'.$nd->igv.'</cbc:TaxAmount>
+    <cac:TaxSubtotal>
+      <cbc:TaxableAmount currencyID="PEN">'.$nd->neto.'</cbc:TaxableAmount>
+      <cbc:TaxAmount currencyID="PEN">'.$nd->igv.'</cbc:TaxAmount>
+      <cac:TaxCategory>
+        <cac:TaxScheme>
+          <cbc:ID schemeID="UN/ECE 5153" schemeAgencyID="6">1000</cbc:ID>
+          <cbc:Name>IGV</cbc:Name>
+          <cbc:TaxTypeCode>VAT</cbc:TaxTypeCode>
+        </cac:TaxScheme>
+      </cac:TaxCategory>
+    </cac:TaxSubtotal>
+  </cac:TaxTotal>
+  <cac:RequestedMonetaryTotal>
+    <cbc:PayableAmount currencyID="PEN">'.$nd->total.'</cbc:PayableAmount>
+  </cac:RequestedMonetaryTotal>
+  <cac:DebitNoteLine>
+    <cbc:ID>1</cbc:ID>
+    <cbc:DebitedQuantity unitCode="ZZ">1</cbc:DebitedQuantity>
+    <cbc:LineExtensionAmount currencyID="PEN">'.$nd->neto.'</cbc:LineExtensionAmount>
+    <cac:PricingReference>
+      <cac:AlternativeConditionPrice>
+        <cbc:PriceAmount currencyID="PEN">'.$nd->total.'</cbc:PriceAmount>
+        <cbc:PriceTypeCode>01</cbc:PriceTypeCode>
+      </cac:AlternativeConditionPrice>
+    </cac:PricingReference>
+    <cac:TaxTotal>
+      <cbc:TaxAmount currencyID="PEN">'.$nd->igv.'</cbc:TaxAmount>
+      <cac:TaxSubtotal>
+        <cbc:TaxableAmount currencyID="PEN">'.$nd->neto.'</cbc:TaxableAmount>
+        <cbc:TaxAmount currencyID="PEN">'.$nd->igv.'</cbc:TaxAmount>
+        <cac:TaxCategory>
+          <cbc:Percent>18.00</cbc:Percent>
+          <cbc:TaxExemptionReasonCode>10</cbc:TaxExemptionReasonCode>
+          <cac:TaxScheme>
+            <cbc:ID>1000</cbc:ID>
+            <cbc:Name>IGV</cbc:Name>
+            <cbc:TaxTypeCode>VAT</cbc:TaxTypeCode>
+          </cac:TaxScheme>
+        </cac:TaxCategory>
+      </cac:TaxSubtotal>
+    </cac:TaxTotal>
+    <cac:Item>
+      <cbc:Description>'.$nd->sustento_nota.'</cbc:Description>
+    </cac:Item>
+    <cac:Price>
+      <cbc:PriceAmount currencyID="PEN">'.$nd->total.'</cbc:PriceAmount>
+    </cac:Price>
+  </cac:DebitNoteLine>
+</DebitNote>';
+
+				$nameDoc=$nd->serie."-".$nd->correlativo;
+				$filecdr=$nd->mesanio.'-cdrNotaDebitoBoleta';
+				$fileNota=$nd->mesanio.'-NotaDebitoBoleta';
+				$carpetaCdr = 'adjunto/xml/notasdecredito/'.$filecdr;
+		    	$carpetaNota = 'adjunto/xml/notasdecredito/'.$fileNota;
+
+		    	$tipodocumento = 'Nota de Debito';
+
+		    	if (!file_exists($carpetaCdr)) {
+				    mkdir($carpetaCdr, 0777, true);
+				}
+				
+				if (!file_exists($carpetaNota)) {
+				    mkdir($carpetaNota, 0777, true);
+				}
+
+				$doc = new DOMDocument(); 
+				$doc->loadxml($datos);
+				$doc->save($carpetaNota.'/'.$filename.'.xml');
+				$xmlPath = $carpetaNota.'/'.$filename.'.xml';
+				$certPath = 'adjunto/firma/LLAMA-PE-CERTIFICADO-DEMO-20600258894.pem'; // Convertir pfx to pem 
+				$signer = new SignedXml();
+				$signer->setCertificateFromFile($certPath);
+				$xmlSigned = $signer->signFromFile($xmlPath);
+				file_put_contents($filename.'.xml', $xmlSigned);
+
+				//echo $xmlSigned;
+				if ($this->zip->open($carpetaNota.'/'.$filename.".zip", ZIPARCHIVE::CREATE)===true) {
+					$this->zip->addFile($filename.'.xml');
+					$this->zip->close();
+					unlink($filename.".xml");
+					unlink($carpetaNota.'/'.$filename.".xml");
+				} else {
+					unlink($filename.".xml");
+					unlink($carpetaNota.'/'.$filename.".xml");
+				}
+
+				$service = 'https://e-beta.sunat.gob.pe/ol-ti-itcpfegem-beta/billService?wsdl';
+
+		    	$headers = new CustomHeaders('20600258894MODDATOS', 'moddatos'); 
+
+		    	$client = new SoapClient($service, array(
+		    		'cache_wsdl' => WSDL_CACHE_NONE,
+		    		'trace' => TRUE,
+		    		//'soap_version' => SOAP_1_2
+		    	));
+				//print_r($client);
+		    	//exit();
+		    	$client->__setSoapHeaders([$headers]); 
+		    	$fcs = $client->__getFunctions();
+		    	$zipXml = $filename.'.zip'; 
+		    	$params = array( 
+		    		'fileName' => $zipXml, 
+		    		'contentFile' => file_get_contents($carpetaNota.'/'.$zipXml) 
+		    	); 
+		    	
+		    	$client->sendBill($params);
+		    	$status = $client->__getLastResponse();
+
+		    	//Descargamos el Archivo Response
+				$archivo = fopen($carpetaCdr.'/'.'C'.$filename.'.xml','w+');
+				fputs($archivo, $status);
+				fclose($archivo);
+
+				//LEEMOS EL ARCHIVO XML
+				$responsexml = simplexml_load_file($carpetaCdr.'/'.'C'.$filename.'.xml');
+				foreach ($responsexml->xpath('//applicationResponse') as $response){ }
+				
+				//AQUI DESCARGAMOS EL ARCHIVO CDR(CONSTANCIA DE RECEPCIÓN)
+				$cdr=base64_decode($response);
+				$archivo = fopen($carpetaCdr.'/'.'R-'.$filename.'.zip','w+');
+				fputs($archivo,$cdr);
+				fclose($archivo);
+				$archivo2 = chmod($carpetaCdr.'/'.'R-'.$filename.'.zip', 0777);
+
+				unlink($carpetaCdr.'/'.'C'.$filename.'.xml');
+
+				//verificar respuesta SUNAT
+				if (file_exists($carpetaCdr.'/R-'.$filename.'.zip')) {
+					if ($this->zip->open($carpetaCdr.'/R-'.$filename.'.zip') === TRUE) {
+					    $this->zip->extractTo($carpetaCdr.'/');
+					    $this->zip->close();
+					}
+					unlink($carpetaCdr.'/R-'.$filename.'.zip');
+				}
+
+				$xml = file_get_contents($carpetaCdr.'/R-'.$filename.'.xml');
+				$DOM = new DOMDocument('1.0', 'utf-8');
+				$DOM->loadXML($xml);
+				$respuesta = $DOM->getElementsByTagName('Description');
+				foreach ($respuesta as $r) {
+					$descripcion = $r->nodeValue;
+				}
+				if ($descripcion == 'La '.$tipodocumento.' numero '.$nameDoc.', ha sido aceptada') {
+					$this->comprobante_pago_mdl->updateEstadoCobroEmitido($nd->fecha_emision, $nd->corre, $nd->serie);
+				}
+
+			}
+		} elseif ($canales == 'FD01') {
+			$notaDebito = $this->comprobante_pago_mdl->getDatosXmlNotasFactura($fecinicio, $fecfin, $canales);
+
+			foreach ($notaDebito as $nd) {
+				$filename="20600258894-08-".$nd->serie."-".$nd->correlativo;
+
+				$datos = '<DebitNote xmlns="urn:oasis:names:specification:ubl:schema:xsd:DebitNote-2"
+           xmlns:cac="urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2"
+           xmlns:cbc="urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2"
+           xmlns:ccts="urn:un:unece:uncefact:documentation:2"
+           xmlns:ds="http://www.w3.org/2000/09/xmldsig#"
+           xmlns:ext="urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2"
+           xmlns:qdt="urn:oasis:names:specification:ubl:schema:xsd:QualifiedDatatypes-2"
+           xmlns:sac="urn:sunat:names:specification:ubl:peru:schema:xsd:SunatAggregateComponents-1"
+           xmlns:udt="urn:un:unece:uncefact:data:specification:UnqualifiedDataTypesSchemaModule:2"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <ext:UBLExtensions>
+    <ext:UBLExtension>
+      <ext:ExtensionContent>
+      </ext:ExtensionContent>
+    </ext:UBLExtension>
+  </ext:UBLExtensions>
+  <cbc:UBLVersionID>2.1</cbc:UBLVersionID>
+  <cbc:CustomizationID>2.0</cbc:CustomizationID>
+  <cbc:ID>'.$nd->serie.'-'.$nd->correlativo.'</cbc:ID>
+  <cbc:IssueDate>'.$nd->fecha_emision.'</cbc:IssueDate>
+  <cbc:DocumentCurrencyCode>PEN</cbc:DocumentCurrencyCode>
+  <cac:DiscrepancyResponse>
+    <cbc:ReferenceID>'.$nd->serie_doc.'-'.$nd->correlativo_doc.'</cbc:ReferenceID>
+    <cbc:ResponseCode>02</cbc:ResponseCode>
+    <cbc:Description>'.$nd->sustento_nota.'</cbc:Description>
+  </cac:DiscrepancyResponse>
+  <cac:BillingReference>
+    <cac:InvoiceDocumentReference>
+      <cbc:ID>'.$nd->serie_doc.'-'.$nd->correlativo_doc.'</cbc:ID>
+      <cbc:DocumentTypeCode>03</cbc:DocumentTypeCode>
+    </cac:InvoiceDocumentReference>
+  </cac:BillingReference>
+
+  <cac:Signature>
+    <cbc:ID>LlamaSign</cbc:ID>
+    <cac:SignatoryParty>
+      <cac:PartyIdentification>
+        <cbc:ID>20600258894</cbc:ID>
+      </cac:PartyIdentification>
+      <cac:PartyName>
+        <cbc:Name>HEALTH CARE ADMINISTRATION RED SALUD S.A.C.</cbc:Name>
+      </cac:PartyName>
+    </cac:SignatoryParty>
+    <cac:DigitalSignatureAttachment>
+      <cac:ExternalReference>
+        <cbc:URI>#LlamaSign</cbc:URI>
+      </cac:ExternalReference>
+    </cac:DigitalSignatureAttachment>
+  </cac:Signature>
+
+  <cac:AccountingSupplierParty>
+    <cac:Party>
+      <cac:PartyIdentification>
+        <cbc:ID schemeID="6"
+                schemeName="SUNAT:Identificador de Documento de Identidad"
+                schemeAgencyName="PE:SUNAT"
+                schemeURI="urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo06">20600258894</cbc:ID>
+      </cac:PartyIdentification>
+      <cac:PartyName>
+        <cbc:Name>HEALTH CARE ADMINISTRATION RED SALUD S.A.C.</cbc:Name>
+      </cac:PartyName>
+      <cac:PartyLegalEntity>
+        <cbc:RegistrationName>HEALTH CARE ADMINISTRATION RED SALUD S.A.C.</cbc:RegistrationName>
+        <cac:RegistrationAddress>
+          <cbc:AddressTypeCode>0001</cbc:AddressTypeCode>
+        </cac:RegistrationAddress>
+      </cac:PartyLegalEntity>
+    </cac:Party>
+  </cac:AccountingSupplierParty>
+  <cac:AccountingCustomerParty>
+    <cac:Party>
+      <cac:PartyIdentification>
+        <cbc:ID schemeID="6"
+                schemeName="SUNAT:Identificador de Documento de Identidad"
+                schemeAgencyName="PE:SUNAT"
+                schemeURI="urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo06">'.$nd->numero_documento_cli.'</cbc:ID>
+      </cac:PartyIdentification>
+      <cac:PartyLegalEntity>
+        <cbc:RegistrationName>'.$nd->razon_social_cli.'</cbc:RegistrationName>
+      </cac:PartyLegalEntity>
+    </cac:Party>
+  </cac:AccountingCustomerParty>
+  <cac:TaxTotal>
+    <cbc:TaxAmount currencyID="PEN">'.$nd->igv.'</cbc:TaxAmount>
+    <cac:TaxSubtotal>
+      <cbc:TaxableAmount currencyID="PEN">'.$nd->neto.'</cbc:TaxableAmount>
+      <cbc:TaxAmount currencyID="PEN">'.$nd->igv.'</cbc:TaxAmount>
+      <cac:TaxCategory>
+        <cac:TaxScheme>
+          <cbc:ID schemeID="UN/ECE 5153" schemeAgencyID="6">1000</cbc:ID>
+          <cbc:Name>IGV</cbc:Name>
+          <cbc:TaxTypeCode>VAT</cbc:TaxTypeCode>
+        </cac:TaxScheme>
+      </cac:TaxCategory>
+    </cac:TaxSubtotal>
+  </cac:TaxTotal>
+  <cac:RequestedMonetaryTotal>
+    <cbc:PayableAmount currencyID="PEN">'.$nd->total.'</cbc:PayableAmount>
+  </cac:RequestedMonetaryTotal>
+  <cac:DebitNoteLine>
+    <cbc:ID>1</cbc:ID>
+    <cbc:DebitedQuantity unitCode="ZZ">1</cbc:DebitedQuantity>
+    <cbc:LineExtensionAmount currencyID="PEN">'.$nd->neto.'</cbc:LineExtensionAmount>
+    <cac:PricingReference>
+      <cac:AlternativeConditionPrice>
+        <cbc:PriceAmount currencyID="PEN">'.$nd->total.'</cbc:PriceAmount>
+        <cbc:PriceTypeCode>01</cbc:PriceTypeCode>
+      </cac:AlternativeConditionPrice>
+    </cac:PricingReference>
+    <cac:TaxTotal>
+      <cbc:TaxAmount currencyID="PEN">'.$nd->igv.'</cbc:TaxAmount>
+      <cac:TaxSubtotal>
+        <cbc:TaxableAmount currencyID="PEN">'.$nd->neto.'</cbc:TaxableAmount>
+        <cbc:TaxAmount currencyID="PEN">'.$nd->igv.'</cbc:TaxAmount>
+        <cac:TaxCategory>
+          <cbc:Percent>18.00</cbc:Percent>
+          <cbc:TaxExemptionReasonCode>10</cbc:TaxExemptionReasonCode>
+          <cac:TaxScheme>
+            <cbc:ID>1000</cbc:ID>
+            <cbc:Name>IGV</cbc:Name>
+            <cbc:TaxTypeCode>VAT</cbc:TaxTypeCode>
+          </cac:TaxScheme>
+        </cac:TaxCategory>
+      </cac:TaxSubtotal>
+    </cac:TaxTotal>
+    <cac:Item>
+      <cbc:Description>'.$nd->sustento_nota.'</cbc:Description>
+    </cac:Item>
+    <cac:Price>
+      <cbc:PriceAmount currencyID="PEN">'.$nd->total.'</cbc:PriceAmount>
+    </cac:Price>
+  </cac:DebitNoteLine>
+</DebitNote>';
+
+				$nameDoc=$nd->serie."-".$nd->correlativo;
+				$filecdr=$nd->mesanio.'-cdrNotaDebitoFactura';
+				$fileNota=$nd->mesanio.'-NotaDebitoFactura';
+				$carpetaCdr = 'adjunto/xml/notasdecredito/'.$filecdr;
+		    	$carpetaNota = 'adjunto/xml/notasdecredito/'.$fileNota;
+
+		    	$tipodocumento = 'Nota de Debito';
+
+		    	if (!file_exists($carpetaCdr)) {
+				    mkdir($carpetaCdr, 0777, true);
+				}
+				
+				if (!file_exists($carpetaNota)) {
+				    mkdir($carpetaNota, 0777, true);
+				}
+
+				$doc = new DOMDocument(); 
+				$doc->loadxml($datos);
+				$doc->save($carpetaNota.'/'.$filename.'.xml');
+				$xmlPath = $carpetaNota.'/'.$filename.'.xml';
+				$certPath = 'adjunto/firma/LLAMA-PE-CERTIFICADO-DEMO-20600258894.pem'; // Convertir pfx to pem 
+				$signer = new SignedXml();
+				$signer->setCertificateFromFile($certPath);
+				$xmlSigned = $signer->signFromFile($xmlPath);
+				file_put_contents($filename.'.xml', $xmlSigned);
+
+				//echo $xmlSigned;
+				if ($this->zip->open($carpetaNota.'/'.$filename.".zip", ZIPARCHIVE::CREATE)===true) {
+					$this->zip->addFile($filename.'.xml');
+					$this->zip->close();
+					unlink($filename.".xml");
+					unlink($carpetaNota.'/'.$filename.".xml");
+				} else {
+					unlink($filename.".xml");
+					unlink($carpetaNota.'/'.$filename.".xml");
+				}
+
+				$service = 'https://e-beta.sunat.gob.pe/ol-ti-itcpfegem-beta/billService?wsdl';
+
+		    	$headers = new CustomHeaders('20600258894MODDATOS', 'moddatos'); 
+
+		    	$client = new SoapClient($service, array(
+		    		'cache_wsdl' => WSDL_CACHE_NONE,
+		    		'trace' => TRUE,
+		    		//'soap_version' => SOAP_1_2
+		    	));
+				//print_r($client);
+		    	//exit();
+		    	$client->__setSoapHeaders([$headers]); 
+		    	$fcs = $client->__getFunctions();
+		    	$zipXml = $filename.'.zip'; 
+		    	$params = array( 
+		    		'fileName' => $zipXml, 
+		    		'contentFile' => file_get_contents($carpetaNota.'/'.$zipXml) 
+		    	); 
+		    	
+		    	$client->sendBill($params);
+		    	$status = $client->__getLastResponse();
+
+		    	//Descargamos el Archivo Response
+				$archivo = fopen($carpetaCdr.'/'.'C'.$filename.'.xml','w+');
+				fputs($archivo, $status);
+				fclose($archivo);
+
+				//LEEMOS EL ARCHIVO XML
+				$responsexml = simplexml_load_file($carpetaCdr.'/'.'C'.$filename.'.xml');
+				foreach ($responsexml->xpath('//applicationResponse') as $response){ }
+				
+				//AQUI DESCARGAMOS EL ARCHIVO CDR(CONSTANCIA DE RECEPCIÓN)
+				$cdr=base64_decode($response);
+				$archivo = fopen($carpetaCdr.'/'.'R-'.$filename.'.zip','w+');
+				fputs($archivo,$cdr);
+				fclose($archivo);
+				$archivo2 = chmod($carpetaCdr.'/'.'R-'.$filename.'.zip', 0777);
+
+				unlink($carpetaCdr.'/'.'C'.$filename.'.xml');
+
+				//verificar respuesta SUNAT
+				if (file_exists($carpetaCdr.'/R-'.$filename.'.zip')) {
+					if ($this->zip->open($carpetaCdr.'/R-'.$filename.'.zip') === TRUE) {
+					    $this->zip->extractTo($carpetaCdr.'/');
+					    $this->zip->close();
+					}
+					unlink($carpetaCdr.'/R-'.$filename.'.zip');
+				}
+
+				$xml = file_get_contents($carpetaCdr.'/R-'.$filename.'.xml');
+				$DOM = new DOMDocument('1.0', 'utf-8');
+				$DOM->loadXML($xml);
+				$respuesta = $DOM->getElementsByTagName('Description');
+				foreach ($respuesta as $r) {
+					$descripcion = $r->nodeValue;
+				}
+				if ($descripcion == 'La '.$tipodocumento.' numero '.$nameDoc.', ha sido aceptada') {
+					$this->comprobante_pago_mdl->updateEstadoCobroEmitido($nd->fecha_emision, $nd->corre, $nd->serie);
+				}
+
+			}
+		}
+	}
 }

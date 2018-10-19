@@ -127,12 +127,12 @@
 																<select name="canales" id="canales" required="Seleccione una opción de la lista">
 																	<option value=0>Seleccione</option>
 																	<?php foreach ($canales as $c):
-																		if($idclienteempresa==$c->idclienteempresa):
+																		if($idserie==$c->idserie):
 																			$estp='selected';
 																		else:
 																			$estp='';
 																		endif;?>
-																		<option value="<?=$c->idclienteempresa;?>" <?=$estp?> ><?=$c->nombre_comercial_cli?></option>
+																		<option value="<?=$c->numero_serie;?>" <?=$estp?> ><?=$c->numero_serie.' - '.$c->descripcion_ser?></option>
 																	<?php endforeach; ?>
 																</select>
 															</div>
@@ -153,12 +153,32 @@
 															</div>
 															<div class="profile-info-name"></div>
 														</div>											
-													</div>	
+													</div>
+													<hr>
 													<div id="resp"></div>
-													<br/><br/><br/>
+													<div id="resp10">
+														<input type='text' class='hidden' id='numeroSerie' name='numeroSerie' value=''>
+													</div>
+													
 													<div id="resp4"></div>
 													<div id="resp2"></div>			
 													<div id="resp3"></div>
+
+													<div id="accionesTablaVerificar">
+														<hr>
+
+														<div class="profile-user-info profile-user-info-striped">
+															<div  class="profile-info-row">
+																<div class="profile-info-name"></div>
+																<div class="profile-info-name">
+																	<button type="button" id="buttoncdr" name="buttoncdr" class="btn btn-white btn-info btn-bold btn-xs"> Descargar CDR SUNAT <i class="ace-icon fa fa-file-excel-o bigger-110 icon-only"></i>
+																	</button>
+																</div>
+																<div class="profile-info-name"></div>
+																<div class="profile-info-name"></div>
+															</div>
+														</div>
+													</div>
 
 												</form>
 											</div>
@@ -245,7 +265,7 @@
 	    <script>
 			$(document).ready(function(){
 				
-				$("#accionesTabla").hide();
+				$("#accionesTablaVerificar").hide();
 				//funcion para enviar datos de la vista al controlador
 				//para generar los checkbox dinámicos
 				$("#canales").change(function() {
@@ -256,19 +276,21 @@
 						type: 'POST',
 						dataType: 'json',
 						data: {canales:canales},
-						beforeSend: function(){
+						/*beforeSend: function(){
 				            $('#resp').html("<br><br><img src='<?=base_url()."public/assets/img/loading2.gif"?>'>");
-				        },
+				        },*/
 						success: function(data)
 						{
 							//#resp es el id del div donde se van a crear los checkbozx
 							if ($('#canales').val() == 0) {
 						       	$("#resp").html(null);
 								$("#resp2").html(null);
+								$("#numeroSerie").val(null);
 						    } else {
 								$("#resp").html(null);
 								$("#resp2").html(null);
 								$("#resp").html(data);
+								$("#numeroSerie").val(data.numeroSerie);
 						    }
 						}
 					});
@@ -284,15 +306,32 @@
 			           	data: $("#formCategoria").serialize(),
 			           	beforeSend: function(){
 				            $('#resp2').html("<br><br><img src='<?=base_url()."public/assets/img/loading2.gif"?>'>");
+				            $("#accionesTablaVerificar").hide();
 				        },
 			           	success: function(data)             
 			           	{
 			           		$("#resp2").html(null);
 			             	$('#resp2').html(data); 
-			             	$("#accionesTabla").show();
+			             	$("#accionesTablaVerificar").show();
 			             	$('#tablaDatos').DataTable( {
 								"pagingType": "full_numbers"
 							} );
+			           	}
+			       	});
+			       	return false;
+			    });
+
+			    $('#buttoncdr').click(function(){
+			        $.ajax({                        
+			           	url: "<?= BASE_URL()?>index.php/verificar_cnt/descargarCDR",   
+			           	type: 'POST',
+			           	dataType: 'json',                                 
+			           	data: $("#formCategoria").serialize(),
+			           	success: function(response)             
+			           	{
+			           		if(response.zip) { 
+					     		location.href = response.zip;
+					     	} 
 			           	}
 			       	});
 			       	return false;

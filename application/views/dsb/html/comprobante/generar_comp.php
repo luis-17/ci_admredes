@@ -772,6 +772,7 @@
 			           	data: $("#formCategoriaDos").serialize(),
 			           	beforeSend: function(){
 				            $('#resp40').html("<img src='<?=base_url()."public/assets/img/loading2.gif"?>'><br><br>");
+				            $("#accionesTablaEmitido").hide();
 				        },
 				        complete:function() {
 					        $("#resp40").remove();

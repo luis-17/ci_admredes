@@ -217,14 +217,19 @@
 														    	<input type="text" class="form-control" name="numSerie" id="numSerie" value="" readonly>
 															</div>
 
-															<div class="form-group col-md-4">
+															<div class="form-group col-md-3">
 														    	<b class="text-primary">Correlativo Generado</b>
 														   		<input type="text" class="form-control" name="correGen" id="correGen" value="" readonly>
 															</div>
 
-															<div class="form-group col-md-5">
+															<div class="form-group col-md-3">
 														    	<b class="text-primary">Importe de Nota de Crédito</b>
 														   		<input type="number" class="form-control" name="impNota" id="impNota" required="Ingrese importe de la nota de crédito" value="">
+															</div>
+
+															<div class="form-group col-md-3">
+														    	<b class="text-primary">Fecha de Emisión</b>
+														   		<input type="date" class="form-control" name="fechEmiNota" id="fechEmiNota" required="Ingrese importe de la nota de crédito" value="<?=$fechaDoc;?>">
 															</div>
 														</div>
 														<div class="form-row">
@@ -324,14 +329,19 @@
 														    	<input type="text" class="form-control" name="numSeriesD" id="numSeriesD" value="" readonly>
 															</div>
 
-															<div class="form-group col-md-4">
+															<div class="form-group col-md-3">
 														    	<b class="text-primary">Correlativo Generado</b>
 														   		<input type="text" class="form-control" name="numCorreD" id="numCorreD" value="" readonly>
 															</div>
 
-															<div class="form-group col-md-5">
+															<div class="form-group col-md-3">
 														    	<b class="text-primary">Importe de Nota de Débito</b>
 														   		<input type="number" class="form-control" name="impNotaD" id="impNotaD" required="Ingrese importe de la nota de crédito" value="">
+															</div>
+
+															<div class="form-group col-md-3">
+														    	<b class="text-primary">Fecha de Emisión</b>
+														   		<input type="date" class="form-control" name="fechEmiNotaD" id="fechEmiNotaD" required="Ingrese importe de la nota de crédito" value="<?=$fechaDoc;?>">
 															</div>
 														</div>
 														<div class="form-row">
@@ -456,7 +466,6 @@
 																                <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
 																            </div>
 																        </div>
-
 																    </div>
 																</div>
 
@@ -612,7 +621,7 @@
 	           		$('#idplan').val('');
 	           		$('#serie').val(0);
 	           		$('#correlativoDoc').val('');
-	           		$('#fechaDoc').date('dd/mm/yyyy');
+	           		$('#fechEmiNota').date('dd/mm/yyyy');
 				});
 
 				$('#buttonGuardarCredito').click(function(){
@@ -640,7 +649,7 @@
 			           		$('#idplan').val('');
 			           		$('#serie').val(0);
 			           		$('#correlativoDoc').val('');
-			           		$('#fechaDoc').date('dd/mm/yyyy');
+			           		$('#fechEmiNota').date('dd/mm/yyyy');
 					    },
 			           	success: function(data)             
 			           	{
@@ -692,6 +701,8 @@
 	           		$('#idclienteD').val('');
 	           		$('#idplanD').val('');
 	           		$('#serie').val(0);
+			        $('#correlativoDoc').val('');
+			       	$('#fechEmiNotaD').date('dd/mm/yyyy');
 				});
 
 			    $('#buttonGuardarDebito').click(function(){
@@ -719,7 +730,7 @@
 			           		$('#idplan').val('');
 			           		$('#serie').val(0);
 			           		$('#correlativoDoc').val('');
-			           		$('#fechaDoc').date('dd/mm/yyyy');
+			           		$('#fechEmiNotaD').date('dd/mm/yyyy');
 					    },
 			           	success: function(data)             
 			           	{
@@ -729,7 +740,7 @@
 			       	return false;
 			    });
 
-//------------------------------------------------------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------------------------------------------------
 				//EMITIR NOTA DE CRÉDITO Y DÉBITO
 				$("#accionesTablaEmitido").hide();
 				//función para enviar datos a la tabla dinámica que se va a generar   
@@ -747,7 +758,7 @@
 			           		$("#resp2").html(null);
 			             	$("#resp2").html(data); 
 			             	$("#accionesTablaEmitido").show();
-			             	$("#tablaDatos").DataTable({
+			             	$('#tablaDatos').DataTable({
 								"pagingType": "full_numbers"
 							});
 			           	}
@@ -817,15 +828,16 @@
 
 			    $('#buttonEmitir').click(function(){
 			        $.ajax({                        
-			           	url: "<?= BASE_URL()?>index.php/notas_cnt/crearXml",   
+			           	url: "<?= BASE_URL()?>index.php/notas_cnt/generarXmlNotaCredito",   
 			           	type: 'POST',
 			           	dataType: 'json',                                 
-			           	data: $("#formCategoria").serialize(),
+			           	data: $("#formCategoriaEmitir").serialize(),
 			           	beforeSend: function(){
-				            $('#resp4').html("<img src='<?=base_url()."public/assets/img/loading2.gif"?>'><br><br>");
+				            $('#resp1').html("<img src='<?=base_url()."public/assets/img/loading2.gif"?>'><br><br>");
+				            //$("#accionesTablaEmitido").hide();
 				        },
 				        complete:function() {
-					        $("#resp4").remove();
+					        $("#resp1").remove();
 					        alert("Comprobante electrónico emitido.");
 			    			location.reload();
 					    },
