@@ -1,4 +1,8 @@
 <?php
+// ini_set("max_execution_time", 12000);
+// ini_set("memory_limit","256M");
+error_reporting(E_ALL);
+ini_set("display_error", "on");
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Reportes_cnt extends CI_Controller {
@@ -41,29 +45,29 @@ class Reportes_cnt extends CI_Controller {
 			$user = $this->session->userdata('user');
 			extract($user);
 
-		$menuLista = $this->menu_mdl->getMenu($idusuario);
-		$data['menu1'] = $menuLista;
+			$menuLista = $this->menu_mdl->getMenu($idusuario);
+			$data['menu1'] = $menuLista;
 
-		$month = date('m');
-      	$year = date('Y');
-      	$day = date("d", mktime(0,0,0, $month+1, 0, $year));
+			$month = date('m');
+	      	$year = date('Y');
+	      	$day = date("d", mktime(0,0,0, $month+1, 0, $year));
 
-		$data['plan'] = "";
-		$data['fecinicio'] = date('Y-m-d', mktime(0,0,0, $month, 1, $year));
-		$data['fecfin'] = date('Y-m-d', mktime(0,0,0, $month, $day, $year));
+			$data['plan'] = "";
+			$data['fecinicio'] = date('Y-m-d', mktime(0,0,0, $month, 1, $year));
+			$data['fecfin'] = date('Y-m-d', mktime(0,0,0, $month, $day, $year));
 
-		$submenuLista = $this->menu_mdl->getSubMenu($idusuario);
-		$data['menu2'] = $submenuLista;	
+			$submenuLista = $this->menu_mdl->getSubMenu($idusuario);
+			$data['menu2'] = $submenuLista;	
 
-		$planes = $this->reportes_mdl->getPlanes();
-		$data['planes'] = $planes;
-		$canales = $this->reportes_mdl->getCanales();
-		$data['canales'] = $canales;
-		$data['canal'] = '';
+			$planes = $this->reportes_mdl->getPlanes();
+			$data['planes'] = $planes;
+			$canales = $this->reportes_mdl->getCanales();
+			$data['canales'] = $canales;
+			$data['canal'] = '';
 
-		$data['estilo'] = 'none';
+			$data['estilo'] = 'none';
 
-		$this->load->view('dsb/html/reportes/consultar_cobros.php',$data);
+			$this->load->view('dsb/html/reportes/consultar_cobros.php',$data);
 
 		}
 		else{
@@ -221,7 +225,7 @@ class Reportes_cnt extends CI_Controller {
 		        $this->excel->setActiveSheetIndex(0);
 		 
 		        header('Content-Type: application/vnd.ms-excel');
-		        header('Content-Disposition: attachment;filename="Liquidación '.$nom_plan.' '.$hoy.'.xls"');
+		        header('Content-Disposition: attachment;filename="Liquidación '.$nom_plan.' '.$hoy.'.csv"');
 		        header('Cache-Control: max-age=0'); //no cache
 		        $objWriter = PHPExcel_IOFactory::createWriter($this->excel, 'Excel5');
 		        // Forzamos a la descarga
@@ -552,7 +556,7 @@ class Reportes_cnt extends CI_Controller {
 
 		 
 		        header('Content-Type: application/vnd.ms-excel');
-		        header('Content-Disposition: attachment;filename="Atenciones '.$nom_plan.' '.$hoy.'.xls"');
+		        header('Content-Disposition: attachment;filename="Atenciones '.$nom_plan.' '.$hoy.'.csv"');
 		        header('Cache-Control: max-age=0'); //no cache
 		        $objWriter = PHPExcel_IOFactory::createWriter($this->excel, 'Excel5');
 		        // Forzamos a la descarga
@@ -666,12 +670,12 @@ class Reportes_cnt extends CI_Controller {
 		        }
 		 
 		        header('Content-Type: application/vnd.ms-excel');
-		        header('Content-Disposition: attachment;filename="Afiliados '.$nom_plan.' '.$hoy.'.xls"');
+		        header('Content-Disposition: attachment;filename="Afiliados '.$nom_plan.' '.$hoy.'.csv"');
 		        header('Cache-Control: max-age=0'); //no cache
 		        $objWriter = PHPExcel_IOFactory::createWriter($this->excel, 'Excel5');
 		        // Forzamos a la descarga
 		        $objWriter->save('php://output');
-		     }
+		    }
 
 		}
 		else{

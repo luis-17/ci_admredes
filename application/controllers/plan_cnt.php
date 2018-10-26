@@ -72,6 +72,7 @@ class plan_cnt extends CI_Controller {
 		$data['nom'] = $nom;
 		$data['id'] = $id;
 		$data['iddet'] = 0;
+		$data['cadena'] = "";
 
 		$this->load->view('dsb/html/plan/plan_cobertura.php',$data);
 	}
@@ -181,7 +182,13 @@ class plan_cnt extends CI_Controller {
 		$data['visible'] = $_POST['visible'];
 		$data['flg_liqui'] = $_POST['flg_liqui'];
 		$data['tiempo'] = $_POST['eventos'];
-		$data['num_eventos'] = $_POST['num_eventos'];
+				
+		if($_POST['eventos']==""){
+			$data['num_eventos'] = "";
+		}else{
+			$data['num_eventos'] = $_POST['num_eventos'];
+		}
+		
 		if($_POST['flg_liqui']=='No'){
 			$data['valor'] = '';
 			$data['operador'] = '';
@@ -190,18 +197,28 @@ class plan_cnt extends CI_Controller {
 				$data['operador'] = $_POST['operador'];
 		}
 
-		if($_POST['idplandetalle']==0):
+		if($_POST['idplandetalle']==0){
 			$this->plan_mdl->insert_cobertura($data);
-			else:
+			$data['iddet'] = $this->db->insert_id();
+			$prod = $_POST['prod'];
+			if(!empty($prod)){
+			$cont = count($prod);
+				for($i=0;$i<$cont;$i++){
+				$data['idprod'] = $prod[$i];
+				$this->plan_mdl->insert_proddet($data);
+				}
+			}
+		}else{
 				$this->plan_mdl->update_cobertura($data);
-		endif;
+		}
 
-		$data['iddet'] = 0;
 		$cobertura = $this->plan_mdl->getCobertura($data['id']);
 		$data['cobertura'] = $cobertura;
 
 		$items = $this->plan_mdl->getItems();
 		$data['items'] = $items;
+		$data['iddet'] = 0;
+		$data['cadena'] = "";
 		$this->load->view('dsb/html/plan/plan_cobertura.php',$data);
  	}
 
@@ -270,6 +287,26 @@ class plan_cnt extends CI_Controller {
 		$operador=$this->plan_mdl->get_operador();
 		$data['operador'] = $operador;
 
+		$productos = $this->plan_mdl->get_productos2($iddet);
+		if(!empty($productos)){
+		$cadena = '<label class="col-sm-3 control-label no-padding-right" for="form-field-1"> Detalle: </label>
+					<div class="col-sm-9">
+						<table>';
+			foreach ($productos as $pr) {
+
+				$link="window.location.href='".base_url()."index.php/".$pr->funcion."/".$pr->idproducto."/".$iddet."/".$id."/".$nom."'";
+
+				$cadena.='<tr>
+							<td><input type="checkbox" onclick="'.$link.'" '.$pr->checked.'></td>
+							<td>'.$pr->descripcion_prod.'</td>
+						</tr>';
+			}
+			$cadena.='</table></div>';
+		}else{
+			$cadena="";
+		}
+		$data['cadena'] = $cadena;
+
 		$this->load->view('dsb/html/plan/plan_cobertura.php',$data);
  	}
 
@@ -296,4 +333,44 @@ class plan_cnt extends CI_Controller {
 				parent.$.fancybox.close();
 				</script>";
  	}
+
+ 	public function detalle_producto()
+	{
+		$item = $_POST['id'];
+
+		$productos = $this->plan_mdl->get_productos($item);
+		if(!empty($productos)){
+		$cadena = '<label class="col-sm-3 control-label no-padding-right" for="form-field-1"> Detalle: </label>
+					<div class="col-sm-9">
+						<table>';
+			foreach ($productos as $pr) {
+				$cadena.="<tr>
+							<td><input type='checkbox' name='prod[]' value='".$pr->idproducto."'></td>
+							<td>".$pr->descripcion_prod."</td>
+						</tr>";
+			}
+
+		$cadena.='</table></div>';
+		}else{
+			$cadena="<input type='hidden' id='prod' name='prod' value=''>";
+		}
+
+		echo $cadena;
+	}
+
+	public function eliminar_producto($idprod,$iddet,$id,$nom)
+	{
+		$this->plan_mdl->eliminar_producto($idprod,$iddet);
+		redirect("index.php/seleccionar_cobertura/".$id."/".$nom."/".$iddet);
+	}
+
+	public function insertar_producto($idprod,$iddet,$id,$nom)
+	{
+		$data['iddet'] = $iddet;
+		$data['idprod'] = $idprod
+		;
+
+		$this->plan_mdl->insert_proddet($data);
+		redirect("index.php/seleccionar_cobertura/".$id."/".$nom."/".$iddet);
+	}
 }
