@@ -193,24 +193,10 @@ class verificar_cnt extends CI_Controller {
 								$html .= "<td align='left'>".utf8_decode($b->nombre_plan)."</td>";
 								$html .= "<td align='center'>S/. ".$importe2."</td>";
 								if (file_exists($carpetaCdr.'/R-'.$filename.'.xml')) {
-									if ($descripcion == 'La Boleta numero '.$nameDoc.', ha sido aceptada') {
+									if ($descripcion == 'La Boleta numero '.$nameDoc.', ha sido aceptada' || $descripcion == 'La Nota de Credito numero '.$nameDoc.', ha sido aceptada' || $descripcion == 'La Nota de Debito numero '.$nameDoc.', ha sido aceptada') {
 										$html .= "<td align='left' class='success'>".$descripcion."</td>";
-										/*$html .= "<td align='left'>";
-											$html .= "<ul class='ico-stack'>";
-												$html .="<div title='ver PDF' id='pdfButton' onclick=''>";
-													$html .="<a class='boton fancybox' href='".base_url()."index.php/ventas_cnt/generarPdf/".$b->idcomprobante."/".$canales."' data-fancybox-width='950' data-fancybox-height='800' target='_blank'>";
-														$html .= "<i class='ace-icon fa fa-file-pdf-o bigger-120'></i>";
-													$html .="</a>";
-												$html .="</div>";
-													$html .="<div title='enviar PDF' id='pdfButtonEnviar' onclick=''>";
-														$html .="<a class='boton fancybox' href='".base_url()."index.php/ventas_cnt/enviarPdf/".$b->idcomprobante."/".$canales."' data-fancybox-width='750' data-fancybox-height='275' target='_blank'>";
-															$html .= "<i class='ace-icon fa fa-envelope bigger-120'></i>";
-														$html .="</a>";
-													$html .="</div>";
-											$html .= "</ul>";
-										$html .="</td>";*/
 									} else {
-										$this->comprobante_pago_mdl->updateEstadocobroComprobante();
+										$this->comprobante_pago_mdl->updateEstadocobroComprobante($b->idcomprobante);
 										$html .= "<td align='left' class='success'>".$descripcion."</td>";
 										//$html .= "<td align='left'></td>";
 									}
@@ -281,24 +267,10 @@ class verificar_cnt extends CI_Controller {
 									$html .= "<td align='left'>".$f->nombre_plan."</td>";
 									$html .= "<td align='center'>S/. ".$importe2."</td>";
 									if (file_exists($carpetaCdr.'/R-'.$filename.'.xml')) {
-										if ($descripcion == 'La Factura numero '.$nameDoc.', ha sido aceptada') {
+										if ($descripcion == 'La Factura numero '.$nameDoc.', ha sido aceptada' || $descripcion == 'La Nota de Credito numero '.$nameDoc.', ha sido aceptada' || $descripcion == 'La Nota de Debito numero '.$nameDoc.', ha sido aceptada') {
 											$html .= "<td align='left' class='success'>".$descripcion."</td>";
-											/*$html .= "<td align='left'>";
-												$html .= "<ul class='ico-stack'>";
-													$html .="<div title='ver PDF' id='pdfButton' onclick=''>";
-														$html .="<a class='boton fancybox' href='".base_url()."index.php/ventas_cnt/generarPdf/".$f->idcomprobante."/".$canales."' data-fancybox-width='950' data-fancybox-height='800' target='_blank'>";
-															$html .= "<i class='ace-icon fa fa-file-pdf-o bigger-120'></i>";
-														$html .="</a>";
-													$html .="</div>";
-														$html .="<div title='enviar PDF' id='pdfButtonEnviar' onclick=''>";
-															$html .="<a class='boton fancybox' href='".base_url()."index.php/ventas_cnt/enviarPdf/".$f->idcomprobante."/".$canales."' data-fancybox-width='750' data-fancybox-height='275' target='_blank'>";
-																$html .= "<i class='ace-icon fa fa-envelope bigger-120'></i>";
-															$html .="</a>";
-														$html .="</div>";
-												$html .= "</ul>";
-											$html .="</td>";*/
 										} else {
-											$this->comprobante_pago_mdl->updateEstadocobroComprobante();
+											$this->comprobante_pago_mdl->updateEstadocobroComprobante($f->idcomprobante);
 											$html .= "<td align='left' class='danger'>".$descripcion."</td>";
 											//$html .= "<td align='left'></td>";
 										}
@@ -330,53 +302,137 @@ class verificar_cnt extends CI_Controller {
 		$inicio = $_POST['fechainicio'];
 		$fin = $_POST['fechafin'];
 
-		$serie = $_POST['numeroSerie'];
-
-		$mesanio = $this->comprobante_pago_mdl->getMesanio($inicio, $fin, $serie);
+		$serie = $_POST['numSerie'];
+		$serieP = array_values($serie)[0];
+		//print_r(substr($canales, 1, 1));
+		//exit();
+		$mesanio = $this->comprobante_pago_mdl->getMesanio($inicio, $fin);
 
 		foreach ($mesanio as $m) {
 
-			$nombreArch = $m->mesanio;
+			$nombreArch = $m->mesanios;
 
-			if ($canales == 1 || $canales == 2 || $canales == 3 || $canales == 6 || $canales == 7) {
-				$filecdr=$m->mesanio.'-cdrboletas';
-				$boletas = $this->comprobante_pago_mdl->getDatosBoletaEmitida($inicio, $fin, $serie);
+			if (substr($canales, 0, 1) == 'B') {
 
-				if ($this->zip->open("adjunto/xml/boletas/".$filecdr."/cdr-".$m->mesanio.".zip", ZIPARCHIVE::CREATE)===true) {
+				if (substr($canales, 1, 1) == '0') {
+					$filecdr=$m->mesanios.'-cdrboletas';
+					$ruta="adjunto/xml/boletas/".$filecdr;		
 
-					foreach ($boletas as $b) {
-						$filename="R-20600258894-03-".$b->serie."-".$b->correlativo;
-						$this->zip->addFile("adjunto/xml/boletas/".$filecdr."/".$filename.'.xml', $filename.'.xml');
+					if ($this->zip->open($ruta."/cdr-".$nombreArch.".zip", ZIPARCHIVE::CREATE)===true) {
+
+						
+						$boletasCdr = $this->comprobante_pago_mdl->getDatosBoletaEmitida($inicio, $fin, $serieP);
+
+						foreach ($boletasCdr as $bc) {
+							$nombre="R-20600258894-03-".$bc->serie."-".$bc->correlativo;
+							$this->zip->addFile($ruta.'/'.$nombre.'.xml', $nombre.'.xml');
+						}
+
+						$this->zip->close();
+
 					}
+				} elseif (substr($canales, 1, 1) == 'C') {
+					$filecdr=$m->mesanios.'-cdrNotaCreditoBoleta';
+					$ruta="adjunto/xml/notasdecredito/".$filecdr;
 
-					$this->zip->close();
+					if ($this->zip->open($ruta."/cdr-".$nombreArch.".zip", ZIPARCHIVE::CREATE)===true) {
+
+						
+						$boletasCdr = $this->comprobante_pago_mdl->getDatosBoletaEmitida($inicio, $fin, $serieP);
+
+						foreach ($boletasCdr as $bc) {
+							$nombre="R-20600258894-07-".$bc->serie."-".$bc->correlativo;
+							$this->zip->addFile($ruta.'/'.$nombre.'.xml', $nombre.'.xml');
+						}
+
+						$this->zip->close();
+					}
+				} elseif (substr($canales, 1, 1) == 'D') {
+					$filecdr=$m->mesanios.'-cdrNotaDebitoBoleta';
+					$ruta="adjunto/xml/notasdedebito/".$filecdr;
+
+					if ($this->zip->open($ruta."/cdr-".$nombreArch.".zip", ZIPARCHIVE::CREATE)===true) {
+
+						
+						$boletasCdr = $this->comprobante_pago_mdl->getDatosBoletaEmitida($inicio, $fin, $serieP);
+
+						foreach ($boletasCdr as $bc) {
+							$nombre="R-20600258894-08-".$bc->serie."-".$bc->correlativo;
+							$this->zip->addFile($ruta.'/'.$nombre.'.xml', $nombre.'.xml');
+						}
+
+						$this->zip->close();
+					}
 				}
 
-			} elseif ($canales == 4) {
-				$filecdr=$m->mesanio.'-cdrfacturas';
-				$facturas = $this->comprobante_pago_mdl->getDatosFacturaEmitida($inicio, $fin, $serie);
+			} elseif (substr($canales, 0, 1) == 'F') {
 
-				if ($this->zip->open("adjunto/xml/facturas/".$filecdr."/cdr-".$m->mesanio.".zip", ZIPARCHIVE::CREATE)===true) {
+				if (substr($canales, 1, 1) == '0') {
+					$filecdr=$m->mesanio.'-cdrfacturas';
+					$ruta="adjunto/xml/facturas/".$filecdr;
 
-					foreach ($facturas as $f) {
-						$filename="R-20600258894-01-".$f->serie."-".$f->correlativo;
-						$this->zip->addFile($filename.'.xml');
+					if ($this->zip->open($ruta."/cdr-".$nombreArch.".zip", ZIPARCHIVE::CREATE)===true)
+						$facturasCdr = $this->comprobante_pago_mdl->getDatosFacturaEmitida($inicio, $fin, $serieP); {
+
+						foreach ($facturasCdr as $fc) {
+							$nombre="R-20600258894-01-".$fc->serie."-".$fc->correlativo;
+							$this->zip->addFile($ruta.'/'.$nombre.'.xml', $nombre.'.xml');
+						}
+
+						$this->zip->close();
+					} 
+
+				} elseif (substr($canales, 1, 1) == 'C') {
+					$filecdr=$m->mesanios.'-cdrNotaCreditoFactura';
+					$ruta="adjunto/xml/notasdecredito/".$filecdr;
+
+					if ($this->zip->open($ruta."/cdr-".$nombreArch.".zip", ZIPARCHIVE::CREATE)===true) {
+						
+						$facturasCdr = $this->comprobante_pago_mdl->getDatosBoletaEmitida($inicio, $fin, $serieP);
+
+						foreach ($facturasCdr as $fc) {
+							$nombre="R-20600258894-07-".$fc->serie."-".$fc->correlativo;
+							$this->zip->addFile($ruta.'/'.$nombre.'.xml', $nombre.'.xml');
+						}
+
+						$this->zip->close();
 					}
 
-					$this->zip->close();
-				} 
-				
+				} elseif (substr($canales, 1, 1) == 'D') {
+					$filecdr=$m->mesanios.'-cdrNotaDebitoFactura';
+					$ruta="adjunto/xml/notasdedebito/".$filecdr;
+
+					if ($this->zip->open($ruta."/cdr-".$nombreArch.".zip", ZIPARCHIVE::CREATE)===true) {
+
+						$facturasCdr = $this->comprobante_pago_mdl->getDatosBoletaEmitida($inicio, $fin, $serieP);
+
+						foreach ($facturasCdr as $fc) {
+							$nombre="R-20600258894-08-".$fc->serie."-".$fc->correlativo;
+							$this->zip->addFile($ruta.'/'.$nombre.'.xml', $nombre.'.xml');
+						}
+
+						$this->zip->close();
+					}
+				}
 			}
 		}
+			
+		$filePath = $ruta.'/cdr-'.$nombreArch.'.zip';
+		$file = basename($filePath);
+		//print_r($file);
+		//exit();
 
-		$fileName = basename('cdr-'.$nombreArch.'.zip');
-		$filePath = 'adjunto/xml/boletas/'.$filecdr.'/cdr-'.$nombreArch.'.zip';
-		
-		header("Content-type: application/zip");
-		header("Content-Disposition: attachment; filename=cdr-".$nombreArch.".zip");
-		header("Cache-Control: no-cache, must-revalidate");
-		header("Expires: 0");
-		readfile("cdr-".$nombreArch.".zip");
+        header('Content-Description: File Transfer');
+        header('Content-Type: application/octet-stream');
+        header('Content-Disposition: attachment; filename='.$file);
+        header('Content-Transfer-Encoding: binary');
+        header('Expires: 0');
+        header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
+        header('Pragma: public');
+        header('Content-Length: '.filesize($filePath));
+
+        readfile($filePath);
+	
 	}
 
 }

@@ -17,6 +17,7 @@ class ventas_cnt extends CI_Controller {
 		$this->load->model('menu_mdl');
         $this->load->model('comprobante_pago_mdl');
         $this->load->library('My_PHPMailer');
+        $this->load->library('Numero_Letras');
 
     }
 
@@ -54,6 +55,9 @@ class ventas_cnt extends CI_Controller {
 
 			$serie = $this->comprobante_pago_mdl->getSerie();
 			$data['serie'] = $serie;
+
+			$planes = $this->comprobante_pago_mdl->getPlanesSelect();
+			$data['planes'] = $planes;
 
 			$this->load->view('dsb/html/comprobante/generar_comp.php',$data);
 
@@ -342,6 +346,22 @@ class ventas_cnt extends CI_Controller {
 
 	}
 
+	public function mostrarplanes(){
+
+		$idplan=$_POST['planes'];
+		//print_r($serie);
+		//exit();
+		$planes = $this->comprobante_pago_mdl->getPlanesSelectId($idplan);
+
+		foreach ($planes as $p):
+
+			$data['idplan'] = $p->idplan;
+			
+		endforeach;		
+
+		echo json_encode($data);		
+	}
+
 	public function guardarComprobanteManual(){
 
 		$fechaEmi=$_POST['fechaDoc'];
@@ -349,12 +369,13 @@ class ventas_cnt extends CI_Controller {
 		$correlativo=$_POST['correlativoDoc'];
 		$importeTotal=$_POST['impTotalD'];
 		$sustento=$_POST['descripcionManual'];
+		$idplan = $_POST['idplanManual'];
 
 		if ($serie == 'B001' || $serie == 'B002' || $serie == 'B003' || $serie == 'B004' || $serie == 'B005') {
 			
 			$tipoDoc=3;
 
-			$this->comprobante_pago_mdl->insertDatosComprobanteManualBoleta($fechaEmi, $serie, $correlativo, $tipoDoc, $importeTotal, $sustento);
+			$this->comprobante_pago_mdl->insertDatosComprobanteManualBoleta($fechaEmi, $serie, $correlativo, $tipoDoc, $importeTotal, $idplan, $sustento);
 
 
 		} elseif ($serie == 'F001') {
@@ -362,7 +383,7 @@ class ventas_cnt extends CI_Controller {
 			$tipoDoc=2;
 			$clienteempresa=4;
 
-			$this->comprobante_pago_mdl->insertDatosComprobanteManualFactura($fechaEmi, $serie, $correlativo, $tipoDoc, $clienteempresa, $importeTotal, $sustento);
+			$this->comprobante_pago_mdl->insertDatosComprobanteManualFactura($fechaEmi, $serie, $correlativo, $tipoDoc, $clienteempresa, $importeTotal, $idplan, $sustento);
 		}
 	}
 
@@ -1032,6 +1053,8 @@ class ventas_cnt extends CI_Controller {
 
 	public function generarPdf($idcomprobante, $canales){
 
+		$numLet = new NumeroALetras();
+
 		$month = date('m');
       	$year = date('Y');
       	$day = date("d");
@@ -1060,6 +1083,8 @@ class ventas_cnt extends CI_Controller {
 	    		$total = number_format((float)$tot, 2, '.', '');
 	    		$neto = number_format((float)$nt, 2, '.', '');
 	    		$igvfinal=number_format((float)$igv, 2, '.', '');
+	    		$totalSinDec = substr ($total, 0, -3);
+	    		$totalDec = substr ($total, -2);
 	    		          
 	            $this->pdf->Ln('15');
 	          	$this->pdf->SetFont('Arial','B',10); 
@@ -1075,7 +1100,7 @@ class ventas_cnt extends CI_Controller {
 	            $this->pdf->SetFont('Arial','B',11);
 	            $this->pdf->Cell(0,0,utf8_decode("Dirección: ").$b->cont_direcc,0,0,'L');
 	            $this->pdf->Ln('15');
-	            $this->pdf->SetFont('Arial','B',10);
+	            $this->pdf->SetFont('Arial','B',8);
 	            $this->pdf->SetTextColor(255,255,255);
 	            $this->pdf->SetFillColor(204, 006, 005); 
 	            $this->pdf->Cell(25,10,"Cantidad",1,0,'C', true);
@@ -1084,7 +1109,7 @@ class ventas_cnt extends CI_Controller {
 	            $this->pdf->Cell(25,10,"Descuento",1,0,'C', true);
 	            $this->pdf->Cell(30,10,"Total",1,0,'C', true);
 	            $this->pdf->Ln('10');
-	            $this->pdf->SetFont('Arial','',10);
+	            $this->pdf->SetFont('Arial','',8);
 	            $this->pdf->SetTextColor(000,000,000);
 	            $this->pdf->Cell(25,10,"1",1,0,'C');
 	            $this->pdf->Cell(80,10,$b->nombre_plan,1,0,'C');
@@ -1092,32 +1117,36 @@ class ventas_cnt extends CI_Controller {
 	            $this->pdf->Cell(25,10,"S/. 0.00",1,0,'C');
 	            $this->pdf->Cell(30,10,"S/. ".$neto,1,0,'C');
 	            $this->pdf->Ln('20');
-	            $this->pdf->Cell(80);
-	            $this->pdf->Cell(80,10,"Operaciones gravadas",1,0,'C');
+	            //$this->pdf->Cell(80);
+
+	            $this->pdf->SetFont('Arial', '',8);
+	            $this->pdf->Cell(100,10,"   ".$numLet->convertir($totalSinDec, 'Y')." ".$totalDec."/100",0,0,'L');
+
+	            $this->pdf->Cell(60,10,"Operaciones gravadas",1,0,'C');
 	            $this->pdf->Cell(30,10,"S/. ".$neto." ",1,0,'R');
 	            $this->pdf->Ln('10');
-	            $this->pdf->Cell(80);
-	            $this->pdf->Cell(80,10,"Operaciones inafectas",1,0,'C');
+	            $this->pdf->Cell(100);
+	            $this->pdf->Cell(60,10,"Operaciones inafectas",1,0,'C');
 	            $this->pdf->Cell(30,10,"S/. 0.00 ",1,0,'R');
 	            $this->pdf->Ln('10');
-	            $this->pdf->Cell(80);
-	            $this->pdf->Cell(80,10,"Operaciones exoneradas",1,0,'C');
+	            $this->pdf->Cell(100);
+	            $this->pdf->Cell(60,10,"Operaciones exoneradas",1,0,'C');
 	            $this->pdf->Cell(30,10,"S/. 0.00 ",1,0,'R');
 	            $this->pdf->Ln('10');
-	            $this->pdf->Cell(80);
-	            $this->pdf->Cell(80,10,"Operaciones gratuitas",1,0,'C');
+	            $this->pdf->Cell(100);
+	            $this->pdf->Cell(60,10,"Operaciones gratuitas",1,0,'C');
 	            $this->pdf->Cell(30,10,"S/. 0.00 ",1,0,'R');
 	            $this->pdf->Ln('10');
-	            $this->pdf->Cell(80);
-	            $this->pdf->Cell(80,10,"Total de Descuentos",1,0,'C');
+	            $this->pdf->Cell(100);
+	            $this->pdf->Cell(60,10,"Total de Descuentos",1,0,'C');
 	            $this->pdf->Cell(30,10,"S/. 0.00 ",1,0,'R');
 	            $this->pdf->Ln('10');
-	            $this->pdf->Cell(80);
-	            $this->pdf->Cell(80,10,"IGV",1,0,'C');
+	            $this->pdf->Cell(100);
+	            $this->pdf->Cell(60,10,"IGV",1,0,'C');
 	            $this->pdf->Cell(30,10,"S/. ".$igvfinal." ",1,0,'R');
 	            $this->pdf->Ln('10');
-	            $this->pdf->Cell(80);
-	            $this->pdf->Cell(80,10,"Importe total de la venta",1,0,'C');
+	            $this->pdf->Cell(100);
+	            $this->pdf->Cell(60,10,"Importe total de la venta",1,0,'C');
 	            $this->pdf->Cell(30,10,"S/. ".$total." ",1,0,'R');
 
 	            $this->pdf->Line(10, 280 , 200, 280); 
@@ -1138,13 +1167,15 @@ class ventas_cnt extends CI_Controller {
 	    		$total = number_format((float)$tot, 2, '.', '');
 	    		$neto = number_format((float)$nt, 2, '.', '');
 	    		$igvfinal=number_format((float)$igv, 2, '.', '');
+	    		$totalSinDec = substr ($total, 0, -3);
+	    		$totalDec = substr ($total, -2);
 
 	    		$fechaFormato = date("d/m/Y", strtotime($f->fecha_emision));
 
 	            $this->pdf->Ln('15');
 	          	$this->pdf->SetFont('Arial','B',10); 
 	            $this->pdf->Cell(126);
-	            $this->pdf->MultiCell(64,6,utf8_decode('BOLETA DE VENTA ELECTRÓNICA')."\n"."Nro: ".$f->serie."-".$f->correlativo."\n"."fecha: ".$fechaFormato,1,'C', false);
+	            $this->pdf->MultiCell(64,6,utf8_decode('FACTURA DE VENTA ELECTRÓNICA')."\n"."Nro: ".$f->serie."-".$f->correlativo."\n"."fecha: ".$fechaFormato,1,'C', false);
 	            $this->pdf->Ln('10');
 	            $this->pdf->Cell(0,0,$f->razon_social_cli,0,0,'L');
 	            $this->pdf->Ln('5');
@@ -1171,32 +1202,36 @@ class ventas_cnt extends CI_Controller {
 	            $this->pdf->Cell(25,10,"S/. 0.00",1,0,'C');
 	            $this->pdf->Cell(30,10,"S/. ".$neto,1,0,'C');
 	            $this->pdf->Ln('20');
-	            $this->pdf->Cell(80);
-	            $this->pdf->Cell(80,10,"Operaciones gravadas",1,0,'C');
+	            //$this->pdf->Cell(80);
+
+				$this->pdf->SetFont('Arial', '',8);
+	            $this->pdf->Cell(100,10,"   ".$numLet->convertir($totalSinDec, 'Y')." ".$totalDec."/100",0,0,'L');
+
+	            $this->pdf->Cell(60,10,"Operaciones gravadas",1,0,'C');
 	            $this->pdf->Cell(30,10,"S/. ".$neto." ",1,0,'R');
 	            $this->pdf->Ln('10');
-	            $this->pdf->Cell(80);
-	            $this->pdf->Cell(80,10,"Operaciones inafectas",1,0,'C');
+	            $this->pdf->Cell(100);
+	            $this->pdf->Cell(60,10,"Operaciones inafectas",1,0,'C');
 	            $this->pdf->Cell(30,10,"S/. 0.00 ",1,0,'R');
 	            $this->pdf->Ln('10');
-	            $this->pdf->Cell(80);
-	            $this->pdf->Cell(80,10,"Operaciones exoneradas",1,0,'C');
+	            $this->pdf->Cell(100);
+	            $this->pdf->Cell(60,10,"Operaciones exoneradas",1,0,'C');
 	            $this->pdf->Cell(30,10,"S/. 0.00 ",1,0,'R');
 	            $this->pdf->Ln('10');
-	            $this->pdf->Cell(80);
-	            $this->pdf->Cell(80,10,"Operaciones gratuitas",1,0,'C');
+	            $this->pdf->Cell(100);
+	            $this->pdf->Cell(60,10,"Operaciones gratuitas",1,0,'C');
 	            $this->pdf->Cell(30,10,"S/. 0.00 ",1,0,'R');
 	            $this->pdf->Ln('10');
-	            $this->pdf->Cell(80);
-	            $this->pdf->Cell(80,10,"Total de Descuentos",1,0,'C');
+	            $this->pdf->Cell(100);
+	            $this->pdf->Cell(60,10,"Total de Descuentos",1,0,'C');
 	            $this->pdf->Cell(30,10,"S/. 0.00 ",1,0,'R');
 	            $this->pdf->Ln('10');
-	            $this->pdf->Cell(80);
-	            $this->pdf->Cell(80,10,"IGV",1,0,'C');
+	            $this->pdf->Cell(100);
+	            $this->pdf->Cell(60,10,"IGV",1,0,'C');
 	            $this->pdf->Cell(30,10,"S/. ".$igvfinal." ",1,0,'R');
 	            $this->pdf->Ln('10');
-	            $this->pdf->Cell(80);
-	            $this->pdf->Cell(80,10,"Importe total de la venta",1,0,'C');
+	            $this->pdf->Cell(100);
+	            $this->pdf->Cell(60,10,"Importe total de la venta",1,0,'C');
 	            $this->pdf->Cell(30,10,"S/. ".$total." ",1,0,'R');
 
 	            $this->pdf->Line(10, 280 , 200, 280); 
@@ -1220,6 +1255,8 @@ class ventas_cnt extends CI_Controller {
 	}
 
 	public function envioEmail(){
+
+		$numLet = new NumeroALetras();
 
 		$idcomprobante=$_POST['idcomprobante'];
 		$canalesDos=$_POST['canales'];
@@ -1261,6 +1298,8 @@ class ventas_cnt extends CI_Controller {
 	    		$total = number_format((float)$tot, 2, '.', '');
 	    		$neto = number_format((float)$nt, 2, '.', '');
 	    		$igvfinal=number_format((float)$igv, 2, '.', '');
+	    		$totalSinDec = substr ($total, 0, -3);
+	    		$totalDec = substr ($total, -2);
 	    		          
 	            $this->pdf->Ln('15');
 	          	$this->pdf->SetFont('Arial','B',10); 
@@ -1289,32 +1328,36 @@ class ventas_cnt extends CI_Controller {
 	            $this->pdf->Cell(25,10,"S/. 0.00",1,0,'C');
 	            $this->pdf->Cell(30,10,"S/. ".$neto,1,0,'C');
 	            $this->pdf->Ln('20');
-	            $this->pdf->Cell(80);
-	            $this->pdf->Cell(80,10,"Operaciones gravadas",1,0,'C');
+	           	//$this->pdf->Cell(80);
+
+				$this->pdf->SetFont('Arial', '',8);
+	            $this->pdf->Cell(100,10,"   ".$numLet->convertir($totalSinDec, 'Y')." ".$totalDec."/100",0,0,'L');
+
+	            $this->pdf->Cell(60,10,"Operaciones gravadas",1,0,'C');
 	            $this->pdf->Cell(30,10,"S/. ".$neto." ",1,0,'R');
 	            $this->pdf->Ln('10');
-	            $this->pdf->Cell(80);
-	            $this->pdf->Cell(80,10,"Operaciones inafectas",1,0,'C');
+	            $this->pdf->Cell(100);
+	            $this->pdf->Cell(60,10,"Operaciones inafectas",1,0,'C');
 	            $this->pdf->Cell(30,10,"S/. 0.00 ",1,0,'R');
 	            $this->pdf->Ln('10');
-	            $this->pdf->Cell(80);
-	            $this->pdf->Cell(80,10,"Operaciones exoneradas",1,0,'C');
+	            $this->pdf->Cell(100);
+	            $this->pdf->Cell(60,10,"Operaciones exoneradas",1,0,'C');
 	            $this->pdf->Cell(30,10,"S/. 0.00 ",1,0,'R');
 	            $this->pdf->Ln('10');
-	            $this->pdf->Cell(80);
-	            $this->pdf->Cell(80,10,"Operaciones gratuitas",1,0,'C');
+	            $this->pdf->Cell(100);
+	            $this->pdf->Cell(60,10,"Operaciones gratuitas",1,0,'C');
 	            $this->pdf->Cell(30,10,"S/. 0.00 ",1,0,'R');
 	            $this->pdf->Ln('10');
-	            $this->pdf->Cell(80);
-	            $this->pdf->Cell(80,10,"Total de Descuentos",1,0,'C');
+	            $this->pdf->Cell(100);
+	            $this->pdf->Cell(60,10,"Total de Descuentos",1,0,'C');
 	            $this->pdf->Cell(30,10,"S/. 0.00 ",1,0,'R');
 	            $this->pdf->Ln('10');
-	            $this->pdf->Cell(80);
-	            $this->pdf->Cell(80,10,"IGV",1,0,'C');
+	            $this->pdf->Cell(100);
+	            $this->pdf->Cell(60,10,"IGV",1,0,'C');
 	            $this->pdf->Cell(30,10,"S/. ".$igvfinal." ",1,0,'R');
 	            $this->pdf->Ln('10');
-	            $this->pdf->Cell(80);
-	            $this->pdf->Cell(80,10,"Importe total de la venta",1,0,'C');
+	            $this->pdf->Cell(100);
+	            $this->pdf->Cell(60,10,"Importe total de la venta",1,0,'C');
 	            $this->pdf->Cell(30,10,"S/. ".$total." ",1,0,'R');
 
 	            $this->pdf->Line(10, 280 , 200, 280); 
@@ -1509,11 +1552,13 @@ class ventas_cnt extends CI_Controller {
 	    		$total = number_format((float)$tot, 2, '.', '');
 	    		$neto = number_format((float)$nt, 2, '.', '');
 	    		$igvfinal=number_format((float)$igv, 2, '.', '');
+	    		$totalSinDec = substr ($total, 0, -3);
+	    		$totalDec = substr ($total, -2);
 
 	            $this->pdf->Ln('15');
 	          	$this->pdf->SetFont('Arial','B',10); 
 	            $this->pdf->Cell(126);
-	            $this->pdf->MultiCell(64,6,utf8_decode('BOLETA DE VENTA ELECTRÓNICA')."\n"."Nro: ".$f->serie."-".$f->correlativo."\n"."fecha: ".$fechaFormato,1,'C', false);
+	            $this->pdf->MultiCell(64,6,utf8_decode('FACTURA DE VENTA ELECTRÓNICA')."\n"."Nro: ".$f->serie."-".$f->correlativo."\n"."fecha: ".$fechaFormato,1,'C', false);
 	            $this->pdf->Ln('10');
 	            $this->pdf->Cell(0,0,$f->razon_social_cli,0,0,'L');
 	            $this->pdf->Ln('5');
@@ -1537,32 +1582,36 @@ class ventas_cnt extends CI_Controller {
 	            $this->pdf->Cell(25,10,"S/. 0.00",1,0,'C');
 	            $this->pdf->Cell(30,10,"S/. ".$neto,1,0,'C');
 	            $this->pdf->Ln('20');
-	            $this->pdf->Cell(80);
-	            $this->pdf->Cell(80,10,"Operaciones gravadas",1,0,'C');
+	            //$this->pdf->Cell(80);
+	            
+	            $this->pdf->SetFont('Arial', '',8);
+	            $this->pdf->Cell(100,10,"   ".$numLet->convertir($totalSinDec, 'Y')." ".$totalDec."/100",0,0,'L');
+
+	            $this->pdf->Cell(60,10,"Operaciones gravadas",1,0,'C');
 	            $this->pdf->Cell(30,10,"S/. ".$neto." ",1,0,'R');
 	            $this->pdf->Ln('10');
-	            $this->pdf->Cell(80);
-	            $this->pdf->Cell(80,10,"Operaciones inafectas",1,0,'C');
+	            $this->pdf->Cell(100);
+	            $this->pdf->Cell(60,10,"Operaciones inafectas",1,0,'C');
 	            $this->pdf->Cell(30,10,"S/. 0.00 ",1,0,'R');
 	            $this->pdf->Ln('10');
-	            $this->pdf->Cell(80);
-	            $this->pdf->Cell(80,10,"Operaciones exoneradas",1,0,'C');
+	            $this->pdf->Cell(100);
+	            $this->pdf->Cell(60,10,"Operaciones exoneradas",1,0,'C');
 	            $this->pdf->Cell(30,10,"S/. 0.00 ",1,0,'R');
 	            $this->pdf->Ln('10');
-	            $this->pdf->Cell(80);
-	            $this->pdf->Cell(80,10,"Operaciones gratuitas",1,0,'C');
+	            $this->pdf->Cell(100);
+	            $this->pdf->Cell(60,10,"Operaciones gratuitas",1,0,'C');
 	            $this->pdf->Cell(30,10,"S/. 0.00 ",1,0,'R');
 	            $this->pdf->Ln('10');
-	            $this->pdf->Cell(80);
-	            $this->pdf->Cell(80,10,"Total de Descuentos",1,0,'C');
+	            $this->pdf->Cell(100);
+	            $this->pdf->Cell(60,10,"Total de Descuentos",1,0,'C');
 	            $this->pdf->Cell(30,10,"S/. 0.00 ",1,0,'R');
 	            $this->pdf->Ln('10');
-	            $this->pdf->Cell(80);
-	            $this->pdf->Cell(80,10,"IGV",1,0,'C');
+	            $this->pdf->Cell(100);
+	            $this->pdf->Cell(60,10,"IGV",1,0,'C');
 	            $this->pdf->Cell(30,10,"S/. ".$igvfinal." ",1,0,'R');
 	            $this->pdf->Ln('10');
-	            $this->pdf->Cell(80);
-	            $this->pdf->Cell(80,10,"Importe total de la venta",1,0,'C');
+	            $this->pdf->Cell(100);
+	            $this->pdf->Cell(60,10,"Importe total de la venta",1,0,'C');
 	            $this->pdf->Cell(30,10,"S/. ".$total." ",1,0,'R');
 
 	            $this->pdf->Line(10, 280 , 200, 280); 
