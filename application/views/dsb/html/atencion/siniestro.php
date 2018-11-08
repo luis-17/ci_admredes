@@ -366,7 +366,7 @@
 							</li>
 
 							<li>
-								<a href="<?=base_url()?>ind.ex.php/atenciones">Atenciones</a>
+								<a href="<?=base_url()?>index.php/atenciones">Atenciones</a>
 							</li>
 
 							<li class="active">
@@ -449,9 +449,7 @@
 												  <div class="form-row">
 												  	<div class="form-group col-md-6">
 												  	  <b class="text-primary">Especialidad:</b>
-												      <select name="idespecialidad" id="idespecialidad" class="form-control">
-												        
-												       <?php if (count($especialidad)) {
+												      <select name="idespecialidad" id="idespecialidad" class="form-control"><?php if (count($especialidad)) {
 														    foreach ($especialidad as $list) {
 														    	if ($list['idespecialidad']==$idespecialidad){
 																	
@@ -460,14 +458,8 @@
 
 														    	echo "<option value='". $list['idespecialidad']."'>" . $list['nombre_esp']."</option>";			
 														    	}
-
-														    	
-														        
 														    }
 														} ?>
-
-
-
 												      </select>
 												    </div>
 												    <div class="form-group col-md-6">
@@ -932,10 +924,6 @@
 
 													<div class="panel-collapse collapse" id="faq-4-1">
 														<div class="panel-body">
-															
-
-
-
 														</div>
 													</div>
 												</div>
@@ -969,24 +957,17 @@
 
 
 											<table class="grilla" id="people">
-<thead>
-<th>Plan</th>
-<th>IdVar</th>
-<th>NomVar</th>
-<th>Valor</th>
-<th>Text</th>
-</thead>
-<tbody></tbody>
-</table>
-
-
-
-
-
-
+												<thead>
+													<th>Plan</th>
+													<th>IdVar</th>
+													<th>NomVar</th>
+													<th>Valor</th>
+													<th>Text</th>
+												</thead>
+												<tbody></tbody>
+												</table>
 
 										<form action="<?=base_url()?>index.php/guardaGasto" method="post">
-
 											<div class="row">
 											  <div class="col-sm-4">
 											  	<div class="checkbox">
@@ -1029,15 +1010,18 @@
 											        <th>Aprobar Pago</th>
 											      </thead>
 											      <tbody>
+											      <?php foreach ($variable as $v) {?>
 											        <tr>
-											          <td><b class="text-primary">Monto por Atención Médica</b> <input type="hidden" id= "idplan" name= "idplan" value="<?php echo $plan_id;?>"></td>
-											          <input type="hidden" id= "espe" name= "espe" value="<?php echo $idespecialidad;?>"></td>
+											          <td><b class="text-primary"><?=$v->nombre_var;?></b> <input type="hidden" id= "idplan" name= "idplan" value="<?php echo $plan_id;?>"></td>
+											          	<input type="hidden" id= "espe" name= "espe" value="<?php echo $idespecialidad;?>">
+											          </td>
 											          <td><div class="input-group">
 											              <span class="input-group-addon">S/.</span>
-											              <input type="number" id= "monto1" name= "monto1" placeholder="0,00" step="0.01" class="txtCal item1 form-control">
-											            </div></td>          
+											              <input type="number" id= "monto<?=$v->idplandetalle;?>" name= "monto<?=$v->idplandetalle;?>" placeholder="0,00" step="0.01" class="txtCal item1 form-control">
+											            </div>
+											          </td>          
 											          <td>            
-											          	<select name="proveedor1" class="form-control" id= "proveedor1" >
+											          	<select name="proveedor<?=$v->idplandetalle;?>" class="form-control" id= "proveedor<?=$v->idplandetalle;?>" >
 											          		<option value=0>--- Seleccionar Proveedor ---</option>
 															<?php if (count($proveedor)) {
 																foreach ($proveedor as $u) {
@@ -1047,85 +1031,13 @@
 														</select>            
 											          </td>
 											          <td><div id="sumaNeto" class="input-group">
-											          	<span id= "netospan1" class="input-group-addon">S/.</span>
-											          	<input type="text" id= "neto1" name= "neto1" class="form-control txtCal2" placeholder="0,00"/></div>
+											          	<span id= "netospan<?=$v->idplandetalle;?>" class="input-group-addon">S/.</span>
+											          	<input type="text" id= "neto<?=$v->idplandetalle;?>" name= "neto<?=$v->idplandetalle;?>" class="form-control txtCal2" placeholder="0,00"/></div>
 											          </td>
-											          <td><input type="text" id= "factura1" name= "factura1" class="form-control" placeholder="000-000000"/></td>
-											          <td><input type="hidden" name="pago1" value="0" /><input type="checkbox" id="pago1" name="pago1" value="1"></td>          
+											          <td><input type="text" id= "factura<?=$v->idplandetalle;?>" name= "factura1" class="form-control" placeholder="000-000000"/></td>
+											          <td><input type="hidden" name="pago<?=$v->idplandetalle;?>" value="0" /><input type="checkbox" id="pago<?=$v->idplandetalle;?>" name="pago1" value="<?=$v->idplandetalle;?>"></td>          
 											        </tr>
-
-											        <tr>
-											          <td><b class="text-primary">Monto por Medicamentos</b></td>
-											          <td><div class="input-group">
-											              <span class="input-group-addon">S/.</span>
-											              <input type="number" id= "monto2" name= "monto2" placeholder="0,00" step="0.01" class="txtCal item2 form-control">
-											            </div></td>          
-											          <td>            
-											          	<select name="proveedor2" class="form-control" id= "proveedor2" >
-											          		<option value=0>--- Seleccionar Proveedor ---</option>
-															<?php if (count($proveedor)) {
-																foreach ($proveedor as $u) {
-																	echo "<option value='". $u['idproveedor']."'>" . $u['nombre_comercial_pr']."</option>";	
-																	}
-															}?>
-														</select>            
-											          </td>
-											          <td><div class="input-group">
-											          	<span class="input-group-addon">S/.</span>
-											          	<input type="text" id= "neto2" name= "neto2" class="form-control txtCal2" placeholder="0,00"/></div>
-											          </td>
-											          <td><input type="text" id= "factura2" name= "factura2" class="form-control" placeholder="000-000000"/></td>
-											          <td><input type="hidden" name="pago2" value="0" /><input type="checkbox" id="pago2" name="pago2" value="1"></td>          
-											        </tr>
-
-											        <tr>
-											          <td><b class="text-primary">Monto Exámenes de Laboratorio</b></td>
-											          <td><div class="input-group">
-											              <span class="input-group-addon">S/.</span>
-											              <input type="number" id= "monto3" name= "monto3" placeholder="0,00" step="0.01" class="txtCal item3 form-control">
-											            </div></td>          
-											          <td>            
-											          	<select name="proveedor3" class="form-control" id= "proveedor3" >
-											          		<option value=0>--- Seleccionar Proveedor ---</option>
-															<?php if (count($proveedor)) {
-																foreach ($proveedor as $u) {
-																	echo "<option value='". $u['idproveedor']."'>" . $u['nombre_comercial_pr']."</option>";	
-																	}
-															}?>
-														</select>            
-											          </td>
-											          <td><div class="input-group">
-											          	<span class="input-group-addon">S/.</span>
-											          	<input type="text" id= "neto3" name= "neto3" class="form-control txtCal2" placeholder="0,00"/></div>
-											          </td>
-											          <td><input type="text" id= "factura3" name= "factura3" class="form-control" placeholder="000-000000"/></td>
-											          <td><input type="hidden" name="pago3" value="0" /><input type="checkbox" id="pago3" name="pago3" value="1"></td>          
-											        </tr>
-
-
-											        <tr>
-											          <td><b class="text-primary">Monto Imagenología</b></td>
-											          <td><div class="input-group">
-											              <span class="input-group-addon">S/.</span>
-											              <input type="number" id= "monto4" name= "monto4" placeholder="0,00" step="0.01" class="txtCal item4 form-control">
-											            </div></td>          
-											          <td>            
-											          	<select name="proveedor4" class="form-control" id= "proveedor4" >
-											          		<option value=0>--- Seleccionar Proveedor ---</option>
-															<?php if (count($proveedor)) {
-																foreach ($proveedor as $u) {
-																	echo "<option value='". $u['idproveedor']."'>" . $u['nombre_comercial_pr']."</option>";	
-																	}
-															}?>
-														</select>            
-											          </td>
-											          <td><div class="input-group">
-											          	<span class="input-group-addon">S/.</span>
-											          	<input type="text" id= "neto4" name= "neto4" class="form-control txtCal2" placeholder="0,00"/></div>
-											          </td>
-											          <td><input type="text" id= "factura4" name= "factura4" class="form-control" placeholder="000-000000"/></td>
-											          <td><input type="hidden" name="pago4" value="0" /><input type="checkbox" id="pago4" name="pago4" value="1"></td>          
-											        </tr>
+											        <?php } ?>
 
 											        <tr>
 													    <td align="right"><span><b>TOTAL  :</b></span></td>

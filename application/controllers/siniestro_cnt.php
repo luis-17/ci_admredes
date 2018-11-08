@@ -153,9 +153,6 @@ class Siniestro_cnt extends CI_Controller {
 			    $data['idhistoria'] = $calEspe['idhistoria'];
 			}*/
 
-
-
-
 			// datos para combo especialidad        
 	        $data['especialidad'] = $this->siniestro_mdl->getEspecialidad();
 
@@ -163,7 +160,9 @@ class Siniestro_cnt extends CI_Controller {
 	        $this->load->model('atencion_mdl');
 	        $data['proveedor'] = $this->atencion_mdl->getProveedor();
 
-
+	        $variable = $this->siniestro_mdl->getVariable();
+	        $data['variable'] = $variable;
+	        
 			$this->load->view('dsb/html/atencion/siniestro.php',$data);
 		}
 		else{
@@ -248,14 +247,12 @@ class Siniestro_cnt extends CI_Controller {
 		       	$data['plan_id'] = $nomPlan['plan_id'];
 		       }
 
-
 			// datos para combo especialidad        
 	        $data['especialidad'] = $this->siniestro_mdl->getEspecialidad();
 
 	         // datos para combo proveedor
 	        $this->load->model('atencion_mdl');
 	        $data['proveedor'] = $this->atencion_mdl->getProveedor();
-
 
 			$this->load->view('dsb/html/atencion/siniestro.php',$data);			
 		}
@@ -283,13 +280,11 @@ class Siniestro_cnt extends CI_Controller {
 
 			$submenuLista = $this->menu_mdl->getSubMenu($idusuario);
 			$data['menu2'] = $submenuLista;	
-		
 			
 			//recogemos los datos obtenidos por POST
 			        
 		    $data['idsiniestro'] = $_POST['idsiniestro'];
 		    $data['dianostico_temp'] = $_POST['dianostico_temp'];
-
 
 			//en siniestro		 
 			$data['sin_estado'] = 2;
@@ -304,7 +299,6 @@ class Siniestro_cnt extends CI_Controller {
 			$this->siniestro_mdl->guardaDiagnosticoSin($data);
 			//return $insert;
 			$insert = $this->db->insert_id();
-			 
 
 			 //en tratamiento
 
@@ -320,7 +314,6 @@ class Siniestro_cnt extends CI_Controller {
 					//$data['trat_text'] = "";
 					$data['trat_tipo'] = 1;
 				   $this->siniestro_mdl->guardaTratamiento($data);
-
 				   }			    
 				}
 
@@ -414,7 +407,6 @@ class Siniestro_cnt extends CI_Controller {
 		    $data['estado_siniestro'] = 1;
 		    $data['sin_labFlag'] = 0;
 		    $data['estado_atencion'] = "O";
-
 
 			$this->siniestro_mdl->guardaSiniestro($data);
 			$insert = $this->db->insert_id();
@@ -539,7 +531,6 @@ class Siniestro_cnt extends CI_Controller {
 			        
 		    $data['idsiniestro'] = $_POST['idsiniestro'];
 		    $data['dianostico_temp'] = $_POST['sin_diagnosticoSec'];
-
 
 			//en siniestro		 
 			$data['sin_estado'] = 2;
@@ -702,8 +693,6 @@ class Siniestro_cnt extends CI_Controller {
 			redirect('/');
 		}
 	}
-
-
 
 	public function edit_medi($idtratamiento, $idsiniestrodiagnostico)
 	{
@@ -878,8 +867,6 @@ class Siniestro_cnt extends CI_Controller {
 
 		$this->load->view('dsb/html/atencion/add_tratamientoSec.php', $data);
 	}
-
-
 	
 
 }

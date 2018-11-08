@@ -187,6 +187,9 @@ $route['consultar_afiliados_buscar'] = 'Reportes_cnt/consultar_afiliados_buscar'
 $route['actualizar_pass'] = 'Perfil/actualizar_pass';
 $route['cambiar_pass'] = 'Perfil/cambiar_pass';
 
+$route['detalle_producto'] = 'plan_cnt/detalle_producto';
+$route['eliminar_producto/(:any)/(:any)/(:any)/(:any)'] = 'plan_cnt/eliminar_producto/$1/$2/$3/$4';
+$route['insertar_producto/(:any)/(:any)/(:any)/(:any)'] = 'plan_cnt/insertar_producto/$1/$2/$3/$4';
 // Rutas Ariel (Escribir debajo)
 
 $route['404_override'] = '';

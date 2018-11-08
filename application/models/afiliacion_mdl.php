@@ -45,7 +45,7 @@
  		$this->db->join("contratante co", "c.cont_id=co.cont_id");
  		$this->db->join("plan p","c.plan_id=p.idplan");
  		$this->db->join("cliente_empresa ce","ce.idclienteempresa=p.idclienteempresa");
- 		$this->db->join("(select count(certase_id) as cant, c.cert_id from certificado c inner join contratante co on c.cont_id=co.cont_id inner join plan p on p.idplan=c.plan_id LEFT JOIN certificado_asegurado ca on c.cert_id = ca.cert_id WHERE `p`.`idclienteempresa` = ".$data['canal']." AND `idplan` = ".$data['plan']." AND `cont_numDoc` = ".$data['doc']."
+ 		$this->db->join("(select count(certase_id) as cant, c.cert_id from certificado c inner join contratante co on c.cont_id=co.cont_id inner join plan p on p.idplan=c.plan_id LEFT JOIN certificado_asegurado ca on c.cert_id = ca.cert_id WHERE `p`.`idclienteempresa` = ".$data['canal']." AND `idplan` = ".$data['plan']." AND `cont_numDoc` = '".$data['doc']."'
 GROUP BY c.cert_id)b","b.cert_id=c.cert_id");
  		$this->db->where("p.idclienteempresa",$data['canal']);
  		$this->db->where("idplan",$data['plan']);
@@ -217,13 +217,22 @@ GROUP BY c.cert_id)b","b.cert_id=c.cert_id");
 		$this->db->insert('asegurado',$array);
 	}
 
+	function fin_vig($cert){
+		$this->db->select("cert_finVig");
+		$this->db->from("certificado");
+		$this->db->where("cert_id",$cert);
+
+		$finvig = $this->db->get();
+		return $finvig->result();
+	}
+
 	function in_certase($data){
 		$array = array(
 			'cert_id' => $data['cert'],
 			'aseg_id' => $data['id'],
 			'cert_estado' => 1,
-			'cert_iniVig' => "now()",
-			'cert_finVig' => "(SELECT cert_finVig from certificado WHERE cert_id=".$data['cert'].")",
+			'cert_iniVig' => $data['hoy'],
+			'cert_finVig' => $data['fecfin'],
 			'idusuario' => $data['idusuario']
 			);
 		$this->db->insert('certificado_asegurado',$array);

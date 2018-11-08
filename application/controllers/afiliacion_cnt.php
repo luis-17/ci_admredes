@@ -288,11 +288,12 @@ class Afiliacion_cnt extends CI_Controller {
 		$this->load->view('dsb/html/mensaje.php', $data);
 	}
 
-	public function aseg_save()
-	{
+	public function aseg_save(){
 		$data['aseg_id'] = $_POST['aseg_id'];
 		$id = $_POST['aseg_id'];
 		$cert = $_POST['cert_id'];
+		$data['id'] = $_POST['aseg_id'];
+		$data['cert'] = $_POST['cert_id'];
 		$data['tipodoc'] = $_POST['tipodoc'];
 		$data['doc'] = $_POST['doc'];
 		$data['ape1'] = $_POST['ape1'];
@@ -308,12 +309,15 @@ class Afiliacion_cnt extends CI_Controller {
 		$data['ec'] = $_POST['ec'];
 		$op = $_POST['tipoop'];
 		$data['tipomen'] = 2;
+		$data['hoy'] = date('Y-m-d');
 		$user = $this->session->userdata('user');
 		extract($user);
 		$data['idusuario'] = $idusuario;
-		$data['id'] = $id;
-		$data['cert'] = $cert;
-		$data['mensaje'] = 1;
+
+		$fec_fin = $this->afiliacion_mdl->fin_vig($cert);
+		foreach ($fec_fin as $f) {
+			$data['fecfin'] =$f->cert_finVig;
+		}
 
 		switch ($op) {
 			case 2:
@@ -323,11 +327,13 @@ class Afiliacion_cnt extends CI_Controller {
 
 			case 3:
 				$this->afiliacion_mdl->in_asegurado($data);
-				$ida = $this->db->insert_id();
-				$data['id'] = $ida;
+				$id = $this->db->insert_id();
+				$data['id'] = $id;
 				$this->afiliacion_mdl->in_certase($data);
 				break;
 			}
+
+		$data['mensaje'] = 1;
 		$this->load->view('dsb/html/mensaje.php',$data);
 	}
 

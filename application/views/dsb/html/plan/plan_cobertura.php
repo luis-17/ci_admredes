@@ -1,4 +1,5 @@
-<html lang="en"><head>
+<html lang="en">
+	<head>
 		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 		<meta charset="utf-8">
 		<title>Tables - Ace Admin</title>
@@ -29,14 +30,59 @@
 		<!-- inline styles related to this page -->
 
 		<!-- ace settings handler -->
+		<!--<script type="text/javascript" src="<?=  base_url()?>public/fancybox/lib/jquery.mousewheel-3.0.6.pack.js"></script>-->
+		<!-- FancyBox -->
+		<!-- Add jQuery library -->
+		<script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
+		
+		<!-- Add mousewheel plugin (this is optional) -->
+		<script type="text/javascript" src="<?=  base_url()?>public/fancybox/lib/jquery.mousewheel-3.0.6.pack.js"></script>
+
 		<script src="<?=  base_url()?>public/assets/js/ace-extra.js"></script>
 
+		
 		<!-- HTML5shiv and Respond.js for IE8 to support HTML5 elements and media queries -->
 
 		<!--[if lte IE 8]>
 		<script src="../assets/js/html5shiv.js"></script>
 		<script src="../assets/js/respond.js"></script>
 		<![endif]-->
+		<script type="text/javascript">
+	    /*funcion ajax que llena el combo dependiendo de la categoria seleccionada*/
+	    $(document).ready(function() {  
+
+		 	$("#item").change(function(){  
+
+			   var url = '<?php echo base_url()?>index.php/detalle_producto'; 
+			   var id = $('#item').val();
+
+		  	 	$.ajax({  
+
+			    url: url,  
+			    data: { id : id },  
+			    type: "POST",  
+			    success:function(data){                
+			     $("#detalle_producto").html(data);  
+			    }  
+
+		  		});  
+
+		 	});
+
+		}); 
+	    // $(document).ready(function(){
+	    //    $("#item").change(function () {
+	    //            $("#item option:selected").each(function () {
+	    //             item=$('#item').val();
+	    //             $.post("<?=base_url();?>index.php/detalle_producto", { item: item}, function(data){
+	    //             $("#detalle_producto").html(data);
+	    //             });            
+	    //         });
+	    //    })
+	    // });
+
+	    /*fin de la funcion ajax que llena el combo dependiendo de la categoria seleccionada*/
+	    </script>
 	</head>
 
 	<body style="">	
@@ -66,10 +112,11 @@
 										$visible=2;
 										$style='disabled';
 										$chk='';
+										$flg='';
 										$op='';
 										$val='';
 										$tiempo="";
-										$num_eventos='';
+										$num_eventos="";
 										else:
 											foreach ($detalle as $det) :
 												$item=$det->idvariableplan;
@@ -108,6 +155,8 @@
 										</div>
 									</div>
 
+									<div class="form-group" id="detalle_producto"><?=$cadena;?></div>
+
 									<div class="form-group">
 										<label class="col-sm-3 control-label no-padding-right" for="form-field-1"> Descripción: </label>
 
@@ -129,15 +178,15 @@
 
 									<div class="form-group">
 										<label class="col-sm-3 control-label no-padding-right" for="form-field-1">Eventos: </label>
-
 											<div class="col-sm-9">											
 												<select id="eventos" name="eventos" value="" onchange="tiempo(this.value)">
-													<option <?php if($tiempo==''): echo "selected"; endif; ?> value="">Ilimintados</option>
-													<option <?php if($tiempo=='1M'): echo "selected"; endif; ?> value="1M">Mensuales</option>
-													<option <?php if($tiempo=='2M'): echo "selected"; endif; ?> value="2M">Bimestrales</option>
-													<option <?php if($tiempo=='3M'): echo "selected"; endif; ?> value="3M">Trimestrales</option>
-													<option <?php if($tiempo=='6M'): echo "selected"; endif; ?> value="6M">Semestrales</option>
-													<option <?php if($tiempo=='1Y'): echo "selected"; endif; ?> value="1Y">Anuales</option>
+													<option <?php if($tiempo==""): echo "selected"; endif; ?> value="">Sin eventos</option>
+													<option <?php if($tiempo=='ilimitados'): echo "selected"; endif; ?> value="1 year">Ilimintados</option>
+													<option <?php if($tiempo=='1 month'): echo "selected"; endif; ?> value="1 month">Mensuales</option>
+													<option <?php if($tiempo=='2 month'): echo "selected"; endif; ?> value="2 month">Bimestrales</option>
+													<option <?php if($tiempo=='3 month'): echo "selected"; endif; ?> value="3 month">Trimestrales</option>
+													<option <?php if($tiempo=='6 month'): echo "selected"; endif; ?> value="6 month">Semestrales</option>
+													<option <?php if($tiempo=='1 year'): echo "selected"; endif; ?> value="1 year">Anuales</option>
 												</select>
 												<input disabled=<?php if($tiempo==''){echo 'true';}else{echo 'false';
 												}?> type="text" id="num_eventos" name="num_eventos" value="<?=$num_eventos?>" size="4">
@@ -146,7 +195,7 @@
 
 									<div class="form-group">										
 											<label class="col-sm-3 control-label no-padding-right" for="form-field-1"><input type="checkbox" name="flag" id="flag
-											" <?=$chk;?> onchange="habilitar(this.checked);"> Validación:</label><input type="hidden" name="flg_liqui" value="No">
+											" <?=$chk;?> onchange="habilitar(this.checked,<?=$item?>);"> Validación:</label><input type="hidden" name="flg_liqui" value="No" <?php if($flg=='S'){echo 'checked';}?> >
 
 										<div class="col-sm-9">
 											<select <?=$style;?> id="operador" name="operador" required="Seleccionar una de las opciones de la lista">
@@ -213,29 +262,35 @@
 																<td><?=$c->nombre_var;?></td>
 																<td><?=$c->texto_web;?></td>
 																<td><?=$visible?></td>
-																<td><?=$c->simbolo_detalle;?> <?=$c->valor_detalle;?></td>
+																<td><?=$c->descripcion;?> <?=$c->valor_detalle;?></td>
 																<td><?php 
+																	$num=$c->num_eventos;
 																	switch ($c->tiempo) {
-																		case '1M':
+																		case '1 month':
 																			$tiempo= "Menual(es)";
 																			break;															
-																		case '2M':
+																		case '2 month':
 																			$tiempo= "Bimestral(es)";
 																			break;
-																		case '3M':
+																		case '3 month':
 																			$tiempo= "Trimestral(es)";
 																			break;
-																		case '6M':
+																		case '6 month':
 																			$tiempo= "Semestral(es)";
 																			break;
-																		case '1Y':
-																			$tiempo= "Anual(es)";
+																		case '1 year':
+																				$tiempo= "Anual(es)";
+																			break;
+																		case 'ilimitados':
+																				$tiempo= "Ilimitados";
+																				$num="";
 																			break;
 																		default:
-																			$tiempo="Ilimitados";
+																			$num="";
+																			$tiempo="Sin evento";
 																			break;
 																	}
-																	echo $c->num_eventos.' '.$tiempo; ?></td>
+																	echo $num.' '.$tiempo; ?></td>
 																<td><?=$estado;?></td>
 																<td>
 																	<div class="hidden-md hidden-lg">
@@ -285,7 +340,7 @@
 		<!-- <![endif]-->
 
 		<script type="text/javascript">
-			function habilitar(value)
+			function habilitar(value, flag)
 			{
 				if(value==true)
 				{
@@ -307,7 +362,11 @@
 			{
 				if(value==''){
 					document.form.num_eventos.disabled=true;
-				}else{
+				}elseif(value=='Ilimitados'){
+					document.form.num_eventos.value=1000;
+					document.form.num_eventos.disabled=false;
+				}
+				else{
 					document.form.num_eventos.disabled=false;
 				}
 			}

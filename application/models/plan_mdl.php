@@ -21,8 +21,9 @@
  		$this->db->select('*');
  		$this->db->from('plan_detalle dp'); 		
  		$this->db->join('variable_plan vp','dp.idvariableplan=vp.idvariableplan');
+ 		$this->db->join('operador o','o.idoperador=dp.simbolo_detalle','left');
  		$this->db->where('idplan',$id); 		
- 		$this->db->order_by("nombre_var");
+ 		$this->db->order_by("idplandetalle");
 
  	$cobertura = $this->db->get();
  	return $cobertura->result();
@@ -179,6 +180,44 @@
 
  		$query=$this->db->get();
  		return $query->result();
+ 	}
+
+ 	function get_productos($item){
+ 		$this->db->select("idproducto,descripcion_prod");
+ 		$this->db->from("producto p");
+ 		$this->db->join("variable_plan vp","p.idvariableplan=vp.idvariableplan");
+ 		$this->db->where("vp.idvariableplan",$item);
+ 		$this->db->where("estado_prod","1");
+ 		$this->db->order_by("descripcion_prod","asc");
+
+ 		$query = $this->db->get();
+ 		return $query->result();
+ 	}
+
+ 	function insert_proddet($data){
+ 		$array = array(
+ 			'idplandetalle' => $data['iddet'],
+ 			'idproducto' => $data['idprod'] 
+ 			);
+
+ 	$this->db->insert('producto_detalle',$array);
+ 	}
+
+ 	function get_productos2($iddet){
+ 		$this->db->select("pr.idproducto,descripcion_prod, case when pr.idproducto=pd.idproducto then 'checked' else '' end as checked, case when pr.idproducto=pd.idproducto then 'eliminar_producto' else 'insertar_producto' end as funcion");
+ 		$this->db->from("producto pr");
+ 		$this->db->join("producto_detalle pd","pr.idproducto=pd.idproducto and pd.idplandetalle=".$iddet,"left");
+ 		$this->db->where("idvariableplan=(select idvariableplan from plan_detalle where idplandetalle=".$iddet.")");
+ 		$this->db->order_by("descripcion_prod","asc");
+
+ 		$query = $this->db->get();
+ 		return $query->result();
+ 	}
+
+ 	function eliminar_producto($idprod,$iddet){
+ 		$this->db->where('idproducto', $idprod);
+ 		$this->db->where('idplandetalle',$iddet);
+		$this->db->delete('producto_detalle');
  	}
 }
 ?>

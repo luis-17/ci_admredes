@@ -80,7 +80,6 @@
 
 	$tratamiento = $this->db->get();
 	 return $tratamiento->row_array();	
-
 	}
 
 
@@ -479,5 +478,15 @@
 		$this->db->delete('tratamiento'); 
 	}
 	
+	function getVariable(){
+		$this->db->select("*");
+		$this->db->from("siniestro s");
+		$this->db->join("certificado c","s.idcertificado=c.cert_id");
+		$this->db->join("plan_detalle pd","pd.idplan=c.plan_id");
+		$this->db->join("variable_plan vp","pd.idvariableplan=vp.idvariableplan");
+		$this->db->where("idsiniestro=3183 and valor_detalle is not null and simbolo_detalle is not null and flg_liquidacion='S'");
+		$query = $this->db->get();
+		return $query->result();
+	}
 }
 ?>

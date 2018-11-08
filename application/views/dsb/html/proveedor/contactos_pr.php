@@ -202,7 +202,6 @@
 																	$boton='<a href="'.base_url().'index.php/contacto_activar/'.$c->idcontactoproveedor.'/'.$c->idproveedor.'"><span class="label label-danger label-white middle">Inactivo</span></a>';
 																	} ?>
 														<tbody  style="font-size: 12px;">
-														
 															<tr>
 																<td><?=$c->descripcion_ctc?></td>
 																<td><?=$c->nombres_cp?></td>
@@ -213,15 +212,31 @@
 																<td><?php if($c->envio_correo_cita==2){ echo "NO";} else {echo "SÍ";} ?></td>
 																<td><?=$boton?></td>
 																<td>
-																	<div class="hidden-md hidden-lg">
-																		<div class="inline pos-rel">
-																			<div title="Editar Contacto" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
-																						<a class="boton fancybox" href="<?=base_url()?>index.php/seleccionar_contacto/<?=$c->idcontactoproveedor?>/<?=$c->idproveedor?>" data-fancybox-width="1000" data-fancybox-height="300">
-																							<i class="ace-icon fa fa-pencil bigger-120"></i>
-																						</a>
-																			</div>
-																		</div>
+
+																<div class="hidden-sm hidden-xs btn-group">
+																	<div title="Editar Contacto" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
+																		<a class="boton fancybox" href="<?=base_url()?>index.php/seleccionar_contacto/<?=$c->idcontactoproveedor?>/<?=$c->idproveedor?>" data-fancybox-width="1000" data-fancybox-height="300">
+																			<i class="ace-icon fa fa-pencil bigger-120"></i>
+																		</a>
 																	</div>
+																</div>
+																<div class="hidden-md hidden-lg">
+																	<div class="inline pos-rel">
+																		<button class="btn btn-minier btn-primary dropdown-toggle" data-toggle="dropdown" data-position="auto">
+																			<i class="ace-icon fa fa-cog icon-only bigger-110"></i>
+																		</button>
+
+																		<ul class="dropdown-menu dropdown-only-icon dropdown-yellow dropdown-menu-right dropdown-caret dropdown-close">
+																			<li>
+																				<div title="Editar Contacto" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
+																					<a class="boton fancybox" href="<?=base_url()?>index.php/seleccionar_contacto/<?=$c->idcontactoproveedor?>/<?=$c->idproveedor?>" data-fancybox-width="1000" data-fancybox-height="300">
+																						<i class="ace-icon fa fa-pencil bigger-120"></i>
+																					</a>
+																				</div>
+																			</li>
+																		</ul>
+																	</div>
+																</div>
 																</td>
 															</tr>
 														</tbody>

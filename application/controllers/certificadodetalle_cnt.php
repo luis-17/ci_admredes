@@ -233,7 +233,7 @@ class Certificadodetalle_cnt extends CI_Controller {
 				$texto='<div><p>El proveedor no registra contactos con env&iacute;o a email de reservas de atenciones.</p></div>';
 				$mail->addAddress('contacto@red-salud.com', 'Red Salud');
 			}
-			$mail->AddBCC($correo_laboral, $nombres_col);
+			$mail->addAddress($correo_laboral, $nombres_col);
 			// El asunto
 			$mail->Subject = "RESERVACION DE CONSULTA MEDICA - ".$plan;
 			// El cuerpo del mail (puede ser HTML)
