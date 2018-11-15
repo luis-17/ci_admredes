@@ -223,7 +223,7 @@ class Certificadodetalle_cnt extends CI_Controller {
 			
 			$mail = new PHPMailer;		
 			// Armo el FROM y el TO
-			$mail->setFrom($correo_laboral, $nombres_col);
+			$mail->setFrom($correo_laboral, 'Red Salud');
 			$destinatarios = $this->certificado_mdl->destinatarios($data);
 			if(!empty($destinatarios)){
 				foreach ($destinatarios as $d) {				
@@ -285,7 +285,7 @@ class Certificadodetalle_cnt extends CI_Controller {
 						</tr>
 						<tr>
 							<th>Fecha y Hora de reserva: </th>
-							<td>'.$c2->fecha_cita.' '.$c->hora_cita_inicio.'</td>
+							<td>'.$c2->fecha_cita.' '.$c2->hora_cita_inicio.'</td>
 							<th>Observaciones:</th>
 							<td>'.$c2->observaciones_cita.'</td>
 						</tr>
@@ -297,7 +297,7 @@ class Certificadodetalle_cnt extends CI_Controller {
 
 			$mail2 = new PHPMailer;		
 			// Armo el FROM y el TO
-			$mail2->setFrom($correo_laboral, $nombres_col);
+			$mail2->setFrom($correo_laboral, 'Red Salud');
 			
 			if($to!=''){			
 				$mail2->addAddress($to, $nom);
@@ -392,5 +392,179 @@ class Certificadodetalle_cnt extends CI_Controller {
 		$this->certificado_mdl->up_aseg($data);
 		$data['mensaje'] = 1;
 		$this->load->view('dsb/html/mensaje.php', $data);
+	}
+
+	public function reenviar_proveedor($id){
+		$user = $this->session->userdata('user');
+			extract($user);
+			$data['idcita'] = $id;
+
+			$contenido = $this->certificado_mdl->contenido_mail($data);
+			//email para proveedor
+			foreach ($contenido as $c) {
+				$plan=$c->nombre_plan;				
+				$tipo="'Century Gothic'";
+				$texto='<div><p>Estimad@, '.$c->nombre_comercial_pr.'</p>
+					<p>Por medio de &eacute;ste correo electr&oacute;nico se confirma la reserva de atenci&oacute;n m&eacute;dica ambulatoria con los siguientes datos:</p>
+					<table align="center" border="1" width="90%">
+						<tr>
+							<th>DNI Afiliado:</th>
+							<td>'.$c->aseg_numDoc.'</td>
+							<th>Nombre del Afiliado:</th>
+							<td>'.$c->afiliado.'</td>
+						</tr>
+						<tr>
+							<th>Fecha de Nacimiento:</th>
+							<td>'.$c->aseg_fechNac.'</td>
+							<th>Especialidad:</th>
+							<td>'.$c->nombre_esp.'</td>
+						</tr>
+						<tr>
+							<th>Fecha y Hora de reserva: </th>
+							<td>'.$c->fecha_cita.' '.$c->hora_cita_inicio.'</td>
+							<th>Observaciones:</th>
+							<td>'.$c->observaciones_cita.'</td>
+						</tr>
+					</table>
+					'.$c->cuerpo_mail.'
+					<p>Para dudas &oacute; consultas comun&iacute;quese a nuestra central en Lima: 01-445-3019 &oacute; provincia: 0800-47676</p>
+					<p>Saludos Cordiales</p>
+					<p>Atte. '.$nombres_col.' '.$ap_paterno_col.' '.$ap_materno_col.'</p></div>';
+
+					$data['idproveedor'] = $c->idproveedor;
+			}
+			
+			$mail = new PHPMailer;		
+			// Armo el FROM y el TO
+			$mail->setFrom($correo_laboral, 'Red Salud');
+			$destinatarios = $this->certificado_mdl->destinatarios($data);
+			if(!empty($destinatarios)){
+				foreach ($destinatarios as $d) {				
+					$mail->addAddress($d->email_cp, $d->nombres);
+				}
+			}else {
+				$texto='<div><p>El proveedor no registra contactos con env&iacute;o a email de reservas de atenciones.</p></div>';
+				$mail->addAddress('contacto@red-salud.com', 'Red Salud');
+			}
+			$mail->addAddress($correo_laboral, $nombres_col);
+			// El asunto
+			$mail->Subject = "RESERVACION DE CONSULTA MEDICA - ".$plan;
+			// El cuerpo del mail (puede ser HTML)
+			$mail->Body = '<!DOCTYPE html>
+					<head>
+	                <meta charset="UTF-8" />
+	                </head>
+	                <body style="font-size: 1vw; width: 100%; font-family: '.$tipo.', CenturyGothic, AppleGothic, sans-serif;">
+	                <div style="padding-top: 2%; text-align: right; padding-right: 15%;"><img src="http://www.red-salud.com/mail/logo.png" width="17%" style="text-align: right;"></img>
+	                </div>
+	                <div style="padding-right: 15%; padding-left: 8%;"><b><label style="color: #000000;"> </b></div>
+	                <div style="padding-right: 15%; padding-left: 8%; padding-bottom: 1%; color: #12283E;">
+	                '.$texto.'
+	                <div style="background-color: #BF3434; padding-top: 0.5%; padding-bottom: 0.5%">
+	                <div style="text-align: center;"><b><a href="https://www.google.com/maps/place/Red+Salud/@-12.11922,-77.0370327,17z/data=!3m1!4b1!4m5!3m4!1s0x9105c83d49a4312b:0xf0959641cc08826!8m2!3d-12.11922!4d-77.034844" style="text-decoration-color: #FFFFFF; text-decoration: none; color:  #FFFFFF;">Av. Jos&eacute; Pardo Nro 601 Of. 502, Miraflores - Lima.</a></b></div>
+	                <div style="text-align: center;"><b><a href="http://www.red-salud.com" style="text-decoration-color: #FFFFFF; text-decoration: none; color:  #FFFFFF;">www.red-salud.com</a></b></div>
+	                </div>
+	                <div style=""><img src="http://www.red-salud.com/mail/bottom.png" width="50%"></img></div>
+	                </div>
+	            </body>
+				</html>';
+			$mail->IsHTML(true);
+			$mail->CharSet = 'UTF-8';
+			// Los archivos adjuntos
+			//$mail->addAttachment('adjunto/'.$plan.'.pdf', 'Condicionado.pdf');
+			//$mail->addAttachment('adjunto/RED_MEDICA_2018.pdf', 'Red_Medica.pdf');
+			// Enviar
+			$mail->send();
+
+			$data['mensaje'] = 5;
+
+			$this->load->view('dsb/html/mensaje.php', $data);			
+
+	}
+
+	public function reenviar_afiliado($id){
+		$user = $this->session->userdata('user');
+			extract($user);
+			$data['idcita'] = $id;
+			$contenido = $this->certificado_mdl->contenido_mail($data);
+			
+			//email para afiliado
+			 foreach ($contenido as $c2) {
+				$plan2=$c2->nombre_plan;
+				$data['idcita'] = $id;
+				$to=$c2->aseg_email;
+				$nom=$c2->afiliado;
+				$texto2='<div><p>Estimad@, '.$nom.'</p>
+					<p>Por medio de &eacute;ste correo electr&oacute;nico se confirma la reserva de atenci&oacute;n m&eacute;dica ambulatoria con los siguientes datos:</p>
+					<table align="center" border="1" width="90%">
+						<tr>
+							<th>DNI Afiliado:</th>
+							<td>'.$c2->aseg_numDoc.'</td>
+							<th>Nombre del Afiliado:</th>
+							<td>'.$c2->afiliado.'</td>
+						</tr>
+						<tr>
+							<th>Centro M&eacute;dico:</th>
+							<td>'.$c2->nombre_comercial_pr.'</td>
+							<th>Especialidad:</th>
+							<td>'.$c2->nombre_esp.'</td>
+						</tr>
+						<tr>
+							<th>Fecha y Hora de reserva: </th>
+							<td>'.$c2->fecha_cita.' '.$c2->hora_cita_inicio.'</td>
+							<th>Observaciones:</th>
+							<td>'.$c2->observaciones_cita.'</td>
+						</tr>
+					</table>
+					<p>Recordar que la hora de reserva es referencial y la atenci&oacute;n se realiza por orden de llegada. Para dudas &oacute; consultas comun&iacute;quese a nuestra central en Lima: 01-445-3019 &oacute; provincia: 0800-47676</p>
+					<p>Saludos Cordiales</p>
+					<p>Atte. '.$nombres_col.' '.$ap_paterno_col.' '.$ap_materno_col.'</p></div>';
+			}
+
+			$mail2 = new PHPMailer;		
+			// Armo el FROM y el TO
+			$mail2->setFrom($correo_laboral, 'Red Salud');
+			
+			if($to!=''){			
+				$mail2->addAddress($to, $nom);
+			}else {
+				$texto2='<div><p>El asegurado no cuenta con un correo electrónico registrado.</p></div>';
+				$mail2->addAddress('contacto@red-salud.com', 'Red Salud');
+			}
+			$mail2->AddBCC($correo_laboral, $nombres_col);
+			// El asunto
+			$mail2->Subject = "RESERVACION DE CONSULTA MEDICA - ".$plan2;
+			// El cuerpo del mail (puede ser HTML)
+			$tipo="'Century Gothic'";
+			$mail2->Body = '<!DOCTYPE html>
+					<head>
+	                <meta charset="UTF-8" />
+	                </head>
+	                <body style="font-size: 1vw; width: 100%; font-family: '.$tipo.', CenturyGothic, AppleGothic, sans-serif;">
+	                <div style="padding-top: 2%; text-align: right; padding-right: 15%;"><img src="http://www.red-salud.com/mail/logo.png" width="17%" style="text-align: right;"></img>
+	                </div>
+	                <div style="padding-right: 15%; padding-left: 8%;"><b><label style="color: #000000;"> </b></div>
+	                <div style="padding-right: 15%; padding-left: 8%; padding-bottom: 1%; color: #12283E;">
+	                '.$texto2.'
+	                <div style="background-color: #BF3434; padding-top: 0.5%; padding-bottom: 0.5%">
+	                <div style="text-align: center;"><b><a href="https://www.google.com/maps/place/Red+Salud/@-12.11922,-77.0370327,17z/data=!3m1!4b1!4m5!3m4!1s0x9105c83d49a4312b:0xf0959641cc08826!8m2!3d-12.11922!4d-77.034844" style="text-decoration-color: #FFFFFF; text-decoration: none; color:  #FFFFFF;">Av. Jos&eacute; Pardo Nro 601 Of. 502, Miraflores - Lima.</a></b></div>
+	                <div style="text-align: center;"><b><a href="http://www.red-salud.com" style="text-decoration-color: #FFFFFF; text-decoration: none; color:  #FFFFFF;">www.red-salud.com</a></b></div>
+	                </div>
+	                <div style=""><img src="http://www.red-salud.com/mail/bottom.png" width="50%"></img></div>
+	                </div>
+	            </body>
+				</html>';
+			$mail2->IsHTML(true);
+			$mail2->CharSet = 'UTF-8';
+			// Los archivos adjuntos
+			//$mail->addAttachment('adjunto/'.$plan.'.pdf', 'Condicionado.pdf');
+			//$mail->addAttachment('adjunto/RED_MEDICA_2018.pdf', 'Red_Medica.pdf');
+			// Enviar
+			$mail2->send();
+
+			$data['mensaje'] = 6;
+
+			$this->load->view('dsb/html/mensaje.php', $data);
+
 	}
 }

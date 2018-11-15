@@ -195,7 +195,7 @@
 
 									<div class="form-group">										
 											<label class="col-sm-3 control-label no-padding-right" for="form-field-1"><input type="checkbox" name="flag" id="flag
-											" <?=$chk;?> onchange="habilitar(this.checked,<?=$item?>);"> Validación:</label><input type="hidden" name="flg_liqui" value="No" <?php if($flg=='S'){echo 'checked';}?> >
+											" <?=$chk;?> onchange="habilitar(this.checked);"> Validación:</label><input type="hidden" name="flg_liqui" value="No" <?php if($flg=='S'){echo 'checked';}?> >
 
 										<div class="col-sm-9">
 											<select <?=$style;?> id="operador" name="operador" required="Seleccionar una de las opciones de la lista">
@@ -259,7 +259,7 @@
 														?>
 															<tr>
 																<td align="right"><?=$cont;?></td>
-																<td><?=$c->nombre_var;?></td>
+																<td><p><?=$c->nombre_var;?></p><p><?=$c->detalle?></p></td>
 																<td><?=$c->texto_web;?></td>
 																<td><?=$visible?></td>
 																<td><?=$c->descripcion;?> <?=$c->valor_detalle;?></td>
@@ -340,7 +340,7 @@
 		<!-- <![endif]-->
 
 		<script type="text/javascript">
-			function habilitar(value, flag)
+			function habilitar(value)
 			{
 				if(value==true)
 				{
@@ -362,7 +362,7 @@
 			{
 				if(value==''){
 					document.form.num_eventos.disabled=true;
-				}elseif(value=='Ilimitados'){
+				}else if(value=='Ilimitados'){
 					document.form.num_eventos.value=1000;
 					document.form.num_eventos.disabled=false;
 				}

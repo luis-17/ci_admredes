@@ -29,7 +29,6 @@
 
 	$triaje = $this->db->get();
 	 return $triaje->row_array();	
-
 	}
 
 
@@ -424,8 +423,6 @@
 	 }
     } 
 
-
-
     function updateSiniestro_diag($data) { 		
 		$this->db->set('fase_atencion', $data['sin_estado']);
 		$this->db->where('idsiniestro', $data['idsiniestro']); 
@@ -478,15 +475,90 @@
 		$this->db->delete('tratamiento'); 
 	}
 	
-	function getVariable(){
-		$this->db->select("*");
+	function getVariable($id){
+		$this->db->select("s.*,c.*,dp.*,vp.*, CONCAT('(', left(GROUP_CONCAT(descripcion_prod),40), case when CHAR_LENGTH(GROUP_CONCAT(descripcion_prod))>40 then '...)'else ')' end) as detalle, coalesce(liqdetalleid,0) as liqdetalleid, coalesce(liqdetalle_aprovpago,0) as liqdetalle_aprovpago, coalesce(liqdetalle_monto,0.00) as liqdetalle_monto, coalesce(liqdetalle_neto,0.00) as liqdetalle_neto, coalesce(ld.idproveedor,0) as idprov,coalesce(liqdetalle_numfact,'') as liqdetalle_numfact, liquidacionTotal, liquidacionTotal_neto, coalesce(l.liquidacionId,0) as liq_id");
 		$this->db->from("siniestro s");
 		$this->db->join("certificado c","s.idcertificado=c.cert_id");
-		$this->db->join("plan_detalle pd","pd.idplan=c.plan_id");
-		$this->db->join("variable_plan vp","pd.idvariableplan=vp.idvariableplan");
-		$this->db->where("idsiniestro=3183 and valor_detalle is not null and simbolo_detalle is not null and flg_liquidacion='S'");
+		$this->db->join('plan_detalle dp',"dp.idplan=c.plan_id"); 		
+ 		$this->db->join('variable_plan vp','dp.idvariableplan=vp.idvariableplan');
+ 		$this->db->join("producto_detalle pd","dp.idplandetalle=pd.idplandetalle","left");
+ 		$this->db->join("producto p","p.idproducto=pd.idproducto","left");
+ 		$this->db->join("liquidacion l","l.idsiniestro=s.idsiniestro","left"); 		
+		$this->db->join("liquidacion_detalle ld","l.liquidacionId=ld.liquidacionId and ld.idplandetalle=dp.idplandetalle","left");
+		$this->db->where("s.idsiniestro=$id and valor_detalle is not null and simbolo_detalle is not null and flg_liquidacion='S'");
+		$this->db->group_by('pd.idplandetalle');		
+ 		$this->db->order_by("vp.idvariableplan");
 		$query = $this->db->get();
 		return $query->result();
 	}
+
+	function save_liquidacion($data){
+		$array = array(
+			'idsiniestro' => $data['idsiniestro'],
+			'liquidacionTotal' => $data['liq_total'], 
+			'liquidacionTotal_neto' => $data['liq_neto'],
+			'liquidacionFech_reg' => date('Y-m-d H:i:s'),
+			'liquidacion_estado' => $data['estadoliq']
+			);
+		$this->db->insert("liquidacion",$array);
+	}
+
+	function up_liquidacion($data){
+		$array = array(
+			'liquidacionTotal' => $data['liq_total'], 
+			'liquidacionTotal_neto' => $data['liq_neto'],
+			'liquidacion_estado' => $data['estadoliq']
+			);
+		$this->db->where("liquidacionId",$data['liq_id']);
+		$this->db->update("liquidacion",$array);
+	}
+
+	function save_detalleliquidacion($data){
+		if($data['aprov_pago']==1){
+			$idusu=$data['idusuario'];
+		}else{
+			$idusu=null;
+		}
+
+		$array = array(
+			'liquidacionId' => $data['liq_id'], 
+			'idplandetalle' => $data['idplandetalle'],
+			'liqdetalle_monto' => $data['detalle_monto'],
+			'idproveedor' => $data['idproveedor'],
+			'liqdetalle_numfact' => $data['num_fac'],
+			'liqdetalle_neto' => $data['detalle_neto'],
+			'liqdetalle_aprovpago' => $data['aprov_pago'],
+			'idusuario_aprueba' => $idusu,
+			);
+		$this->db->insert("liquidacion_detalle",$array);
+	}
+
+	function up_detalleliquidacion($data){
+		if($data['aprov_pago']==1){
+			$idusu=$data['idusuario'];
+		}else{
+			$idusu=null;
+		}
+
+		$array = array( 
+			'liqdetalle_monto' => $data['detalle_monto'],
+			'idproveedor' => $data['idproveedor'],
+			'liqdetalle_numfact' => $data['num_fac'],
+			'liqdetalle_neto' => $data['detalle_neto'],
+			'liqdetalle_aprovpago' => $data['aprov_pago'],
+			'idusuario_aprueba' => $idusu,
+			);
+		$this->db->where('liqdetalleid',$data['liqdetalleid']);
+		return $this->db->update('liquidacion_detalle', $array);
+	}
+
+	function num_orden($id){
+		$this->db->select("num_orden_atencion");
+		$this->db->from("siniestro");
+		$this->db->where("idsiniestro",$id);
+		$query=$this->db->get();
+		return $query->result();
+	}
+
 }
 ?>

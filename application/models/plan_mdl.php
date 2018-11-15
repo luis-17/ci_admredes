@@ -18,12 +18,15 @@
  	}
 
  	function getCobertura($id){
- 		$this->db->select('*');
+ 		$this->db->select("dp.*, pd.*, vp.*,o.*, CONCAT('(', left(GROUP_CONCAT(descripcion_prod),40), case when CHAR_LENGTH(GROUP_CONCAT(descripcion_prod))>40 then '...)'else ')' end) as detalle");
  		$this->db->from('plan_detalle dp'); 		
  		$this->db->join('variable_plan vp','dp.idvariableplan=vp.idvariableplan');
  		$this->db->join('operador o','o.idoperador=dp.simbolo_detalle','left');
- 		$this->db->where('idplan',$id); 		
- 		$this->db->order_by("idplandetalle");
+ 		$this->db->join("producto_detalle pd","dp.idplandetalle=pd.idplandetalle","left");
+ 		$this->db->join("producto p","p.idproducto=pd.idproducto","left");
+ 		$this->db->where('idplan',$id); 
+ 		$this->db->group_by('pd.idplandetalle');		
+ 		$this->db->order_by("pd.idplandetalle ");
 
  	$cobertura = $this->db->get();
  	return $cobertura->result();

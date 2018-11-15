@@ -49,74 +49,181 @@
 		<script src="<?=  base_url()?>public/assets/js/ace-extra.js"></script>
 
 		<!-- HTML5shiv and Respond.js for IE8 to support HTML5 elements and media queries -->
+
+
+			<!-- para paginacion -->
+		<script src="<?=base_url()?>public/pagination/jquery.dataTables.min.css"></script>
+		<script src="<?=base_url()?>public/pagination/jquery-1.12.4.js"></script>
+		<script src="<?=base_url()?>public/pagination/jquery.dataTables.min.js"></script>
+		<script src="<?=base_url()?>public/pagination/dataTables.bootstrap.min.js"></script>
+
+
 	</head>
 
-	<body style="">	
+	<body class="no-skin">
+		<!-- #section:basics/navbar.layout -->
+		<?php include ("/../headBar.php");?>
+
+		<!-- /section:basics/navbar.layout -->
+		<div class="main-container" id="main-container">
+			<script type="text/javascript">
+				try{ace.settings.check('main-container' , 'fixed')}catch(e){}
+			</script>
+
+			<!-- #section:basics/sidebar -->
+			<?php include ("/../sideBar.php");?>
+			<!-- end nav. -->
+
 			<!-- /section:basics/sidebar -->
 			<div class="main-content">
 				<div class="main-content-inner">
 					<!-- #section:basics/content.breadcrumbs -->
-										
+					<div class="breadcrumbs" id="breadcrumbs">
+						<script type="text/javascript">
+							try{ace.settings.check('breadcrumbs' , 'fixed')}catch(e){}
+						</script>
+
+						<ul class="breadcrumb">
+							<li>
+								<i class="ace-icon fa fa-home home-icon"></i>
+								<a href="<?=base_url()?>">Inicio</a>
+							</li>
+							<li class="active">Canales</li>
+						</ul><!-- /.breadcrumb -->
+
+						<!-- /section:basics/content.searchbox -->
+					</div>
+
 					<!-- /section:basics/content.breadcrumbs -->
 					<div class="page-content">
+						<!-- #section:settings.box -->
+
+						<!-- /section:settings.box -->
 						<div class="page-header">
-							<h1>							
+							<h1>
+								Consolidado de Canales de Venta
+								<small>
+									<i class="ace-icon fa fa-angle-double-right"></i>
+								</small>
 							</h1>
-						</div>
+						</div><!-- /.page-header -->
+
 						<div class="row">
 							<div class="col-xs-12">
+								<div class="widget-toolbar no-border invoice-info">
+									<a href="<?=base_url()?>index.php/canal_registrar"><button class="btn btn-white btn-info">
+										Nuevo Canal
+									</button></a>
+								</div>
+								<br/>
+								<br/>
 								<!-- PAGE CONTENT BEGINS -->
-								<div class="widget-main">
-									<p class="alert alert-info">
-									<?php 
-										switch ($mensaje) {
-											case 1:
-												if($tipomen==1){ 
-												echo "Los datos del afiliado <b>".$ape1." ".$ape2." ".$nom1." ".$nom2."</b> han sido actualizados con éxito.";
-												} else {
-													echo "El afiliado <b>".$ape1." ".$ape2." ".$nom1." ".$nom2."</b> ha sido registrado con éxito.";
-												}
-												break;
-											
-											case 2:
-												echo "Se ha registrado la reserva de atención con éxito.";
-												break;
-											case 3:
-												echo "Se actualizó la reserva de atención con éxito.";
-												break;
-											case 4:
-												echo 'Se anuló la reserva de atención con éxito.';
-												break;
-											case 5:
-												echo 'Se envió el correo de confirmación al proveedor.';
-											break;
-											case 6:
-												echo 'Se envió el correo de confirmación al afiliado.';
-											break;
-										}
-									?>									
-									</p>
-								</div>	
-								<div class="">
-									<div class="col-md-offset-3 col-md-9" style="text-align: right;">
-										<button class="btn btn-info" onclick="guardar()" >
-											<i class="ace-icon fa fa-check bigger-110"></i>
-												Cerrar
-										</button>
-									</div>
-								</div>							
+								
+								<div class="col-xs-12">
+									<div>
+									<table id="example" class="table table-striped table-bordered table-hover">
+										<thead>
+											<tr>
+												<th>ID</th>
+												<th>Tipo</th>
+												<th>RUC</th>
+												<th>Razón Social</th>
+												<th>Nombre Comercial</th>
+												<th>Estado</th>
+												<th></th>
+											</tr>
+										</thead>
+										<tbody>
+										
+										<?php foreach ($canal as $c) {?>
+											<tr>
+												<td><?=$c->idclienteempresa;?></td>
+												<td><?=$c->descripcion_cc;?></td>
+												<td><?=$c->numero_documento_cli?></td>
+												<td><?=$c->razon_social_cli?></td>
+												<td><?=$c->nombre_comercial_cli?></td>
+												<td><?php if($c->estado_cli==1){
+													echo '<a href="'.base_url().'index.php/canal_anular/'.$c->idclienteempresa.'"><span class="label label-info label-white middle">Activo</span></a>';
+													}else{
+														echo '<a href="'.base_url().'index.php/canal_activar/'.$c->idclienteempresa.'"><span class="label label-danger label-white middle">Inactivo</span></a>';
+														}?>
+												</td>
+												<td>
+													<div class="hidden-sm hidden-xs btn-group">
+														<div title="Editar Canal" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
+															&nbsp;<a href="<?=base_url()?>index.php/canal_editar/<?=$c->idclienteempresa?>">
+																<i class="ace-icon fa fa-pencil bigger-120"></i>
+															</a>
+														</div>														
+													</div>
+
+														<div class="hidden-md hidden-lg">
+															<div class="inline pos-rel">
+																<button class="btn btn-minier btn-primary dropdown-toggle" data-toggle="dropdown" data-position="auto">
+																	<i class="ace-icon fa fa-cog icon-only bigger-110"></i>
+																</button>
+
+																<ul class="dropdown-menu dropdown-only-icon dropdown-yellow dropdown-menu-right dropdown-caret dropdown-close">	
+																		<li>
+																			<div title="Editar Canal" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
+																				&nbsp;<a href="<?=base_url()?>index.php/canal_editar/<?=$c->idclienteempresa?>">
+																					<i class="ace-icon fa fa-pencil bigger-120"></i>
+																				</a>
+																			</div>
+																		</li>
+																	</ul>
+																</div>
+															</div>
+														</td>
+													</tr>
+													<?php } ?>
+										</tbody>
+									</table>									
+								</div><!-- PAGE CONTENT ENDS -->	
+								<script>			
+										//para paginacion
+										$(document).ready(function() {
+										$('#example').DataTable( {
+										"pagingType": "full_numbers"
+										} );
+									} );
+									</script>	
+								</div>						
 							</div><!-- /.col -->
-						</div>	
+						</div><!-- /.row -->
+					</div><!-- /.page-content -->
+				</div>
+			</div><!-- /.main-content -->
+
+			<div class="footer">
+				<div class="footer-inner">
+					<!-- #section:basics/footer -->
+					<div class="footer-content">
+						<span class="bigger-120">
+							<span class="blue bolder">Red Salud</span>
+							Application &copy; 2018
+						</span>
+
+						&nbsp; &nbsp;
 					</div>
-				</div><!-- /.main-content -->			
-			</div><!-- /.main-container -->
-		
+
+					<!-- /section:basics/footer -->
+				</div>
+			</div>
+
+			<a href="#" id="btn-scroll-up" class="btn-scroll-up btn btn-sm btn-inverse">
+				<i class="ace-icon fa fa-angle-double-up icon-only bigger-110"></i>
+			</a>
+		</div><!-- /.main-container -->
+
 		<!-- basic scripts -->
+
+		<!-- fin scripts paginacion -->
 
 		<!--[if !IE]> -->
 		<script type="text/javascript">
 			window.jQuery || document.write("<script src='<?=  base_url()?>public/assets/js/jquery.js'>"+"<"+"/script>");
-		</script><script src="<?=  base_url()?>public/assets/js/jquery.js"></script>
+		</script>
 
 		<!-- <![endif]-->
 
@@ -131,10 +238,6 @@
 		<script src="<?=  base_url()?>public/assets/js/bootstrap.js"></script>
 
 		<!-- page specific plugin scripts -->
-		<script src="<?=  base_url()?>public/assets/js/dataTables/jquery.dataTables.js"></script>
-		<script src="<?=  base_url()?>public/assets/js/dataTables/jquery.dataTables.bootstrap.js"></script>
-		<script src="<?=  base_url()?>public/assets/js/dataTables/extensions/TableTools/js/dataTables.tableTools.js"></script>
-		<script src="<?=  base_url()?>public/assets/js/dataTables/extensions/ColVis/js/dataTables.colVis.js"></script>
 
 		<!-- ace scripts -->
 		<script src="<?=  base_url()?>public/assets/js/ace/elements.scroller.js"></script>
@@ -159,17 +262,12 @@
 		<script src="<?=  base_url()?>public/assets/js/ace/ace.widget-on-reload.js"></script>
 		<script src="<?=  base_url()?>public/assets/js/ace/ace.searchbox-autocomplete.js"></script>
 
-		<script type="text/javascript">
-			function guardar() {
-				parent.location.reload(true);
-				parent.$.fancybox.close();
-			}
+		<!-- inline scripts related to this page -->
 
-		</script>
-
+		
 		<!-- the following scripts are used in demo only for onpage help and you don't need them -->
-		<link rel="stylesheet" href="<?=  base_url()?>public/assets/css/ace.onpage-help.css">
-		<link rel="stylesheet" href="<?=  base_url()?>public/docs/assets/js/themes/sunburst.css">
+		<link rel="stylesheet" href="<?=  base_url()?>public/assets/css/ace.onpage-help.css" />
+		<link rel="stylesheet" href="<?=  base_url()?>public/docs/assets/js/themes/sunburst.css" />
 
 		<script type="text/javascript"> ace.vars['base'] = '..'; </script>
 		<script src="<?=  base_url()?>public/assets/js/ace/elements.onpage-help.js"></script>
@@ -179,4 +277,5 @@
 		<script src="<?=  base_url()?>public/docs/assets/js/language/html.js"></script>
 		<script src="<?=  base_url()?>public/docs/assets/js/language/css.js"></script>
 		<script src="<?=  base_url()?>public/docs/assets/js/language/javascript.js"></script>
-</body></html>
+	</body>
+</html>

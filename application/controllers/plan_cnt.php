@@ -219,6 +219,8 @@ class plan_cnt extends CI_Controller {
 		$data['items'] = $items;
 		$data['iddet'] = 0;
 		$data['cadena'] = "";
+		$operador=$this->plan_mdl->get_operador();
+		$data['operador'] = $operador;
 		$this->load->view('dsb/html/plan/plan_cobertura.php',$data);
  	}
 
