@@ -91,7 +91,7 @@
 							</li>
 							<li>
 							<a href="<?=base_url()?>index">Comprobantes de Pago</a></li>
-							<li class="active">Reporte de Ventas</li>
+							<li class="active">Historial de Ventas</li>
 						</ul><!-- /.breadcrumb -->
 
 						<!-- /section:basics/content.searchbox -->
@@ -103,7 +103,7 @@
 						<!-- /section:settings.box -->
 						<div class="page-header">
 							<h1>
-								Reporte de Ventas
+								Historial de Ventas
 								<small>
 									<i class="ace-icon fa fa-angle-double-right"></i>
 									

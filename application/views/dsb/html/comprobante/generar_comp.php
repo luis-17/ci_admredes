@@ -243,7 +243,8 @@
 													<div class="form-row">
 														<div id="respManual"></div>
 														<div class="form-row">
-															<div class="form-group col-md-6">
+															<input type='text' class='hidden' id='idplanManual' name='idplanManual' value=''>
+															<div class="form-group col-md-3">
 														    	<b class="text-primary">Serie</b>
 														    	<select name="serie" id="serie" required="Seleccione una opción de la lista" class="form-control">
 																	<option value=0>Seleccione</option>
@@ -260,6 +261,20 @@
 															<div class="form-group col-md-3">
 														    	<b class="text-primary">Correlativo</b>
 														    	<input type="text" class="form-control" id="correlativoDoc" name="correlativoDoc" required="Ingrese número correlativo" value="" readonly>
+															</div>
+															<div class="form-group col-md-3">
+																<b class="text-primary">Nombre de Plan</b>
+																<select name="planes"" class="form-control" id="planes" required="Seleccione una opción de la lista">
+																	<option value=0>Seleccione</option>
+																	<?php foreach ($planes as $p):
+																		if($idserie==$p->idplan):
+																			$estp='selected';
+																		else:
+																			$estp='';
+																		endif;?>
+																		<option value="<?=$p->idplan;?>" <?=$estp?> ><?=$p->nombre_comercial_cli." - ".$p->nombre_plan?></option>
+																	<?php endforeach; ?>
+																</select>
 															</div>
 															<div class="form-group col-md-3">
 														    	<b class="text-primary">Fecha</b>
@@ -599,6 +614,21 @@
 
 //------------------------------------------------------------------------------------------------------------------------------
 				//Boletaje Manual
+
+				$('#planes').change(function(){
+			    	var planes = $("#planes").val();
+			        $.ajax({                        
+			           	url: "<?= BASE_URL()?>index.php/notas_cnt/mostrarplanes",   
+			           	type: 'POST',
+			           	dataType: 'json',                                 
+			           	data: {planes:planes},
+			           	success: function(data)             
+			           	{
+			           		$('#idplanManual').val(data.idplan);
+			           	}
+			       	});
+			       	return false;
+			    });
 
 				$("#serie").change(function() {
 					var serie = $("#serie").val();
