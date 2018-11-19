@@ -136,12 +136,11 @@
 								<!-- PAGE CONTENT BEGINS -->
 								<form class="form-horizontal" role="form" method="post" action="<?=base_url()?>index.php/plan_guardar">
 									<input type="hidden" id="idplan" name="idplan" value="<?=$id;?>" />
-
 									<div class="form-group">
 										<label class="col-sm-3 control-label no-padding-right" for="form-field-1">Cliente: </label>
 
 										<div class="col-sm-9">
-											<select id="cliente" name="cliente" value="" class="col-xs-10 col-sm-5">
+											<select id="cliente" name="cliente" value="" class="col-xs-10 col-sm-5" required="Seleccionar una opción de la lista">
 												<option value="">Seleccionar</option>	
 												<?php foreach($clientes as $c):
 													if($cliente==$c->idclienteempresa):
@@ -151,7 +150,7 @@
 														endif;?>	
 													<option value="<?=$c->idclienteempresa;?>" <?=$est;?>><?=$c->nombre_comercial_cli;?></option>								
 												<?php endforeach; ?>
-											</select>
+											</select><label style="color: #FF0101;">&nbsp;*</label>
 										</div>
 									</div>
 
@@ -159,7 +158,7 @@
 										<label class="col-sm-3 control-label no-padding-right" for="form-field-1"> Nombre del Plan: </label>
 
 										<div class="col-sm-9">
-											<input type="text" id="nombre_plan" name="nombre_plan" class="col-xs-10 col-sm-5" value="<?=$nombre_plan;?>">
+											<input type="text" id="nombre_plan" name="nombre_plan" class="col-xs-10 col-sm-5" value="<?=$nombre_plan;?>" required><label style="color: #FF0101;">&nbsp;*</label>
 										</div>
 									</div>
 
@@ -167,7 +166,7 @@
 										<label class="col-sm-3 control-label no-padding-right" for="form-field-1">Código del Plan: </label>
 
 										<div class="col-sm-9">
-											<input type="text" id="codigo_plan" name="codigo_plan" class="col-xs-10 col-sm-5" value="<?=$codigo_plan;?>">
+											<input type="text" id="codigo_plan" name="codigo_plan" class="col-xs-10 col-sm-5" value="<?=$codigo_plan;?>" required><label style="color: #FF0101;">&nbsp;*</label>
 										</div>
 									</div>
 
@@ -175,7 +174,7 @@
 										<label class="col-sm-3 control-label no-padding-right" for="form-field-1">Días de Carencia: </label>
 
 										<div class="col-sm-9">
-											<input type="number" id="carencia" name="carencia" class="col-xs-10 col-sm-5" value="<?=$carencia;?>">
+											<input type="number" id="carencia" name="carencia" class="col-xs-10 col-sm-5" value="<?=$carencia;?>" required><label style="color: #FF0101;">&nbsp;*</label>
 										</div>
 									</div>
 
@@ -183,7 +182,7 @@
 										<label class="col-sm-3 control-label no-padding-right" for="form-field-1">Días de Mora: </label>
 
 										<div class="col-sm-9">
-											<input type="number" id="mora" name="mora" class="col-xs-10 col-sm-5" value="<?=$mora;?>">
+											<input type="number" id="mora" name="mora" class="col-xs-10 col-sm-5" value="<?=$mora;?>" required><label style="color: #FF0101;">&nbsp;*</label>
 										</div>
 									</div>
 
@@ -191,67 +190,67 @@
 										<label class="col-sm-3 control-label no-padding-right" for="form-field-1">Días de Atención: </label>
 
 										<div class="col-sm-9">
-											<input type="number" id="atencion" name="atencion" class="col-xs-10 col-sm-5" value="<?=$atencion;?>">
+											<input type="number" id="atencion" name="atencion" class="col-xs-10 col-sm-5" value="<?=$atencion;?>" required><label style="color: #FF0101;">&nbsp;*</label>
 										</div>
 									</div>
 
 									<div class="form-group">
-										<label class="col-sm-3 control-label no-padding-right" for="form-field-1">Prima (S/.): </label>
+										<label class="col-sm-3 control-label no-padding-right" for="form-field-1">Prima (S/.) Inc. IGV: </label>
 
 										<div class="col-sm-9">
-											<input type="number" id="prima" name="prima" class="col-xs-10 col-sm-5" value="<?=$prima;?>">
+											<input type="number" id="prima" name="prima" class="col-xs-10 col-sm-5" value="<?=$prima;?>" required><label style="color: #FF0101;">&nbsp;*</label>
 										</div>
 									</div>
 
 									<div class="form-group">
-										<label class="col-sm-3 control-label no-padding-right" for="form-field-1">Prima por Adicional (S/.): </label>
+										<label class="col-sm-3 control-label no-padding-right" for="form-field-1">Prima por Adicional (S/.) Inc. IGV: </label>
 
 										<div class="col-sm-9">
-											<input type="number" id="prima_adicional" name="prima_adicional" class="col-xs-10 col-sm-5" value="<?=$prima_ad;?>">
+											<input type="number" id="prima_adicional" name="prima_adicional" class="col-xs-10 col-sm-5" value="<?=$prima_ad;?>" required><label style="color: #FF0101;">&nbsp;*</label>
 										</div>
 									</div>
 
 									<div class="form-group">
-										<label class="col-sm-3 control-label no-padding-right" for="form-field-1">Límite de afiliados: </label>
+										<label class="col-sm-3 control-label no-padding-right" for="form-field-1">Límite de afiliados por certificado: </label>
 
 										<div class="col-sm-9">
-											<input type="number" id="num_afiliados" name="num_afiliados" class="col-xs-10 col-sm-5" value="<?=$num_afiliados;?>">
+											<input type="number" id="num_afiliados" name="num_afiliados" class="col-xs-10 col-sm-5" value="<?=$num_afiliados;?>" required><label style="color: #FF0101;">&nbsp;*</label>
 										</div>
 									</div>
 
 									<div class="form-group">
-										<label class="col-sm-3 control-label no-padding-right" for="form-field-1">¿Permite activación manual? </label>
+										<label class="col-sm-3 control-label no-padding-right" for="form-field-1">¿Activación manual desde Admin? </label>
 
 										<div class="col-sm-9">
 											<input type="radio" id="res1" name="flg_activar" value="S" <?php if($flg_activar=='S'){echo "checked";} ?> required="required">
 											<label for="res1">Sí </label>
 											&nbsp;&nbsp;
 											<input  type="radio" id="res2" name="flg_activar" value="N" <?php if($flg_activar=='N'){echo "checked";} ?> required="required" >
-											<label for="res2">No</label>
+											<label for="res2">No</label><label style="color: #FF0101;">&nbsp;*</label>
 										</div>
 									</div>
 
 									<div class="form-group">
-										<label class="col-sm-3 control-label no-padding-right" for="form-field-1">¿Permite afiliación de dependientes? </label>
+										<label class="col-sm-3 control-label no-padding-right" for="form-field-1">¿Afiliación de dependientes desde Admin? </label>
 
 										<div class="col-sm-9">
 											<input type="radio" id="res3" name="flg_dependientes" value="S" <?php if($flg_dependientes=='S'){echo "checked";} ?> required="required">
 											<label for="res3">Sí </label>
 											&nbsp;&nbsp;
 											<input  type="radio" id="res4" name="flg_dependientes" value="N" <?php if($flg_dependientes=='N'){echo "checked";} ?> required="required" >
-											<label for="res2">No</label>
+											<label for="res2">No</label><label style="color: #FF0101;">&nbsp;*</label>
 										</div>
 									</div>
 
 									<div class="form-group">
-										<label class="col-sm-3 control-label no-padding-right" for="form-field-1">¿Permite cancelar certificado? </label>
+										<label class="col-sm-3 control-label no-padding-right" for="form-field-1">¿Cancelar certificado desde Admin? </label>
 
 										<div class="col-sm-9">
 											<input type="radio" id="res5" name="flg_cancelar" value="S" <?php if($flg_cancelar=='S'){echo "checked";} ?> required="required">
 											<label for="res5">Sí </label>
 											&nbsp;&nbsp;
 											<input  type="radio" id="res6" name="flg_cancelar" value="N" <?php if($flg_cancelar=='N'){echo "checked";} ?> required="required" >
-											<label for="res6">No</label>
+											<label for="res6">No</label><label style="color: #FF0101;">&nbsp;*</label>
 										</div>
 									</div>
 

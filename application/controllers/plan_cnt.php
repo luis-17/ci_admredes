@@ -13,6 +13,7 @@ class plan_cnt extends CI_Controller {
         $this->load->model('menu_mdl');
         $this->load->model('plan_mdl');
         $this->load->library("pagination");
+        $this->load->library('My_PHPMailer');
     }
 
 	/**
@@ -166,9 +167,105 @@ class plan_cnt extends CI_Controller {
 
 		if($_POST['idplan']==0):
 			$this->plan_mdl->insert_plan($data);
+			$data['idplan'] = $this->db->insert_Id();
+			$asunto="NOTIFICACION: CREACION DE UN PLAN DE SALUD";
+			$accion="creaci&oacute;n";
 			else:
 				$this->plan_mdl->update_plan($data);
+				$asunto="NOTIFICACION: ACTUALIZACION DE PLAN DE SALUD: ".$data['nombre_plan'];
+				$accion="actualizaci&oacute;n";
 		endif;
+
+		$user = $this->session->userdata('user');
+		extract($user);
+
+		$id=$data['idplan'];
+
+		$plan = $this->plan_mdl->getPlan($id);
+
+			//email para proveedor
+			foreach ($plan as $p) {
+
+				$tipo="'Century Gothic'";
+				$texto='<div><p>Estimad@s,</p>
+					<p>Por medio de &eacute;ste correo electr&oacute;nico se informa la '.$accion.' del plan de salud: '.$p->nombre_plan.' con los siguientes datos:</p>
+					<table align="center" border="1" width="90%" style="font-size: 1vw; width: 100%; font-family: '.$tipo.', CenturyGothic, AppleGothic, sans-serif;">
+						<tr>
+							<th>Cliente:</th>
+							<td>'.$p->nombre_comercial_cli.'</td>
+							<th>Nombre del Plan:</th>
+							<td>'.$p->nombre_plan.'</td>							
+						</tr>
+						<tr>
+							<th>D&iacute;as de Carencia:</th>
+							<td>'.$p->dias_carencia.'</td>
+							<th>D&iascute;as de Mora:</th>
+							<td>'.$p->dias_mora.'</td>
+						</tr>
+						<tr>
+							<th>D&iacute;as de Atenci&oacute;n: </th>
+							<td>'.$p->dias_atencion.'</td>
+							<th>L&iacute;mite de Afiliados por Certificado:</th>
+							<td>'.$p->num_afiliados.'</td>
+						</tr>
+						<tr>
+							<th>Prima(S/.) Inc. IGV: </th>
+							<td>'.$p->prima_monto.'</td>
+							<th>Proma por Adicional(S/.) Inc. IGV:</th>
+							<td>'.$p->prima_adicional.'</td>
+						</tr>
+						<tr>
+							<th colspan="2">Permite la activaci&oacute;n manual desde Admin?: </th>
+							<td colspan="2">'.$p->flg_activar.'</td>
+						</tr>
+						<tr>
+							<th colspan="2">Permite la afiliaci&oacute;n de dependientes desde Admin?: </th>
+							<td colspan="2">'.$p->flg_dependientes.'</td>
+						</tr>
+						<tr>
+							<th colspan="2">Permite la cancelaci&oacute;n desde Admin?: </th>
+							<td colspan="2">'.$p->flg_cancelar.'</td>
+						</tr>
+					</table>
+					<p>Atte. '.$nombres_col.' '.$ap_paterno_col.' '.$ap_materno_col.'</p></div>';
+			}
+			
+			$mail = new PHPMailer;		
+			// Armo el FROM y el TO
+			$mail->setFrom($correo_laboral, $nombres_col);
+			$mail->addAddress('ivasquez@red-salud.com', 'Iván Vásquez');
+			$mail->addAddress('aluna@red-salud.com', 'Angie Luna');
+			$mail->addAddress('contacto@red-salud.com', 'Red Salud');
+			$mail->addAddress($correo_laboral, $nombres_col);
+			// El asunto
+			$mail->Subject = $asunto;
+			// El cuerpo del mail (puede ser HTML)
+			$mail->Body = '<!DOCTYPE html>
+					<head>
+	                <meta charset="UTF-8" />
+	                </head>
+	                <body style="font-size: 1vw; width: 100%; font-family: '.$tipo.', CenturyGothic, AppleGothic, sans-serif;">
+	                <div style="padding-top: 2%; text-align: right; padding-right: 15%;"><img src="http://www.red-salud.com/mail/logo.png" width="17%" style="text-align: right;"></img>
+	                </div>
+	                <div style="padding-right: 15%; padding-left: 8%;"><b><label style="color: #000000;"> </b></div>
+	                <div style="padding-right: 15%; padding-left: 8%; padding-bottom: 1%; color: #12283E;">
+	                '.$texto.'
+	                <div style="background-color: #BF3434; padding-top: 0.5%; padding-bottom: 0.5%">
+	                <div style="text-align: center;"><b><a href="https://www.google.com/maps/place/Red+Salud/@-12.11922,-77.0370327,17z/data=!3m1!4b1!4m5!3m4!1s0x9105c83d49a4312b:0xf0959641cc08826!8m2!3d-12.11922!4d-77.034844" style="text-decoration-color: #FFFFFF; text-decoration: none; color:  #FFFFFF;">Av. Jos&eacute; Pardo Nro 601 Of. 502, Miraflores - Lima.</a></b></div>
+	                <div style="text-align: center;"><b><a href="http://www.red-salud.com" style="text-decoration-color: #FFFFFF; text-decoration: none; color:  #FFFFFF;">www.red-salud.com</a></b></div>
+	                </div>
+	                <div style=""><img src="http://www.red-salud.com/mail/bottom.png" width="50%"></img></div>
+	                </div>
+	            </body>
+				</html>';
+			$mail->IsHTML(true);
+			$mail->CharSet = 'UTF-8';
+			// Los archivos adjuntos
+			//$mail->addAttachment('adjunto/'.$plan.'.pdf', 'Condicionado.pdf');
+			//$mail->addAttachment('adjunto/RED_MEDICA_2018.pdf', 'Red_Medica.pdf');
+			// Enviar
+			$mail->send();
+
 		redirect('index.php/plan');
 	}
 
@@ -198,6 +295,7 @@ class plan_cnt extends CI_Controller {
 		}
 
 		if($_POST['idplandetalle']==0){
+			$caso=1;
 			$this->plan_mdl->insert_cobertura($data);
 			$data['iddet'] = $this->db->insert_id();
 			$prod = $_POST['prod'];
@@ -206,15 +304,107 @@ class plan_cnt extends CI_Controller {
 				for($i=0;$i<$cont;$i++){
 				$data['idprod'] = $prod[$i];
 				$this->plan_mdl->insert_proddet($data);
+				
 				}
 			}
 		}else{
 				$this->plan_mdl->update_cobertura($data);
+				$caso=2;
 		}
+
+		if($caso==2){
+			$user = $this->session->userdata('user');
+			extract($user);
+
+			$cob = $this->plan_mdl->selecionar_cobertura2($data['iddet']);
+
+			//email para proveedor
+			foreach ($cob as $c) {
+				
+				switch ($c->tiempo) {
+					case '1 month':
+						$tiempo= "Menual(es)";
+					break;															
+					case '2 month':
+						$tiempo= "Bimestral(es)";
+					break;
+					case '3 month':
+						$tiempo= "Trimestral(es)";
+					break;
+					case '6 month':
+						$tiempo= "Semestral(es)";
+					break;
+					case '1 year':
+						$tiempo= "Anual(es)";
+					break;
+					case 'ilimitados':
+						$tiempo= "Ilimitados";
+					break;
+					default:
+						$tiempo="Sin evento";
+					break;
+				}
+				$plan=$c->nombre_plan;
+
+				$tipo="'Century Gothic'";
+				$texto='<div><p>Estimad@s,</p>
+					<p>Por medio de &eacute;ste correo electr&oacute;nico se informa la actualizaci&oacute;n de una de las coberturas para el plan de salud: '.$plan.' con los siguientes datos:</p>
+					<table align="center" border="1" width="90%" style="font-size: 1vw; width: 100%; font-family: '.$tipo.', CenturyGothic, AppleGothic, sans-serif;">
+						<tr>
+							<th>Cobertura:</th>
+							<td>'.$c->nombre_var.'</td>
+							<th>Descripci&oacute;n:</th>
+							<td>'.$c->texto_web.'</td>							
+						</tr>
+						<tr>
+							<th>Validaci&oacute;n:</th>
+							<td>'.$c->descripcion.' '.$c->valor_detalle.'</td>
+							<th>Eventos:</th>
+							<td>'.$c->num_eventos.' '.$tiempo.'</td>
+						</tr>						
+					</table>
+					<p>Atte. '.$nombres_col.' '.$ap_paterno_col.' '.$ap_materno_col.'</p></div>';
+			}
+			
+			$mail = new PHPMailer;		
+			// Armo el FROM y el TO
+			$mail->setFrom($correo_laboral, $nombres_col);
+			$mail->addAddress('ivasquez@red-salud.com', 'Iván Vásquez');
+			$mail->addAddress('aluna@red-salud.com', 'Angie Luna');
+			$mail->addAddress('contacto@red-salud.com', 'Red Salud');
+			$mail->addAddress($correo_laboral, $nombres_col);
+			// El asunto
+			$mail->Subject = "NOTIFICACION: ACTUALIZACION DE COBERTURA - ".$plan;
+			// El cuerpo del mail (puede ser HTML)
+			$mail->Body = '<!DOCTYPE html>
+					<head>
+	                <meta charset="UTF-8" />
+	                </head>
+	                <body style="font-size: 1vw; width: 100%; font-family: '.$tipo.', CenturyGothic, AppleGothic, sans-serif;">
+	                <div style="padding-top: 2%; text-align: right; padding-right: 15%;"><img src="http://www.red-salud.com/mail/logo.png" width="17%" style="text-align: right;"></img>
+	                </div>
+	                <div style="padding-right: 15%; padding-left: 8%;"><b><label style="color: #000000;"> </b></div>
+	                <div style="padding-right: 15%; padding-left: 8%; padding-bottom: 1%; color: #12283E;">
+	                '.$texto.'
+	                <div style="background-color: #BF3434; padding-top: 0.5%; padding-bottom: 0.5%">
+	                <div style="text-align: center;"><b><a href="https://www.google.com/maps/place/Red+Salud/@-12.11922,-77.0370327,17z/data=!3m1!4b1!4m5!3m4!1s0x9105c83d49a4312b:0xf0959641cc08826!8m2!3d-12.11922!4d-77.034844" style="text-decoration-color: #FFFFFF; text-decoration: none; color:  #FFFFFF;">Av. Jos&eacute; Pardo Nro 601 Of. 502, Miraflores - Lima.</a></b></div>
+	                <div style="text-align: center;"><b><a href="http://www.red-salud.com" style="text-decoration-color: #FFFFFF; text-decoration: none; color:  #FFFFFF;">www.red-salud.com</a></b></div>
+	                </div>
+	                <div style=""><img src="http://www.red-salud.com/mail/bottom.png" width="50%"></img></div>
+	                </div>
+	            </body>
+				</html>';
+			$mail->IsHTML(true);
+			$mail->CharSet = 'UTF-8';
+			// Los archivos adjuntos
+			//$mail->addAttachment('adjunto/'.$plan.'.pdf', 'Condicionado.pdf');
+			//$mail->addAttachment('adjunto/RED_MEDICA_2018.pdf', 'Red_Medica.pdf');
+			// Enviar
+			$mail->send();
+		}		
 
 		$cobertura = $this->plan_mdl->getCobertura($data['id']);
 		$data['cobertura'] = $cobertura;
-
 		$items = $this->plan_mdl->getItems();
 		$data['items'] = $items;
 		$data['iddet'] = 0;

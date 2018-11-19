@@ -127,13 +127,6 @@
 												$val=$det->valor_detalle;
 												$tiempo= $det->tiempo;
 												$num_eventos=$det->num_eventos;
-												if($flg=='Sí'):
-													$chk="checked";
-													$style='';
-												else:
-													$style='disabled';
-													$chk='';
-												endif;
 											endforeach;
 									endif;
 									?>
@@ -195,17 +188,17 @@
 
 									<div class="form-group">										
 											<label class="col-sm-3 control-label no-padding-right" for="form-field-1"><input type="checkbox" name="flag" id="flag
-											" <?=$chk;?> onchange="habilitar(this.checked);"> Validación:</label><input type="hidden" name="flg_liqui" value="No" <?php if($flg=='S'){echo 'checked';}?> >
+											"  onchange="habilitar(this.checked);"  <?php if($flg=='S'){echo 'checked';}?> > Validación:</label><input type="hidden" name="flg_liqui" value="No">
 
 										<div class="col-sm-9">
-											<select <?=$style;?> id="operador" name="operador" required="Seleccionar una de las opciones de la lista">
+											<select  id="operador" name="operador" required="Seleccionar una de las opciones de la lista" <?php if($flg=='S'){echo '';} else{ echo "disabled";}?>>
 												<option value="">Seleccionar</option>
 												<?php foreach ($operador as $ope) { ?>
 													<option <?php if($op==$ope->idoperador){echo "selected";}?> value='<?=$ope->idoperador?>'><?=$ope->descripcion?></option>
 												<?php }
 												 ?>
 											</select>
-											<input type="text" name="valor" id="valor" <?=$style;?> placeholder="Valor" value="<?=$val;?>" size="4">
+											<input type="text" name="valor" id="valor" <?php if($flg=='S'){echo '';} else{ echo "disabled";}?> placeholder="Valor" value="<?=$val;?>" size="4">
 										</div>
 
 

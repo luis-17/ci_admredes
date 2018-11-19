@@ -565,7 +565,7 @@
 														</a>
 													</div>
 
-											+		<div class="panel-collapse collapse" id="faq-3-1">
+													<div class="panel-collapse collapse" id="faq-3-1">
 														<div class="panel-body">
 															
 															<!-- star table -->		

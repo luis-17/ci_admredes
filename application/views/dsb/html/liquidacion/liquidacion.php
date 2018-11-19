@@ -172,7 +172,7 @@
 						<!-- /section:settings.box -->
 						<div class="page-header">
 							<h1>
-								Liquidaciones
+								Generar Liquidación
 								<small>
 									<i class="ace-icon fa fa-angle-double-right"></i>
 								</small>
@@ -187,12 +187,12 @@
 									<ul class="nav nav-tabs padding-18 tab-size-bigger" id="myTab">
 										<li class="active">
 											<a data-toggle="tab" href="#faq-tab-1">
-												Por Liquidar
+												Pre-Liquidaciones
 											</a>
 										</li>
 										<li>
 											<a data-toggle="tab" href="#faq-tab-2">
-												Comp. Liquidados
+												Liquidaciones Generadas
 											</a>
 										</li>
 																				
@@ -207,138 +207,34 @@
 													<table id="example" class="table table-striped table-bordered table-hover">
 														<thead>
 															<tr>
-																<th>OA</th>
-																<th>Proveedor</th>			
-																<th>Detalle Servicio</th>
-																<th>Nº Factura</th>
-																<th>Monto</th>
-																<th>Estado</th>
-																<th>Registrar Pago</th>
+																<th>N° Orden</th>
+																<th>Proveedor</th>
+																<th>N° Factura</th>
+																<th>Concepto</th>
+																<th>Importe</th>
+																<th>DNI Afiliado</th>
+																<th>Afiliado</th>
+																<th></th>
 															</tr>
 														</thead>
 
 														<tbody>
-															<?php foreach($liquidaciones as $o):
-																
-																$fecha=$o->fecha_atencion;
-																$fecha=date("d/m/Y", strtotime($fecha));
-																?>
-
-															<tr>										<td>OA<?=$o->num_orden_atencion;?></td>
-																				
-																<td><?=$o->nombre_comercial_pr?></td>
-																<td>
-																	
-																</td>
-																<td><?=$o->liqdetalle_numfact?></td>
-																<td><?=$fecha;?></td>
-																<td>
-																	<?php switch ($o->liqdetalle_aprovpago) {
-																	    case "0":
-																	        echo "<span class='label label-default'>No Establecido</span>";
-																	        break;
-																	    case "1":
-																	        echo "<span class='label label-primary'>Aprobado Pago</span>";
-																	        break;
-																	    case "2":
-																	        echo "<span class='label label-success'>Pagado</span>";
-																	        break;					    
-																	}
-																	?>		
-																</td>						
-																<td>
-	<div class="hidden-sm hidden-xs btn-group">&nbsp;
-		<button type="button" data-id="<?=$o->liqdetalleid?>" class="open-registerPay btn btn-danger btn-sm" data-toggle="modal" data-target=".bs-example-modal-lg">Registrar Pago</button>
-																	</div>	
-																</td>
+														<?php foreach ($pre_liquidaciones as $pl) { ?>
+															<tr>
+																<td><?=$pl->num_orden_atencion?></td>
+																<td><?=$pl->nombre_comercial_pr?></td>
+																<td><?=$pl->liqdetalle_numfact?></td>
+																<td><?=$pl->nombre_var?> <?=$pl->concepto?></td>
+																<td><?=$pl->liqdetalle_neto?> PEN</td>
+																<td></td>
+																<td></td>
+																<td></td>
 															</tr>
-														<?php endforeach; ?>
+														<?php } ?>
 														</tbody>
 													</table>
 												</div>
-												<!-- end table -->									
-
-									<div class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
-									  <div class="modal-dialog modal-lg" role="document">
-									    <div class="modal-content">
-									      <div class="modal-header">
-									        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-									        <h4 class="modal-title" id="myModalLabel">Registro de Pago a Proveedor</h4>
-									      </div>
-									      <div class="modal-body">
-									       <form id="creaSin" action="<?=base_url()?>index.php/registraPago" method="post">
-											<div class="row">
-											  <div class="col-sm-4">
-											  	<div class="form-group">
-													<b class="text-primary">Fecha de Pago:</b>
-									                <input class="form-control" id="input-date" name="pagoFecha" type="date">
-												</div>
-											  	
-											  </div>
-											  <div class="col-sm-4">
-											  	<div class="form-group">
-													<b class="text-primary">Forma de Pago:</b>
-													<select name="pagoForma" class="form-control" id="pagoForma">
-														<option>------- Select --------</option>
-														<option value="Transferencia Bancaria">Transferencia Bancaria</option>
-														<option value="Cheque">Cheque</option>
-														<option value="Depósito en Efectivo">Depósito en Efectivo</option>
-													</select>
-												</div>
-
-											  </div>
-											  <div class="col-sm-4">
-											  	<input type="hidden" name="liqdetalleid" id="liqdetalleid"/>
-											  </div>
-											</div>
-											<div class="row">
-											  <div class="col-sm-4">
-											  	<div class="form-group">
-													<b class="text-primary">Banco:</b>
-													<select name="pagoBanco" class="form-control" id="pagoBanco">
-														<option>------- Select --------</option>
-														<option value="Banco de Comercio">Banco de Comercio</option>
-														<option value="Banco de Crédito del Perú">Banco de Crédito del Perú</option>
-														<option value="Banco Interamericano de Finanzas (BANBIF)">Banco Interamericano de Finanzas (BANBIF)</option>
-														<option value="Banco Financiero">Banco Financiero</option>
-														<option value="BBVA Continental">BBVA Continental</option>
-														<option value="Interbank">Interbank</option>
-														<option value="MiBanco">MiBanco</option>
-														<option value="Scotiabank Perú">Scotiabank Perú</option>
-														<option value="Banco GNB">Banco GNB</option>
-														<option value="Banco Falabella">Banco Falabella</option>
-														<option value="Banco Ripley">Banco Ripley</option>
-														<option value="Banco Santander Perú">Banco Santander Perú</option>
-														<option value="Banco Azteca">Banco Azteca</option>
-														<option value="ICBC PERU BANK">ICBC PERU BANK</option>
-													</select>
-												</div>
-											  </div>
-											  <div class="col-sm-4">
-											  	<div class="form-group">
-													<b class="text-primary">Nº Operación:</b>
-													<input class="form-control" type="text" name="pagoNoperacion" id="pagoNoperacion"/>            
-												</div>	
-											  </div>
-											  <div class="col-sm-4">
-											  	<div class="form-group">
-													<b class="text-primary">Nº Factura de Pago:</b>
-													<input class="form-control" type="text" name="pagoNfactura" id="pagoNfactura"/>            
-												</div>
-											  </div>
-											</div>
-
-											<div class="modal-footer">
-									        <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
-									        <button type="submit" class="btn btn-primary">Guardar</button>
-									      </div>
-										</form>
-									      </div>
-									      
-									    </div>
-									  </div>
-									</div>
-
+												<!-- end table -->
 
 												<script>			
 													//para paginacion
@@ -352,9 +248,68 @@
 
 										</div>
 
-										
+										<div id="faq-tab-2" class="tab-pane fade">
+											<!-- star table -->		
+												<div class="col-xs-12">
+													<table id="example2" class="table table-striped table-bordered table-hover">
+														<thead>
+															<tr>
+																<th>Nro Pre-Orden</th>
+																<th>Nro. Certificado</th>
+																<th>Cliente</th>
+																<th>Plan</th>
+																<th>Fecha</th>
+																<th>Centro Médico</th>
+																<th>Especialidad</th>
+																<th>Asegurado</th>
+																<th>DNI</th>
+																<th></th>
+															</tr>
+														</thead>
+
+														
+														<tbody>
+
+															<tr>
+																<td></td>
+																<td></td>
+																<td></td>
+																<td></td>
+																<td></td>
+																<td></td>
+																<td></td>
+																<td></td>
+																<td></td>
+																<td>
+																	<div>
+																		<a href="<?=base_url()?>index.php"  title="Generar Orden">
+																			<span class="ace-icon glyphicon glyphicon-ok"></span>
+																		</a>
+																	</div>
+																	<div>
+																		<a href="<?=base_url()?>index.php" title="Anular Pre Orden">
+																			<span class="ace-icon glyphicon glyphicon-remove"></span>
+																		</a>
+																	</div>
+																</td>
+															</tr>
+														</tbody>
+													</table>
+												</div>
+												<script>			
+													//para paginacion
+													$(document).ready(function() {
+													    $('#example2').DataTable( {
+													        "pagingType": "full_numbers"
+													    } );
+													} );
+												</script>
+												<!-- end table -->
+										</div>
 								</div>
 
+								<!-- .tabbale -->
+								</div>
 								<!-- PAGE CONTENT ENDS -->
 							</div><!-- /.col -->
 						</div><!-- /.row -->

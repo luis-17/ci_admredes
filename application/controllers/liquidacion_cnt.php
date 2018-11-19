@@ -49,8 +49,8 @@ class Liquidacion_cnt extends CI_Controller {
 			$submenuLista = $this->menu_mdl->getSubMenu($idusuario);
 			$data['menu2'] = $submenuLista;	
 
-			$liquidaciones = $this->liquidacion_mdl->getLiquidaciones();
-			$data['liquidaciones'] = $liquidaciones;
+			$pre_liquidaciones = $this->liquidacion_mdl->getLiquidaciones();
+			$data['pre_liquidaciones'] = $pre_liquidaciones;
 
 			$preorden = $this->atencion_mdl->getPreOrden();
 			$data['preorden'] = $preorden;

@@ -121,7 +121,7 @@
 														endif;?>	
 													<option value="<?=$c->idcategoriacliente;?>" <?=$est;?>><?=$c->descripcion_cc;?></option>								
 												<?php endforeach; ?>
-											</select>
+											</select> <label style="color: #FF0101;">&nbsp;*</label>
 										</div>
 									</div>
 
@@ -130,6 +130,7 @@
 
 										<div class="col-sm-9">
 											<input type="text" id="ruc" name="ruc" value="<?=$ruc?>" required>
+											<label style="color: #FF0101;">&nbsp;*</label>
 										</div>
 									</div>
 
@@ -138,6 +139,7 @@
 
 										<div class="col-sm-9">
 											<input type="text" id="razon_social" name="razon_social" class="col-xs-10 col-sm-5" value="<?=$razon_social?>" required>
+											<label style="color: #FF0101;">&nbsp;*</label>
 										</div>
 									</div>
 
@@ -146,6 +148,7 @@
 
 										<div class="col-sm-9">
 											<input type="text" id="comercial" name="comercial" class="col-xs-10 col-sm-5" value="<?=$comercial?>" required>
+											<label style="color: #FF0101;">&nbsp;*</label>
 										</div>
 									</div>
 
@@ -154,6 +157,7 @@
 
 										<div class="col-sm-9">
 											<input type="text" id="nombre_corto" name="nombre_corto" class="col-xs-10 col-sm-5" value="<?=$nombre_corto?>" required>
+											<label style="color: #FF0101;">&nbsp;*</label>
 										</div>
 									</div>
 
@@ -205,8 +209,7 @@
 											</button>
 										</div>
 									</div>
-								</form>
-							
+								</form>							
 							</div><!-- /.col -->
 						</div>
 					</div>
