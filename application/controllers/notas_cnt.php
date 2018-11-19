@@ -625,7 +625,7 @@ class notas_cnt extends CI_Controller {
 		$fechafin = $_POST['fechafin'];
 
 		//$numeroSerie = $_POST['numeroSerie'];	
-		$correlativoConcar = 0;
+		$correlativoConcar = 18;
 
 		//print_r($canales);
 		//exit();
@@ -663,7 +663,7 @@ class notas_cnt extends CI_Controller {
 			  		'horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_CENTER, 
 			  		'vertical' => PHPExcel_Style_Alignment::VERTICAL_CENTER, 
 			  	) 
-			); 
+			);
 
 			$this->excel->getActiveSheet()->getStyle('A1:AN3')->applyFromArray($estiloCentrar);
 			$this->excel->getActiveSheet()->getStyle('A1:AN3')->getAlignment()->setWrapText(true);
@@ -831,18 +831,18 @@ class notas_cnt extends CI_Controller {
 					foreach($centroCosto as $c){
 						$centCosto = $c->centro_costo;
 
-			        	$formatoFecha = date("d/m/Y", strtotime($b->fecha_emision));
-			        	$correlativoConcar = $correlativoConcar+1;
-			        	$correConcar = str_pad($correlativoConcar, 4, "0", STR_PAD_LEFT);
+						$formatoFecha = date("d/m/Y", strtotime($b->fecha_emision));
+						$correlativoConcar = $correlativoConcar+1;
+						$correConcar = str_pad($correlativoConcar, 4, "0", STR_PAD_LEFT);
 
-			        	$igv = $b->total-$b->neto;
-			    		$tot=$b->total;
-			    		$nt=$b->neto;
-			    		$total = number_format((float)$tot, 2, '.', '');
-			    		$neto = number_format((float)$nt, 2, '.', '');
-			    		$igvfinal=number_format((float)$igv, 2, '.', '');
-			        	
-			          	//Informacion de las filas de la consulta.
+						$igv = $b->total-$b->neto;
+						$tot=$b->total;
+						$nt=$b->neto;
+						$total = number_format((float)$tot, 2, '.', '');
+						$neto = number_format((float)$nt, 2, '.', '');
+						$igvfinal=number_format((float)$igv, 2, '.', '');
+
+						//Informacion de las filas de la consulta.
 						$this->excel->getActiveSheet()->setCellValue("B{$contador1}","05");
 						$this->excel->getActiveSheet()->setCellValue("C{$contador1}",$b->mes."".$correConcar);
 						$this->excel->getActiveSheet()->setCellValue("D{$contador1}",$formatoFecha);
@@ -855,13 +855,15 @@ class notas_cnt extends CI_Controller {
 						$this->excel->getActiveSheet()->setCellValue("M{$contador1}",$centCosto);
 						$this->excel->getActiveSheet()->setCellValue("N{$contador1}","D");
 						$this->excel->getActiveSheet()->setCellValue("O{$contador1}",$total);
-						$this->excel->getActiveSheet()->setCellValue("R{$contador1}","BV");
+						$this->excel->getActiveSheet()->setCellValue("R{$contador1}","NA");
 						$this->excel->getActiveSheet()->setCellValue("S{$contador1}",$b->serie."-".$b->correlativo);
 						$this->excel->getActiveSheet()->setCellValue("T{$contador1}",$formatoFecha);
 						$this->excel->getActiveSheet()->setCellValue("W{$contador1}","COBRO POR ".$b->nombre_plan);
 						$this->excel->getActiveSheet()->setCellValue("Z{$contador1}",$tipo);
 						$this->excel->getActiveSheet()->setCellValue("AA{$contador1}",$b->serie_doc."-".$b->correlativo_doc);
 						$this->excel->getActiveSheet()->setCellValue("AB{$contador1}",$b->fecha_doc);
+						$this->excel->getActiveSheet()->setCellValue("AD{$contador1}","35.59");
+						$this->excel->getActiveSheet()->setCellValue("AE{$contador1}","6.41");
 
 						$this->excel->getActiveSheet()->setCellValue("B{$contador2}","05");
 						$this->excel->getActiveSheet()->setCellValue("C{$contador2}",$b->mes."".$correConcar);
@@ -875,13 +877,15 @@ class notas_cnt extends CI_Controller {
 						$this->excel->getActiveSheet()->setCellValue("M{$contador2}",$centCosto);
 						$this->excel->getActiveSheet()->setCellValue("N{$contador2}","H");
 						$this->excel->getActiveSheet()->setCellValue("O{$contador2}",$igvfinal);
-						$this->excel->getActiveSheet()->setCellValue("R{$contador2}","BV");
+						$this->excel->getActiveSheet()->setCellValue("R{$contador2}","NA");
 						$this->excel->getActiveSheet()->setCellValue("S{$contador2}",$b->serie."-".$b->correlativo);
 						$this->excel->getActiveSheet()->setCellValue("T{$contador2}",$formatoFecha);
 						$this->excel->getActiveSheet()->setCellValue("W{$contador2}","COBRO POR ".$b->nombre_plan);
 						$this->excel->getActiveSheet()->setCellValue("Z{$contador2}",$tipo);
 						$this->excel->getActiveSheet()->setCellValue("AA{$contador2}",$b->serie_doc."-".$b->correlativo_doc);
 						$this->excel->getActiveSheet()->setCellValue("AB{$contador2}",$b->fecha_doc);
+						$this->excel->getActiveSheet()->setCellValue("AD{$contador2}","35.59");
+						$this->excel->getActiveSheet()->setCellValue("AE{$contador2}","6.41");
 
 						$this->excel->getActiveSheet()->setCellValue("B{$contador3}","05");
 						$this->excel->getActiveSheet()->setCellValue("C{$contador3}",$b->mes."".$correConcar);
@@ -895,13 +899,15 @@ class notas_cnt extends CI_Controller {
 						$this->excel->getActiveSheet()->setCellValue("M{$contador3}",$centCosto);
 						$this->excel->getActiveSheet()->setCellValue("N{$contador3}","H");
 						$this->excel->getActiveSheet()->setCellValue("O{$contador3}",$neto);
-						$this->excel->getActiveSheet()->setCellValue("R{$contador3}","BV");
+						$this->excel->getActiveSheet()->setCellValue("R{$contador3}","NA");
 						$this->excel->getActiveSheet()->setCellValue("S{$contador3}",$b->serie."-".$b->correlativo);
 						$this->excel->getActiveSheet()->setCellValue("T{$contador3}",$formatoFecha);
 						$this->excel->getActiveSheet()->setCellValue("W{$contador3}","COBRO POR ".$b->nombre_plan);
 						$this->excel->getActiveSheet()->setCellValue("Z{$contador3}",$tipo);
 						$this->excel->getActiveSheet()->setCellValue("AA{$contador3}",$b->serie_doc."-".$b->correlativo_doc);
 						$this->excel->getActiveSheet()->setCellValue("AB{$contador3}",$b->fecha_doc);
+						$this->excel->getActiveSheet()->setCellValue("AD{$contador3}","35.59");
+						$this->excel->getActiveSheet()->setCellValue("AE{$contador3}","6.41");
 
 			            //Incrementamos filas, para ir a la siguiente.
 			            $contador1=$contador1+3;
@@ -941,7 +947,7 @@ class notas_cnt extends CI_Controller {
 		        $mail->Subject    = "Archivo CONCAR";
 		        $mail->Body 	  = "Se adjunta archivo Excel con serie ".$canales.". <br>";
 		        $mail->AltBody    = "Se adjunta archivo Excel con serie ".$canales.".";
-		        $mail->AddAddress('dcaceda@red-salud.com', 'RED SALUD');
+		        $mail->AddAddress('dcayo@red-salud.com', 'RED SALUD');
 
 		       	$mail->AddAttachment("adjunto/dbf/".$nomArchivo.".xls", $nomArchivo.".xls");
 		       	$mail->IsHTML(true);
@@ -992,7 +998,7 @@ class notas_cnt extends CI_Controller {
 						$this->excel->getActiveSheet()->setCellValue("M{$contador1}",$f->centro_costo);
 						$this->excel->getActiveSheet()->setCellValue("N{$contador1}","D");
 						$this->excel->getActiveSheet()->setCellValue("O{$contador1}",$total);
-						$this->excel->getActiveSheet()->setCellValue("R{$contador1}","FT");
+						$this->excel->getActiveSheet()->setCellValue("R{$contador1}","NA");
 						$this->excel->getActiveSheet()->setCellValue("S{$contador1}",$f->serie."-".$f->correlativo);
 						$this->excel->getActiveSheet()->setCellValue("T{$contador1}",$formatoFecha);
 						$this->excel->getActiveSheet()->setCellValue("W{$contador1}","COBRO POR ".$f->nombre_plan);
@@ -1012,7 +1018,7 @@ class notas_cnt extends CI_Controller {
 						$this->excel->getActiveSheet()->setCellValue("M{$contador2}",$f->centro_costo);
 						$this->excel->getActiveSheet()->setCellValue("N{$contador2}","H");
 						$this->excel->getActiveSheet()->setCellValue("O{$contador2}",$igvfinal);
-						$this->excel->getActiveSheet()->setCellValue("R{$contador2}","FT");
+						$this->excel->getActiveSheet()->setCellValue("R{$contador2}","NA");
 						$this->excel->getActiveSheet()->setCellValue("S{$contador2}",$f->serie."-".$f->correlativo);
 						$this->excel->getActiveSheet()->setCellValue("T{$contador2}",$formatoFecha);
 						$this->excel->getActiveSheet()->setCellValue("W{$contador2}","COBRO POR ".$f->nombre_plan);
@@ -1032,7 +1038,7 @@ class notas_cnt extends CI_Controller {
 						$this->excel->getActiveSheet()->setCellValue("M{$contador3}",$c->centro_costo);
 						$this->excel->getActiveSheet()->setCellValue("N{$contador3}","H");
 						$this->excel->getActiveSheet()->setCellValue("O{$contador3}",$neto);
-						$this->excel->getActiveSheet()->setCellValue("R{$contador3}","FT");
+						$this->excel->getActiveSheet()->setCellValue("R{$contador3}","NA");
 						$this->excel->getActiveSheet()->setCellValue("S{$contador3}",$f->serie."-".$f->correlativo);
 						$this->excel->getActiveSheet()->setCellValue("T{$contador3}",$formatoFecha);
 						$this->excel->getActiveSheet()->setCellValue("W{$contador3}","COBRO POR ".$f->nombre_plan);
@@ -1075,7 +1081,7 @@ class notas_cnt extends CI_Controller {
 		        $mail->Subject    = "Archivo CONCAR";
 		        $mail->Body 	  = "Se adjunta archivo Excel con serie ".$canales.". <br>";
 		        $mail->AltBody    = "Se adjunta archivo Excel con serie ".$canales.".";
-		        $mail->AddAddress('dcaceda@red-salud.com', 'RED SALUD');
+		        $mail->AddAddress('dcayo@red-salud.com', 'RED SALUD');
 
 		       	$mail->AddAttachment("adjunto/dbf/".$nomArchivo.".xls", $nomArchivo.".xls");
 		       	$mail->IsHTML(true);
@@ -1175,7 +1181,7 @@ class notas_cnt extends CI_Controller {
 	            $this->pdf->Ln('5');
 	            //--
 	            $this->pdf->SetFont('Arial', '',8);
-	            $this->pdf->Cell(100,10,"   ".$numLet->convertir($totalSinDec, 'Y')." ".$totalDec."/100",0,0,'L');
+	            $this->pdf->Cell(100,10,"  SON ".$numLet->convertir($totalSinDec, 'Y')." ".$totalDec."/100 SOLES",0,0,'L');
 	            //--
 	            $this->pdf->SetFont('Arial', '',7);
 	            $this->pdf->Cell(60,10,"Operaciones gravadas",1,0,'C');
@@ -1272,7 +1278,7 @@ class notas_cnt extends CI_Controller {
 	            $this->pdf->Ln('5');
 
 	            $this->pdf->SetFont('Arial', '',8);
-	            $this->pdf->Cell(100,10,"   ".$numLet->convertir($totalSinDec, 'Y')." ".$totalDec."/100",0,0,'L');
+	            $this->pdf->Cell(100,10,"  SON ".$numLet->convertir($totalSinDec, 'Y')." ".$totalDec."/100 SOLES",0,0,'L');
 
 	            $this->pdf->Cell(60,10,"Operaciones gravadas",1,0,'C');
 	            $this->pdf->Cell(30,10,"S/. ".$neto." ",1,0,'R');
@@ -1487,7 +1493,7 @@ class notas_cnt extends CI_Controller {
 					$doc->loadxml($datos);
 					$doc->save($carpetaNota.'/'.$filename.'.xml');
 					$xmlPath = $carpetaNota.'/'.$filename.'.xml';
-					$certPath = 'adjunto/firma/LLAMA-PE-CERTIFICADO-DEMO-20600258894.pem'; // Convertir pfx to pem 
+					$certPath = 'adjunto/firma/C1811152013.pem'; // Convertir pfx to pem 
 					$signer = new SignedXml();
 					$signer->setCertificateFromFile($certPath);
 					$xmlSigned = $signer->signFromFile($xmlPath);
@@ -1504,9 +1510,10 @@ class notas_cnt extends CI_Controller {
 						unlink($carpetaNota.'/'.$filename.".xml");
 					}
 
-					$service = 'https://e-beta.sunat.gob.pe/ol-ti-itcpfegem-beta/billService?wsdl';
+					$service = 'adjunto/wsdl/billService.wsdl';
+					//$service = 'https://e-beta.sunat.gob.pe/ol-ti-itcpfegem-beta/billService?wsdl';
 
-			    	$headers = new CustomHeaders('20600258894MODDATOS', 'moddatos'); 
+			    	$headers = new CustomHeaders('20600258894DCACEDA2', 'DCACE716186'); 
 
 			    	$client = new SoapClient($service, array(
 			    		'cache_wsdl' => WSDL_CACHE_NONE,
@@ -1515,11 +1522,11 @@ class notas_cnt extends CI_Controller {
 			    	));
 					//print_r($client);
 			    	//exit();
-			    	$client->__setSoapHeaders([$headers]); 
+			    	$client->__setSoapHeaders([$headers]);
 			    	$fcs = $client->__getFunctions();
 			    	$zipXml = $filename.'.zip'; 
-			    	$params = array( 
-			    		'fileName' => $zipXml, 
+			    	$params = array(
+			    		'fileName' => $zipXml,
 			    		'contentFile' => file_get_contents($carpetaNota.'/'.$zipXml) 
 			    	); 
 			    	
@@ -1725,7 +1732,7 @@ class notas_cnt extends CI_Controller {
 					$doc->loadxml($datos);
 					$doc->save($carpetaNota.'/'.$filename.'.xml');
 					$xmlPath = $carpetaNota.'/'.$filename.'.xml';
-					$certPath = 'adjunto/firma/LLAMA-PE-CERTIFICADO-DEMO-20600258894.pem'; // Convertir pfx to pem 
+					$certPath = 'adjunto/firma/C1811152013.pem'; // Convertir pfx to pem 
 					$signer = new SignedXml();
 					$signer->setCertificateFromFile($certPath);
 					$xmlSigned = $signer->signFromFile($xmlPath);
@@ -1742,9 +1749,10 @@ class notas_cnt extends CI_Controller {
 						unlink($carpetaNota.'/'.$filename.".xml");
 					}
 
-					$service = 'https://e-beta.sunat.gob.pe/ol-ti-itcpfegem-beta/billService?wsdl';
+					$service = 'adjunto/wsdl/billService.wsdl';
+					//$service = 'https://e-beta.sunat.gob.pe/ol-ti-itcpfegem-beta/billService?wsdl';
 
-			    	$headers = new CustomHeaders('20600258894MODDATOS', 'moddatos'); 
+			    	$headers = new CustomHeaders('20600258894DCACEDA2', 'DCACE716186'); 
 
 			    	$client = new SoapClient($service, array(
 			    		'cache_wsdl' => WSDL_CACHE_NONE,
@@ -1755,8 +1763,8 @@ class notas_cnt extends CI_Controller {
 			    	//exit();
 			    	$client->__setSoapHeaders([$headers]); 
 			    	$fcs = $client->__getFunctions();
-			    	$zipXml = $filename.'.zip'; 
-			    	$params = array( 
+			    	$zipXml = $filename.'.zip';
+			    	$params = array(
 			    		'fileName' => $zipXml, 
 			    		'contentFile' => file_get_contents($carpetaNota.'/'.$zipXml) 
 			    	); 
@@ -1970,7 +1978,7 @@ class notas_cnt extends CI_Controller {
 					$doc->loadxml($datos);
 					$doc->save($carpetaNota.'/'.$filename.'.xml');
 					$xmlPath = $carpetaNota.'/'.$filename.'.xml';
-					$certPath = 'adjunto/firma/LLAMA-PE-CERTIFICADO-DEMO-20600258894.pem'; // Convertir pfx to pem 
+					$certPath = 'adjunto/firma/C1811152013.pem'; // Convertir pfx to pem 
 					$signer = new SignedXml();
 					$signer->setCertificateFromFile($certPath);
 					$xmlSigned = $signer->signFromFile($xmlPath);
@@ -1987,9 +1995,10 @@ class notas_cnt extends CI_Controller {
 						unlink($carpetaNota.'/'.$filename.".xml");
 					}
 
-					$service = 'https://e-beta.sunat.gob.pe/ol-ti-itcpfegem-beta/billService?wsdl';
+					$service = 'adjunto/wsdl/billService.wsdl';
+					//$service = 'https://e-beta.sunat.gob.pe/ol-ti-itcpfegem-beta/billService?wsdl';
 
-			    	$headers = new CustomHeaders('20600258894MODDATOS', 'moddatos'); 
+			    	$headers = new CustomHeaders('20600258894DCACEDA2', 'DCACE716186'); 
 
 			    	$client = new SoapClient($service, array(
 			    		'cache_wsdl' => WSDL_CACHE_NONE,
@@ -2214,7 +2223,7 @@ class notas_cnt extends CI_Controller {
 					$doc->loadxml($datos);
 					$doc->save($carpetaNota.'/'.$filename.'.xml');
 					$xmlPath = $carpetaNota.'/'.$filename.'.xml';
-					$certPath = 'adjunto/firma/LLAMA-PE-CERTIFICADO-DEMO-20600258894.pem'; // Convertir pfx to pem 
+					$certPath = 'adjunto/firma/C1811152013.pem'; // Convertir pfx to pem 
 					$signer = new SignedXml();
 					$signer->setCertificateFromFile($certPath);
 					$xmlSigned = $signer->signFromFile($xmlPath);
@@ -2231,9 +2240,10 @@ class notas_cnt extends CI_Controller {
 						unlink($carpetaNota.'/'.$filename.".xml");
 					}
 
-					$service = 'https://e-beta.sunat.gob.pe/ol-ti-itcpfegem-beta/billService?wsdl';
+					$service = 'adjunto/wsdl/billService.wsdl';
+					//$service = 'https://e-beta.sunat.gob.pe/ol-ti-itcpfegem-beta/billService?wsdl';
 
-			    	$headers = new CustomHeaders('20600258894MODDATOS', 'moddatos'); 
+			    	$headers = new CustomHeaders('20600258894DCACEDA2', 'DCACE716186'); 
 
 			    	$client = new SoapClient($service, array(
 			    		'cache_wsdl' => WSDL_CACHE_NONE,

@@ -89,10 +89,19 @@ class Comprobante_pago_mdl extends CI_model {
  		return $data->result();		
 	}
 
-		function getUltimoCorrelativoMasUno($serie){
+	function getUltimoCorrelativoMasUno($serie){
 		$this->db->select("case when max(correlativo) is null then 1 else max(correlativo)+1 end as correlativo");
 		$this->db->from("comprobante_pago");
 		$this->db->where("serie='".$serie."'");
+
+		$data = $this->db->get();
+ 		return $data->result();		
+	}
+
+	function getUltimoCorrelativoMasUnoFecha($serie, $inicio, $fin){
+		$this->db->select("case when max(correlativo) is null then 1 else max(correlativo)+1 end as correlativo");
+		$this->db->from("comprobante_pago");
+		$this->db->where("serie='".$serie."' and fecha_emision>='".$inicio."' and fecha_emision<='".$fin."'");
 
 		$data = $this->db->get();
  		return $data->result();		

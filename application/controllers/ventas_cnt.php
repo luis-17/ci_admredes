@@ -587,7 +587,7 @@ class ventas_cnt extends CI_Controller {
 		$fechafin = $_POST['fechafin'];
 
 		$numeroSerie = $_POST['numeroSerie'];	
-		$correlativoConcar = 0;
+		$correlativoConcar = 11;
 			
 		$boletas = $this->comprobante_pago_mdl->getDatosExcelBoletas($fechainicio, $fechafin, $numeroSerie);
 		$facturas = $this->comprobante_pago_mdl->getDatosExcelFacturas($fechainicio, $fechafin, $numeroSerie);
@@ -906,7 +906,7 @@ class ventas_cnt extends CI_Controller {
 		        $mail->AddReplyTo('dcaceda@red-salud.com', utf8_decode('RED SALUD')); 
 		        $mail->Subject    = "Archivo CONCAR";
 		        $mail->Body 	  = "Se adjunta archivo DBF con los anexos y Excel con serie ".$numeroSerie.". <br>";
-		        $mail->AltBody    = "Se adjunta archivo DBF con los anexos y Excel con serie ".$numeroSerie.".";
+		        $mail->AltBody    = "Se adjunta archivo DBF con los anexos y Excel con serie ".$ncayoerie.".";
 		        $mail->AddAddress('dcaceda@red-salud.com', 'RED SALUD');
 
 		       	$mail->AddAttachment("adjunto/dbf/CAN03.dbf", "CAN03.dbf");
@@ -1032,7 +1032,7 @@ class ventas_cnt extends CI_Controller {
 		        $mail->Subject    = "Archivo CONCAR";
 		        $mail->Body 	  = "Se adjunta archivo Excel con serie ".$numeroSerie.". <br>";
 		        $mail->AltBody    = "Se adjunta archivo Excel con serie ".$numeroSerie.".";
-		        $mail->AddAddress('dcaceda@red-salud.com', 'RED SALUD');
+		        $mail->AddAddress('dcayo@red-salud.com', 'RED SALUD');
 
 		       	//$mail->AddAttachment("adjunto/dbf/CAN03.dbf", "CAN03.dbf");
 		       	$mail->AddAttachment("adjunto/dbf/VENTAS".$numeroSerie.".xls", "VENTAS".$numeroSerie.".xls");
@@ -1120,7 +1120,7 @@ class ventas_cnt extends CI_Controller {
 	            //$this->pdf->Cell(80);
 
 	            $this->pdf->SetFont('Arial', '',8);
-	            $this->pdf->Cell(100,10,"   ".$numLet->convertir($totalSinDec, 'Y')." ".$totalDec."/100",0,0,'L');
+	            $this->pdf->Cell(100,10,"  SON ".$numLet->convertir($totalSinDec, 'Y')." ".$totalDec."/100 SOLES",0,0,'L');
 
 	            $this->pdf->Cell(60,10,"Operaciones gravadas",1,0,'C');
 	            $this->pdf->Cell(30,10,"S/. ".$neto." ",1,0,'R');
@@ -1205,7 +1205,7 @@ class ventas_cnt extends CI_Controller {
 	            //$this->pdf->Cell(80);
 
 				$this->pdf->SetFont('Arial', '',8);
-	            $this->pdf->Cell(100,10,"   ".$numLet->convertir($totalSinDec, 'Y')." ".$totalDec."/100",0,0,'L');
+	            $this->pdf->Cell(100,10,"  SON ".$numLet->convertir($totalSinDec, 'Y')." ".$totalDec."/100 SOLES",0,0,'L');
 
 	            $this->pdf->Cell(60,10,"Operaciones gravadas",1,0,'C');
 	            $this->pdf->Cell(30,10,"S/. ".$neto." ",1,0,'R');
@@ -1502,7 +1502,7 @@ class ventas_cnt extends CI_Controller {
 				$doc->save('adjunto/comprobantes/'.$filename.'.xml');
 
 				$xmlPath = 'adjunto/comprobantes/'.$filename.'.xml';
-				$certPath = 'adjunto/firma/LLAMA-PE-CERTIFICADO-DEMO-20600258894.pem'; // Convertir pfx to pem 
+				$certPath = 'adjunto/firma/C1811152013.pem'; // Convertir pfx to pem 
 
 				$signer = new SignedXml();
 				$signer->setCertificateFromFile($certPath);
@@ -1754,7 +1754,7 @@ class ventas_cnt extends CI_Controller {
 				$doc->save('adjunto/comprobantes/'.$filename.'.xml');
 
 				$xmlPath = 'adjunto/comprobantes/'.$filename.'.xml';
-				$certPath = 'adjunto/firma/LLAMA-PE-CERTIFICADO-DEMO-20600258894.pem'; // Convertir pfx to pem 
+				$certPath = 'adjunto/firma/C1811152013.pem'; // Convertir pfx to pem 
 
 				$signer = new SignedXml();
 				$signer->setCertificateFromFile($certPath);
@@ -1964,7 +1964,7 @@ class ventas_cnt extends CI_Controller {
 					$doc->loadxml($datos);
 					$doc->save('adjunto/xml/boletas/'.$fileBoleta.'/'.$filename.'.xml');
 					$xmlPath = 'adjunto/xml/boletas/'.$fileBoleta.'/'.$filename.'.xml';
-					$certPath = 'adjunto/firma/LLAMA-PE-CERTIFICADO-DEMO-20600258894.pem'; // Convertir pfx to pem 
+					$certPath = 'adjunto/firma/C1811152013.pem'; // Convertir pfx to pem 
 					$signer = new SignedXml();
 					$signer->setCertificateFromFile($certPath);
 					$xmlSigned = $signer->signFromFile($xmlPath);
@@ -1979,8 +1979,10 @@ class ventas_cnt extends CI_Controller {
 						unlink($filename.".xml");
 						unlink("adjunto/xml/boletas/".$fileBoleta.'/'.$filename.".xml");
 					}
-					$service = 'https://e-beta.sunat.gob.pe/ol-ti-itcpfegem-beta/billService?wsdl'; 
-			    	$headers = new CustomHeaders('20600258894MODDATOS', 'moddatos'); 
+					$service = 'adjunto/wsdl/billService.wsdl'; 
+					//$service = 'https://e-beta.sunat.gob.pe/ol-ti-itcpfegem-beta/billService?wsdl';
+					
+			    	$headers = new CustomHeaders('20600258894DCACEDA2', 'DCACE716186'); 
 			    	
 			    	$client = new SoapClient($service, array(
 			    		'cache_wsdl' => WSDL_CACHE_NONE,
@@ -2189,7 +2191,7 @@ class ventas_cnt extends CI_Controller {
 					$doc->save('adjunto/xml/facturas/'.$fileFactura.'/'.$filename.'.xml');
 
 					$xmlPath = 'adjunto/xml/facturas/'.$fileFactura.'/'.$filename.'.xml';
-					$certPath = 'adjunto/firma/LLAMA-PE-CERTIFICADO-DEMO-20600258894.pem'; // Convertir pfx to pem 
+					$certPath = 'adjunto/firma/C1811152013.pem'; // Convertir pfx to pem 
 
 					$signer = new SignedXml();
 					$signer->setCertificateFromFile($certPath);
@@ -2209,8 +2211,10 @@ class ventas_cnt extends CI_Controller {
 						unlink('adjunto/xml/facturas/'.$fileFactura.'/'.$filename.'.xml');
 					}
 
-					$service = 'https://e-beta.sunat.gob.pe/ol-ti-itcpfegem-beta/billService?wsdl'; 
-			    	$headers = new CustomHeaders('20600258894MODDATOS', 'moddatos'); 
+					$service = 'adjunto/wsdl/billService.wsdl'; 
+					//$service = 'https://e-beta.sunat.gob.pe/ol-ti-itcpfegem-beta/billService?wsdl';
+
+			    	$headers = new CustomHeaders('20600258894DCACEDA2', 'DCACE716186'); 
 			    	
 			    	$client = new SoapClient($service, array(
 			    		'cache_wsdl' => WSDL_CACHE_NONE,

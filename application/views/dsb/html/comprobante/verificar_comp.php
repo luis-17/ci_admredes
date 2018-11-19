@@ -34,6 +34,8 @@
 		<!-- Add fancyBox -->
 		<link rel="stylesheet" href="<?=  base_url()?>public/fancybox/source/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen" />
 		<script type="text/javascript" src="<?=  base_url()?>public/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+		<script type="text/javascript" src="https://raw.github.com/Stuk/jszip/master/jszip.js"></script>
+
 
 		<script>
 			$(".fancybox")
@@ -327,11 +329,9 @@
 			           	type: 'POST',
 			           	dataType: 'json',                                 
 			           	data: $("#formCategoria").serialize(),
-			           	success: function(response)             
+			           	success: function(file)             
 			           	{
-			           		if(response.zip) { 
-					     		location.href = response.zip;
-					     	} 
+			           		window.location = "data:application/zip;base64," + file; 
 			           	}
 			       	});
 			       	return false;

@@ -17,6 +17,7 @@ class verificar_cnt extends CI_Controller {
 		$this->load->model('menu_mdl');
         $this->load->model('comprobante_pago_mdl');
         $this->load->library('My_PHPMailer');
+        $this->load->library('zip');
 
     }
 
@@ -123,7 +124,7 @@ class verificar_cnt extends CI_Controller {
 		//$idPlan = $data['nameCheck'];
 
 
-		if ($canales == 'B001' || $canales == 'B002' || $canales == 'B003' || $canales == 'B004' || $canales == 'B005' || $canales == 'BC01' || $canales == 'BD01') {
+		if (substr($canales, 0, 1) == 'B') {
 
 			//html de tabla dinámica que se va a generar
 			//$html .="<hr>";
@@ -138,7 +139,7 @@ class verificar_cnt extends CI_Controller {
 							$html .="<th>Plan</th>";
 							$html .="<th>Importe (S/.)</th>";
 							$html .="<th>Mensaje Sunat</th>";
-							//$html .="<th>Opciones</th>";
+							$html .="<th>Opciones</th>";
 						$html .="</tr>";
 					$html .= "</thead>";
 					$html .= "<tbody>";
@@ -195,14 +196,31 @@ class verificar_cnt extends CI_Controller {
 								if (file_exists($carpetaCdr.'/R-'.$filename.'.xml')) {
 									if ($descripcion == 'La Boleta numero '.$nameDoc.', ha sido aceptada' || $descripcion == 'La Nota de Credito numero '.$nameDoc.', ha sido aceptada' || $descripcion == 'La Nota de Debito numero '.$nameDoc.', ha sido aceptada') {
 										$html .= "<td align='left' class='success'>".$descripcion."</td>";
+										$html .= "<td align='left'>";
+											$html .= "<ul class='ico-stack'>";
+												$html .="<div title='descargar CDR' id='pdfButton' onclick=''>";
+													$html .="<a class='boton fancybox' href='' data-fancybox-width='950' data-fancybox-height='800' target='_blank'>";
+														$html .= "<i class='ace-icon fa fa-file-code-o bigger-120'></i>";
+													$html .="</a>";
+												$html .="</div>";
+											$html .= "</ul>";
+										$html .="</td>";
 									} else {
 										$this->comprobante_pago_mdl->updateEstadocobroComprobante($b->idcomprobante);
 										$html .= "<td align='left' class='success'>".$descripcion."</td>";
-										//$html .= "<td align='left'></td>";
+										$html .= "<td align='left'>";
+											$html .= "<ul class='ico-stack'>";
+												$html .="<div title='descargar CDR' id='pdfButton' onclick=''>";
+													$html .="<a class='boton fancybox' href='' data-fancybox-width='950' data-fancybox-height='800' target='_blank'>";
+														$html .= "<i class='ace-icon fa fa-file-code-o bigger-120'></i>";
+													$html .="</a>";
+												$html .="</div>";
+											$html .= "</ul>";
+										$html .="</td>";
 									}
 								} else {
 									$html .= "<td align='left' class='danger'>No se ha emitido el comprobante de pago.</td>";
-									//$html .= "<td align='left'></td>";
+									$html .= "<td align='left'></td>";
 								}
 									
 							$html .= "</tr>";
@@ -215,7 +233,7 @@ class verificar_cnt extends CI_Controller {
 			$html .= "</table>";
 		$html .= "</div>";
 
-		} elseif ($canales == 'F001' || $canales == 'FC01' || $canales == 'FD01') {
+		} elseif (substr($canales, 0, 1) == 'F') {
 
 			//$html .="<hr>";
 			$html .= "<div  align='center' class='col-xs-12'>";
@@ -229,7 +247,7 @@ class verificar_cnt extends CI_Controller {
 							$html .="<th>Plan</th>";
 							$html .="<th>Importe (S/.)</th>";
 							$html .="<th>Mensaje Sunat</th>";
-							//$html .="<th>Opciones</th>";
+							$html .="<th>Opciones</th>";
 						$html .="</tr>";
 					$html .= "</thead>";
 					$html .= "<tbody>";
@@ -269,14 +287,31 @@ class verificar_cnt extends CI_Controller {
 									if (file_exists($carpetaCdr.'/R-'.$filename.'.xml')) {
 										if ($descripcion == 'La Factura numero '.$nameDoc.', ha sido aceptada' || $descripcion == 'La Nota de Credito numero '.$nameDoc.', ha sido aceptada' || $descripcion == 'La Nota de Debito numero '.$nameDoc.', ha sido aceptada') {
 											$html .= "<td align='left' class='success'>".$descripcion."</td>";
+										$html .= "<td align='left'>";
+											$html .= "<ul class='ico-stack'>";
+												$html .="<div title='descargar CDR' id='pdfButton' onclick=''>";
+													$html .="<a class='boton fancybox' href='' data-fancybox-width='950' data-fancybox-height='800' target='_blank'>";
+														$html .= "<i class='ace-icon fa fa-file-code-o bigger-120'></i>";
+													$html .="</a>";
+												$html .="</div>";
+											$html .= "</ul>";
+										$html .="</td>";
 										} else {
 											$this->comprobante_pago_mdl->updateEstadocobroComprobante($f->idcomprobante);
 											$html .= "<td align='left' class='danger'>".$descripcion."</td>";
-											//$html .= "<td align='left'></td>";
+										$html .= "<td align='left'>";
+											$html .= "<ul class='ico-stack'>";
+												$html .="<div title='descargar CDR' id='pdfButton' onclick=''>";
+													$html .="<a class='boton fancybox' href='' data-fancybox-width='950' data-fancybox-height='800' target='_blank'>";
+														$html .= "<i class='ace-icon fa fa-file-code-o bigger-120'></i>";
+													$html .="</a>";
+												$html .="</div>";
+											$html .= "</ul>";
+										$html .="</td>";
 										}
 									} else {
 										$html .= "<td align='left' class='warning'>No se ha emitido el comprobante de pago.</td>";
-										//$html .= "<td align='left'></td>";
+										$html .= "<td align='left'></td>";
 									}
 
 								$html .= "</tr>";
@@ -319,7 +354,6 @@ class verificar_cnt extends CI_Controller {
 					$ruta="adjunto/xml/boletas/".$filecdr;		
 
 					if ($this->zip->open($ruta."/cdr-".$nombreArch.".zip", ZIPARCHIVE::CREATE)===true) {
-
 						
 						$boletasCdr = $this->comprobante_pago_mdl->getDatosBoletaEmitida($inicio, $fin, $serieP);
 
@@ -336,7 +370,6 @@ class verificar_cnt extends CI_Controller {
 					$ruta="adjunto/xml/notasdecredito/".$filecdr;
 
 					if ($this->zip->open($ruta."/cdr-".$nombreArch.".zip", ZIPARCHIVE::CREATE)===true) {
-
 						
 						$boletasCdr = $this->comprobante_pago_mdl->getDatosBoletaEmitida($inicio, $fin, $serieP);
 
@@ -353,7 +386,6 @@ class verificar_cnt extends CI_Controller {
 
 					if ($this->zip->open($ruta."/cdr-".$nombreArch.".zip", ZIPARCHIVE::CREATE)===true) {
 
-						
 						$boletasCdr = $this->comprobante_pago_mdl->getDatosBoletaEmitida($inicio, $fin, $serieP);
 
 						foreach ($boletasCdr as $bc) {
@@ -416,23 +448,22 @@ class verificar_cnt extends CI_Controller {
 				}
 			}
 		}
-			
 		$filePath = $ruta.'/cdr-'.$nombreArch.'.zip';
 		$file = basename($filePath);
 		//print_r($file);
 		//exit();
 
         header('Content-Description: File Transfer');
-        header('Content-Type: application/octet-stream');
+        header('Content-Type: application/force-download');
         header('Content-Disposition: attachment; filename='.$file);
-        header('Content-Transfer-Encoding: binary');
-        header('Expires: 0');
-        header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
-        header('Pragma: public');
-        header('Content-Length: '.filesize($filePath));
+        //header('Content-Transfer-Encoding: binary');
+        //header('Expires: 0');
+        //header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
+        //header('Pragma: public');
+        header('Content-Length: '.$file);
 
-        readfile($filePath);
-	
+        $data = readfile($file);
+        echo json_encode($data);
 	}
 
 }
