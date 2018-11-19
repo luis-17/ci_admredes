@@ -13,7 +13,6 @@ class Siniestro_cnt extends CI_Controller {
         $this->load->model('menu_mdl');
         $this->load->model('siniestro_mdl');
         $this->load->helper('form'); 
-
     }
 
 	/**
@@ -77,6 +76,10 @@ class Siniestro_cnt extends CI_Controller {
 			//buscamos idasegurado en siniestro
 		    
 		    $buscaIdAsegurado = $this->siniestro_mdl->getIdAseguradoOnSiniestro($id);
+		    $num = $this->siniestro_mdl->num_orden($id);
+		    foreach ($num as $n) {
+		    	$data['num_orden'] = $n->num_orden_atencion;
+		    }
 		    //$data['idasegurado'] = $buscaIdAsegurado['idasegurado'];
 
 
@@ -160,8 +163,9 @@ class Siniestro_cnt extends CI_Controller {
 	        $this->load->model('atencion_mdl');
 	        $data['proveedor'] = $this->atencion_mdl->getProveedor();
 
-	        $variable = $this->siniestro_mdl->getVariable();
+	        $variable = $this->siniestro_mdl->getVariable($id);
 	        $data['variable'] = $variable;
+
 	        
 			$this->load->view('dsb/html/atencion/siniestro.php',$data);
 		}
@@ -191,7 +195,7 @@ class Siniestro_cnt extends CI_Controller {
 			$data['menu2'] = $submenuLista;				
 		
 			//recogemos los datos obtenidos por POST
-			        
+
 		       	$data['idtriaje'] = $_POST['idtriaje'];
 		       	$data['idasegurado'] = $_POST['idasegurado'];
 		       	$data['idsiniestro'] = $_POST['idsiniestro'];
@@ -419,8 +423,6 @@ class Siniestro_cnt extends CI_Controller {
 		}
 	}
 
-
-
 	public function guardaGasto()
 	{
 		//load session library
@@ -440,66 +442,60 @@ class Siniestro_cnt extends CI_Controller {
 			$data['menu2'] = $submenuLista;		
 		
 		
-			//recogemos los datos obtenidos por POST
+			$data['idsiniestro'] = $_POST['sin_id'];
+			$data['liq_total'] = $_POST['total'];
+			$data['liq_neto'] = $_POST['total_neto'];
+			$liq_id = $_POST['liq_id'];
+			$cont = $_POST['cont'];
+			$q = $_POST['presscheck'];
 
-			if($_POST['presscheck']==0){
-
-				$data['presscheck'] = $_POST['presscheck'];
-				$data['proveedorPrin'] = $_POST['proveedorPrin'];			
-				$data['numFact'] = $_POST['numFact'];
-				$data['pago0'] = $_POST['pago0'];
-				$data['neto1'] = $_POST['neto1'];
-				$data['neto2'] = $_POST['neto2'];
-				$data['neto3'] = $_POST['neto3'];
-				$data['neto4'] = $_POST['neto4'];
-				$data['idsiniestro'] = $_POST['idsiniestro'];
-				$data['total_neto'] = $_POST['total_neto'];
-
-				$this->siniestro_mdl->guardaLiquidacion($data);
-				
-
-				/*$insert = $this->db->insert_id();
-				$data['liquidacionId'] = $insert;
-				$this->siniestro_mdl->guardaLiquidacionDeta($data);*/
-
-				//$this->load->view('dsb/html/liquidacion/liquidacion.php',$data);
-
-				redirect(base_url()."index.php/siniestro/".$data['idsiniestro']);
-
-
-			}else if($_POST['presscheck']==1){
-				
-				$data['presscheck'] = $_POST['presscheck'];
-				$data['idsiniestro'] = $_POST['idsiniestro'];
-				$data['total_neto'] = $_POST['total_neto'];
-
-				$data['neto1'] = $_POST['neto1'];
-				$data['proveedor1'] = $_POST['proveedor1'];
-				$data['factura1'] = $_POST['factura1'];
-				$data['pago1'] = $_POST['pago1'];
-
-				$data['neto2'] = $_POST['neto2'];
-				$data['proveedor2'] = $_POST['proveedor2'];
-				$data['factura2'] = $_POST['factura2'];
-				$data['pago2'] = $_POST['pago2'];
-
-				$data['neto3'] = $_POST['neto3'];
-				$data['proveedor3'] = $_POST['proveedor3'];
-				$data['factura3'] = $_POST['factura3'];
-				$data['pago3'] = $_POST['pago3'];
-
-				$data['neto4'] = $_POST['neto4'];
-				$data['proveedor4'] = $_POST['proveedor4'];
-				$data['factura4'] = $_POST['factura4'];
-				$data['pago4'] = $_POST['pago4'];
-
-				$this->siniestro_mdl->guardaLiquidacion($data);
+			if ($_POST['cerrar_atencion']==1){
+				$data['estadoliq'] = 1;
+			}else{
+				$data['estadoliq'] = 0;
 			}
 
-		    
-			//$this->load->view('dsb/html/liquidacion/liquidacion.php',$data);
-			//$this->load->view('dsb/html/atencion/test.php',$data);
-			redirect(base_url()."index.php/siniestro/".$data['idsiniestro']);
+			if($liq_id==0){
+					$this->siniestro_mdl->save_liquidacion($data);
+					$liq_id2=$this->db->insert_id();
+					$data['liq_id']=$liq_id2;					
+			}else{
+				$liq_id2=$liq_id;	
+				$data['liq_id']=$liq_id2;
+				$this->siniestro_mdl->up_liquidacion($data);			
+			}
+			
+
+			for($i=0;$i<$cont;$i++){
+				$data['idplandetalle'] = $_POST['idplandetalle'.$i];
+				$data['detalle_monto'] = $_POST['monto'.$i];
+				$data['detalle_neto'] = $_POST['neto'.$i];
+				$data['aprov_pago'] = $_POST['aprovpago'.$i];
+				$data['idusuario'] = $idusuario;
+
+				$liqdetalleid = $_POST['liqdetalleid'.$i];
+				if($q==1){
+					$data['idproveedor'] = $_POST['proveedor'.$i];
+					$data['num_fac'] = $_POST['factura'.$i];
+				}else{
+					$data['idproveedor'] = $_POST['proveedorPrin'];
+					$data['num_fac'] = $_POST['numFact'];
+				}
+
+					if($liqdetalleid==0){
+						$this->siniestro_mdl->save_detalleliquidacion($data);
+					}else{
+						$data['liqdetalleid'] =$liqdetalleid;
+						$this->siniestro_mdl->up_detalleliquidacion($data);
+					}			
+
+			}
+
+			if($_POST['cerrar_atencion']==1){
+				redirect(base_url()."index.php/atenciones");
+			}else{
+				redirect(base_url()."index.php/siniestro/".$data['idsiniestro']);
+			}
 		}
 		else{
 			redirect('/');

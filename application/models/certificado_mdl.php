@@ -386,7 +386,7 @@
 	}
 
 	function contenido_mail($data){
-		$this->db->select("aseg_numDoc, concat(COALESCE(aseg_ape1,''),' ', COALESCE(aseg_ape2,''),' ',COALESCE(aseg_nom1,''),' ',COALESCE(aseg_nom2,'')) as afiliado, concat(SUBSTR(aseg_fechNac,1,4),'-',SUBSTR(aseg_fechNac,5,2),'-',SUBSTR(aseg_fechNac,7,2)) as aseg_fechNac, nombre_comercial_pr, aseg_email, nombre_plan, e.nombre_esp, fecha_cita, hora_cita_inicio, observaciones_cita, cuerpo_mail");
+		$this->db->select("aseg_numDoc, concat(COALESCE(aseg_ape1,''),' ', COALESCE(aseg_ape2,''),' ',COALESCE(aseg_nom1,''),' ',COALESCE(aseg_nom2,'')) as afiliado, concat(SUBSTR(aseg_fechNac,1,4),'-',SUBSTR(aseg_fechNac,5,2),'-',SUBSTR(aseg_fechNac,7,2)) as aseg_fechNac, nombre_comercial_pr, aseg_email, nombre_plan, e.nombre_esp, fecha_cita, hora_cita_inicio, observaciones_cita, cuerpo_mail,p.idproveedor");
 		$this->db->from("cita c");
 		$this->db->join("proveedor p","p.idproveedor=c.idproveedor");
 		$this->db->join("especialidad e","e.idespecialidad=c.idespecialidad");

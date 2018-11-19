@@ -218,9 +218,11 @@
 																endif;
 																$fecha=$o->fecha_atencion;
 																$fecha=date("d/m/Y", strtotime($fecha));
+																if($o->liquidacion_estado!=1){
 																?>
 
-															<tr>												<td>OA<?=$o->num_orden_atencion;?></td>
+															<tr>
+																<td>OA<?=$o->num_orden_atencion;?></td>
 																<td id = "cert"><?=$o->cert_num;?></td>
 																<td><?=$o->nombre_comercial_cli?></td>
 																<td><?=$o->nombre_plan;?></td>
@@ -236,7 +238,8 @@
 																	</div>	
 																</td>
 															</tr>
-														<?php endforeach; ?>
+														<?php } 
+														endforeach; ?>
 														</tbody>
 													</table>
 												</div>

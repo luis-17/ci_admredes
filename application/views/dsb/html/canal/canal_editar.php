@@ -86,7 +86,7 @@
 								<i class="ace-icon fa fa-home home-icon"></i>
 								<a href="<?=base_url()?>">Inicio</a>
 							</li>
-							<li><a href="<?=base_url()?>index.php/plan">Planes</a></li>
+							<li><a href="<?=base_url()?>index.php/persona_juridica">Canales</a></li>
 							<li class="active"><?=$accion?></li>
 						</ul><!-- /.breadcrumb -->
 
@@ -102,155 +102,102 @@
 						</div>
 						<div class="row">
 							<div class="col-xs-12">
-							<?php if($id==0):
-									$cliente="";
-									$nombre_plan="";
-									$codigo_plan="";
-									$carencia="";
-									$mora="";
-									$atencion="";
-									$prima="";
-									$cuerpo="";
-									$prima_ad="";
-									$num_afiliados="";
-									$flg_activar="";
-									$flg_dependientes="";
-									$flg_cancelar="";
-									else:
-										foreach ($plan as $p):
-											$cliente=$p->idclienteempresa;
-											$nombre_plan=$p->nombre_plan;
-											$codigo_plan=$p->codigo_plan;
-											$carencia=$p->dias_carencia;
-											$mora=$p->dias_mora;
-											$atencion=$p->dias_atencion;
-											$prima=$p->prima_monto;
-											$cuerpo=$p->cuerpo_mail;
-											$prima_ad=$p->prima_adicional*1;
-											$num_afiliados=$p->num_afiliados;
-											$flg_activar=$p->flg_activar;
-											$flg_dependientes=$p->flg_dependientes;
-											$flg_cancelar=$p->flg_cancelar;
-											endforeach;
-								endif; ?>
+							
 								<!-- PAGE CONTENT BEGINS -->
-								<form class="form-horizontal" role="form" method="post" action="<?=base_url()?>index.php/plan_guardar">
-									<input type="hidden" id="idplan" name="idplan" value="<?=$id;?>" />
+								<form class="form-horizontal" role="form" method="post" action="<?=base_url()?>index.php/canal_guardar">
+									<input type="hidden" id="idcanal" name="idcanal" value="<?=$idcanal?>" />
+
 									<div class="form-group">
-										<label class="col-sm-3 control-label no-padding-right" for="form-field-1">Cliente: </label>
+										<label class="col-sm-3 control-label no-padding-right" for="form-field-1">categoría: </label>
 
 										<div class="col-sm-9">
-											<select id="cliente" name="cliente" value="" class="col-xs-10 col-sm-5" required="Seleccionar una opción de la lista">
+											<select id="idcategoria" name="idcategoria" value="" class="col-xs-10 col-sm-5" required="true">
 												<option value="">Seleccionar</option>	
-												<?php foreach($clientes as $c):
-													if($cliente==$c->idclienteempresa):
+												<?php foreach($categoria as $c):
+													if($idcategoria==$c->idcategoriacliente):
 														$est='selected';
 														else:
 															$est='';
 														endif;?>	
-													<option value="<?=$c->idclienteempresa;?>" <?=$est;?>><?=$c->nombre_comercial_cli;?></option>								
+													<option value="<?=$c->idcategoriacliente;?>" <?=$est;?>><?=$c->descripcion_cc;?></option>								
 												<?php endforeach; ?>
-											</select><label style="color: #FF0101;">&nbsp;*</label>
+											</select> <label style="color: #FF0101;">&nbsp;*</label>
 										</div>
 									</div>
 
 									<div class="form-group">
-										<label class="col-sm-3 control-label no-padding-right" for="form-field-1"> Nombre del Plan: </label>
+										<label class="col-sm-3 control-label no-padding-right" for="form-field-1">RUC: </label>
 
 										<div class="col-sm-9">
-											<input type="text" id="nombre_plan" name="nombre_plan" class="col-xs-10 col-sm-5" value="<?=$nombre_plan;?>" required><label style="color: #FF0101;">&nbsp;*</label>
+											<input type="text" id="ruc" name="ruc" value="<?=$ruc?>" required>
+											<label style="color: #FF0101;">&nbsp;*</label>
 										</div>
 									</div>
 
 									<div class="form-group">
-										<label class="col-sm-3 control-label no-padding-right" for="form-field-1">Código del Plan: </label>
+										<label class="col-sm-3 control-label no-padding-right" for="form-field-1" required> Razón Social: </label>
 
 										<div class="col-sm-9">
-											<input type="text" id="codigo_plan" name="codigo_plan" class="col-xs-10 col-sm-5" value="<?=$codigo_plan;?>" required><label style="color: #FF0101;">&nbsp;*</label>
+											<input type="text" id="razon_social" name="razon_social" class="col-xs-10 col-sm-5" value="<?=$razon_social?>" required>
+											<label style="color: #FF0101;">&nbsp;*</label>
 										</div>
 									</div>
 
 									<div class="form-group">
-										<label class="col-sm-3 control-label no-padding-right" for="form-field-1">Días de Carencia: </label>
+										<label class="col-sm-3 control-label no-padding-right" for="form-field-1">Nombre Comercial: </label>
 
 										<div class="col-sm-9">
-											<input type="number" id="carencia" name="carencia" class="col-xs-10 col-sm-5" value="<?=$carencia;?>" required><label style="color: #FF0101;">&nbsp;*</label>
+											<input type="text" id="comercial" name="comercial" class="col-xs-10 col-sm-5" value="<?=$comercial?>" required>
+											<label style="color: #FF0101;">&nbsp;*</label>
 										</div>
 									</div>
 
 									<div class="form-group">
-										<label class="col-sm-3 control-label no-padding-right" for="form-field-1">Días de Mora: </label>
+										<label class="col-sm-3 control-label no-padding-right" for="form-field-1">Código: </label>
 
 										<div class="col-sm-9">
-											<input type="number" id="mora" name="mora" class="col-xs-10 col-sm-5" value="<?=$mora;?>" required><label style="color: #FF0101;">&nbsp;*</label>
+											<input type="text" id="nombre_corto" name="nombre_corto" class="col-xs-10 col-sm-5" value="<?=$nombre_corto?>" required>
+											<label style="color: #FF0101;">&nbsp;*</label>
 										</div>
 									</div>
 
 									<div class="form-group">
-										<label class="col-sm-3 control-label no-padding-right" for="form-field-1">Días de Atención: </label>
+										<label class="col-sm-3 control-label no-padding-right" for="form-field-1">DNI Representante Legal: </label>
 
 										<div class="col-sm-9">
-											<input type="number" id="atencion" name="atencion" class="col-xs-10 col-sm-5" value="<?=$atencion;?>" required><label style="color: #FF0101;">&nbsp;*</label>
+											<input type="text" id="dni" name="dni" class="col-xs-10 col-sm-5" value="<?=$dni?>">
 										</div>
 									</div>
 
 									<div class="form-group">
-										<label class="col-sm-3 control-label no-padding-right" for="form-field-1">Prima (S/.) Inc. IGV: </label>
+										<label class="col-sm-3 control-label no-padding-right" for="form-field-1">Nombres Representante Legal: </label>
 
 										<div class="col-sm-9">
-											<input type="number" id="prima" name="prima" class="col-xs-10 col-sm-5" value="<?=$prima;?>" required><label style="color: #FF0101;">&nbsp;*</label>
+											<input type="text" id="nombres" name="nombres" class="col-xs-10 col-sm-5" value="<?=$nombres?>">
 										</div>
 									</div>
 
 									<div class="form-group">
-										<label class="col-sm-3 control-label no-padding-right" for="form-field-1">Prima por Adicional (S/.) Inc. IGV: </label>
+										<label class="col-sm-3 control-label no-padding-right" for="form-field-1">Dirección:</label>
 
 										<div class="col-sm-9">
-											<input type="number" id="prima_adicional" name="prima_adicional" class="col-xs-10 col-sm-5" value="<?=$prima_ad;?>" required><label style="color: #FF0101;">&nbsp;*</label>
+											<input type="text" id="direccion" name="direccion" class="col-xs-10 col-sm-5" value="<?=$direccion?>">
 										</div>
 									</div>
 
 									<div class="form-group">
-										<label class="col-sm-3 control-label no-padding-right" for="form-field-1">Límite de afiliados por certificado: </label>
+										<label class="col-sm-3 control-label no-padding-right" for="form-field-1">Teléfono: </label>
 
 										<div class="col-sm-9">
-											<input type="number" id="num_afiliados" name="num_afiliados" class="col-xs-10 col-sm-5" value="<?=$num_afiliados;?>" required><label style="color: #FF0101;">&nbsp;*</label>
+											<input type="text" id="telf" name="telf" class="col-xs-10 col-sm-5" value="<?=$telf?>">
 										</div>
 									</div>
 
 									<div class="form-group">
-										<label class="col-sm-3 control-label no-padding-right" for="form-field-1">¿Activación manual desde Admin? </label>
+										<label class="col-sm-3 control-label no-padding-right" for="form-field-1">Página web: </label>
 
 										<div class="col-sm-9">
-											<input type="radio" id="res1" name="flg_activar" value="S" <?php if($flg_activar=='S'){echo "checked";} ?> required="required">
-											<label for="res1">Sí </label>
-											&nbsp;&nbsp;
-											<input  type="radio" id="res2" name="flg_activar" value="N" <?php if($flg_activar=='N'){echo "checked";} ?> required="required" >
-											<label for="res2">No</label><label style="color: #FF0101;">&nbsp;*</label>
-										</div>
-									</div>
-
-									<div class="form-group">
-										<label class="col-sm-3 control-label no-padding-right" for="form-field-1">¿Afiliación de dependientes desde Admin? </label>
-
-										<div class="col-sm-9">
-											<input type="radio" id="res3" name="flg_dependientes" value="S" <?php if($flg_dependientes=='S'){echo "checked";} ?> required="required">
-											<label for="res3">Sí </label>
-											&nbsp;&nbsp;
-											<input  type="radio" id="res4" name="flg_dependientes" value="N" <?php if($flg_dependientes=='N'){echo "checked";} ?> required="required" >
-											<label for="res2">No</label><label style="color: #FF0101;">&nbsp;*</label>
-										</div>
-									</div>
-
-									<div class="form-group">
-										<label class="col-sm-3 control-label no-padding-right" for="form-field-1">¿Cancelar certificado desde Admin? </label>
-
-										<div class="col-sm-9">
-											<input type="radio" id="res5" name="flg_cancelar" value="S" <?php if($flg_cancelar=='S'){echo "checked";} ?> required="required">
-											<label for="res5">Sí </label>
-											&nbsp;&nbsp;
-											<input  type="radio" id="res6" name="flg_cancelar" value="N" <?php if($flg_cancelar=='N'){echo "checked";} ?> required="required" >
-											<label for="res6">No</label><label style="color: #FF0101;">&nbsp;*</label>
+											<input type="text" id="web" name="web" class="col-xs-10 col-sm-5" value="<?=$web?>">
 										</div>
 									</div>
 
@@ -262,8 +209,7 @@
 											</button>
 										</div>
 									</div>
-								</form>
-							
+								</form>							
 							</div><!-- /.col -->
 						</div>
 					</div>

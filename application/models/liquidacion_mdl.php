@@ -7,12 +7,18 @@
  }
 	
 	function getLiquidaciones(){
-		$this->db->select("LD.liqdetalleid, S.num_orden_atencion, S.fecha_atencion, PR.nombre_comercial_pr, LD.liqdetalle_numfact, LD.liqdetalle_concepto, LD.liqdetalle_aprovpago, ");
+		$this->db->select("LD.liqdetalleid, S.num_orden_atencion, S.fecha_atencion, PR.nombre_comercial_pr, LD.liqdetalle_numfact,  LD.liqdetalle_aprovpago, liqdetalle_neto, nombre_var, CONCAT('(', left(GROUP_CONCAT(descripcion_prod),40), case when CHAR_LENGTH(GROUP_CONCAT(descripcion_prod))>40 then '...)'else ')' end) as concepto");
 		$this->db->from("liquidacion_detalle LD");
 		$this->db->join("liquidacion L","L.liquidacionId = LD.liquidacionId");
+		$this->db->join("plan_detalle pd","pd.idplandetalle=LD.idplandetalle");
+		$this->db->join("variable_plan vp","vp.idvariableplan=pd.idvariableplan");
+		$this->db->join("producto_detalle  prd","prd.idplandetalle=pd.idplandetalle","left");
+		$this->db->join("producto pr","prd.idproducto=pr.idproducto","left");
 		$this->db->join("siniestro S","S.idsiniestro = L.idsiniestro");		
 		$this->db->join("proveedor PR","PR.idproveedor = LD.idproveedor");
 		$this->db->join("asegurado A","A.aseg_id = S.idasegurado");	
+		$this->db->where("liqdetalle_aprovpago",1);
+		$this->db->group_by("LD.liqdetalleid");
 		//$this->db->where("estado_siniestro in(0,1,2) and estado_atencion='O'");
 		$this->db->order_by("S.fecha_atencion", "asc");
 

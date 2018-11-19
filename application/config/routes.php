@@ -94,6 +94,7 @@ $route['cobros'] = 'cobros_cnt/index';
 $route['consultar_cobros'] = 'Reportes_cnt/index';
 $route['consultar_atenciones'] = 'Reportes_cnt/consultar_atenciones';
 $route['consultar_afiliados'] = 'Reportes_cnt/consultar_afiliados';
+$route['reservas'] = 'Reservas_cnt/index';
 $route['afiliacion'] = 'Afiliacion_cnt/index';
 $route['denegado/(:any)'] = 'login_cnt/denegado/$1';
 
@@ -186,10 +187,17 @@ $route['consultar_atenciones_buscar'] = 'Reportes_cnt/consultar_atenciones_busca
 $route['consultar_afiliados_buscar'] = 'Reportes_cnt/consultar_afiliados_buscar';
 $route['actualizar_pass'] = 'Perfil/actualizar_pass';
 $route['cambiar_pass'] = 'Perfil/cambiar_pass';
+$route['canal_anular/(:any)'] = 'persona_juridica_cnt/canal_anular/$1';
+$route['canal_activar/(:any)'] = 'persona_juridica_cnt/canal_activar/$1';
+$route['canal_registrar'] = 'persona_juridica_cnt/canal_registrar';
+$route['canal_editar/(:any)'] = 'persona_juridica_cnt/canal_editar/$1';
+$route['canal_guardar'] = 'persona_juridica_cnt/canal_guardar';
 
 $route['detalle_producto'] = 'plan_cnt/detalle_producto';
 $route['eliminar_producto/(:any)/(:any)/(:any)/(:any)'] = 'plan_cnt/eliminar_producto/$1/$2/$3/$4';
 $route['insertar_producto/(:any)/(:any)/(:any)/(:any)'] = 'plan_cnt/insertar_producto/$1/$2/$3/$4';
+$route['reenviar_proveedor/(:any)'] = 'certificadodetalle_cnt/reenviar_proveedor/$1';
+$route['reenviar_afiliado/(:any)'] = 'certificadodetalle_cnt/reenviar_afiliado/$1';
 // Rutas Ariel (Escribir debajo)
 
 $route['404_override'] = '';

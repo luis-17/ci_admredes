@@ -20,7 +20,7 @@ public function login($email, $password){
 public function atenciones(){
 	$this->db->select("idsiniestro, idcita");
 	$this->db->from("siniestro");
-	$this->db->where("fecha_atencion< now()-1 and estado_atencion='P' and estado_siniestro=1");
+	$this->db->where("fecha_atencion<(DATE_FORMAT((date_add(NOW(), INTERVAL -1 DAY)),'%Y-%m-%d')) and estado_atencion='P' and estado_siniestro=1");
 $query=$this->db->get();
 return $query->result();
 }

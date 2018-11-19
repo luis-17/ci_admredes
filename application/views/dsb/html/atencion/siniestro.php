@@ -48,82 +48,9 @@
 		    });
 		</script>
 		
-		<script type="text/javascript">
-			$(function() {  
-			  // Get the form fields and hidden div
-			  var checkbox = $("#trigger");
-			  var hidden1 = $("#hidden_fields1");
-			  var hidden2 = $("#hidden_fields2");
-			  var hidden3 = $("#hidden_fields3");
-			 
-			  // enabled.
-			  hidden1.hide();
-			  hidden2.hide();
-			  hidden3.hide();
-			  // Setup an event listener for when the state of the 
-			  // checkbox changes.
-			  checkbox.change(function() {
-			    // Check to see if the checkbox is checked.
-			    // If it is, show the fields and populate the input.
-			    // If not, hide the fields.
-			    if (checkbox.is(':checked')) {
-			      // Show the hidden fields.
-			      var chequeado=0;
-			      $("#presscheck").val(chequeado);
-			      hidden1.show();
-			      hidden2.show();
-			      hidden3.show();
-			      document.getElementById("proveedor1").disabled = true;
-			      document.getElementById("factura1").disabled = true;
-			      document.getElementById("pago1").disabled = true;
-			      document.getElementById("proveedor2").disabled = true;
-			      document.getElementById("factura2").disabled = true;
-			      document.getElementById("pago2").disabled = true;
-			      document.getElementById("proveedor3").disabled = true;
-			      document.getElementById("factura3").disabled = true;
-			      document.getElementById("pago3").disabled = true;
-			      document.getElementById("proveedor4").disabled = true;
-			      document.getElementById("factura4").disabled = true;
-			      document.getElementById("pago4").disabled = true;
-			      // Populate the input.
-			      //populate.val("Dude, this input got populated!");
-			    } else {
-			      // Make sure that the hidden fields are indeed
-			      // hidden.
-			      var chequeado=1;
-			      $("#presscheck").val(chequeado);
-			      hidden1.hide();
-			      hidden2.hide();
-			      hidden3.hide();
-			      document.getElementById("proveedor1").disabled = false;
-			      document.getElementById("factura1").disabled = false;
-			      document.getElementById("pago1").disabled = false;
-			      document.getElementById("proveedor2").disabled = false;
-			      document.getElementById("factura2").disabled = false;
-			      document.getElementById("pago2").disabled = false;
-			      document.getElementById("proveedor3").disabled = false;
-			      document.getElementById("factura3").disabled = false;
-			      document.getElementById("pago3").disabled = false;
-			      document.getElementById("proveedor4").disabled = false;
-			      document.getElementById("factura4").disabled = false;
-			      document.getElementById("pago4").disabled = false;
-			      // You may also want to clear the value of the 
-			      // hidden fields here. Just in case somebody 
-			      // shows the fields, enters data to them and then 
-			      // unticks the checkbox.
-			      //
-			      // This would do the job:
-			      //
-			      // $("#hidden_field").val("");
-			    }
-			  });
-			});
-		</script>
-
-
 		<script>
 			$(document).ready(function(){				
-			$("#tblGasto").on('input', '.txtCal', function () {
+			$("#tblGasto").on('keyup', '.txtCal', function () {
 			       var calculated_total_sum = 0;
 			     
 			       $("#tblGasto .txtCal").each(function () {
@@ -146,153 +73,7 @@
 
 		<script>
 			$(document).ready(function(){				
-			$("#tblGasto").on('input', '.item1', function () {
-			       var calculated_total_sum_neto = 0;
-			     
-			       $("#tblGasto .item1").each(function () {
-			          var porId=document.getElementById("espe").value;
-			          var plan_id = document.getElementById('idplan').value;
-			          var n1 = document.getElementById('monto1').value
-			           
-			           if ($.isNumeric(n1)&& porId==1 && plan_id==1) {
-			              calculated_total_sum_neto = parseInt(n1);						  
-			              
-			              }else if ($.isNumeric(n1)&& porId==2 && plan_id==1){	   
-			              	calculated_total_sum_neto = 0;		              	
-			              
-			              }else if ($.isNumeric(n1)&& porId==3 && plan_id==1){	   
-			              	calculated_total_sum_neto = 0;		              	
-			              
-			              }else if ($.isNumeric(n1)&& porId==1 && plan_id==3){	   
-			              	calculated_total_sum_neto = parseInt(n1)-15;		              	
-			              
-			              }else if ($.isNumeric(n1)&& porId==2 && plan_id==3){	   
-			              	calculated_total_sum_neto = parseInt(n1)-20;		              	
-			              
-			              }else if ($.isNumeric(n1)&& porId==3 && plan_id==3){	   
-			              	calculated_total_sum_neto = parseInt(n1)-20;              	
-			              
-			              }
-			        });			              
-			              $("#neto1").val(parseInt(calculated_total_sum_neto));	              
-			       });
-			});
-		</script>
-
-
-		<script>
-			$(document).ready(function(){				
-			$("#tblGasto").on('input', '.item2', function () {
-			       var calculated_total_sum_neto2 = 0;
-			     
-			       $("#tblGasto .item2").each(function () {
-			          var porId=document.getElementById("espe").value;
-			          var plan_id = document.getElementById('idplan').value;
-			          var n2 = document.getElementById('monto2').value
-			           
-			           if ($.isNumeric(n2)&& porId==1 && plan_id==1) {
-			              calculated_total_sum_neto2 = 25;						  
-			              
-			              }else if ($.isNumeric(n2)&& porId==2 && plan_id==1){	   
-			              	calculated_total_sum_neto2 = 25;		              	
-			              
-			              }else if ($.isNumeric(n2)&& porId==3 && plan_id==1){	   
-			              	calculated_total_sum_neto2 = 25;		              	
-			              
-			              }else if ($.isNumeric(n2)&& porId==1 && plan_id==3){	   
-			              	calculated_total_sum_neto2 = parseInt(n2)*0.85;		              	
-			              
-			              }else if ($.isNumeric(n2)&& porId==2 && plan_id==3){	   
-			              	calculated_total_sum_neto2 = parseInt(n2)*0.85;		              	
-			              
-			              }else if ($.isNumeric(n2)&& porId==3 && plan_id==3){	   
-			              	calculated_total_sum_neto2 = parseInt(n2)*0.85;              	
-			              
-			              }
-			        });			              
-			              $("#neto2").val(parseInt(calculated_total_sum_neto2));              
-			              
-			       });
-			});
-		</script>
-
-
-		<script>
-			$(document).ready(function(){				
-			$("#tblGasto").on('input', '.item3', function () {
-			       var calculated_total_sum_neto2 = 0;
-			     
-			       $("#tblGasto .item3").each(function () {
-			          var porId=document.getElementById("espe").value;
-			          var plan_id = document.getElementById('idplan').value;
-			          var n3 = document.getElementById('monto3').value
-			           
-			           if ($.isNumeric(n3)&& porId==1 && plan_id==1) {
-			              calculated_total_sum_neto3 = 0;						  
-			              
-			              }else if ($.isNumeric(n3)&& porId==2 && plan_id==1){	   
-			              	calculated_total_sum_neto3 = 0;		              	
-			              
-			              }else if ($.isNumeric(n3)&& porId==3 && plan_id==1){	   
-			              	calculated_total_sum_neto3 = 0;		              	
-			              
-			              }else if ($.isNumeric(n3)&& porId==1 && plan_id==3){	   
-			              	calculated_total_sum_neto3 = parseInt(n3)*0.85;		              	
-			              
-			              }else if ($.isNumeric(n3)&& porId==2 && plan_id==3){	   
-			              	calculated_total_sum_neto3 = parseInt(n3)*0.85;		              	
-			              
-			              }else if ($.isNumeric(n3)&& porId==3 && plan_id==3){	   
-			              	calculated_total_sum_neto3 = parseInt(n3)*0.85;              	
-			              
-			              }
-			        });			              
-			              $("#neto3").val(parseInt(calculated_total_sum_neto3));              
-			              
-			       });
-			});
-		</script>
-
-
-		<script>
-			$(document).ready(function(){				
-			$("#tblGasto").on('input', '.item4', function () {
-			       var calculated_total_sum_neto2 = 0;
-			     
-			       $("#tblGasto .item4").each(function () {
-			          var porId=document.getElementById("espe").value;
-			          var plan_id = document.getElementById('idplan').value;
-			          var n4 = document.getElementById('monto4').value
-			           
-			           if ($.isNumeric(n4)&& porId==1 && plan_id==1) {
-			              calculated_total_sum_neto4 = 0;						  
-			              
-			              }else if ($.isNumeric(n4)&& porId==2 && plan_id==1){	   
-			              	calculated_total_sum_neto4 = 0;		              	
-			              
-			              }else if ($.isNumeric(n4)&& porId==3 && plan_id==1){	   
-			              	calculated_total_sum_neto4 = 0;		              	
-			              
-			              }else if ($.isNumeric(n4)&& porId==1 && plan_id==3){	   
-			              	calculated_total_sum_neto4 = parseInt(n4)*0.85;		              	
-			              
-			              }else if ($.isNumeric(n4)&& porId==2 && plan_id==3){	   
-			              	calculated_total_sum_neto4 = parseInt(n4)*0.85;		              	
-			              
-			              }else if ($.isNumeric(n4)&& porId==3 && plan_id==3){	   
-			              	calculated_total_sum_neto4 = parseInt(n4)*0.85;              	
-			              
-			              }
-			        });			              
-			              $("#neto4").val(parseInt(calculated_total_sum_neto4));              
-			              
-			       });
-			});
-		</script>
-
-		<script>
-			$(document).ready(function(){				
-			$("#tblGasto").on('input', '.txtCal', function () {
+			$("#tblGasto").on('keyup','.txtCal', function () {
 			       var calculated_total_sum2 = 0;
 			     
 			       $("#tblGasto .txtCal2").each(function () {
@@ -308,12 +89,9 @@
 			              $("#total_neto").val(calculated_total_sum2);
 			              
 			       });
-
 			});
 
 		</script>
-
-		
 
 		<!--[if lte IE 9]>
 			<link rel="stylesheet" href="../assets/css/ace-part2.css" class="ace-main-stylesheet" />
@@ -336,7 +114,7 @@
 		<![endif]-->
 	</head>
 
-	<body class="no-skin">
+	<body class="no-skin" onload="cargar()">
 		<!-- #section:basics/navbar.layout -->
 		<?php include ("/../headBar.php");?>
 
@@ -382,10 +160,7 @@
 						<!-- /section:settings.box -->
 						<div class="page-header">
 							<h1>
-								Siniestro
-								<small>
-									<i class="ace-icon fa fa-angle-double-right"></i>Información datos de la atención
-								</small>
+								Siniestro: OA<?=$num_orden?>							
 							</h1>
 						</div><!-- /.page-header -->
 
@@ -409,7 +184,7 @@
 
 										<li>
 											<a data-toggle="tab" href="#faq-tab-3">
-												Laboratorios
+												Otros Servicios
 											</a>
 										</li>
 
@@ -457,7 +232,7 @@
 														    	}else{
 
 														    	echo "<option value='". $list['idespecialidad']."'>" . $list['nombre_esp']."</option>";			
-														    	}
+														    	} 
 														    }
 														} ?>
 												      </select>
@@ -487,7 +262,7 @@
 
 												  <div class="form-row">
 												  	<div class="form-group col-md-2">
-												    <b class="text-primary">Peso (en Kg)</b>
+												    <b class0="text-primary">Peso (en Kg)</b>
 												    <input type="text" class="form-control" name="peso" id="peso" value="<?php echo $peso?>">
 													</div>
 
@@ -694,13 +469,12 @@
 																	<th>Nro</th>
 																	<th>Diagnostico</th>
 																	<th>Tipo</th>
-																	
 																	<th width="10%" colspan="3">
 																		<div title="Nuevo Diagnóstico" style="float:right;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
-																				<a class="boton fancybox" href="<?=  base_url()?>add_diagnosticoSec/<?=$idsiniestro?>" data-fancybox-width="950" data-fancybox-height="490">
-																					Nuevo Diagnóstico
-																				</a>
-																			</div>
+																			<a class="boton fancybox" href="<?=  base_url()?>add_diagnosticoSec/<?=$idsiniestro?>" data-fancybox-width="950" data-fancybox-height="490">
+																				Nuevo Diagnóstico
+																			</a>
+																		</div>
 																	</th>
 																</tr>
 															</thead>
@@ -950,55 +724,9 @@
 												<i class="purple ace-icon fa fa-check-square-o bigger-110"></i>
 												Registro de Gastos Médicos
 											</h4>
-
 											<div class="space-8"></div>
 
-											<button onclick="myFunction()" class="reserve-button">Detalle del Plan</button>
-
-
-											<table class="grilla" id="people">
-												<thead>
-													<th>Plan</th>
-													<th>IdVar</th>
-													<th>NomVar</th>
-													<th>Valor</th>
-													<th>Text</th>
-												</thead>
-												<tbody></tbody>
-												</table>
-
-										<form action="<?=base_url()?>index.php/guardaGasto" method="post">
-											<div class="row">
-											  <div class="col-sm-4">
-											  	<div class="checkbox">
-												 <label><input type="checkbox" id="trigger" name="question" value="si"> El mismo proveedor factura todo el siniestro.</label>
-												 <input type="hidden" id= "presscheck" name= "presscheck" value="1">
-
-												</div>
-											  </div>
-											  <div class="col-sm-4">
-												<div class="form-group" id="hidden_fields1">
-													<b class="text-primary">Proveedor:</b>
-													<select name="proveedorPrin" class="form-control" id= "proveedorPrin" >
-										          		<option>--- Seleccionar Proveedor ---</option>
-														<?php if (count($proveedor)) {
-															foreach ($proveedor as $u) {
-																echo "<option value='". $u['idproveedor']."'>" . $u['nombre_comercial_pr']."</option>";	
-																}
-														}?>
-													</select>
-												</div>
-											  </div>
-											  <div class="col-sm-4">
-											  	<div class="form-group" id="hidden_fields2">
-													<b class="text-primary">Ingrese Nº de Factura:</b>
-													<input type="text" class="form-control" value="" id="numFact" name="numFact" placeholder="000-000000">
-												</div>	
-											  </div>											  
-											</div>
-
-
-
+										<form action="<?=base_url()?>index.php/guardaGasto" method="post">	
 											<div class="table-responsive">
 											    <table id = "tblGasto" class="table table-bordered table-striped table-highlight">
 											      <thead>
@@ -1010,56 +738,109 @@
 											        <th>Aprobar Pago</th>
 											      </thead>
 											      <tbody>
-											      <?php foreach ($variable as $v) {?>
+											      <?php 
+											      $cont=0;
+											      foreach ($variable as $v){
+											      	if($v->liqdetalle_aprovpago==2){
+											      		$estado="disabled";
+											      	}else{
+											      		$estado="";
+											      	}
+											      	$prov=$v->idprov;
+											      	?>
 											        <tr>
-											          <td><b class="text-primary"><?=$v->nombre_var;?></b> <input type="hidden" id= "idplan" name= "idplan" value="<?php echo $plan_id;?>"></td>
+											          <td><p><b class="text-primary"><?=$v->nombre_var;?></b></p><p><?=$v->detalle;?></p> <input type="hidden" id= "idplan" name= "idplan" value="<?php echo $plan_id;?>"></td>
+											          	<input type="hidden" name="idplandetalle<?=$cont?>" value="<?=$v->idplandetalle;?>">
 											          	<input type="hidden" id= "espe" name= "espe" value="<?php echo $idespecialidad;?>">
+											          	<input type="hidden" name="liqdetalleid<?=$cont?>" value="<?=$v->liqdetalleid?>">
 											          </td>
 											          <td><div class="input-group">
 											              <span class="input-group-addon">S/.</span>
-											              <input type="number" id= "monto<?=$v->idplandetalle;?>" name= "monto<?=$v->idplandetalle;?>" placeholder="0,00" step="0.01" class="txtCal item1 form-control">
+											              <input onkeyup="calcular(<?=$cont?>,<?=$v->simbolo_detalle?>,<?=$v->valor_detalle?>)" type="number" id= "monto<?=$cont?>" name= "monto<?=$cont?>" placeholder="0,00" step="0.01" class="txtCal item1 form-control" value="<?=$v->liqdetalle_monto;?>" <?=$estado?> >
 											            </div>
 											          </td>          
-											          <td>            
-											          	<select name="proveedor<?=$v->idplandetalle;?>" class="form-control" id= "proveedor<?=$v->idplandetalle;?>" >
+											          <td> 										          	          
+											          	<select name="proveedor<?=$cont?>" class="prov form-control" id= "proveedor<?=$cont?>" <?=$estado?> >
 											          		<option value=0>--- Seleccionar Proveedor ---</option>
 															<?php if (count($proveedor)) {
 																foreach ($proveedor as $u) {
-																	echo "<option value='". $u['idproveedor']."'>" . $u['nombre_comercial_pr']."</option>";	
+																	if($u['idproveedor']==$prov){
+																		$selected="selected";
+																	}else{
+																		$selected="";
+																	}
+																	echo "<option value='". $u['idproveedor']."'".$selected.">" . $u['nombre_comercial_pr']."</option>";	
 																	}
 															}?>
-														</select>            
+														</select>  
 											          </td>
 											          <td><div id="sumaNeto" class="input-group">
-											          	<span id= "netospan<?=$v->idplandetalle;?>" class="input-group-addon">S/.</span>
-											          	<input type="text" id= "neto<?=$v->idplandetalle;?>" name= "neto<?=$v->idplandetalle;?>" class="form-control txtCal2" placeholder="0,00"/></div>
+											          	<span id= "netospan<?=$cont;?>" class="input-group-addon">S/.</span>
+											          	<input type="text" id= "neto<?=$cont?>" name= "neto<?=$cont?>" class="form-control txtCal2" placeholder="0,00" value="<?=$v->liqdetalle_neto;?>" <?=$estado?> /></div>
 											          </td>
-											          <td><input type="text" id= "factura<?=$v->idplandetalle;?>" name= "factura1" class="form-control" placeholder="000-000000"/></td>
-											          <td><input type="hidden" name="pago<?=$v->idplandetalle;?>" value="0" /><input type="checkbox" id="pago<?=$v->idplandetalle;?>" name="pago1" value="<?=$v->idplandetalle;?>"></td>          
+											          <td><input type="text" id= "factura<?=$cont?>" name= "factura<?=$cont?>" class="form-control" placeholder="000-000000" value="<?=$v->liqdetalle_numfact?>" <?=$estado?> /></td>
+											          <td><input type="hidden" name="aprovpago<?=$cont?>" id="aprovpago<?=$cont?>" value="<?=$v->liqdetalle_aprovpago?>" /><input onclick="aprovpago(<?=$cont?>)" type="checkbox" id="pago<?=$cont?>" name="pago<?=$cont?>" <?=$estado?> <?php if($v->liqdetalle_aprovpago!=0){ echo "checked";} ?> ></td>          
 											        </tr>
-											        <?php } ?>
+											        <?php $cont=$cont+1;
+											        	  $liqTotal=$v->liquidacionTotal;
+											        	  $liqNeto=$v->liquidacionTotal_neto;
+											        	  $liq_id=$v->liq_id;
+											        } 											        	
+
+											        ?>
 
 											        <tr>
 													    <td align="right"><span><b>TOTAL  :</b></span></td>
 													    <td align="right"><b>S/. <span id="total_sum_value"></span></b></td>
-													    <input type="hidden" class="form-control" name="total" id="total">
+													    <input type="hidden" name="cont" id="cont" value="<?=$cont;?>">
+													    <input type="hidden" name="liq_id" value="<?=$liq_id?>">
+													    <input type="hidden" class="form-control" name="total" id="total" value="<?=$liqTotal?>">
+													    <input type="hidden" name="sin_id" value="<?=$idsiniestro?>">
 													    <td align="right"><span><b>TOTAL NETO REDSALUD  :</b></span></td>
 													    <td align="right"><b>S/. <span id="total_sum_value_neto"></span></b></td>
-													    <input type="hidden" class="form-control" name="total_neto" id="total_neto">
+													    <input type="hidden" class="form-control" name="total_neto" id="total_neto" value="<?=$liqNeto?>">
 													</tr>
 
 											      </tbody>
 											    </table>
 											</div>
 
+											<div class="row">
+											  <div class="col-sm-4">
+											  	<div class="checkbox">
+												 <label><input type="checkbox" id="trigger" name="question" onclick="cambiar(<?=$cont;?>)"> El mismo proveedor factura todo el siniestro.</label>
+												 <input type="hidden" id= "presscheck" name= "presscheck" value="1">
+												</div>
+											  </div>
+											  <div class="col-sm-4">
+												<div class="form-group" id="hidden_fields1">
+													<b class="text-primary">Proveedor:</b>
+													<select name="proveedorPrin" class="form-control" id= "proveedorPrin" disabled="true">
+										          		<option value="0">--- Seleccionar Proveedor ---</option>
+														<?php if (count($proveedor)) {
+															foreach ($proveedor as $u) {
+																echo "<option value='". $u['idproveedor']."'>" . $u['nombre_comercial_pr']."</option>";	
+																}
+														}?>
+													</select>
+												</div>
+											  </div>
+											  <div class="col-sm-4">
+											  	<div class="form-group" id="hidden_fields2">
+													<b class="text-primary">Ingrese Nº de Factura:</b>
+													<input type="text" class="form-control" value="" id="numFact" name="numFact" placeholder="000-000000" disabled="true">
+												</div>	
+											  </div>											  
+											</div>
+
 											<div class="form-group" id="hidden_fields3">
-													<input type="hidden" name="pago0" value="0" /><input type="checkbox" id="pago0" name="pago0" value="1">
-													<b class="text-primary">Aprobar pago al proveedor:</b>
+													<input type="checkbox" id="cerrar_atencion" name="cerrar_atencion" value="1">
+													<b class="text-primary">Generar Pre-liquidación</b>
 											</div>
 
 											<fieldset style="padding-top: 25px;">
 												<input type="hidden" class="form-control" name="idsiniestro" id="idsiniestro" value="<?php echo $idsiniestro?>">
-												
+
 												<div class="row">
 												  <div class="col-sm-6">
 												  	<input class="btn btn-info" name="enviar" type="submit" value="Guardar">
@@ -1108,63 +889,73 @@
 		<!--[if !IE]> -->
 		<script type="text/javascript">
 			window.jQuery || document.write("<script src='<?=base_url()?>public/assets/js/jquery.js'>"+"<"+"/script>");
-
-
-			//para borrar
-
-			var deleteLinks = document.querySelectorAll('.delete');
-
-			for (var i = 0; i < deleteLinks.length; i++) {
-			  deleteLinks[i].addEventListener('click', function(event) {
-			      event.preventDefault();
-
-			      var choice = confirm(this.getAttribute('data-confirm'));
-
-			      if (choice) {
-			        window.location.href = this.getAttribute('href');
-			      }
-			  });
-
-			}
 		</script>
 
-
-		<script>		
-			function myFunction() {
-		    
-		        var idsiniestro = $('#idsiniestro').val();
-		        $.ajax({
-		            type:'POST',
-		            url:'<?=base_url()?>public/population/getEmployeeId.php',
-		            dataType: "json",
-		            data:{idsiniestro:idsiniestro},
-		            success:function(someJSON){
-		                var peopleHTML = "";
-
-      // Loop through Object and create peopleHTML
-      for (var key in someJSON) {
-        if (someJSON.hasOwnProperty(key)) {
-          peopleHTML += "<tr>";
-            peopleHTML += "<td>" + someJSON[key]["nombre_plan"] + "</td>";
-            peopleHTML += "<td>" + someJSON[key]["idvariableplan"] + "</td>";
-            peopleHTML += "<td>" + someJSON[key]["nombre_var"] + "</td>";
-            peopleHTML += "<td>" + someJSON[key]["valor_detalle"] + "</td>";
-            peopleHTML += "<td>" + someJSON[key]["texto_web"] + "</td>";            
-          peopleHTML += "</tr>";
-        }
-      }
-// Replace table’s tbody html with peopleHTML
-      $("#people tbody").html(peopleHTML);
-
-		            }
-		        });		              
-		        
+		<script type="text/javascript">
 			
-		};
-		</script>
+			function calcular(id,op,value){
+				monto_bruto = document.getElementById("monto"+id).value;
+				switch(op){
+					case 1:
+					monto_neto = monto_bruto*(value/100);
+					break;
+					case 2:
+					monto_neto = monto_bruto-value;
+					break;
+					case 3:
+						if(monto_bruto<value){
+							monto_neto=monto_bruto;
+						}else{
+							monto_neto = value;
+						}					
+					break;
+				}
 
+				document.getElementById("neto"+id).value=monto_neto;
+			}
 
-		
+			function cambiar(cont){
+				chk=document.getElementById("presscheck").value;
+				if(chk==1){
+					document.getElementById("presscheck").value=0;
+					for(i=0;i<cont;i++){
+						document.getElementById("proveedor"+i).value=0;
+						document.getElementById("factura"+i).value="";
+						document.getElementById("proveedor"+i).disabled=true;
+						document.getElementById("factura"+i).disabled=true;
+						document.getElementById("proveedorPrin").disabled=false;
+						document.getElementById("numFact").disabled=false;
+					}
+				}else{
+					document.getElementById("presscheck").value=1;
+					for(i=0;i<cont;i++){
+						document.getElementById("proveedor"+i).disabled=false;
+						document.getElementById("factura"+i).disabled=false;
+						document.getElementById("proveedorPrin").disabled=true;
+						document.getElementById("numFact").disabled=true;
+						document.getElementById("proveedorPrin").value=0;
+						document.getElementById("numFact").value="";
+					}
+				}
+			}
+
+			function aprovpago(cont){
+				
+				if(document.getElementById("pago"+cont).checked==true){
+					document.getElementById("aprovpago"+cont).value=1;
+				}else{
+					document.getElementById("aprovpago"+cont).value=0;
+				}
+			}
+
+			function cargar(){
+				total= document.getElementById("total").value;
+				neto=document.getElementById("total_neto").value;
+
+				document.getElementById("total_sum_value").innerHTML=total;
+				document.getElementById("total_sum_value_neto").innerHTML=neto;
+			}
+		</script>		
 
 		<!-- <![endif]-->
 

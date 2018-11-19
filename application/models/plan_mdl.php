@@ -18,12 +18,13 @@
  	}
 
  	function getCobertura($id){
- 		$this->db->select('*');
+ 		$this->db->select("dp.idplandetalle, dp.idplan,dp.idvariableplan,dp.valor_detalle,dp.simbolo_detalle, dp.texto_web, dp.visible, dp.estado_pd, dp.flg_liquidacion, dp.tiempo, dp.num_eventos, vp.nombre_var, detalle, o.descripcion");
  		$this->db->from('plan_detalle dp'); 		
  		$this->db->join('variable_plan vp','dp.idvariableplan=vp.idvariableplan');
  		$this->db->join('operador o','o.idoperador=dp.simbolo_detalle','left');
+ 		$this->db->join("(select idplandetalle, CONCAT('(', left(GROUP_CONCAT(descripcion_prod),40), case when CHAR_LENGTH(GROUP_CONCAT(descripcion_prod))>40 then '...)'else ')' end) as detalle from producto_detalle pd inner join producto p on p.idproducto=pd.idproducto group by pd.idplandetalle)a","a.idplandetalle=dp.idplandetalle","left");
  		$this->db->where('idplan',$id); 		
- 		$this->db->order_by("idplandetalle");
+ 		$this->db->order_by("dp.idplandetalle ");
 
  	$cobertura = $this->db->get();
  	return $cobertura->result();
@@ -50,6 +51,7 @@
  	function getPlan($id){
  		$this->db->select('*');
  		$this->db->from('plan pl');
+ 		$this->db->join('cliente_empresa ce','pl.idclienteempresa=ce.idclienteempresa');
  		$this->db->where('idplan',$id);
 
 	 $plan = $this->db->get();
@@ -159,7 +161,18 @@
 
  	function selecionar_cobertura($id){
  		$this->db->select("*");
- 		$this->db->from("plan_detalle");
+ 		$this->db->from("plan_detalle pd");
+ 		$this->db->where("idplandetalle",$id);
+ 	$cobertura = $this->db->get();
+	return $cobertura->result();
+ 	}
+
+ 	function selecionar_cobertura2($id){
+ 		$this->db->select("*");
+ 		$this->db->from("plan_detalle pd");
+ 		$this->db->join("variable_plan vp","vp.idvariableplan=pd.idvariableplan");
+ 		$this->db->join("plan pl","pd.idplan=pl.idplan");
+ 		$this->db->join("operador o","pd.simbolo_detalle=o.idoperador","left");
  		$this->db->where("idplandetalle",$id);
  	$cobertura = $this->db->get();
 	return $cobertura->result();
