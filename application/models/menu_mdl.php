@@ -13,6 +13,7 @@
 	 $this->db->from('rol');
 	 $this->db->join('submenu', 'submenu.idsubmenu = rol.idsubmenu'); 
 	 $this->db->join('menu', 'menu.idmenu = submenu.idmenu'); 
+	 //$this->db->order_by("menu.descripcion");
 	 //$this->db->where('idusuario', $idusuario);
 
 	 $menu = $this->db->get();

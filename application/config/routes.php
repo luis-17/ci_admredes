@@ -198,6 +198,7 @@ $route['eliminar_producto/(:any)/(:any)/(:any)/(:any)'] = 'plan_cnt/eliminar_pro
 $route['insertar_producto/(:any)/(:any)/(:any)/(:any)'] = 'plan_cnt/insertar_producto/$1/$2/$3/$4';
 $route['reenviar_proveedor/(:any)'] = 'certificadodetalle_cnt/reenviar_proveedor/$1';
 $route['reenviar_afiliado/(:any)'] = 'certificadodetalle_cnt/reenviar_afiliado/$1';
+$route['save_liqgrupo'] = 'liquidacion_cnt/save_liqgrupo';
 // Rutas Ariel (Escribir debajo)
 
 $route['404_override'] = '';
@@ -206,7 +207,11 @@ $route['translate_uri_dashes'] = FALSE;
 $route['creaSiniestro'] = 'siniestro_cnt/creaSiniestro';
 $route['guardaGasto'] = 'siniestro_cnt/guardaGasto';
 $route['liquidacion'] = 'liquidacion_cnt/index';
+$route['liquidacion_detalle/(:any)/(:any)'] ='liquidacion_cnt/getLiquidacionDet/$1/$2';
 $route['registraPago'] = 'liquidacion_cnt/registraPago';
+$route['liquidacion_grupo'] = 'liquidacion_cnt/liquidacion_grupo';
+$route['liquidacion_regpago/(:any)/(:any)'] = 'liquidacion_cnt/liquidacion_regpago/$1/$2';
+$route['save_regPago'] = 'liquidacion_cnt/save_regPago';
 
 $route['start_sesion'] = 'login_cnt/start_sesion';
 $route['logout'] = 'login_cnt/logout';
