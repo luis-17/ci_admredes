@@ -32,7 +32,7 @@
 
 	<body class="no-skin">
 		<!-- #section:basics/navbar.layout -->
-		<?php include ("/headBar.php");?>
+		<?php include ("headBar.php");?>
 
 		<!-- /section:basics/navbar.layout -->
 		<div class="main-container" id="main-container">
@@ -41,7 +41,7 @@
 			</script>
 
 			<!-- #section:basics/sidebar -->
-			<?php include ("/sideBar.php");?>
+			<?php include ("sideBar.php");?>
 			<!-- end nav. -->
 
 			<!-- /section:basics/sidebar -->

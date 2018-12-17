@@ -166,6 +166,110 @@ class Siniestro_cnt extends CI_Controller {
 	        $variable = $this->siniestro_mdl->getVariable($id);
 	        $data['variable'] = $variable;
 
+	        $texto = '<div style=" width: 45%">
+	        			<h4 class="blue">
+	        			<i class="ace-icon fa fa-leaf bigger-110"></i>
+								Otros Servicios
+						</h4>
+					</div>
+					<div class="space-8"></div>
+								<div id="faq-list-3" class="panel-group accordion-style1 accordion-style2">';
+	        $cont = 1;
+	        $servicios = $this->siniestro_mdl->getVariables_sin($id);
+	        $ida=0;
+	        $desc="";
+	        foreach ($servicios as $s) {
+	        	$producto_analisis = $this->siniestro_mdl->getProductos_analisis($s->idplandetalle,$s->idsiniestro);
+	        	$analisis_nocubiertos = $this->siniestro_mdl->getAnalisisNo($s->idsiniestro,$s->idplandetalle);
+	        	foreach ($analisis_nocubiertos as $nc) {
+	        		$ida=$nc->idsiniestroanalisis;
+	        		$desc=$nc->analisis_str;
+	        	}
+	        	$id=$s->idvariableplan;
+	        	$tot=$s->total_vez;
+	        	$act=$s->vez_actual;
+	        	if($tot=='Ilimitados'){
+	        		$disabled="";
+	        	}elseif($tot>$act){
+	        		$disabled="";
+	        	}else{
+	        		$disabled="disabled";
+	        	}
+
+	        	$texto .= '<div class="panel panel-default">
+													<div class="panel-heading">
+														<a href="#faq-3-'.$cont.'" data-parent="#faq-list-3" data-toggle="collapse" class="accordion-toggle collapsed">
+															<i class="ace-icon fa fa-chevron-right smaller-80" data-icon-hide="ace-icon fa fa-chevron-down align-top" data-icon-show="ace-icon fa fa-chevron-right"></i>&nbsp;
+															'.$s->nombre_var.'
+														</a>
+													</div>
+
+													<div class="panel-collapse collapse" id="faq-3-'.$cont.'">
+													<div class="panel-body">
+															
+															<!-- star table -->	
+														<div style="float: left;">
+															<label>Número de Eventos </label> <button class="btn btn-white btn-danger btn-sm">'.$s->vez_actual2.''.$s->total_vez.'</button>
+														</div>	
+														<br><br>
+														<div class="col-xs-12">
+															
+															<div class="form-group">
+															<form method="post" action="'.base_url().'index.php/save_siniestro_analisis">
+															<input type="hidden" name="sin_id" id="sin_id" value="'.$s->idsiniestro.'">
+															<input type="hidden" name="idplandetalle" value="'.$s->idplandetalle.'" id="idplandetalle">
+																<table id="example'.$s->idplandetalle.'" class="table table-striped table-bordered table-hover">
+																	<thead>
+																		<tr>
+																			<th>ID</th>
+																			<th>Descripción</th>
+																			<th>Tipo</th>
+																			<th></th>
+																		</tr>
+																	</thead>
+																	<tbody>';
+																	foreach ($producto_analisis as $pr) {
+																$texto.='<tr>
+																			<td>'.$pr->idproducto.'</td>
+																			<td>'.$pr->descripcion_prod.'</td>
+																			<td>Cubierto</td>
+																			<td><input type="checkbox" name="chk'.$s->idplandetalle.'[]" id="chk'.$s->idplandetalle.'[]" value="'.$pr->idproducto.'" '.$pr->checked.' '.$disabled.'></td>
+																		</tr>';
+																	}
+															$texto.='</tbody>
+																</table>
+
+															</div>
+															<script>	
+															$(document).ready(function() {
+														    $("#example'.$s->idplandetalle.'").DataTable( {
+														        "pagingType": "full_numbers"
+														    } );
+														} );
+													</script>
+														</div>
+														<div class="form-group">
+														<input type="hidden" name="idnc'.$s->idplandetalle.'" id="idnc'.$s->idplandetalle.'" value='.$ida.' >
+															<label class="col-sm-3 control-label no-padding-right" for="form-field-1" align="right">No cubierto: </label>
+
+															<div class="col-sm-6" align="left">
+																<input class="form-control input-mask-date" type="text" name="servicio'.$s->idplandetalle.'" id="servicio'.$s->idplandetalle.'" value="'.$desc.'" placeholder="'.$s->nombre_var.' no cubierto por el plan" />
+															</div>
+														</div>
+														<br><br><br>
+														<div align="right"><button class="btn btn-info" type="submit">Guardar</button></div>
+
+
+														</form>
+														<!-- end table --> 
+
+															</div></div></div>
+													';
+				$cont = $cont+1;
+	        }
+	        $texto.='</div>';
+	        $data['texto'] = $texto;
+
 	        
 			$this->load->view('dsb/html/atencion/siniestro.php',$data);
 		}
@@ -216,6 +320,7 @@ class Siniestro_cnt extends CI_Controller {
 		       	$data['gu_puno_percusion_lumbar'] = $_POST['gu_puno_percusion_lumbar'];
 		       	$data['gu_puntos_reno_uretelares'] = $_POST['gu_puntos_reno_uretelares'];
 		       	$data['idespecialidad'] = $_POST['idespecialidad'];
+		       	$data['num_orden'] = $_POST['num_oa'];
 
 		       	if($data['idtriaje']==""){	       		
 
@@ -258,7 +363,7 @@ class Siniestro_cnt extends CI_Controller {
 	        $this->load->model('atencion_mdl');
 	        $data['proveedor'] = $this->atencion_mdl->getProveedor();
 
-			$this->load->view('dsb/html/atencion/siniestro.php',$data);			
+			redirect(base_url()."index.php/siniestro/".$data['idsiniestro']);			
 		}
 		else{
 			redirect('/');
@@ -864,5 +969,94 @@ class Siniestro_cnt extends CI_Controller {
 		$this->load->view('dsb/html/atencion/add_tratamientoSec.php', $data);
 	}
 	
+	public function save_siniestro_analisis(){
+		$data['sin_id'] = $_POST['sin_id'];
+		$idplandetalle = $_POST['idplandetalle'];
+		$data['idplandetalle'] = $idplandetalle;
+		$idnc = $_POST['idnc'.$idplandetalle];
+		$data['servicio'] = $_POST['servicio'.$idplandetalle];
 
+		if(!empty($_POST['chk'.$idplandetalle])){
+
+		$chk = $_POST['chk'.$idplandetalle];		
+		$num = count($chk);
+
+			for($i=0;$i<$num;$i++){
+				$data['idpr']=$chk[$i];
+				$accion = $this->siniestro_mdl->validarProd($data); 
+				if(empty($accion)){
+					$this->siniestro_mdl->insertar_analisis($data);
+				}else{
+					$this->siniestro_mdl->activar_analisis($data);
+				}
+			}
+
+			$this->siniestro_mdl->eliminar_analisis($data);
+			$this->siniestro_mdl->actualizar_analisis($data);
+
+			if ($data['servicio']!="") {
+				if($idnc==0){
+					$this->siniestro_mdl->insertar_NC($data);
+				}else{
+					$data['idnc'] = $idnc;
+					$this->siniestro_mdl->update_NC($data);
+				}
+			}else{
+				if($idnc!=0){
+					$data['idnc'] = $idnc;
+					$this->siniestro_mdl->eliminar_servicio($data);
+				}
+			}
+		
+
+			echo "<script>
+					alert('Se registraron los servicios con éxito.');
+					location.href='".base_url()."index.php/siniestro/".$data['sin_id']."';
+					</script>";
+		}elseif ($data['servicio']!="") {
+			
+			if($idnc==0){
+				$this->siniestro_mdl->insertar_NC($data);
+			}else{
+				$data['idnc'] = $idnc;
+				$this->siniestro_mdl->update_NC($data);
+			}
+			$this->siniestro_mdl->eliminar_todo($data);
+			echo "<script>
+					alert('Se registraron los servicios con éxito.');
+					location.href='".base_url()."index.php/siniestro/".$data['sin_id']."';
+					</script>";
+		}else{
+
+			if($idnc!=0){
+				$data['idnc'] = $idnc;
+				$this->siniestro_mdl->eliminar_servicio($data);
+			}
+			$this->siniestro_mdl->eliminar_todo($data);
+
+			echo "<script>
+					alert('No se registró ningún servicio para la atención.');
+					location.href='".base_url()."index.php/siniestro/".$data['sin_id']."';
+					</script>";			
+
+		}
+		
+	}
+
+	public function eliminar_diagnostico($id, $ids){
+		$medicamentos = $this->siniestro_mdl->get_medicamentos($id);
+
+		if(!empty($medicamentos)){
+			echo "<script>
+					alert('Error: El diagnóstico cuenta con medicamentos registrados.');
+					location.href='".base_url()."index.php/siniestro/".$ids."';
+					</script>";
+		}else{
+			$this->siniestro_mdl->eliminar_diagnostico($id);
+			echo "<script>
+					alert('El diagnóstico se eliminó con éxito.');
+					location.href='".base_url()."index.php/siniestro/".$ids."';
+					</script>";
+		}
+	}
 }

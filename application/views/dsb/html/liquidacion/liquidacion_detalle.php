@@ -64,65 +64,142 @@
 
 							<div class="tabbable">
 									<!-- #section:pages/faq -->
-									<div class="col-xs-12">
-												<div>
-													<table id="example" class="table table-striped table-bordered table-hover">
-														<thead  style="font-size: 12px;">
-															<tr>
-																<th>N° Orden</th>
-																<th>Proveedor</th>
-																<th>Comprobante</th>
-																<th>Concepto</th>
-																<th>Importe Bruto</th>
-																<th>Importe Neto</th>
-															</tr>
-														</thead>
+								<div class="col-xs-12">	
+									<?php 
+										 foreach ($liquidacion as $l){
+								    		$razon_social = $l->razon_social_pr;
+								    		$ruc = $l->numero_documento_pr;
+								    		$banco = $l->descripcion;
+								    		$tipo = $l->descripcion_fp;
+								    		$op = $l->num_operacion;
+								    		$total = $l->total;
+								    		$igv = $total * 0.18;
+								    		$subtotal = $total - $igv;
+								    		$cta_corriente = $l->cta_corriente;
+								    		$cta_detracciones = $l->cta_detracciones;
+								    		$colaborador = $l->colaborador;
+								    		$detraccion = $l->detraccion;
 
-														<?php
-														$total_bruto=0;
-														$total_neto=0; 
-														foreach ($liquidacionDet as $ld){ ?>
-														<tbody  style="font-size: 12px;">
-															<tr>
-																<td><?=$ld->num_orden_atencion?></td>
-																<td><?=$ld->nombre_comercial_pr?></td>
-																<td><?=$ld->liqdetalle_numfact?></td>
-																<td><?=$ld->nombre_var?> <?=$ld->detalle?></td>
-																<td style="text-align: right;"><?=$ld->liqdetalle_monto?> PEN</td>
-																<td style="text-align: right;"><?=$ld->liqdetalle_neto?> PEN</td>											
-															</tr>
-														</tbody>
-														<?php 
-														$total_bruto=$total_bruto+$ld->liqdetalle_monto;
-														$total_neto=$total_neto+$ld->liqdetalle_neto;
-														} ?>
-													</table>											
-												</div>
-												<br>
-												<script>			
-													//para paginacion
-													$(document).ready(function() {
-													$('#example').DataTable( {
-													"pagingType": "full_numbers"
-													} );
-												} );
-												</script>
-												
-											<!-- end table -->
+								    		$igv = number_format((float)$igv, 2, '.', '');
+								    		$subtotal = number_format((float)$subtotal, 2, '.', '');
+								    		$total = number_format((float)$total, 2, '.', '');
+								    		$detraccion = number_format((float)$detraccion,2,'.','');
 
-											<table class="table table-striped table-bordered table-hover">
-												<thead style="text-align-last: right;">
-													<tr>
-														<th>Total Importe Bruto</th>
-														<th><?=$total_bruto?> PEN</th>														
-													</tr>
-													<tr>
-														<th>Total Importe Neto</th>
-														<th><?=$total_neto?> PEN</th>														
-													</tr>
-												</thead>
-											</table>	
-											</div><!-- /.col -->
+								    		$neto = $total - $detraccion;
+										} 
+									?>
+									<table class="table table-striped table-bordered table-hover"  style="font-size: 12px;">
+										<tr>
+										<th width="30%">Nombre/Razón Social</th>
+										<td><?=$razon_social?></td>
+										</tr>
+										<tr>
+										<th width="30%">DNI/RUC</th>
+										<td><?=$ruc?></td>
+										</tr>
+										<tr>
+										<th width="30%">Concepto</th>
+										<td>Liquidación de Facturas</td>
+										</tr>
+									</table>
+
+									<h4>N° Documentos:</h4>	
+									<table id="example" class="table table-striped table-bordered table-hover"  style="font-size: 12px;">
+										<thead>
+											<tr>
+												<th>N° Factura</th>
+												<th>N° Orden Atención</th>
+												<th>Afiliado</th>
+												<th>Concepto</th>
+												<th>Importe Bruto</th>
+												<th>Importe Neto</th>
+											</tr>
+										</thead>
+										<tbody>
+										<?php foreach ($liquidacionDet as $ld){ ?>
+											<tr>
+												<td><?=$ld->liqdetalle_numfact?></td>
+												<td><?=$ld->num_orden_atencion?></td>
+												<td><?=$ld->afiliado?></td>
+												<td><?=$ld->nombre_var?> <?=$ld->detalle?></td>
+												<td style="text-align: right;"><?=$ld->liqdetalle_monto?> PEN</td>
+												<td style="text-align: right;"><?=$ld->liqdetalle_neto?> PEN</td>
+											</tr>
+										<?php } ?>
+										</tbody>
+									</table>
+									<script>			
+										//para paginacion
+										$(document).ready(function() {
+										    $('#example').DataTable( {
+										        "pagingType": "full_numbers"
+										    } );
+										} );
+									</script>
+
+									<h4>Detalle a Pagar</h4>	
+
+									<div style="float: left; width: 49%">
+									<table class="table table-striped table-bordered table-hover"  style="font-size: 12px;">
+										<tr>
+											<th width="30%" align="left"> Sub Total</th>
+											<td style="text-align: right;"><?=$subtotal?> PEN</td>
+										</tr>
+										<tr>
+											<th width="30%" align="left"> IGV</th>
+											<td style="text-align: right;"><?=$igv?> PEN</td>
+										</tr>
+										<tr>
+											<th width="30%" align="left"> Total</th>
+											<td style="text-align: right;"><?=$total?> PEN</td>
+										</tr>
+									</table>
+									</div>
+									<div style="float: right; width: 49%">
+									<table class="table table-striped table-bordered table-hover"  style="font-size: 12px;">
+										<tr>
+											<th width="30%" align="right"> Detracciones</th>
+											<td style="text-align: right;"><?=$detraccion?> PEN</td>
+										</tr>
+										<tr>
+											<th width="30%" align="right"> NETO A PAGAR</th>
+											<th style="text-align: right; color: red"><?=$neto?> PEN</th>
+										</tr>
+									</table>
+									<br>
+									<br>
+									</div>
+
+
+									<?php if(!empty($liquidacion_grupo)){?>
+
+									<h4>Detalle del Pago Realizado</h4>
+									<table class="table table-striped table-bordered table-hover"  style="font-size: 12px;">
+										<thead>
+											<tr>
+												<th>Usuario Liquida</th>
+												<th>Fecha</th>
+												<th>Banco</th>
+												<th>Forma de Pago</th>
+												<th>N° Operación</th>
+												<th>Correo Notificación</th>
+											</tr>														
+										</thead>
+										<tbody>
+											<?php foreach ($liquidacion_grupo as $lg) { ?>
+											<tr>
+												<td><?=$lg->username?></td>
+												<td><?=$lg->fecha_liquida?></td>
+												<td><?=$lg->descripcion?></td>
+												<td><?=$lg->descripcion_fp?></td>
+												<td><?=$lg->num_operacion?></td>
+												<td><?=$lg->email_notifica?></td>
+											</tr>
+											<?php } ?>
+										</tbody>
+									</table>
+									<?php } ?>
+									</div><!-- /.col -->
 											
 												
 												

@@ -140,7 +140,7 @@
 										<label class="col-sm-3 control-label no-padding-right" for="form-field-1">Fecha: </label>
 
 										<div class="col-sm-9">
-											<input type='date' name='feccita' id='feccita' value='<?=$hoy;?>' required  />
+											<input min="<?=$hoy?>" type='date' name='feccita' id='feccita' value='<?=$hoy;?>' required  />
 										</div>
 									</div>
 
@@ -167,8 +167,6 @@
 											 <textarea rows='2' cols='71' name='obs' id='obs'><?=$obs?></textarea>
 										</div>
 									</div>
-
-									
 									<div class="clearfix form-actions">
 										<div class="col-md-offset-3 col-md-9">
 											<button class="btn btn-info" type="submit">

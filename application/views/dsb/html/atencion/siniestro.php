@@ -34,6 +34,7 @@
 		<link rel="stylesheet" href="<?=  base_url()?>public/fancybox/source/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen" />
 		<script type="text/javascript" src="<?=  base_url()?>public/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
 
+
 		<script>
 			$(".fancybox")
 		    .attr('rel', 'gallery')
@@ -44,7 +45,6 @@
 		            this.width  = parseInt(this.element.data('fancybox-width'));  
 		            this.height = parseInt(this.element.data('fancybox-height'));
 		        }
-
 		    });
 		</script>
 		
@@ -105,6 +105,12 @@
 
 		<!-- ace settings handler -->
 		<script src="<?=base_url()?>public/assets/js/ace-extra.js"></script>
+
+		<!-- para paginacion -->
+		<script src="<?=base_url()?>public/pagination/jquery.dataTables.min.css"></script>
+		<script src="<?=base_url()?>public/pagination/jquery-1.12.4.js"></script>
+		<script src="<?=base_url()?>public/pagination/jquery.dataTables.min.js"></script>
+		<script src="<?=base_url()?>public/pagination/dataTables.bootstrap.min.js"></script>
 
 		<!-- HTML5shiv and Respond.js for IE8 to support HTML5 elements and media queries -->
 
@@ -220,6 +226,7 @@
 													<input type="hidden" class="form-control" name="idtriaje" id="idtriaje" value="<?php echo $idtriaje?>">
 													<input type="hidden" class="form-control" name="idsiniestro" id="idsiniestro" value="<?php echo $idsiniestro?>">
 													<input type="hidden" class="form-control" name="idasegurado" id="idasegurado" value="<?php echo $idasegurado?>">
+													<input type="hidden" name="num_oa" id="num_oa" value="<?=$num_orden?>">
 
 												  <div class="form-row">
 												  	<div class="form-group col-md-6">
@@ -382,7 +389,7 @@
 																	
 																	<th width="10%" colspan="2">					
 																		<div title="Nuevo Diagnóstico" style="float:right;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
-																				<a class="boton fancybox" href="<?=  base_url()?>add_diagnostico/<?=$idsiniestro?>" title="Nuevo Diagnóstico" data-fancybox-width="950" data-fancybox-height="490">
+																				<a class="boton fancybox" href="<?=  base_url()?>index.php/add_diagnostico/<?=$idsiniestro?>" title="Nuevo Diagnóstico" data-fancybox-width="950" data-fancybox-height="490">
 																					Nuevo Diagnóstico
 																				</a>
 																			</div>
@@ -400,16 +407,14 @@
 																<tr>
 																	<td><?php echo $nro_fila; ?></td>
 																	<td colspan="2" style="font-weight: bold;"><?=$o->dianostico_temp;?></td>
-																	
 																	<td>
 																		<div class="hidden-sm hidden-xs btn-group">	
-																				<a class="boton fancybox" href="<?=base_url()?>index.php/add_tratamiento/<?=$o->idsiniestrodiagnostico?>" title="Nuevo Medicamento" data-fancybox-width="950" data-fancybox-height="490"><i class="ace-icon fa fa-certificate bigger-120"></i></a>
+																				<a class="boton fancybox" href="<?=base_url()?>index.php/add_tratamiento/<?=$o->idsiniestrodiagnostico?>" title="Nuevo Medicamento" data-fancybox-width="950" data-fancybox-height="490"><i class="ace-icon glyphicon glyphicon-plus bigger-120"></i></a>
 																		</div>	
 																	</td>
-																	
 																	<td>
 																		<div class="hidden-sm hidden-xs btn-group">
-																				<a href="<?=base_url()?>index.php/siniestro/<?=$o->idsiniestro?>" title="Eliminar Diagnostico"><i class="ace-icon fa fa-ban bigger-120"></i></a>
+																				<a href="<?=base_url()?>index.php/eliminar_diagnostico/<?=$o->idsiniestrodiagnostico?>/<?=$o->idsiniestro?>" title="Eliminar Diagnostico"><i class="ace-icon glyphicon glyphicon-trash bigger-120"></i></a>
 																		</div>	
 																	</td>
 																</tr>
@@ -434,7 +439,7 @@
 																	</td>
 																	<td>
 																		<div class="hidden-sm hidden-xs btn-group">
-																				<a class="delete" data-confirm="¿Está seguro que desea eliminar este medicamento?" href="<?=base_url()?>index.php/delete_trata/<?=$u->idtratamiento?>/<?=$idsiniestro?>" title="Eliminar Medicamento"><i class="ace-icon fa fa-ban bigger-120"></i></a>
+																				<a class="delete" data-confirm="¿Está seguro que desea eliminar este medicamento?" href="<?=base_url()?>index.php/delete_trata/<?=$u->idtratamiento?>/<?=$idsiniestro?>" title="Eliminar Medicamento"><i class="ace-icon glyphicon glyphicon-trash bigger-120"></i></a>
 																		</div>
 																	</td>
 																</tr>
@@ -471,7 +476,7 @@
 																	<th>Tipo</th>
 																	<th width="10%" colspan="3">
 																		<div title="Nuevo Diagnóstico" style="float:right;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
-																			<a class="boton fancybox" href="<?=  base_url()?>add_diagnosticoSec/<?=$idsiniestro?>" data-fancybox-width="950" data-fancybox-height="490">
+																			<a class="boton fancybox" href="<?=  base_url()?>index.php/add_diagnosticoSec/<?=$idsiniestro?>" data-fancybox-width="950" data-fancybox-height="490">
 																				Nuevo Diagnóstico
 																			</a>
 																		</div>
@@ -490,22 +495,16 @@
 																	<td><?php echo $nro_fila; ?></td>
 																	<td style="font-weight: bold;"><?=$o->dianostico_temp;?></td>
 																	<td></td>
-
-																	<td>
-																		<div class="hidden-sm hidden-xs btn-group">	
-																				<a href="<?=base_url()?>index.php/siniestro/<?=$o->idsiniestro?>" title="Editar Diagnóstico"><i class="ace-icon fa fa-pencil-square-o bigger-120"></i></a>
-																		</div>	
-																	</td>
 																	
 																	<td>
 																		<div class="hidden-sm hidden-xs btn-group">	
-																				<a class="boton fancybox" href="<?=base_url()?>index.php/add_tratamientoSec/<?=$o->idsiniestrodiagnostico?>" data-fancybox-width="950" data-fancybox-height="490" title="Nuevo Medicamento"><i class="ace-icon fa fa-certificate bigger-120"></i></a>
+																				<a class="boton fancybox" href="<?=base_url()?>index.php/add_tratamientoSec/<?=$o->idsiniestrodiagnostico?>" data-fancybox-width="950" data-fancybox-height="490" title="Nuevo Medicamento"><i class="ace-icon glyphicon glyphicon-plus bigger-120"></i></a>
 																		</div>	
 																	</td>
 																	
 																	<td>
 																		<div class="hidden-sm hidden-xs btn-group">
-																				<a href="<?=base_url()?>index.php/siniestro/<?=$o->idsiniestro?>" title="Eliminar Diagnostico"><i class="ace-icon fa fa-ban bigger-120"></i></a>
+																				<a href="<?=base_url()?>index.php/eliminar_diagnostico/<?=$o->idsiniestrodiagnostico?>/<?=$o->idsiniestro?>" title="Eliminar Diagnostico"><i class="ace-icon glyphicon glyphicon-trash bigger-120"></i></a>
 																		</div>	
 																	</td>
 																</tr>
@@ -523,15 +522,14 @@
 																	<td><?php if ($u->tipo_tratamiento==3){echo "<h6 style='color:red;'> No cubierto</h6>";}else{echo "<h6 style='color:green;'>Cubierto</h6>";};?>
 																		
 																	</td>
-																	<td></td>
 																	<td>
 																		<div class="hidden-sm hidden-xs btn-group">
-																				<a href="<?=base_url()?>index.php/siniestro/<?=$o->idsiniestro?>" title="Editar Medicamento"><i class="ace-icon fa fa-pencil-square-o bigger-120"></i></a>
+																				<a class="boton fancybox" href="<?=base_url()?>index.php/edit_medi/<?=$u->idtratamiento?>/<?=$o->idsiniestrodiagnostico?>" title="Editar Medicamento" data-fancybox-width="950" data-fancybox-height="490"><i class="ace-icon fa fa-pencil-square-o bigger-120"></i></a>
 																		</div>
 																	</td>
 																	<td>
 																		<div class="hidden-sm hidden-xs btn-group">
-																				<a href="<?=base_url()?>index.php/siniestro/<?=$o->idsiniestro?>" title="Eliminar Medicamento"><i class="ace-icon fa fa-ban bigger-120"></i></a>
+																				<a class="delete" data-confirm="¿Está seguro que desea eliminar este medicamento?" href="<?=base_url()?>index.php/delete_trata/<?=$u->idtratamiento?>/<?=$idsiniestro?>" title="Eliminar Medicamento"><i class="ace-icon glyphicon glyphicon-trash bigger-120"></i></a>
 																		</div>
 																	</td>
 																</tr>
@@ -549,134 +547,7 @@
 										</div>
 
 										<div id="faq-tab-3" class="tab-pane fade">
-											<h4 class="blue">
-												<i class="orange ace-icon fa fa-flask bigger-110"></i>
-												Exámenes y Laboratorios
-											</h4>
-
-											<div class="space-8"></div>
-
-											<div id="faq-list-3" class="panel-group accordion-style1 accordion-style2">
-												<div class="panel panel-default">
-													<div class="panel-heading">
-														<a href="#faq-3-1" data-parent="#faq-list-3" data-toggle="collapse" class="accordion-toggle collapsed">
-															<i class="ace-icon fa fa-chevron-right smaller-80" data-icon-hide="ace-icon fa fa-chevron-down align-top" data-icon-show="ace-icon fa fa-chevron-right"></i>&nbsp;
-															Exámenes y Laboratorios Cubiertos
-														</a>
-													</div>
-
-													<div class="panel-collapse collapse" id="faq-3-1">
-														<div class="panel-body">
-															
-															<!-- star table -->		
-													<div class="col-xs-12">
-														<table id="simple-table" class="table table-striped table-bordered table-hover">
-															<thead>
-																<tr>
-																	<th>Nro</th>
-																	<th colspan="4">Laboratorio</th>
-																	<th>
-																		<div class="hidden-sm hidden-xs btn-group">
-																				<a href="<?=base_url()?>index.php/siniestro/<?=$idsiniestro?>" title="Nuevo Laboratorio"><i class="ace-icon fa fa-external-link bigger-120"></i></a>
-																		</div>
-																	</th>
-																</tr>
-															</thead>
-
-															<tbody>
-																<?php $nro_fila = 0;	
-																foreach($laboratorio as $i):
-																
-																if($i->si_cubre==1){ 
-																$nro_fila =$nro_fila+1;?>
-
-																<tr>
-																	<td><?php echo $nro_fila; ?></td>
-																	<td colspan="3" style="font-weight: bold;"><?=$i->analisis_str;?></td>
-																	
-																	<td>
-																		<div class="hidden-sm hidden-xs btn-group">
-																				<a href="<?=base_url()?>index.php/siniestro/<?=$i->idsiniestro?>" title="Editar Laboratorio"><i class="ace-icon fa fa-external-link bigger-120"></i></a>
-																		</div>	
-																	</td>
-																	<td>
-																		<div class="hidden-sm hidden-xs btn-group">
-																				<a href="<?=base_url()?>index.php/siniestro/<?=$i->idsiniestro?>" title="Eliminar Laboratorio"><i class="ace-icon fa fa-external-link bigger-120"></i></a>
-																		</div>	
-																	</td>
-																	
-																</tr>
-																
-																<?php } endforeach; ?>
-															</tbody>
-														</table>
-													</div>
-													<!-- end table --> 
-
-														</div>
-													</div>
-												</div>
-
-												<div class="panel panel-default">
-													<div class="panel-heading">
-														<a href="#faq-3-2" data-parent="#faq-list-3" data-toggle="collapse" class="accordion-toggle collapsed">
-															<i class="ace-icon fa fa-chevron-right smaller-80" data-icon-hide="ace-icon fa fa-chevron-down align-top" data-icon-show="ace-icon fa fa-chevron-right"></i>&nbsp;
-															Exámenes y Laboratorios no Cubiertos
-														</a>
-													</div>
-
-													<div class="panel-collapse collapse" id="faq-3-2">
-														<div class="panel-body">
-															<!-- star table -->		
-													<div class="col-xs-12">
-														<table id="simple-table" class="table table-striped table-bordered table-hover">
-															<thead>
-																<tr>
-																	<th>Nro</th>
-																	<th colspan="4">Laboratorio</th>
-																	<th>
-																		<div class="hidden-sm hidden-xs btn-group">
-																				<a href="<?=base_url()?>index.php/siniestro/<?=$idsiniestro?>" title="Nuevo Laboratorio"><i class="ace-icon fa fa-external-link bigger-120"></i></a>
-																		</div>
-																	</th>
-																</tr>
-															</thead>
-
-															<tbody>
-																<?php $nro_fila = 0;	
-																foreach($laboratorio as $i):
-																
-																if($i->si_cubre==3){ 
-																$nro_fila =$nro_fila+1;?>
-
-																<tr>
-																	<td><?php echo $nro_fila; ?></td>
-																	<td colspan="3" style="font-weight: bold;"><?=$i->analisis_str;?></td>
-																	
-																	<td>
-																		<div class="hidden-sm hidden-xs btn-group">
-																				<a href="<?=base_url()?>index.php/siniestro/<?=$i->idsiniestro?>" title="Editar Laboratorio"><i class="ace-icon fa fa-external-link bigger-120"></i></a>
-																		</div>	
-																	</td>
-																	<td>
-																		<div class="hidden-sm hidden-xs btn-group">
-																				<a href="<?=base_url()?>index.php/siniestro/<?=$i->idsiniestro?>" title="Eliminar Laboratorio"><i class="ace-icon fa fa-external-link bigger-120"></i></a>
-																		</div>	
-																	</td>
-																	
-																</tr>
-																
-																<?php } endforeach; ?>
-															</tbody>
-														</table>
-													</div>
-													<!-- end table --> 
-
-														</div>
-													</div>
-												</div>
-
-											</div>
+											<?=$texto?>
 										</div>
 
 										<div id="faq-tab-4" class="tab-pane fade">
@@ -895,20 +766,28 @@
 			
 			function calcular(id,op,value){
 				monto_bruto = document.getElementById("monto"+id).value;
-				switch(op){
-					case 1:
-					monto_neto = monto_bruto*(value/100);
-					break;
-					case 2:
-					monto_neto = monto_bruto-value;
-					break;
-					case 3:
-						if(monto_bruto<value){
-							monto_neto=monto_bruto;
-						}else{
-							monto_neto = value;
-						}					
-					break;
+				if(monto_bruto==''){
+					monto_neto='';
+				}else{
+					switch(op){
+						case 1:
+						monto_neto = monto_bruto*(value/100);
+						break;
+						case 2:
+							if(monto_bruto-value<0){
+								monto_neto=0;
+							}else{
+								monto_neto = monto_bruto-value;
+							}						
+						break;
+						case 3:
+							if(monto_bruto<value){
+								monto_neto=monto_bruto;
+							}else{
+								monto_neto = value;
+							}					
+						break;
+					}
 				}
 
 				document.getElementById("neto"+id).value=monto_neto;
@@ -1009,4 +888,5 @@
 		<script src="<?=base_url()?>public/docs/assets/js/language/css.js"></script>
 		<script src="<?=base_url()?>public/docs/assets/js/language/javascript.js"></script>
 	</body>
+
 </html>

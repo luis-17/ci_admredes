@@ -235,7 +235,7 @@ class Certificadodetalle_cnt extends CI_Controller {
 			}
 			$mail->addAddress($correo_laboral, $nombres_col);
 			// El asunto
-			$mail->Subject = "RESERVACION DE CONSULTA MEDICA - ".$plan;
+			$mail->Subject = "RESERVA DE CONSULTA MEDICA - ".$plan;
 			// El cuerpo del mail (puede ser HTML)
 			$mail->Body = '<!DOCTYPE html>
 					<head>
@@ -268,8 +268,8 @@ class Certificadodetalle_cnt extends CI_Controller {
 				$plan2=$c2->nombre_plan;
 				$to=$c2->aseg_email;
 				$nom=$c2->afiliado;
-				$texto2='<div><p>Estimad@, '.$nom.'</p>
-					<p>Por medio de &eacute;ste correo electr&oacute;nico se confirma la reserva de atenci&oacute;n m&eacute;dica ambulatoria con los siguientes datos:</p>
+				$texto2='<div><p>Afiliado(a), '.$nom.'</p>
+					<p> Sabemos lo importante que es para ti el cuidado de tu salud, <b>tu cita m&eacute;dica ha sido reservada con &eacute;xito. </b>Te detallamos los datos registrados:</p>
 					<table align="center" border="1" width="90%">
 						<tr>
 							<th>DNI Afiliado:</th>
@@ -290,8 +290,8 @@ class Certificadodetalle_cnt extends CI_Controller {
 							<td>'.$c2->observaciones_cita.'</td>
 						</tr>
 					</table>
-					<p>Recordar que la hora de reserva es referencial y la atenci&oacute;n se realiza por orden de llegada. Para dudas &oacute; consultas comun&iacute;quese a nuestra central en Lima: 01-445-3019 &oacute; provincia: 0800-47676</p>
-					<p>Saludos Cordiales</p>
+					<p>Recordar que la hora de reserva es referencial y la atenci&oacute;n se realiza por orden de llegada. Si tienes alguna consulta adicional comun&iacute;cate a nuestra central telef&oacute;nica en Lima: 01-445-3019 &oacute; provincia: 0800-47676</p>
+					<p><b>Estamos agradecidos por la confianza brindada.</b></p>
 					<p>Atte. '.$nombres_col.' '.$ap_paterno_col.' '.$ap_materno_col.'</p></div>';
 			}
 
@@ -307,7 +307,7 @@ class Certificadodetalle_cnt extends CI_Controller {
 			}
 			$mail2->AddBCC($correo_laboral, $nombres_col);
 			// El asunto
-			$mail2->Subject = "RESERVACION DE CONSULTA MEDICA - ".$plan2;
+			$mail2->Subject = "RESERVA DE CONSULTA MEDICA - ".$plan2;
 			// El cuerpo del mail (puede ser HTML)
 			$mail2->Body = '<!DOCTYPE html>
 					<head>
@@ -448,7 +448,7 @@ class Certificadodetalle_cnt extends CI_Controller {
 			}
 			$mail->addAddress($correo_laboral, $nombres_col);
 			// El asunto
-			$mail->Subject = "RESERVACION DE CONSULTA MEDICA - ".$plan;
+			$mail->Subject = "RESERVA DE CONSULTA MEDICA - ".$plan;
 			// El cuerpo del mail (puede ser HTML)
 			$mail->Body = '<!DOCTYPE html>
 					<head>
@@ -494,8 +494,8 @@ class Certificadodetalle_cnt extends CI_Controller {
 				$data['idcita'] = $id;
 				$to=$c2->aseg_email;
 				$nom=$c2->afiliado;
-				$texto2='<div><p>Estimad@, '.$nom.'</p>
-					<p>Por medio de &eacute;ste correo electr&oacute;nico se confirma la reserva de atenci&oacute;n m&eacute;dica ambulatoria con los siguientes datos:</p>
+				$texto2='<div><p>Afiliado(a), '.$nom.'</p>
+					<p>Sabemos lo importante que es para ti el cuidado de tu salud, <b>tu cita m&eacute;dica ha sido reservada con &eacute;xito. </b>Te detallamos los datos registrados:</p>
 					<table align="center" border="1" width="90%">
 						<tr>
 							<th>DNI Afiliado:</th>
@@ -516,8 +516,8 @@ class Certificadodetalle_cnt extends CI_Controller {
 							<td>'.$c2->observaciones_cita.'</td>
 						</tr>
 					</table>
-					<p>Recordar que la hora de reserva es referencial y la atenci&oacute;n se realiza por orden de llegada. Para dudas &oacute; consultas comun&iacute;quese a nuestra central en Lima: 01-445-3019 &oacute; provincia: 0800-47676</p>
-					<p>Saludos Cordiales</p>
+					<p>Recordar que la hora de reserva es referencial y la atenci&oacute;n se realiza por orden de llegada. Si tienes alguna consulta adicional comun&iacute;cate a nuestra central telef&oacute;nica en Lima: 01-445-3019 &oacute; provincia: 0800-47676</p>
+					<p><b>Estamos agradecidos por la confianza brindada.</b></p>
 					<p>Atte. '.$nombres_col.' '.$ap_paterno_col.' '.$ap_materno_col.'</p></div>';
 			}
 
@@ -533,7 +533,7 @@ class Certificadodetalle_cnt extends CI_Controller {
 			}
 			$mail2->AddBCC($correo_laboral, $nombres_col);
 			// El asunto
-			$mail2->Subject = "RESERVACION DE CONSULTA MEDICA - ".$plan2;
+			$mail2->Subject = "RESERVA DE CONSULTA MEDICA - ".$plan2;
 			// El cuerpo del mail (puede ser HTML)
 			$tipo="'Century Gothic'";
 			$mail2->Body = '<!DOCTYPE html>

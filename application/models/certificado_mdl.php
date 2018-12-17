@@ -188,7 +188,7 @@
 	function getProductos(){
 		$this->db->select("idespecialidad, descripcion_prod");
 		$this->db->from("producto");
-		$this->db->where("idtipoproducto",1);
+		$this->db->where("idvariableplan",1);
 		$this->db->order_by("descripcion_prod");
 
 	$productos=$this->db->get();

@@ -97,10 +97,10 @@ $query_builder = TRUE;
 ); */
 
 
-	/* bbdd produccion godaddy redes new*/
+	//  bbdd produccion godaddy redes new
 	
-	$active_group = 'default';
-	$query_builder = TRUE;
+	// $active_group = 'default';
+	// $query_builder = TRUE;
 	$db['default'] = array(
 	'dsn'	=> '',
 	'hostname' => '50.62.209.11:3306',
@@ -122,6 +122,32 @@ $query_builder = TRUE;
 	'failover' => array(),
 	'save_queries' => TRUE
 ); 
+
+/* bbdd produccion godaddy producción redes new*/
+	
+	
+// 	$db['default'] = array(
+// 	'dsn'	=> '',
+// 	'hostname' => 'localhost',
+// 	'username' => 'redperu_admin',
+// 	'password' => 'du2las0de1r8@peru',
+// 	'database' => 'new_redes_peru',
+// 	'dbdriver' => 'mysqli',
+// 	'dbprefix' => '',
+// 	'pconnect' => FALSE,
+// 	'db_debug' => (ENVIRONMENT !== 'production'),
+// 	'cache_on' => FALSE,
+// 	'cachedir' => '',
+// 	'char_set' => 'utf8',
+// 	'dbcollat' => 'utf8_general_ci',
+// 	'swap_pre' => '',
+// 	'encrypt' => FALSE,
+// 	'compress' => FALSE,
+// 	'stricton' => FALSE,
+// 	'failover' => array(),
+// 	'save_queries' => TRUE
+// );  
+
 
 
 /* bbdd desarrollo redes new 

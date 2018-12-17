@@ -199,11 +199,11 @@ class plan_cnt extends CI_Controller {
 						<tr>
 							<th>D&iacute;as de Carencia:</th>
 							<td>'.$p->dias_carencia.'</td>
-							<th>D&iascute;as de Mora:</th>
+							<th>D&iacute;as de Mora:</th>
 							<td>'.$p->dias_mora.'</td>
 						</tr>
 						<tr>
-							<th>D&iacute;as de Atenci&oacute;n: </th>
+							<th>Frecuencia en la Atenci&oacute;n: </th>
 							<td>'.$p->dias_atencion.'</td>
 							<th>L&iacute;mite de Afiliados por Certificado:</th>
 							<td>'.$p->num_afiliados.'</td>
@@ -211,7 +211,7 @@ class plan_cnt extends CI_Controller {
 						<tr>
 							<th>Prima(S/.) Inc. IGV: </th>
 							<td>'.$p->prima_monto.'</td>
-							<th>Proma por Adicional(S/.) Inc. IGV:</th>
+							<th>Prima por Adicional(S/.) Inc. IGV:</th>
 							<td>'.$p->prima_adicional.'</td>
 						</tr>
 						<tr>
@@ -559,8 +559,7 @@ class plan_cnt extends CI_Controller {
 	public function insertar_producto($idprod,$iddet,$id,$nom)
 	{
 		$data['iddet'] = $iddet;
-		$data['idprod'] = $idprod
-		;
+		$data['idprod'] = $idprod;
 
 		$this->plan_mdl->insert_proddet($data);
 		redirect("index.php/seleccionar_cobertura/".$id."/".$nom."/".$iddet);

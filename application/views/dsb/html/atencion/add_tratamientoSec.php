@@ -34,19 +34,19 @@
 
     <!-- script para el autocomplete de diagnostico -->
 
-    <script type="text/javascript" src="../public/jqueryAutocomplete/jquery.js"></script>
+    <script type="text/javascript" src="<?=base_url()?>public/jqueryAutocomplete/jquery.js"></script>
 
-	<link rel="stylesheet" type="text/css" href="../public/jqueryAutocomplete/jquery.autocomplete.css" />
-	<script type="text/javascript" src="../public/jqueryAutocomplete/jquery.js"></script>
-	<script type="text/javascript" src="../public/jqueryAutocomplete/jquery.autocomplete.js"></script>
+	<link rel="stylesheet" type="text/css" href="<?=base_url()?>public/jqueryAutocomplete/jquery.autocomplete.css" />
+	<script type="text/javascript" src="<?=base_url()?>public/jqueryAutocomplete/jquery.js"></script>
+	<script type="text/javascript" src="<?=base_url()?>public/jqueryAutocomplete/jquery.autocomplete.js"></script>
 	<script>
 		jQuery.noConflict(); 
 		var j = jQuery.noConflict();
 	 j(document).ready(function(){
-	  j("#dianostico_temp").autocomplete("../public/jqueryAutocomplete/autocomplete.php", {
+	  j("#dianostico_temp").autocomplete("<?=base_url()?>public/jqueryAutocomplete/autocomplete.php", {
 	        selectFirst: true
 	  });
-	  j("#sin_diagnosticoSec").autocomplete("../public/jqueryAutocomplete/autocomplete.php", {
+	  j("#sin_diagnosticoSec").autocomplete("<?=base_url()?>public/jqueryAutocomplete/autocomplete.php", {
 	        selectFirst: true
 	  });
 	 });
@@ -196,7 +196,7 @@
 
     <!-- script para diagnostico y tratamiento -->
 
-    <script src="../public/jqueryTratamiento/js/bootstrap.min.js"></script>
+    <script src="<?=base_url()?>public/jqueryTratamiento/js/bootstrap.min.js"></script>
 
 	<script type="text/javascript">
 		submitForms = function(){

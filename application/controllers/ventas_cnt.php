@@ -216,6 +216,7 @@ class ventas_cnt extends CI_Controller {
 							$html .="<th>Importe (S/.)</th>";
 							$html .="<th>Cantidad</th>";
 							$html .="<th>Estado</th>";
+							$html .="<th>Seleccione</th>";
 						$html .="</tr>";
 					$html .= "</thead>";
 					$html .= "<tbody>";
@@ -254,6 +255,13 @@ class ventas_cnt extends CI_Controller {
 									$html .= "<td align='center'>".$cant2."</td>";
 
 									$html .= "<td align='left'>Pendiente</td>";
+
+									$html .= "<td align='center'>";
+										//$html .= "<div class='form-check'>";
+										  $html .= "<input class='form-check-input' type='checkbox' name='checkPlan[]' value='".$f->plan_id."' id='".$f->plan_id."'>";
+										//$html .= "</div>";
+									$html .= "</td>";
+
 								$html .= "</tr>";
 
 							}
@@ -275,6 +283,7 @@ class ventas_cnt extends CI_Controller {
 
 		$serie = $_POST['numSerie'];
 		$idPlan = $_POST['idplan'];
+		$idPlanCheck = $_POST['checkPlan'];
 		$idPlanUnique = array_unique($idPlan);
 		//$correlativo = $_POST['correlativo'];
 		$importeTotal = $_POST['importeTotal'];
@@ -314,18 +323,18 @@ class ventas_cnt extends CI_Controller {
 			$idTipoDoc = 3;
 
 			//for para recorrer los datos de la tablay hacer el insert en la bd
-			for ($i=0; $i < count($idEmpresa); $i++) {
+			for ($i=0; $i < count($idPlanCheck); $i++) {
 				
-				$this->comprobante_pago_mdl->insertDatosFacturas($inicio, $fin, $fechaEmi[$i], $serie[$i], $correlativo, $idEmpresa[$i], $importeTotal[$i], $idPlan[$i]);
+				$this->comprobante_pago_mdl->insertDatosFacturas($inicio, $fin, $fechaEmi[$i], $serie[$i], $correlativo, $idEmpresa[$i], $importeTotal[$i], $idPlanCheck[$i]);
 
 				$correlativo = $correlativo+1;
 			}
 		}
 
 		//for para recorrer los planes obtenidos de la vista y hacer update del idestadocobro
-		for ($i=0; $i < count(array_unique($idPlan)); $i++) { 
+		for ($i=0; $i < count(array_unique($idPlanCheck)); $i++) { 
 			
-			$this->comprobante_pago_mdl->updateEstadoCobro($inicio, $fin, $idPlan[$i]);
+			$this->comprobante_pago_mdl->updateEstadoCobro($inicio, $fin, $idPlanCheck[$i]);
 
 		}
 	}

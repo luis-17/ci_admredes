@@ -109,7 +109,7 @@
 										<label class="col-sm-3 control-label no-padding-right" for="form-field-1">Nro Operación: </label>
 
 										<div class="col-sm-9">
-											<input type="text" id="nro_operacion" name="nro_operacion" class="col-xs-10 col-sm-5" required><label style="color: #FF0101;">&nbsp;*</label>
+											<input type="number" id="nro_operacion" name="nro_operacion" class="col-xs-10 col-sm-5" required><label style="color: #FF0101;">&nbsp;*</label>
 										</div>
 									</div>
 
@@ -117,7 +117,23 @@
 										<label class="col-sm-3 control-label no-padding-right" for="form-field-1">Fecha de Pago: </label>
 
 										<div class="col-sm-9">
-											<input type="date" id="fecha" name="fecha" class="col-xs-10 col-sm-5" value="" required><label style="color: #FF0101;">&nbsp;*</label>
+											<input type="date" id="fecha" name="fecha" class="col-xs-10 col-sm-5" value="<?php echo date('Y-m-d');?>" required><label style="color: #FF0101;">&nbsp;*</label>
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label class="col-sm-3 control-label no-padding-right" for="form-field-1">N° Cta Corriente: </label>
+
+										<div class="col-sm-9">
+											<input type="text" id="cta_corriente" name="cta_corriente" class="col-xs-10 col-sm-5" value="" required><label style="color: #FF0101;">&nbsp;*</label>
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label class="col-sm-3 control-label no-padding-right" for="form-field-1">N° Cta Detracciones: </label>
+
+										<div class="col-sm-9">
+											<input type="text" id="cta_detracciones" name="cta_detracciones" class="col-xs-10 col-sm-5" value="">
 										</div>
 									</div>
 

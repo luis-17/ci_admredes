@@ -187,7 +187,7 @@
 									</div>
 
 									<div class="form-group">
-										<label class="col-sm-3 control-label no-padding-right" for="form-field-1">Días de Atención: </label>
+										<label class="col-sm-3 control-label no-padding-right" for="form-field-1">Frecuencia en la Atención: </label>
 
 										<div class="col-sm-9">
 											<input type="number" id="atencion" name="atencion" class="col-xs-10 col-sm-5" value="<?=$atencion;?>" required><label style="color: #FF0101;">&nbsp;*</label>

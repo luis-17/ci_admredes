@@ -11,6 +11,7 @@ public function login($email, $password){
 	$this->db->from("usuario u");
 	$this->db->join("colaborador c","u.idusuario=c.idusuario");
 	$this->db->where("username",$email);
+	$this->db->where("u.estado_us",1);
 	$this->db->where("password",md5($password));
 
 	$query=$this->db->get();

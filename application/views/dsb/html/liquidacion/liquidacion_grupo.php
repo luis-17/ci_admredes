@@ -167,23 +167,27 @@
 
 														
 														<tbody>
-														<?php foreach ($liquidacion_grupo_p as $l) {?>
+														<?php foreach ($liquidacion_grupo_p as $l) {
+															$total = $l->total;
+															$detraccion = $l->detraccion;
+															$total = $total-$detraccion;
+															$total = number_format((float)$total, 2, '.', '');?>
 															<tr>
 																<td>L<?=$l->numero?></td>
 																<td><?=$l->proveedor?></td>
 																<td><?=$l->ref?></td>
-																<td style="text-align: right;"><?=$l->total?> PEN</td>
+																<td style="text-align: right;"><?=$total?> PEN</td>
 																<td><?=$l->usuario_genera?> el <?=$l->fecha_genera?></td>
 																<td><div class="hidden-sm hidden-xs btn-group">
 																		<div title="Registrar Pago" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
 																			<a class="boton fancybox" href="<?=base_url()?>index.php/liquidacion_regpago/<?=$l->liqgrupo_id?>/<?=$l->numero?>" data-fancybox-width="950" data-fancybox-height="690">
 																				<i class="ace-icon fa fa-pencil-square-o bigger-110"></i>
-																			</a>
+																			</a>&nbsp;
 																		</div>
 																		<div title="Ver Detalle" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
 																			<a class="boton fancybox" href="<?=base_url()?>index.php/liquidacion_detalle/<?=$l->liqgrupo_id?>/<?=$l->numero?>" data-fancybox-width="950" data-fancybox-height="690">
 																				<i class="ace-icon glyphicon glyphicon-zoom-in bigger-110"></i>
-																			</a>
+																			</a>&nbsp;
 																		</div>
 																	</div>
 
@@ -198,14 +202,14 @@
 																					<div title="Registrar Pago" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
 																						<a class="boton fancybox" href="<?=base_url()?>index.php/liquidacion_regpago/<?=$l->liqgrupo_id?>/<?=$l->numero?>" data-fancybox-width="950" data-fancybox-height="690">
 																						<i class="ace-icon fa fa-pencil-square-o bigger-110"></i>
-																						</a>
+																						</a>&nbsp;
 																					</div>
 																				</li>
 																				<li>
 																					<div title="Ver Detalle" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
 																						<a class="boton fancybox" href="<?=base_url()?>index.php/liquidacion_detalle/<?=$l->liqgrupo_id?>/<?=$l->numero?>" data-fancybox-width="950" data-fancybox-height="690">
 																						<i class="ace-icon glyphicon glyphicon-zoom-in bigger-110"></i>
-																						</a>
+																						</a>&nbsp;
 																					</div>
 																				</li>
 																			</ul>
@@ -250,30 +254,40 @@
 
 														
 														<tbody>
-														<?php foreach ($liquidacion_grupo_c as $l2) {?>
+														<?php foreach ($liquidacion_grupo_c as $l2) {
+															$total = $l2->total;
+															$detraccion = $l2->detraccion;
+															$total = $total-$detraccion;
+															$total = number_format((float)$total, 2, '.', '');?>
 															<tr>
 																<td>L<?=$l2->numero?></td>
 																<td><?=$l2->proveedor?></td>
 																<td><?=$l2->ref?></td>
-																<td style="text-align: right;"><?=$l2->total?> PEN</td>
+																<td style="text-align: right;"><?=$total?> PEN</td>
 																<td><?=$l2->usuario_genera?> el <?=$l2->fecha_genera?></td>
 																<td><?php if($l2->liqgrupo_estado==1){ echo $l2->usuario_liquida." el ".$l2->fecha_liquida;}?></td>
 																<td><div class="hidden-sm hidden-xs btn-group">
 																		<div title="Ver Detalle" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
 																			<a class="boton fancybox" href="<?=base_url()?>index.php/liquidacion_detalle/<?=$l2->liqgrupo_id?>/<?=$l2->numero?>" data-fancybox-width="950" data-fancybox-height="690">
 																				<i class="ace-icon glyphicon glyphicon-zoom-in"></i>
-																			</a>
+																			</a>&nbsp;
 																		</div>
 																		<div title="Constancia de Pago" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
 																			<a class="boton fancybox" href="<?=base_url()?>uploads/<?=$l2->liqgrupo_id?>.pdf" data-fancybox-width="950" data-fancybox-height="690">
 																				<i class="ace-icon glyphicon glyphicon-file bigger-110"></i>
-																			</a>
+																			</a>&nbsp;
 																		</div>
 
 																		<div title="Imprimir Liquidación" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
-																			<a class="boton fancybox" href="<?=base_url()?>index.php" data-fancybox-width="950" data-fancybox-height="690">
+																			<a class="boton fancybox" href="<?=base_url()?>index.php/imprimir_liquidacion/<?=$l2->liqgrupo_id?>/<?=$l2->numero?>" data-fancybox-width="950" data-fancybox-height="690">
 																				<i class="ace-icon glyphicon glyphicon-print bigger-110"></i>
-																			</a>
+																			</a>&nbsp;
+																		</div>
+
+																		<div title="Reenviar Liquidación" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
+																			<a class="boton fancybox" href="<?=base_url()?>index.php/view_reenviar/<?=$l2->liqgrupo_id?>/<?=$l2->numero?>" data-fancybox-width="950" data-fancybox-height="290">
+																				<i class="ace-icon fa fa-envelope-o bigger-110"></i>
+																			</a>&nbsp;
 																		</div>
 																	</div>
 
@@ -288,21 +302,28 @@
 																		<div title="Ver Detalle" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
 																			<a class="boton fancybox" href="<?=base_url()?>index.php/liquidacion_detalle/<?=$l->liqgrupo_id?>/<?=$l->numero?>" data-fancybox-width="950" data-fancybox-height="690">
 																				<i class="ace-icon glyphicon glyphicon-zoom-in"></i>
-																			</a>
+																			</a>&nbsp;
 																		</div>
 																	</li>
 																	<li>
 																		<div title="Constancia de Pago" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
 																			<a class="boton fancybox" href="<?=base_url()?>uploads/<?=$l2->liqgrupo_id?>.pdf" data-fancybox-width="950" data-fancybox-height="690">
 																				<i class="ace-icon glyphicon glyphicon-file bigger-110"></i>
-																			</a>
+																			</a>&nbsp;
 																		</div>
 																	</li>
 																	<li>
 																	<div title="Imprimir Liquidación" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
-																			<a class="boton fancybox" href="<?=base_url()?>index.php" data-fancybox-width="950" data-fancybox-height="690">
+																			<a class="boton fancybox" href="<?=base_url()?>index.php/imprimir_liquidacion/<?=$l2->liqgrupo_id?>/<?=$l2->numero?>" data-fancybox-width="950" data-fancybox-height="690">
 																				<i class="ace-icon glyphicon glyphicon-print bigger-110"></i>
-																			</a>
+																			</a>&nbsp;
+																		</div>
+																	</li>
+																	<li>
+																	<div title="Reenviar Liquidación" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
+																			<a class="boton fancybox" href="<?=base_url()?>index.php/view_reenviar/<?=$l2->liqgrupo_id?>/<?=$l2->numero?>" data-fancybox-width="950" data-fancybox-height="290">
+																				<i class="ace-icon fa fa-envelope-o bigger-110"></i>
+																			</a>&nbsp;
 																		</div>
 																	</li>
 																</ul>

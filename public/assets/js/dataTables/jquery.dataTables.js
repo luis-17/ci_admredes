@@ -11134,7 +11134,7 @@
 			 *      } );
 			 *    } );
 			 */
-			"sInfoFiltered": "(Filtrado de _MAX_ entradas totales)",
+			"sInfoFiltered": "(filtered from _MAX_ total entries)",
 	
 	
 			/**

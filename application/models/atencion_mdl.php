@@ -83,7 +83,10 @@
 
 	function getProveedor() {
         $data = array();
-        $query = $this->db->get('proveedor');
+        $this->db->select('*');
+        $this->db->from('proveedor');
+        $this->db->order_by('nombre_comercial_pr');
+        $query = $this->db->get();
         if ($query->num_rows() > 0) {
             foreach ($query->result_array() as $row){
                     $data[] = $row;

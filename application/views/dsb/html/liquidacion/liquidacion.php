@@ -237,7 +237,7 @@
 																<td><?=$pl->nombre_comercial_pr?></td>
 																<td><?=$pl->liqdetalle_numfact?></td>
 																<td><?=$pl->nombre_var?> <?=$pl->concepto?></td>
-																<td width="9%"><?=$pl->liqdetalle_neto?> PEN</td>
+																<td width="9%" style="text-align: right;"><?=$pl->liqdetalle_neto?> PEN</td>
 																<td><?=$pl->aseg_numDoc?></td>
 																<td><input type="checkbox" name="liq_det[]" id="liq_det[]" value="<?=$pl->liqdetalleid?>"  onclick="calcular(<?=$pl->liqdetalleid?>)" ></td>
 															</tr>
@@ -284,44 +284,93 @@
 
 														
 														<tbody>
-														<?php foreach ($liquidaciones as $l) {?>
+														<?php foreach ($liquidaciones as $l) {
+															$total = $l->total;
+															$detraccion = $l->detraccion;
+															$total = $total-$detraccion;
+															$total = number_format((float)$total, 2, '.', '');?>
 															<tr>
 																<td>L<?=$l->numero?></td>
 																<td><?=$l->proveedor?></td>
 																<td><?=$l->ref?></td>
-																<td style="text-align: right;"><?=$l->total?> PEN</td>
+																<td style="text-align: right;"><?=$total?> PEN</td>
 																<td><?=$l->usuario_genera?> el <?=$l->fecha_genera?></td>
 																<td><?php if($l->liqgrupo_estado==1){ echo $l->usuario_liquida." el ".$l->fecha_liquida;}?></td>
 																<td><?php if($l->liqgrupo_estado==1){echo '<span class="label label-info label-white middle">Pagada</span>';
 																	}else{
-															echo '<span class="label label-danger label-white middle">Pendiente de Pago</span>';
+															echo '<span class="label label-danger label-white middle">Pendiente</span>';
 															}?></td>
 																<td><div class="hidden-sm hidden-xs btn-group">
-													<div title="Ver Detalle" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
-														<a class="boton fancybox" href="<?=base_url()?>index.php/liquidacion_detalle/<?=$l->liqgrupo_id?>/<?=$l->numero?>" data-fancybox-width="950" data-fancybox-height="690">
-															<i class="ace-icon glyphicon glyphicon-zoom-in"></i>
-														</a>
-													</div>
-												</div>
-
-													<div class="hidden-md hidden-lg">
-														<div class="inline pos-rel">
-															<button class="btn btn-info btn-primary dropdown-toggle" data-toggle="dropdown" data-position="auto">
-																<i class="ace-icon fa fa-cog icon-only bigger-110"></i>
-															</button>
-
-															<ul class="dropdown-menu dropdown-only-icon dropdown-yellow dropdown-menu-right dropdown-caret dropdown-close">
-																	<li>
 																		<div title="Ver Detalle" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
 																			<a class="boton fancybox" href="<?=base_url()?>index.php/liquidacion_detalle/<?=$l->liqgrupo_id?>/<?=$l->numero?>" data-fancybox-width="950" data-fancybox-height="690">
 																				<i class="ace-icon glyphicon glyphicon-zoom-in"></i>
-																			</a>
+																			</a>&nbsp;
 																		</div>
-																	</li>
-																</ul>
-															</div>
-														</div>
-														</td>
+
+																		<?php if($l->liqgrupo_estado==1){?>
+																		<div title="Constancia de Pago" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
+																			<a class="boton fancybox" href="<?=base_url()?>uploads/<?=$l->liqgrupo_id?>.pdf" data-fancybox-width="950" data-fancybox-height="690">
+																				<i class="ace-icon glyphicon glyphicon-file bigger-110"></i>
+																			</a>&nbsp;
+																		</div>
+
+																		<div title="Imprimir Liquidación" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
+																			<a class="boton fancybox" href="<?=base_url()?>index.php/imprimir_liquidacion/<?=$l->liqgrupo_id?>/<?=$l->numero?>" data-fancybox-width="950" data-fancybox-height="690">
+																				<i class="ace-icon glyphicon glyphicon-print bigger-110"></i>
+																			</a>&nbsp;
+																		</div>
+
+																		<div title="Reenviar Liquidación" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
+																			<a class="boton fancybox" href="<?=base_url()?>index.php/view_reenviar/<?=$l->liqgrupo_id?>/<?=$l->numero?>" data-fancybox-width="950" data-fancybox-height="290">
+																				<i class="ace-icon fa fa-envelope-o bigger-110"></i>
+																			</a>&nbsp;
+																		</div>
+																		<?php } ?>
+																	</div>
+
+																<div class="hidden-md hidden-lg">
+																	<div class="inline pos-rel">
+																		<button class="btn btn-info btn-primary dropdown-toggle" data-toggle="dropdown" data-position="auto">
+																			<i class="ace-icon fa fa-cog icon-only bigger-110"></i>
+																		</button>
+
+																		<ul class="dropdown-menu dropdown-only-icon dropdown-yellow dropdown-menu-right dropdown-caret dropdown-close">
+																				<li>
+																					<div title="Ver Detalle" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
+																						<a class="boton fancybox" href="<?=base_url()?>index.php/liquidacion_detalle/<?=$l->liqgrupo_id?>/<?=$l->numero?>" data-fancybox-width="950" data-fancybox-height="690">
+																							<i class="ace-icon glyphicon glyphicon-zoom-in"></i>
+																						</a>&nbsp;
+																					</div>
+																				</li>
+																				<?php if($l->liqgrupo_estado==1){?>
+																				<li>
+																					<div title="Constancia de Pago" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
+																						<a class="boton fancybox" href="<?=base_url()?>uploads/<?=$l->liqgrupo_id?>.pdf" data-fancybox-width="950" data-fancybox-height="690">
+																							<i class="ace-icon glyphicon glyphicon-file bigger-110"></i>
+																						</a>&nbsp;
+																					</div>
+																				</li>
+																				<li>
+
+																					<div title="Imprimir Liquidación" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
+																						<a class="boton fancybox" href="<?=base_url()?>index.php/imprimir_liquidacion/<?=$l->liqgrupo_id?>/<?=$l->numero?>" data-fancybox-width="950" data-fancybox-height="690">
+																							<i class="ace-icon glyphicon glyphicon-print bigger-110"></i>
+																						</a>&nbsp;
+																					</div>
+																				</li>
+
+																				<li>
+																					<div title="Reenviar Liquidación" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
+																						<a class="boton fancybox" href="<?=base_url()?>index.php/view_reenviar/<?=$l->liqgrupo_id?>/<?=$l->numero?>" data-fancybox-width="950" data-fancybox-height="290">
+																							<i class="ace-icon fa fa-envelope-o bigger-110"></i>
+																						</a>&nbsp;
+																					</div>
+																				</li>
+																				<?php } ?>
+																			</ul>
+																		</div>
+																	</div>
+																</td>
 															</tr>
 														<?php } ?>
 														</tbody>

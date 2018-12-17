@@ -45,29 +45,29 @@ class Reportes_cnt extends CI_Controller {
 			$user = $this->session->userdata('user');
 			extract($user);
 
-			$menuLista = $this->menu_mdl->getMenu($idusuario);
-			$data['menu1'] = $menuLista;
+		$menuLista = $this->menu_mdl->getMenu($idusuario);
+		$data['menu1'] = $menuLista;
 
-			$month = date('m');
-	      	$year = date('Y');
-	      	$day = date("d", mktime(0,0,0, $month+1, 0, $year));
+		$month = date('m');
+      	$year = date('Y');
+      	$day = date("d", mktime(0,0,0, $month+1, 0, $year));
 
-			$data['plan'] = "";
-			$data['fecinicio'] = date('Y-m-d', mktime(0,0,0, $month, 1, $year));
-			$data['fecfin'] = date('Y-m-d', mktime(0,0,0, $month, $day, $year));
+		$data['plan'] = "";
+		$data['fecinicio'] = date('Y-m-d', mktime(0,0,0, $month, 1, $year));
+		$data['fecfin'] = date('Y-m-d', mktime(0,0,0, $month, $day, $year));
 
-			$submenuLista = $this->menu_mdl->getSubMenu($idusuario);
-			$data['menu2'] = $submenuLista;	
+		$submenuLista = $this->menu_mdl->getSubMenu($idusuario);
+		$data['menu2'] = $submenuLista;	
 
-			$planes = $this->reportes_mdl->getPlanes();
-			$data['planes'] = $planes;
-			$canales = $this->reportes_mdl->getCanales();
-			$data['canales'] = $canales;
-			$data['canal'] = '';
+		$planes = $this->reportes_mdl->getPlanes();
+		$data['planes'] = $planes;
+		$canales = $this->reportes_mdl->getCanales();
+		$data['canales'] = $canales;
+		$data['canal'] = '';
 
-			$data['estilo'] = 'none';
+		$data['estilo'] = 'none';
 
-			$this->load->view('dsb/html/reportes/consultar_cobros.php',$data);
+		$this->load->view('dsb/html/reportes/consultar_cobros.php',$data);
 
 		}
 		else{
@@ -675,7 +675,7 @@ class Reportes_cnt extends CI_Controller {
 		        $objWriter = PHPExcel_IOFactory::createWriter($this->excel, 'Excel5');
 		        // Forzamos a la descarga
 		        $objWriter->save('php://output');
-		    }
+		     }
 
 		}
 		else{

@@ -18,7 +18,7 @@
 		$this->db->where("S.idsiniestro = $id");
 
 	$infoSiniestro = $this->db->get();
-	 return $infoSiniestro->result();
+	return $infoSiniestro->result();
 	}
 
 	function getTriaje($id){
@@ -68,7 +68,6 @@
 
 	$medicamento = $this->db->get();
 	 return $medicamento->result();	
-
 	}
 
 
@@ -438,7 +437,6 @@
 	 $this->db->set('es_principal', $data['es_principal']);
 	 $this->db->set('createdat', $factual);
 	 //$this->db->set('updatedat', $factual);
-
 	 $this->db->insert('siniestro_diagnostico');
 
 	 //return $last_id;
@@ -558,6 +556,146 @@
 		$this->db->where("idsiniestro",$id);
 		$query=$this->db->get();
 		return $query->result();
+	}
+
+	function getVariables_sin($id){
+		$this->db->distinct("vp.idvariableplan");
+		$this->db->select("pd.idplandetalle, vp.idvariableplan, vp.nombre_var, coalesce(concat(vez_actual,'/'),'') as vez_actual2, vez_actual, coalesce(total_vez,'Ilimitados') as total_vez, c.cert_id, s.idsiniestro, pe.idperiodo");
+		$this->db->from("siniestro s");
+		$this->db->join("certificado c","s.idcertificado=c.cert_id");
+		$this->db->join("plan_detalle pd","pd.idplan=c.plan_id");
+		$this->db->join("variable_plan vp","vp.idvariableplan=pd.idvariableplan");
+		$this->db->join("producto_detalle pr","pr.idplandetalle=pd.idplandetalle");
+		$this->db->join("periodo_evento pe","pd.idplandetalle=pe.idplandetalle and c.cert_id=pe.cert_id","left");
+		$this->db->where("idsiniestro=$id and vp.idvariableplan <> 1");
+
+		$query = $this->db->get();
+		return $query->result();
+	}
+
+	function getProductos_analisis($id, $ids){
+		$this->db->distinct("pr.idproducto");
+		$this->db->select("pr.idproducto, descripcion_prod, case when sa.idproducto is null then '' else 'checked' end as checked");
+		$this->db->from("producto pr");
+		$this->db->join("producto_detalle pd","pr.idproducto=pd.idproducto");
+		$this->db->join("plan_detalle dp","dp.idplandetalle=pd.idplandetalle");
+		$this->db->join("siniestro_analisis sa","sa.idproducto=pr.idproducto and estado_sian<>0 and sa.idsiniestro=".$ids,"left");
+		$this->db->where("dp.idplandetalle=$id");
+
+		$query = $this->db->get();
+		return $query->result();
+	}
+
+	function getAnalisisNo($ids,$idv){
+		$this->db->select("coalesce(idsiniestroanalisis,0) as idsiniestroanalisis, analisis_str");
+		$this->db->from("siniestro_analisis sa");
+		$this->db->join("plan_detalle pd","sa.idplandetalle=pd.idplandetalle and sa.idplandetalle=$idv","left");
+		$this->db->where("idsiniestro=$ids and idproducto is null and estado_sian<>0");
+		$this->db->limit(1);
+
+		$query = $this->db->get();
+		return $query->result();
+	}
+
+	function validarProd($data){
+		$this->db->select("*");
+		$this->db->from("siniestro_analisis");
+		$this->db->where("idsiniestro", $data['sin_id']);
+		$this->db->where("idproducto", $data['idpr']);
+
+		$query = $this->db->get();
+		return $query->result();
+	}
+
+	function insertar_analisis($data){
+		$array = array(
+			'idsiniestro' => $data['sin_id'],
+			'idproducto' => $data['idpr'],
+			'idplandetalle' => $data['idplandetalle'],
+			'si_cubre' => 1,
+			'estado_sian' => 3
+		);
+
+		$this->db->insert("siniestro_analisis",$array);
+	}
+
+	function activar_analisis($data){
+		$array = array(
+			'estado_sian' => 3
+		);
+		$this->db->where("idsiniestro",$data['sin_id']);
+		$this->db->where("idproducto",$data['idpr']);
+		$this->db->where("idplandetalle",$data['idplandetalle']);
+		$this->db->update("siniestro_analisis",$array);
+	}
+
+	function eliminar_analisis($data){
+		$array = array('estado_sian' => 0 );
+		$this->db->where("idsiniestro",$data['sin_id']);
+		$this->db->where("estado_sian<>3");
+		$this->db->where("idplandetalle",$data['idplandetalle']);
+		$this->db->update("siniestro_analisis",$array);
+	}
+
+	function actualizar_analisis($data){
+		$array = array('estado_sian' => 2 );
+		$this->db->where("idsiniestro",$data['sin_id']);
+		$this->db->where("estado_sian",3);
+		$this->db->where("idplandetalle",$data['idplandetalle']);
+		$this->db->update("siniestro_analisis",$array);
+	}
+
+	function insertar_NC($data){
+		$array = array
+		(
+			'idsiniestro' => $data['sin_id'],
+			'analisis_str' => $data['servicio'],
+			'idplandetalle' => $data['idplandetalle'],
+			'si_cubre' => 3,
+			'estado_sian' => 2
+		);
+		$this->db->insert("siniestro_analisis",$array);
+	}
+
+	function update_NC($data){
+		$array = array
+		(
+			'analisis_str' => $data['servicio'],
+			'si_cubre' => 3,
+			'estado_sian' => 2
+		);
+		$this->db->where("idsiniestro",$data['sin_id']);
+		$this->db->where("idsiniestroanalisis",$data['idnc']);
+		$this->db->update("siniestro_analisis",$array);
+	}
+
+	function eliminar_todo($data){
+		$array = array('estado_sian' => 0 );
+		$this->db->where("idsiniestro",$data['sin_id']);
+		$this->db->where("idproducto is not null");
+		$this->db->where("idplandetalle",$data['idplandetalle']);		
+		$this->db->update("siniestro_analisis",$array);
+	}
+
+	function eliminar_servicio($data){
+		$array = array('estado_sian' => 0 );
+		$this->db->where("idsiniestroanalisis",$data['idnc']);		
+		$this->db->where("idplandetalle",$data['idplandetalle']);
+		$this->db->update("siniestro_analisis",$array);
+	}
+
+	function get_medicamentos($id){
+		$this->db->select("*");
+		$this->db->from("tratamiento");
+		$this->db->where("idsiniestrodiagnostico",$id);
+
+		$query = $this->db->get();
+		return $query->result();
+	}
+
+	function eliminar_diagnostico($id){
+		$this->db->where("idsiniestrodiagnostico",$id);
+		$this->db->delete("siniestro_diagnostico");
 	}
 
 }
