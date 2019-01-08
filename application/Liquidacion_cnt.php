@@ -220,24 +220,24 @@ class Liquidacion_cnt extends CI_Controller {
 		$id = $_POST['liqgrupoid'];
 		$num = $_POST['numero'];
 
-		$mi_archivo = 'mi_archivo';
-        $config['upload_path'] = APPPATH."third_party/uploads/";
-        $config['file_name'] = $id;
-        $config['allowed_types'] = "pdf";
-        $config['max_size'] = "50000";
-        $config['max_width'] = "2000";
-        $config['max_height'] = "2000";
+		// $mi_archivo = 'mi_archivo';
+  //       $config['upload_path'] = "/home/public_html/redsalud/rsadmin/uploads/";
+  //       $config['file_name'] = $id;
+  //       $config['allowed_types'] = "pdf";
+  //       $config['max_size'] = "50000";
+  //       $config['max_width'] = "2000";
+  //       $config['max_height'] = "2000";
 
-        $this->load->library('Upload', $config);
+        //$this->load->library('upload', $config);
         
-        if (!$this->upload->do_upload($mi_archivo)) {
-            //*** ocurrio un error
-            $data['uploadError'] = $this->upload->display_errors();
-            echo $this->upload->display_errors();
-            return;
-        }
+        // if (!$this->upload->do_upload($mi_archivo)) {
+        //     //*** ocurrio un error
+        //     $data['uploadError'] = $this->upload->display_errors();
+        //     echo $this->upload->display_errors();
+        //     return;
+        // }
 
-        $data['uploadSuccess'] = $this->upload->data();
+        // $data['uploadSuccess'] = $this->upload->data();
 
 
 		$user = $this->session->userdata('user');
@@ -491,14 +491,14 @@ class Liquidacion_cnt extends CI_Controller {
 									}
 									$texto.='</div>';
 			
-			$mail = new PHPMailer;	
+			$mail = new PHPMailer;
 			$mail->isSMTP();
 	        $mail->Host     = 'relay-hosting.secureserver.net';;
 	        $mail->SMTPAuth = false;
 	        $mail->Username = '';
 	        $mail->Password = '';
 	        $mail->SMTPSecure = 'false';
-	        $mail->Port     = 25;	
+	        $mail->Port     = 25;		
 			// Armo el FROM y el TO
 			$mail->setFrom($correo_laboral, 'Red Salud');
 			$mail->addAddress($correo_laboral, $nombres_col);
@@ -512,16 +512,16 @@ class Liquidacion_cnt extends CI_Controller {
 	                <meta charset="UTF-8" />
 	                </head>
 	                <body style="font-size: 1vw; width: 100%; font-family: '.$tipo.', CenturyGothic, AppleGothic, sans-serif;">
-	                <div style="padding-top: 2%; text-align: right; padding-right: 15%;"><img src="https://www.red-salud.com/mail/logo.png" width="17%" style="text-align: right;"></img>
+	                <div style="padding-top: 2%; text-align: right; padding-right: 15%;"><img src="http://www.red-salud.com/mail/logo.png" width="17%" style="text-align: right;"></img>
 	                </div>
 	                <div style="padding-right: 15%; padding-left: 8%;"><b><label style="color: #000000;"> </b></div>
 	                <div style="padding-right: 15%; padding-left: 8%; padding-bottom: 1%; color: #12283E;">
 	                '.$texto.'
 	                <div style="background-color: #BF3434; padding-top: 0.5%; padding-bottom: 0.5%">
 	                <div style="text-align: center;"><b><a href="https://www.google.com/maps/place/Red+Salud/@-12.11922,-77.0370327,17z/data=!3m1!4b1!4m5!3m4!1s0x9105c83d49a4312b:0xf0959641cc08826!8m2!3d-12.11922!4d-77.034844" style="text-decoration-color: #FFFFFF; text-decoration: none; color:  #FFFFFF;">Av. Jos&eacute; Pardo Nro 601 Of. 502, Miraflores - Lima.</a></b></div>
-	                <div style="text-align: center;"><b><a href="https://www.red-salud.com" style="text-decoration-color: #FFFFFF; text-decoration: none; color:  #FFFFFF;">www.red-salud.com</a></b></div>
+	                <div style="text-align: center;"><b><a href="http://www.red-salud.com" style="text-decoration-color: #FFFFFF; text-decoration: none; color:  #FFFFFF;">www.red-salud.com</a></b></div>
 	                </div>
-	                <div style=""><img src="https://www.red-salud.com/mail/bottom.png" width="50%"></img></div>
+	                <div style=""><img src="http://www.red-salud.com/mail/bottom.png" width="50%"></img></div>
 	                </div>
 	            </body>
 				</html>';
@@ -914,7 +914,6 @@ class Liquidacion_cnt extends CI_Controller {
 									$texto.='</div>';
 			
 			$mail = new PHPMailer;		
-			// Armo el FROM y el TO
 			$mail->isSMTP();
 	        $mail->Host     = 'relay-hosting.secureserver.net';;
 	        $mail->SMTPAuth = false;
@@ -922,7 +921,7 @@ class Liquidacion_cnt extends CI_Controller {
 	        $mail->Password = '';
 	        $mail->SMTPSecure = 'false';
 	        $mail->Port     = 25;
-
+			// Armo el FROM y el TO
 			$mail->setFrom($correo_laboral, 'Red Salud');
 			$mail->addAddress($correo_laboral, $nombres_col);
 			$mail->addAddress($email_notifica, $razon_social);
@@ -936,16 +935,16 @@ class Liquidacion_cnt extends CI_Controller {
 	                <meta charset="UTF-8" />
 	                </head>
 	                <body style="font-size: 1vw; width: 100%; font-family: '.$tipo.', CenturyGothic, AppleGothic, sans-serif;">
-	                <div style="padding-top: 2%; text-align: right; padding-right: 15%;"><img src="https://www.red-salud.com/mail/logo.png" width="17%" style="text-align: right;"></img>
+	                <div style="padding-top: 2%; text-align: right; padding-right: 15%;"><img src="http://www.red-salud.com/mail/logo.png" width="17%" style="text-align: right;"></img>
 	                </div>
 	                <div style="padding-right: 15%; padding-left: 8%;"><b><label style="color: #000000;"> </b></div>
 	                <div style="padding-right: 15%; padding-left: 8%; padding-bottom: 1%; color: #12283E;">
 	                '.$texto.'
 	                <div style="background-color: #BF3434; padding-top: 0.5%; padding-bottom: 0.5%">
 	                <div style="text-align: center;"><b><a href="https://www.google.com/maps/place/Red+Salud/@-12.11922,-77.0370327,17z/data=!3m1!4b1!4m5!3m4!1s0x9105c83d49a4312b:0xf0959641cc08826!8m2!3d-12.11922!4d-77.034844" style="text-decoration-color: #FFFFFF; text-decoration: none; color:  #FFFFFF;">Av. Jos&eacute; Pardo Nro 601 Of. 502, Miraflores - Lima.</a></b></div>
-	                <div style="text-align: center;"><b><a href="https://www.red-salud.com" style="text-decoration-color: #FFFFFF; text-decoration: none; color:  #FFFFFF;">www.red-salud.com</a></b></div>
+	                <div style="text-align: center;"><b><a href="http://www.red-salud.com" style="text-decoration-color: #FFFFFF; text-decoration: none; color:  #FFFFFF;">www.red-salud.com</a></b></div>
 	                </div>
-	                <div style=""><img src="https://www.red-salud.com/mail/bottom.png" width="50%"></img></div>
+	                <div style=""><img src="http://www.red-salud.com/mail/bottom.png" width="50%"></img></div>
 	                </div>
 	            </body>
 				</html>';

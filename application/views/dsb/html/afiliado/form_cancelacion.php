@@ -11,6 +11,7 @@
 		<!-- bootstrap & fontawesome -->
 		<link rel="stylesheet" href="<?=  base_url()?>public/assets/css/bootstrap.css" />
 		<link rel="stylesheet" href="<?=  base_url()?>public/assets/css/font-awesome.css" />
+		<script src="https://code.jquery.com/jquery-1.10.1.min.js"></script>
 
 		<!-- page specific plugin styles -->
 
@@ -22,7 +23,7 @@
 		<!--<script type="text/javascript" src="<?=  base_url()?>public/fancybox/lib/jquery.mousewheel-3.0.6.pack.js"></script>-->
 		<!-- FancyBox -->
 		<!-- Add jQuery library -->
-		<script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
+		<script type="text/javascript" src="https://code.jquery.com/jquery-latest.min.js"></script>
 		
 		<!-- Add mousewheel plugin (this is optional) -->
 		<script type="text/javascript" src="<?=  base_url()?>public/fancybox/lib/jquery.mousewheel-3.0.6.pack.js"></script>

@@ -24,7 +24,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 |
 */
 $config['base_url'] = 'http://localhost/ci_admredes/';
-//$config['base_url'] = 'http://www.red-salud.com/rsadmin/';
+//$config['base_url'] = 'https://www.red-salud.com/rsadmin/';
 
 
 /*
@@ -37,7 +37,7 @@ $config['base_url'] = 'http://localhost/ci_admredes/';
 | variable so that it is blank.
 |
 */
-$config['index_page'] = 'index.php';
+$config['index_page'] = '';
 
 /*
 |--------------------------------------------------------------------------

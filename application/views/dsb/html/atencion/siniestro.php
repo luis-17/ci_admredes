@@ -11,6 +11,7 @@
 		<!-- bootstrap & fontawesome -->
 		<link rel="stylesheet" href="<?=base_url()?>public/assets/css/bootstrap.css" />
 		<link rel="stylesheet" href="<?=base_url()?>public/assets/css/font-awesome.css" />
+		<script src="https://code.jquery.com/jquery-1.10.1.min.js"></script>
 
 		<!-- page specific plugin styles -->
 		<link rel="stylesheet" href="<?=base_url()?>public/assets/css/jquery-ui.custom.css" />
@@ -25,7 +26,7 @@
 		<script type="text/javascript" src="<?=  base_url()?>public/fancybox/lib/jquery.mousewheel-3.0.6.pack.js"></script>
 		<!-- FancyBox -->
 		<!-- Add jQuery library -->
-		<script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
+		<script type="text/javascript" src="https://code.jquery.com/jquery-latest.min.js"></script>
 		
 		<!-- Add mousewheel plugin (this is optional) -->
 		<script type="text/javascript" src="<?=  base_url()?>public/fancybox/lib/jquery.mousewheel-3.0.6.pack.js"></script>
@@ -122,7 +123,7 @@
 
 	<body class="no-skin" onload="cargar()">
 		<!-- #section:basics/navbar.layout -->
-		<?php include ("/../headBar.php");?>
+		<?php include (APPPATH."views/dsb/html/headBar.php");?>
 
 		<!-- /section:basics/navbar.layout -->
 		<div class="main-container" id="main-container">
@@ -131,7 +132,7 @@
 			</script>
 
 			<!-- #section:basics/sidebar -->
-			<?php include ("/../sideBar.php");?>
+			<?php include (APPPATH."views/dsb/html/sideBar.php");?>
 			<!-- end nav. -->
 
 			<!-- /section:basics/sidebar -->

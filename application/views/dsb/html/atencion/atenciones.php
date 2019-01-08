@@ -7,6 +7,7 @@
 
 		<meta name="description" content="with draggable and editable events" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+		<script src="https://code.jquery.com/jquery-1.10.1.min.js"></script>
 
 		<!-- bootstrap & fontawesome -->
 		<link rel="stylesheet" href="<?=base_url()?>public/assets/css/bootstrap.css" />
@@ -114,7 +115,7 @@
 
 	<body class="no-skin">
 		<!-- #section:basics/navbar.layout -->
-		<?php include ("/../headBar.php");?>
+		<?php include (APPPATH."views/dsb/html/headBar.php");?>
 
 		<!-- /section:basics/navbar.layout -->
 		<div class="main-container" id="main-container">
@@ -123,7 +124,7 @@
 			</script>
 
 			<!-- #section:basics/sidebar -->
-			<?php include ("/../sideBar.php");?>
+			<?php include (APPPATH."views/dsb/html/sideBar.php");?>
 			<!-- end nav. -->
 			
 			<!-- /section:basics/sidebar -->

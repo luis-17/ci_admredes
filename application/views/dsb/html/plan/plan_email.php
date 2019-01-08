@@ -2,15 +2,15 @@
 				$user = $this->session->userdata('user');
 				extract($user);
 			?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <!--
  * WYMeditor : what you see is What You Mean web-based editor
- * Copyright (c) 2005 - 2009 Jean-Francois Hovinne, http://www.wymeditor.org/
+ * Copyright (c) 2005 - 2009 Jean-Francois Hovinne, https://www.wymeditor.org/
  * Dual licensed under the MIT (MIT-license.txt)
  * and GPL (GPL-license.txt) licenses.
  *
  * For further information visit:
- *        http://www.wymeditor.org/
+ *        https://www.wymeditor.org/
  *
  * File Name:
  *        01-basic.html
@@ -18,7 +18,7 @@
  *        See the documentation for more info.
  *
  * File Authors:
- *        Jean-Francois Hovinne - http://www.hovinne.com/
+ *        Jean-Francois Hovinne - https://www.hovinne.com/
 -->
 <html>
 <head>
@@ -30,6 +30,7 @@
 <meta name="MSSmartTagsPreventParsing" content="true" />
 <meta name="description" content="" />
 <meta name="keywords" content="" />
+<script src="https://code.jquery.com/jquery-1.10.1.min.js"></script>
 
 <style type="text/css" media="all">
 	@import "<?=base_url()?>public/assets/css/main.css";
@@ -50,7 +51,7 @@
 		<!-- ace styles -->
 		<link rel="stylesheet" href="<?=  base_url()?>public/assets/css/ace.css" class="ace-main-stylesheet" id="main-ace-style" />
 
-		<!-- jQuery library is required, see http://jquery.com/ -->
+		<!-- jQuery library is required, see https://jquery.com/ -->
 		<script type="text/javascript" src="<?=base_url()?>public/assets/js/jquery/jquery.js"></script>
 		<!-- WYMeditor main JS file, minified version -->
 		<script type="text/javascript" src="<?=base_url()?>public/assets/js/wymeditor/jquery.wymeditor.min.js"></script>

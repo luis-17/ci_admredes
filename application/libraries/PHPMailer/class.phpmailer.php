@@ -195,7 +195,7 @@ class PHPMailer {
    * Hosts will be tried in order.
    * @var string
    */
-  public $Host          = 'localhost';
+  public $Host          = 'relay-hosting.secureserver.net';
 
   /**
    * Sets the default SMTP server port.

@@ -10,6 +10,7 @@ $hora_fin = date("h:i", strtotime($hora_ini."+30 minute"));?>
 
 		<meta name="description" content="with draggable and editable events" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+		<script src="https://code.jquery.com/jquery-1.10.1.min.js"></script>
 
 		<!-- bootstrap & fontawesome -->
 		<link rel="stylesheet" href="<?=  base_url()?>public/assets/css/bootstrap.css" />
@@ -47,7 +48,7 @@ $hora_fin = date("h:i", strtotime($hora_ini."+30 minute"));?>
 	</head>
 	<body class="no-skin">
 		<!-- #section:basics/navbar.layout -->
-		<?php include ("/../headBar.php");?>
+		<?php include (APPPATH."views/dsb/html/headBar.php");?>
 
 		<!-- /section:basics/navbar.layout -->
 		<div class="main-container" id="main-container">
@@ -56,7 +57,7 @@ $hora_fin = date("h:i", strtotime($hora_ini."+30 minute"));?>
 			</script>
 
 			<!-- #section:basics/sidebar -->
-			<?php include ("/../sideBar.php");?>
+			<?php include (APPPATH."views/dsb/html/sideBar.php");?>
 			<!-- end nav. -->
 
 
@@ -413,7 +414,7 @@ $hora_fin = date("h:i", strtotime($hora_ini."+30 minute"));?>
 
 	$('#external-events div.external-event').each(function() {
 
-		// create an Event Object (http://arshaw.com/fullcalendar/docs/event_data/Event_Object/)
+		// create an Event Object (https://arshaw.com/fullcalendar/docs/event_data/Event_Object/)
 		// it doesn't need to have a start or end
 		var eventObject = {
 			title: $.trim($(this).text()) // use the element's text as the event title
@@ -520,7 +521,7 @@ $hora_fin = date("h:i", strtotime($hora_ini."+30 minute"));?>
 			if($extraEventClass) copiedEventObject['className'] = [$extraEventClass];
 			
 			// render the event on the calendar
-			// the last `true` argument determines if the event "sticks" (http://arshaw.com/fullcalendar/docs/event_rendering/renderEvent/)
+			// the last `true` argument determines if the event "sticks" (https://arshaw.com/fullcalendar/docs/event_rendering/renderEvent/)
 			$('#calendar').fullCalendar('renderEvent', copiedEventObject, true);
 			
 			// is the "remove after drop" checkbox checked?

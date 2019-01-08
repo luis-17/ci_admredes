@@ -1,4 +1,6 @@
-<!DOCTYPE html>
+
+
+<script src="https://code.jquery.com/jquery-1.10.1.min.js"></script><!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="utf-8">
@@ -10,6 +12,8 @@
     <link rel="icon" href="../../favicon.ico">
 
     <title>Agregar Diagnostico</title>
+
+    <script src="https://code.jquery.com/jquery-1.10.1.min.js"></script>
 
     <!-- Bootstrap core CSS -->
     <link href="https://getbootstrap.com/docs/3.3/dist/css/bootstrap.min.css" rel="stylesheet">

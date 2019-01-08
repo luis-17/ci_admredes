@@ -221,7 +221,13 @@ class Certificadodetalle_cnt extends CI_Controller {
 					<p>Atte. '.$nombres_col.' '.$ap_paterno_col.' '.$ap_materno_col.'</p></div>';
 			}
 			
-			$mail = new PHPMailer;		
+			$mail = new PHPMailer;	
+			$mail->Host     = 'relay-hosting.secureserver.net';;
+	        $mail->SMTPAuth = false;
+	        $mail->Username = '';
+	        $mail->Password = '';
+	        $mail->SMTPSecure = 'false';
+	        $mail->Port     = 25;	
 			// Armo el FROM y el TO
 			$mail->setFrom($correo_laboral, 'Red Salud');
 			$destinatarios = $this->certificado_mdl->destinatarios($data);
@@ -242,16 +248,16 @@ class Certificadodetalle_cnt extends CI_Controller {
 	                <meta charset="UTF-8" />
 	                </head>
 	                <body style="font-size: 1vw; width: 100%; font-family: '.$tipo.', CenturyGothic, AppleGothic, sans-serif;">
-	                <div style="padding-top: 2%; text-align: right; padding-right: 15%;"><img src="http://www.red-salud.com/mail/logo.png" width="17%" style="text-align: right;"></img>
+	                <div style="padding-top: 2%; text-align: right; padding-right: 15%;"><img src="https://www.red-salud.com/mail/logo.png" width="17%" style="text-align: right;"></img>
 	                </div>
 	                <div style="padding-right: 15%; padding-left: 8%;"><b><label style="color: #000000;"> </b></div>
 	                <div style="padding-right: 15%; padding-left: 8%; padding-bottom: 1%; color: #12283E;">
 	                '.$texto.'
 	                <div style="background-color: #BF3434; padding-top: 0.5%; padding-bottom: 0.5%">
 	                <div style="text-align: center;"><b><a href="https://www.google.com/maps/place/Red+Salud/@-12.11922,-77.0370327,17z/data=!3m1!4b1!4m5!3m4!1s0x9105c83d49a4312b:0xf0959641cc08826!8m2!3d-12.11922!4d-77.034844" style="text-decoration-color: #FFFFFF; text-decoration: none; color:  #FFFFFF;">Av. Jos&eacute; Pardo Nro 601 Of. 502, Miraflores - Lima.</a></b></div>
-	                <div style="text-align: center;"><b><a href="http://www.red-salud.com" style="text-decoration-color: #FFFFFF; text-decoration: none; color:  #FFFFFF;">www.red-salud.com</a></b></div>
+	                <div style="text-align: center;"><b><a href="https://www.red-salud.com" style="text-decoration-color: #FFFFFF; text-decoration: none; color:  #FFFFFF;">www.red-salud.com</a></b></div>
 	                </div>
-	                <div style=""><img src="http://www.red-salud.com/mail/bottom.png" width="50%"></img></div>
+	                <div style=""><img src="https://www.red-salud.com/mail/bottom.png" width="50%"></img></div>
 	                </div>
 	            </body>
 				</html>';
@@ -295,7 +301,13 @@ class Certificadodetalle_cnt extends CI_Controller {
 					<p>Atte. '.$nombres_col.' '.$ap_paterno_col.' '.$ap_materno_col.'</p></div>';
 			}
 
-			$mail2 = new PHPMailer;		
+			$mail2 = new PHPMailer;
+			$mail2->Host     = 'relay-hosting.secureserver.net';;
+	        $mail2->SMTPAuth = false;
+	        $mail2->Username = '';
+	        $mail2->Password = '';
+	        $mail2->SMTPSecure = 'false';
+	        $mail2->Port     = 25;		
 			// Armo el FROM y el TO
 			$mail2->setFrom($correo_laboral, 'Red Salud');
 			
@@ -314,16 +326,16 @@ class Certificadodetalle_cnt extends CI_Controller {
 	                <meta charset="UTF-8" />
 	                </head>
 	                <body style="font-size: 1vw; width: 100%; font-family: '.$tipo.', CenturyGothic, AppleGothic, sans-serif;">
-	                <div style="padding-top: 2%; text-align: right; padding-right: 15%;"><img src="http://www.red-salud.com/mail/logo.png" width="17%" style="text-align: right;"></img>
+	                <div style="padding-top: 2%; text-align: right; padding-right: 15%;"><img src="https://www.red-salud.com/mail/logo.png" width="17%" style="text-align: right;"></img>
 	                </div>
 	                <div style="padding-right: 15%; padding-left: 8%;"><b><label style="color: #000000;"> </b></div>
 	                <div style="padding-right: 15%; padding-left: 8%; padding-bottom: 1%; color: #12283E;">
 	                '.$texto2.'
 	                <div style="background-color: #BF3434; padding-top: 0.5%; padding-bottom: 0.5%">
 	                <div style="text-align: center;"><b><a href="https://www.google.com/maps/place/Red+Salud/@-12.11922,-77.0370327,17z/data=!3m1!4b1!4m5!3m4!1s0x9105c83d49a4312b:0xf0959641cc08826!8m2!3d-12.11922!4d-77.034844" style="text-decoration-color: #FFFFFF; text-decoration: none; color:  #FFFFFF;">Av. Jos&eacute; Pardo Nro 601 Of. 502, Miraflores - Lima.</a></b></div>
-	                <div style="text-align: center;"><b><a href="http://www.red-salud.com" style="text-decoration-color: #FFFFFF; text-decoration: none; color:  #FFFFFF;">www.red-salud.com</a></b></div>
+	                <div style="text-align: center;"><b><a href="https://www.red-salud.com" style="text-decoration-color: #FFFFFF; text-decoration: none; color:  #FFFFFF;">www.red-salud.com</a></b></div>
 	                </div>
-	                <div style=""><img src="http://www.red-salud.com/mail/bottom.png" width="50%"></img></div>
+	                <div style=""><img src="https://www.red-salud.com/mail/bottom.png" width="50%"></img></div>
 	                </div>
 	            </body>
 				</html>';
@@ -435,6 +447,14 @@ class Certificadodetalle_cnt extends CI_Controller {
 			}
 			
 			$mail = new PHPMailer;		
+			$mail->isSMTP();
+	        $mail->Host     = 'relay-hosting.secureserver.net';;
+	        $mail->SMTPAuth = false;
+	        $mail->Username = '';
+	        $mail->Password = '';
+	        $mail->SMTPSecure = 'false';
+	        $mail->Port     = 25;
+
 			// Armo el FROM y el TO
 			$mail->setFrom($correo_laboral, 'Red Salud');
 			$destinatarios = $this->certificado_mdl->destinatarios($data);
@@ -455,16 +475,16 @@ class Certificadodetalle_cnt extends CI_Controller {
 	                <meta charset="UTF-8" />
 	                </head>
 	                <body style="font-size: 1vw; width: 100%; font-family: '.$tipo.', CenturyGothic, AppleGothic, sans-serif;">
-	                <div style="padding-top: 2%; text-align: right; padding-right: 15%;"><img src="http://www.red-salud.com/mail/logo.png" width="17%" style="text-align: right;"></img>
+	                <div style="padding-top: 2%; text-align: right; padding-right: 15%;"><img src="https://www.red-salud.com/mail/logo.png" width="17%" style="text-align: right;"></img>
 	                </div>
 	                <div style="padding-right: 15%; padding-left: 8%;"><b><label style="color: #000000;"> </b></div>
 	                <div style="padding-right: 15%; padding-left: 8%; padding-bottom: 1%; color: #12283E;">
 	                '.$texto.'
 	                <div style="background-color: #BF3434; padding-top: 0.5%; padding-bottom: 0.5%">
 	                <div style="text-align: center;"><b><a href="https://www.google.com/maps/place/Red+Salud/@-12.11922,-77.0370327,17z/data=!3m1!4b1!4m5!3m4!1s0x9105c83d49a4312b:0xf0959641cc08826!8m2!3d-12.11922!4d-77.034844" style="text-decoration-color: #FFFFFF; text-decoration: none; color:  #FFFFFF;">Av. Jos&eacute; Pardo Nro 601 Of. 502, Miraflores - Lima.</a></b></div>
-	                <div style="text-align: center;"><b><a href="http://www.red-salud.com" style="text-decoration-color: #FFFFFF; text-decoration: none; color:  #FFFFFF;">www.red-salud.com</a></b></div>
+	                <div style="text-align: center;"><b><a href="https://www.red-salud.com" style="text-decoration-color: #FFFFFF; text-decoration: none; color:  #FFFFFF;">www.red-salud.com</a></b></div>
 	                </div>
-	                <div style=""><img src="http://www.red-salud.com/mail/bottom.png" width="50%"></img></div>
+	                <div style=""><img src="https://www.red-salud.com/mail/bottom.png" width="50%"></img></div>
 	                </div>
 	            </body>
 				</html>';
@@ -521,7 +541,15 @@ class Certificadodetalle_cnt extends CI_Controller {
 					<p>Atte. '.$nombres_col.' '.$ap_paterno_col.' '.$ap_materno_col.'</p></div>';
 			}
 
-			$mail2 = new PHPMailer;		
+			$mail2 = new PHPMailer;	
+			$mail2->isSMTP();
+	        $mail2->Host     = 'relay-hosting.secureserver.net';;
+	        $mail2->SMTPAuth = false;
+	        $mail2->Username = '';
+	        $mail2->Password = '';
+	        $mail2->SMTPSecure = 'false';
+	        $mail2->Port     = 25;
+	
 			// Armo el FROM y el TO
 			$mail2->setFrom($correo_laboral, 'Red Salud');
 			
@@ -541,16 +569,16 @@ class Certificadodetalle_cnt extends CI_Controller {
 	                <meta charset="UTF-8" />
 	                </head>
 	                <body style="font-size: 1vw; width: 100%; font-family: '.$tipo.', CenturyGothic, AppleGothic, sans-serif;">
-	                <div style="padding-top: 2%; text-align: right; padding-right: 15%;"><img src="http://www.red-salud.com/mail/logo.png" width="17%" style="text-align: right;"></img>
+	                <div style="padding-top: 2%; text-align: right; padding-right: 15%;"><img src="https://www.red-salud.com/mail/logo.png" width="17%" style="text-align: right;"></img>
 	                </div>
 	                <div style="padding-right: 15%; padding-left: 8%;"><b><label style="color: #000000;"> </b></div>
 	                <div style="padding-right: 15%; padding-left: 8%; padding-bottom: 1%; color: #12283E;">
 	                '.$texto2.'
 	                <div style="background-color: #BF3434; padding-top: 0.5%; padding-bottom: 0.5%">
 	                <div style="text-align: center;"><b><a href="https://www.google.com/maps/place/Red+Salud/@-12.11922,-77.0370327,17z/data=!3m1!4b1!4m5!3m4!1s0x9105c83d49a4312b:0xf0959641cc08826!8m2!3d-12.11922!4d-77.034844" style="text-decoration-color: #FFFFFF; text-decoration: none; color:  #FFFFFF;">Av. Jos&eacute; Pardo Nro 601 Of. 502, Miraflores - Lima.</a></b></div>
-	                <div style="text-align: center;"><b><a href="http://www.red-salud.com" style="text-decoration-color: #FFFFFF; text-decoration: none; color:  #FFFFFF;">www.red-salud.com</a></b></div>
+	                <div style="text-align: center;"><b><a href="https://www.red-salud.com" style="text-decoration-color: #FFFFFF; text-decoration: none; color:  #FFFFFF;">www.red-salud.com</a></b></div>
 	                </div>
-	                <div style=""><img src="http://www.red-salud.com/mail/bottom.png" width="50%"></img></div>
+	                <div style=""><img src="https://www.red-salud.com/mail/bottom.png" width="50%"></img></div>
 	                </div>
 	            </body>
 				</html>';
@@ -566,5 +594,37 @@ class Certificadodetalle_cnt extends CI_Controller {
 
 			$this->load->view('dsb/html/mensaje.php', $data);
 
+	}
+
+	public function registrar_incidencia($id,$idaseg){
+		$data['id'] = $id;
+		$data['idaseg'] = $idaseg;
+
+		$this->load->view('dsb/html/certificado/reg_incidencia',$data);
+	}
+
+	public function save_incidencia(){
+		$data['tipo'] = $_POST['tipo'];
+		$data['cert_id'] = $_POST['cert_id'];
+		$data['aseg_id'] = $_POST['aseg_id'];
+		$data['descripcion'] = $_POST['desc'];
+		$user = $this->session->userdata('user');
+		extract($user);
+		$data['idusu'] = $idusuario;
+
+		$this->certificado_mdl->save_incidencia($data);
+		$id = $this->db->insert_id();
+
+		if(isset($_POST['guardar'])){
+			echo "<script>
+				alert('Se registró el incidente con éxito.');
+				parent.location.reload(true);
+				parent.$.fancybox.close();
+				</script>";
+		}else{
+			echo "<script>
+				location.href='".base_url()."index.php/derivar_incidencia/".$id."/0';
+				</script>";
+		}
 	}
 }

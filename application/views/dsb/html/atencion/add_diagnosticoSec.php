@@ -9,6 +9,8 @@
     <meta name="author" content="">
     <link rel="icon" href="../../favicon.ico">
 
+    <script src="https://code.jquery.com/jquery-1.10.1.min.js"></script>
+
     <title>Agregar Diagnostico</title>
 
     <!-- Bootstrap core CSS -->

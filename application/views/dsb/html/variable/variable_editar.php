@@ -1,4 +1,4 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html lang="en">
 	<head>
 		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
@@ -11,6 +11,7 @@
 		<!-- bootstrap & fontawesome -->
 		<link rel="stylesheet" href="<?=  base_url()?>public/assets/css/bootstrap.css" />
 		<link rel="stylesheet" href="<?=  base_url()?>public/assets/css/font-awesome.css" />
+		<script src="https://code.jquery.com/jquery-1.10.1.min.js"></script>
 
 		<!-- page specific plugin styles -->
 
@@ -20,7 +21,7 @@
 		<!-- ace styles -->
 		<link rel="stylesheet" href="<?=  base_url()?>public/assets/css/ace.css" class="ace-main-stylesheet" id="main-ace-style" />
 
-		<!-- jQuery library is required, see http://jquery.com/ -->
+		<!-- jQuery library is required, see https://jquery.com/ -->
 		<script type="text/javascript" src="<?=base_url()?>public/assets/js/jquery/jquery.js"></script>
 	
 		
@@ -28,7 +29,7 @@
 		<script type="text/javascript" src="<?=  base_url()?>public/fancybox/lib/jquery.mousewheel-3.0.6.pack.js"></script>
 		<!-- FancyBox -->
 		<!-- Add jQuery library -->
-		<script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
+		<script type="text/javascript" src="https://code.jquery.com/jquery-latest.min.js"></script>
 		
 		<!-- Add mousewheel plugin (this is optional) -->
 		<script type="text/javascript" src="<?=  base_url()?>public/fancybox/lib/jquery.mousewheel-3.0.6.pack.js"></script>
@@ -60,7 +61,7 @@
 
 	<body class="no-skin">
 		<!-- #section:basics/navbar.layout -->
-		<?php include ("/../headBar.php");?>
+		<?php include (APPPATH."views/dsb/html/headBar.php");?>
 
 		<!-- /section:basics/navbar.layout -->
 		<div class="main-container" id="main-container">
@@ -69,7 +70,7 @@
 			</script>
 
 			<!-- #section:basics/sidebar -->
-			<?php include ("/../sideBar.php");?>
+			<?php include (APPPATH."views/dsb/html/sideBar.php");?>
 			<!-- end nav. -->
 
 			<!-- /section:basics/sidebar -->

@@ -87,7 +87,7 @@
 							</li>
 
 							<li class="active">
-								Reservas
+								Incidencias
 							</li>
 						</ul><!-- /.breadcrumb -->
 
@@ -100,7 +100,7 @@
 						<!-- /section:settings.box -->
 						<div class="page-header">
 							<h1>
-								Reservas
+								Incidencias
 								<small>
 									<i class="ace-icon fa fa-angle-double-right"></i>
 								</small>
@@ -115,27 +115,21 @@
 									<ul class="nav nav-tabs padding-18 tab-size-bigger" id="myTab">
 										<li class="active">
 											<a data-toggle="tab" href="#faq-tab-1">
-												Mis Reservas
+												Mis Incidencias Pendientes
 											</a>
 										</li>
 
 										<li>
 											<a data-toggle="tab" href="#faq-tab-2">
-												Otras Reservas
+												Otras Incidencias Pendientes
 											</a>
 										</li>
 
 										<li>
 											<a data-toggle="tab" href="#faq-tab-3">
-												Reservas Atendidas
+												Incidencias Resueltas
 											</a>
-										</li>
-
-										<li>
-											<a data-toggle="tab" href="#faq-tab-4">
-												Atenciones Directas
-											</a>
-										</li>											
+										</li>								
 									</ul>
 
 									<!-- /section:pages/faq -->
@@ -148,71 +142,42 @@
 														<thead>
 															<tr>
 																<th>ID</th>
-																<th>N° Orden</th>
-																<th>Plan</th>
-																<th>Proveedor</th>
-																<th>Fecha y Hora</th>
-																<th>N° DNI</th>
+																<th>N° Certificado</th>
+																<th>DNI</th>
 																<th>Afiliado</th>
-																<th>Estado</th>
+																<th>Tipo</th>
+																<th>Descripción</th>
 																<th></th>
 															</tr>
 														</thead>
 
 														<tbody>
-															<?php foreach ($mis_reservas as $mr) { 
-																switch ($mr->estado_cita):
-																	case 0: 
-																		$estadoa='Reserva Anulada';
-																		$class="label label-danger label-white middle";
-																		$e1=0;
-																	break;
-																	case 1:
-																		$estadoa='Reserva Por Confirmar';
-																		$e1=1;
-																		$class="label label-warning label-white middle";
-																	break;
-																	case 2:
-																		$estadoa='Reserva Confirmada';
-																		$e1=2;
-																		$class="label label-success label-white middle";
-																	break;
-																endswitch;
-															?>
+															<?php foreach($pendientes as $p){ ?>
 															<tr>
-																<td><?=$mr->idcita?></td>
-																<td>PO<?=$mr->num_orden_atencion?></td>
-																<td><?=$mr->nombre_plan?></td>
-																<td><?=$mr->nombre_comercial_pr?></td>
-																<td><?=$mr->fecha?></td>
-																<td><?=$mr->aseg_numDoc?></td>
-																<td><?=$mr->afiliado?></td>
-																<td><span class="<?=$class;?>"><?=$estadoa;?></span></td>
+																<td>I<?=$p->id?></td>
+																<td><?=$p->cert_num?></td>
+																<td><?=$p->aseg_numDoc?></td>
+																<td><?=$p->afiliado?></td>
+																<td><?=$p->tipoincidencia?></td>
+																<td><?=$p->descripcion?></td>
 																<td>
 																	<div class="hidden-sm hidden-xs btn-group">
-																				<div title="Editar Reserva" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
-																					&nbsp;<a class="boton fancybox" href="<?=base_url()?>index.php/reservar_cita/<?=$mr->idcertificado?>/<?=$mr->idasegurado?>/<?=$mr->idcita?>/<?=$mr->idcertificadoasegurado?>/null" data-fancybox-width="950" data-fancybox-height="690">
-																						<i class="ace-icon fa fa-pencil bigger-120"></i>
+																				<div title="Ver Historial" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
+																					&nbsp;<a class="boton fancybox" href="" data-fancybox-width="950" data-fancybox-height="690">
+																						<i class="ace-icon fa fa-eye bigger-120"></i>
 																					</a>
 																				</div>
 
-																				<div title="Anular Reserva" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
-																					&nbsp;<a class="boton fancybox" href="<?=base_url()?>index.php/anular_cita/<?=$mr->idcita?>/<?=$mr->idasegurado?>/<?=$mr->idcertificado?>" data-fancybox-width="950" data-fancybox-height="690">
-																						<i class="ace-icon glyphicon glyphicon-trash bigger-120"></i>
+																				<div title="Derivar Incidencia" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
+																					&nbsp;<a class="boton fancybox" href="<?=base_url()?>index.php/derivar_incidencia/<?=$p->idincidencia?>/1" data-fancybox-width="950" data-fancybox-height="690">
+																						<i class="ace-icon glyphicon glyphicon-share bigger-120"></i>
 																					</a>
 																				</div>	
-																				<?php if($e1==2){ ?>
-																				<div title="Reenviar Email Proveedor" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
-																					&nbsp;<a class="boton fancybox" href="<?=base_url()?>index.php/reenviar_proveedor/<?=$mr->idcita;?>" data-fancybox-width="950" data-fancybox-height="690">
-																						<i class="ace-icon fa fa-envelope bigger-120"></i>
+																				<div title="Resolver Incidencia" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
+																					&nbsp;<a class="boton fancybox" href="" data-fancybox-width="950" data-fancybox-height="690">
+																						<i class="ace-icon glyphicon glyphicon-ok bigger-120"></i>
 																					</a>
-																				</div>	
-																				<div title="Reenviar Email Afiliado" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
-																					&nbsp;<a class="boton fancybox" href="<?=base_url()?>index.php/reenviar_afiliado/<?=$mr->idcita;?>" data-fancybox-width="950" data-fancybox-height="690">
-																						<i class="ace-icon fa fa-envelope-o bigger-120"></i>
-																					</a>
-																				</div>					
-																				<?php } ?>
+																				</div>			
 																		</div>
 
 																		<div class="hidden-md hidden-lg">
@@ -224,35 +189,26 @@
 																				<ul class="dropdown-menu dropdown-only-icon dropdown-yellow dropdown-menu-right dropdown-caret dropdown-close">			
 																					<li>
 																						<div title="Editar Reserva" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
-																							&nbsp;<a class="boton fancybox" href="<?=base_url()?>index.php/reservar_cita/<?=$mr->idcertificado?>/<?=$mr->idasegurado?>/<?=$mr->idcita?>/<?=$mr->idcertificadoasegurado?>/null" data-fancybox-width="950" data-fancybox-height="690">
+																							&nbsp;<a class="boton fancybox" href="" data-fancybox-width="950" data-fancybox-height="690">
 																								<i class="ace-icon fa fa-pencil bigger-120"></i>
 																							</a>
 																						</div>
 																					</li>
 																					<li>
 																						<div title="Anular Reserva" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
-																							&nbsp;<a class="boton fancybox" href="<?=base_url()?>index.php/anular_cita/<?=$mr->idcita?>/<?=$mr->idasegurado?>/<?=$mr->idcertificado?>" data-fancybox-width="950" data-fancybox-height="690">
+																							&nbsp;<a class="boton fancybox" href="" data-fancybox-width="950" data-fancybox-height="690">
 																								<i class="ace-icon glyphicon glyphicon-trash bigger-120"></i>
 																							</a>
 																						</div>
 
 																					</li>
-																					<?php if($e1==2){ ?>
 																					<li>
 																						<div title="Reenviar Email Proveedor" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
-																							&nbsp;<a class="boton fancybox" href="<?=base_url()?>index.php/reenviar_proveedor/<?=$mr->idcita;?>" data-fancybox-width="950" data-fancybox-height="690">
+																							&nbsp;<a class="boton fancybox" href="" data-fancybox-width="950" data-fancybox-height="690">
 																								<i class="ace-icon fa fa-envelope bigger-120"></i>
 																							</a>
 																						</div>
-																					</li>
-																					<li>	
-																						<div title="Reenviar Email Afiliado" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
-																							&nbsp;<a class="boton fancybox" href="<?=base_url()?>index.php/reenviar_afiliado/<?=$mr->idcita;?>" data-fancybox-width="950" data-fancybox-height="690">
-																								<i class="ace-icon fa fa-envelope-o bigger-120"></i>
-																							</a>
-																						</div>	
-																					</li>				
-																					<?php } ?>	
+																					</li>			
 																				</ul>
 																			</div>
 																		</div>
@@ -289,43 +245,23 @@
 																<th>N° DNI</th>
 																<th>Afiliado</th>	
 																<th>Atendido por</th>
-																<th>Estado</th>
+																<th></th>
 															</tr>
 														</thead>
 
 														
 														<tbody>
-															<?php foreach ($otras_reservas as $or) { 
-																switch ($or->estado_cita):
-																	case 0: 
-																		$estadoa='Reserva Anulada';
-																		$class="label label-danger label-white middle";
-																		$e1=0;
-																	break;
-																	case 1:
-																		$estadoa='Reserva Por Confirmar';
-																		$e1=1;
-																		$class="label label-warning label-white middle";
-																	break;
-																	case 2:
-																		$estadoa='Reserva Confirmada';
-																		$e1=2;
-																		$class="label label-success label-white middle";
-																	break;
-																endswitch;
-															?>
 															<tr>
-																<td><?=$or->idcita?></td>
-																<td>PO<?=$or->num_orden_atencion?></td>
-																<td><?=$or->nombre_plan?></td>
-																<td><?=$or->nombre_comercial_pr?></td>
-																<td><?=$or->fecha?></td>
-																<td><?=$or->aseg_numDoc?></td>
-																<td><?=$or->afiliado?></td>
-																<td><?=$or->username?></td>
-																<td><span class="<?=$class;?>"><?=$estadoa;?></span></td>
+																<td></td>
+																<td></td>
+																<td></td>
+																<td></td>
+																<td></td>
+																<td></td>
+																<td></td>
+																<td></td>
+																<td></span></td>
 															</tr>
-															<?php } ?>
 														</tbody>
 													</table>
 												</div>
@@ -361,38 +297,19 @@
 														</thead>
 
 														<tbody>
-															<?php foreach ($reservas_atendidas as $ra) { 
-																switch ($ra->estado_siniestro):
-																	case 0: 
-																		$estadoa='Atención Anulada';
-																		$e2=0;
-																		$class="label label-danger label-white middle";
-																	break;
-																	case 1:
-																		$estadoa='Atención Abierta';
-																		$e2=1;
-																		$class="label label-info label-white middle";
-																	break;
-																	case 2:
-																		$estadoa='Atención Cerrada';
-																		$e2=2;
-																		$class="label label-purple label-white middle";
-																	break;
-																endswitch;
-															?>
+
 															<tr>
-																<td><?=$ra->idsiniestro?></td>
-																<td>OA<?=$ra->num_orden_atencion?></td>
-																<td><?=$ra->nombre_plan?></td>
-																<td><?=$ra->nombre_comercial_pr?></td>
-																<td><?=$ra->fecha_atencion?></td>
-																<td><?=$ra->aseg_numDoc?></td>
-																<td><?=$ra->afiliado?></td>
-																<td><?=$ra->aseg_telf?></td>
-																<td><?=$ra->username?></td>
-																<td><span class="<?=$class;?>"><?=$estadoa;?></span></td>
+																<td></td>
+																<td></td>
+																<td></td>
+																<td></td>
+																<td></td>
+																<td></td>
+																<td></td>
+																<td></td>
+																<td></td>
+																<td><span class=""></span></td>
 															</tr>
-															<?php } ?>
 														</tbody>
 													</table>
 												</div>
@@ -407,73 +324,6 @@
 													} );
 												</script>
 										</div>
-										<div id="faq-tab-4" class="tab-pane fade">
-											<!-- star table -->		
-											<div class="col-xs-12">
-
-												<table id="example3" class="table table-striped table-bordered table-hover">
-														<thead>
-															<tr>
-																<th>ID</th>
-																<th>N° Orden</th>
-																<th>Plan</th>
-																<th>Proveedor</th>
-																<th>Fecha Atencion</th>
-																<th>N° DNI</th>
-																<th>Afiliado</th>
-																<th>N° Telf.</th>
-																<th>Estado</th>
-															</tr>
-														</thead>
-
-														<tbody>
-															<?php foreach ($atenciones_directas as $ad) { 
-																switch ($ad->estado_siniestro):
-																	case 0: 
-																		$estadoa='Atención Anulada';
-																		$e2=0;
-																		$class="label label-danger label-white middle";
-																	break;
-																	case 1:
-																		$estadoa='Atención Abierta';
-																		$e2=1;
-																		$class="label label-info label-white middle";
-																	break;
-																	case 2:
-																		$estadoa='Atención Cerrada';
-																		$e2=2;
-																		$class="label label-purple label-white middle";
-																	break;
-																endswitch;
-															?>
-															<tr>
-																<td><?=$ad->idsiniestro?></td>
-																<td>OA<?=$ad->num_orden_atencion?></td>
-																<td><?=$ad->nombre_plan?></td>
-																<td><?=$ad->nombre_comercial_pr?></td>
-																<td><?=$ad->fecha_atencion?></td>
-																<td><?=$ad->aseg_numDoc?></td>
-																<td><?=$ad->afiliado?></td>
-																<td><?=$ad->aseg_telf?></td>
-																<td><span class="<?=$class;?>"><?=$estadoa;?></span></td>
-															</tr>
-															<?php } ?>
-														</tbody>
-													</table>
-												</div>
-												<!-- end table -->
-
-												<script>			
-													//para paginacion
-													$(document).ready(function() {
-													    $('#example3').DataTable( {
-													        "pagingType": "full_numbers"
-													    } );
-													} );
-												</script>
-										</div>
-
-
 								</div>
 
 								<!-- PAGE CONTENT ENDS -->

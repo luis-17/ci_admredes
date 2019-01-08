@@ -13,6 +13,7 @@
 		<!-- bootstrap & fontawesome -->
 		<link rel="stylesheet" href="<?=base_url()?>public/assets/css/bootstrap.css" />
 		<link rel="stylesheet" href="<?=base_url()?>public/assets/css/font-awesome.css" />
+		<script src="https://code.jquery.com/jquery-1.10.1.min.js"></script>
 
 		<!-- page specific plugin styles -->
 

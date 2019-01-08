@@ -1115,7 +1115,7 @@ class notas_cnt extends CI_Controller {
 		$facturas = $this->comprobante_pago_mdl->getDatosPdfFacturasNota($idcomprobante);
 
 		//Carga la librería que agregamos
-        $this->load->library('pdf');
+        $this->load->library('Pdf');
 
         $this->pdf = new Pdf();
 	    $this->pdf->AddPage();

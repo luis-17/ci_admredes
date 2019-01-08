@@ -200,6 +200,12 @@ $route['eliminar_producto/(:any)/(:any)/(:any)/(:any)'] = 'Plan_cnt/eliminar_pro
 $route['insertar_producto/(:any)/(:any)/(:any)/(:any)'] = 'Plan_cnt/insertar_producto/$1/$2/$3/$4';
 $route['reenviar_proveedor/(:any)'] = 'Certificadodetalle_cnt/reenviar_proveedor/$1';
 $route['reenviar_afiliado/(:any)'] = 'Certificadodetalle_cnt/reenviar_afiliado/$1';
+$route['registrar_incidencia/(:any)/(:any)'] =  'Certificadodetalle_cnt/registrar_incidencia/$1/$2';
+$route['save_incidencia'] = 'Certificadodetalle_cnt/save_incidencia';
+
+$route['derivar_incidencia/(:any)/(:any)'] = 'Incidencias_cnt/derivar_incidencia/$1/$2';
+$route['reg_derivacion'] = 'Incidencias_cnt/reg_derivacion';
+
 $route['save_liqgrupo'] = 'Liquidacion_cnt/save_liqgrupo';
 $route['view_reenviar/(:any)/(:any)'] = 'Liquidacion_cnt/view_reenviar/$1/$2';
 $route['reenviar_liquidacion'] = 'Liquidacion_cnt/reenviar_liquidacion';

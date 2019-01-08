@@ -8,6 +8,8 @@
 		<meta name="description" content="overview &amp; stats" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
 
+		<script src="https://code.jquery.com/jquery-1.10.1.min.js"></script>
+
 		<!-- bootstrap & fontawesome -->
 		<link rel="stylesheet" href="<?=  base_url()?>public/assets/css/bootstrap.css" />
 		<link rel="stylesheet" href="<?=  base_url()?>public/assets/css/font-awesome.css" />
@@ -20,9 +22,10 @@
 		<!-- ace styles -->
 		<link rel="stylesheet" href="<?=  base_url()?>public/assets/css/ace.css" class="ace-main-stylesheet" id="main-ace-style" />
 		<!--<script type="text/javascript" src="<?=  base_url()?>public/fancybox/lib/jquery.mousewheel-3.0.6.pack.js"></script>-->
+
 		<!-- FancyBox -->
 		<!-- Add jQuery library -->
-		<script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
+		<script type="text/javascript" src="https://code.jquery.com/jquery-latest.min.js"></script>
 		
 		<!-- Add mousewheel plugin (this is optional) -->
 		<script type="text/javascript" src="<?=  base_url()?>public/fancybox/lib/jquery.mousewheel-3.0.6.pack.js"></script>
@@ -83,7 +86,7 @@
 
 	<body class="no-skin">
 		<!-- #section:basics/navbar.layout -->
-		<?php include ("/../headBar.php");?>
+		<?php include (APPPATH."views/dsb/html/headBar.php");?>
 
 		<!-- /section:basics/navbar.layout -->
 		<div class="main-container" id="main-container">
@@ -92,7 +95,7 @@
 			</script>
 
 			<!-- #section:basics/sidebar -->
-			<?php include ("/../sideBar.php");?>
+			<?php include (APPPATH."views/dsb/html/sideBar.php");?>
 			<!-- end nav. -->
 
 			<!-- /section:basics/sidebar -->
@@ -493,6 +496,11 @@
 																						<i class="ace-icon fa fa-eye bigger-120"></i>
 																					</a>
 																				</div>
+																				<div title="Registrar Incidencia" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
+																					&nbsp;<a class="boton fancybox" href="<?=  base_url()?>index.php/registrar_incidencia/<?=$id?>/<?=$idaseg?>" data-fancybox-width="950" data-fancybox-height="690">
+																					<i class="ace-icon fa fa-comments-o bigger-120"></i>
+																					</a>
+																				</div>																				
 																				<?php if($e==1&&$e2==1&&$hoy2>$fec2) {?>
 																				<div title="Reservar Atención" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
 																					&nbsp;<a class="boton fancybox" href="<?=  base_url()?>index.php/reservar_cita/<?=$id?>/<?=$idaseg?>/null/<?=$certase?>/<?=$fin3?>" data-fancybox-width="950" data-fancybox-height="690">
@@ -500,6 +508,7 @@
 																					</a>
 																				</div>
 																				<?php } ?>
+																				
 																		</div>
 
 																		<div class="hidden-md hidden-lg">
@@ -523,6 +532,13 @@
 																							</a>
 																						</div>
 
+																					</li>
+																					<li>
+																						<div title="Registrar Incidencia" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
+																							&nbsp;<a class="boton fancybox" href="<?=  base_url()?>index.php/registrar_incidencia/<?=$id?>/<?=$idaseg?>" data-fancybox-width="950" data-fancybox-height="690">
+																							<i class="ace-icon fa fa-comments-o bigger-120"></i>
+																							</a>
+																						</div>
 																					</li>
 																					<?php if($e==1) {?>
 																					<li>

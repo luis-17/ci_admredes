@@ -1,49 +1,37 @@
-<!DOCTYPE html>
-<html lang="en">
-	<head>
-		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
-		<meta charset="utf-8" />
-		<title>Sistema para la Gestión de Planes de Salud</title>
+<?php
+	$user = $this->session->userdata('user');
+	extract($user);
+	date_default_timezone_set('America/Lima');
+?>
+<html lang="en"><head>
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta charset="utf-8">
+		<title>Tables - Ace Admin</title>
 
-		<meta name="description" content="overview &amp; stats" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+		<meta name="description" content="Static &amp; Dynamic Tables">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 
 		<!-- bootstrap & fontawesome -->
-		<link rel="stylesheet" href="<?=  base_url()?>public/assets/css/bootstrap.css" />
-		<link rel="stylesheet" href="<?=  base_url()?>public/assets/css/font-awesome.css" />
+		<link rel="stylesheet" href="<?=  base_url()?>public/assets/css/bootstrap.css">
+		<link rel="stylesheet" href="<?=  base_url()?>public/assets/css/font-awesome.css">
 		<script src="https://code.jquery.com/jquery-1.10.1.min.js"></script>
 
 		<!-- page specific plugin styles -->
 
 		<!-- text fonts -->
-		<link rel="stylesheet" href="<?=  base_url()?>public/assets/css/ace-fonts.css" />
+		<link rel="stylesheet" href="<?=  base_url()?>public/assets/css/ace-fonts.css">
 
 		<!-- ace styles -->
-		<link rel="stylesheet" href="<?=  base_url()?>public/assets/css/ace.css" class="ace-main-stylesheet" id="main-ace-style" />
-		<!--<script type="text/javascript" src="<?=  base_url()?>public/fancybox/lib/jquery.mousewheel-3.0.6.pack.js"></script>-->
-		<!-- FancyBox -->
-		<!-- Add jQuery library -->
-		<script type="text/javascript" src="https://code.jquery.com/jquery-latest.min.js"></script>
-		
-		<!-- Add mousewheel plugin (this is optional) -->
-		<script type="text/javascript" src="<?=  base_url()?>public/fancybox/lib/jquery.mousewheel-3.0.6.pack.js"></script>
+		<link rel="stylesheet" href="<?=  base_url()?>public/assets/css/ace.css" class="ace-main-stylesheet" id="main-ace-style">
 
-		<!-- Add fancyBox -->
-		<link rel="stylesheet" href="<?=  base_url()?>public/fancybox/source/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen" />
-		<script type="text/javascript" src="<?=  base_url()?>public/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+		<!--[if lte IE 9]>
+			<link rel="stylesheet" href="../assets/css/ace-part2.css" class="ace-main-stylesheet" />
+		<![endif]-->
 
-		<script>
-		$(".fancybox")
-	    .attr('rel', 'gallery')
-	    .fancybox({
-	        type: 'iframe',
-	        autoSize : false,
-	        beforeLoad : function() {         
-	            this.width  = parseInt(this.element.data('fancybox-width'));  
-	            this.height = parseInt(this.element.data('fancybox-height'));
-	        }
-	    });
-	</script>
+		<!--[if lte IE 9]>
+		  <link rel="stylesheet" href="../assets/css/ace-ie.css" />
+		<![endif]-->
+
 		<!-- inline styles related to this page -->
 
 		<!-- ace settings handler -->
@@ -51,49 +39,55 @@
 
 		<!-- HTML5shiv and Respond.js for IE8 to support HTML5 elements and media queries -->
 
-    </script>
+		<!--[if lte IE 8]>
+		<script src="../assets/js/html5shiv.js"></script>
+		<script src="../assets/js/respond.js"></script>
+		<![endif]-->
 	</head>
 
 	<body style="">	
 			<!-- /section:basics/sidebar -->
-			<div class="main-content">
-				<div class="main-content-inner">
-					<div class="page-content">
+			<div class="page-content">
 						<div class="page-header">
 							<h1>
-								Reenviar Notificación L<?=$num?>					
+								Derivar Incidencia					
 							</h1>
 						</div>
 						<div class="row">
 							<div class="col-xs-12">
 								<!-- PAGE CONTENT BEGINS -->
-								<form class="form-horizontal" name="formPdf" id="formPdf" role="form" method="post" action="<?=base_url()?>index.php/reenviar_liquidacion">	
-								<input type="hidden" name="num" id="num" value="<?=$num?>">
-								<input type="hidden" name="id" id="id" value="<?=$id?>">
+								<form class="form-horizontal" role="form" method="post" action="<?=base_url()?>index.php/reg_derivacion">
+									<input type="hidden" name="id" id="id" value="<?=$id?>">
 
-									<div class='form-group'>
-										<label class='col-sm-3 control-label no-padding-right' for='form-field-1'>Correo electrónico:</label>
-
-										<div class='col-sm-9' id='crearInput'>
-											<input type='text' id='correo' name='correo' class='col-xs-12 col-sm-12' value=''>
+									<div class="form-group">
+										<label class="col-sm-3 control-label no-padding-right" for="form-field-1"> Derivar a: </label>
+										<div class="col-sm-9">
+											<select required="Seleccione una opción de la lista." name="recepciona" id="recepciona">
+												<option value="">Seleccionar</option>
+												<?php 
+													foreach($usuarios as $u){?>
+														<option value="<?=$u->idusuario?>"><?=$u->colaborador?></option>
+													<?php } ?>
+											</select>
 										</div>
 									</div>
-									<div id="resp4" align="center"></div>
-									<div class='clearfix form-actions'>
-										<div class='col-md-offset-3 col-md-9' style='text-align: right;'>
-											<button class='btn btn-info' type='submit'>
-												<i class='ace-icon fa fa-paper-plane bigger-110'></i> Enviar
+
+									<div class="clearfix form-actions">
+										<div class="col-md-offset-3 col-md-9">
+											<button class="btn btn-info" type="submit" id="guardar" name="guardar">
+												<i class="ace-icon fa fa-check bigger-110"></i>
+												Guardar
 											</button>
 										</div>
 									</div>
-
 								</form>
-							</div>
-						</div>	
+							</div><!-- /.col -->
+						</div>
 					</div>
-				</div>		
-			</div>
-		
+				</div><!-- /.main-content -->			
+			</div><!-- /.main-container -->
+		<!-- basic scripts -->
+
 		<!--[if !IE]> -->
 		<script type="text/javascript">
 			window.jQuery || document.write("<script src='<?=  base_url()?>public/assets/js/jquery.js'>"+"<"+"/script>");
@@ -101,6 +95,12 @@
 
 		<!-- <![endif]-->
 
+		<!--[if IE]>
+<script type="text/javascript">
+ window.jQuery || document.write("<script src='../assets/js/jquery1x.js'>"+"<"+"/script>");
+</script>
+<![endif]-->
+		</script>
 		<script type="text/javascript">
 			if('ontouchstart' in document.documentElement) document.write("<script src='<?=  base_url()?>public/assets/js/jquery.mobile.custom.js'>"+"<"+"/script>");
 		</script>
@@ -135,9 +135,6 @@
 		<script src="<?=  base_url()?>public/assets/js/ace/ace.widget-on-reload.js"></script>
 		<script src="<?=  base_url()?>public/assets/js/ace/ace.searchbox-autocomplete.js"></script>
 
-		<script type="text/javascript">
-		</script>
-
 		<!-- the following scripts are used in demo only for onpage help and you don't need them -->
 		<link rel="stylesheet" href="<?=  base_url()?>public/assets/css/ace.onpage-help.css">
 		<link rel="stylesheet" href="<?=  base_url()?>public/docs/assets/js/themes/sunburst.css">
@@ -150,51 +147,4 @@
 		<script src="<?=  base_url()?>public/docs/assets/js/language/html.js"></script>
 		<script src="<?=  base_url()?>public/docs/assets/js/language/css.js"></script>
 		<script src="<?=  base_url()?>public/docs/assets/js/language/javascript.js"></script>
-		<script>
-			$(document).ready(function(){
-			    
-			    /*$('#buttonPdfCorreo').click(function(){
-			        $.ajax({                        
-			           	url: "<?= BASE_URL()?>comprobante_pago_cnt/envioEmail",   
-			           	type: 'POST',
-			           	dataType: 'json',                                 
-			           	data: $("#formPdf").serialize(), 
-			           	success: function(data)             
-			           	{
-
-			           	}
-			       	});
-			       	return false;
-			    });*/
-
-				 $('#buttonPdfCorreo').click(function(){
-			    	$.ajax({
-			    		url: "<?= BASE_URL()?>index.php/ventas_cnt/envioEmail",
-			    		type: 'POST',
-			    		dataType: 'json',
-			    		data: $("#formPdf").serialize(),
-			    		beforeSend: function(){
-				            $('#resp4').html("<br><br><img src='<?=base_url()."public/assets/img/loading2.gif"?>'>");
-				        },
-				        complete:function() {
-					        $("#resp4").remove();
-					        try{
-						        parent.jQuery.fancybox.close();
-						    }catch(err){
-						        parent.$('#fancybox-overlay').hide();
-						        parent.$('#fancybox-wrap').hide();
-						    }
-					        alert("Correo enviado correctamente.");
-			    			location.reload();
-					    },
-			    		success: function(data)
-			    		{	
-			    			
-			    		}
-			    	});
-			    	return false;
-			    });
-			});
-		</script>
-	</body>
-</html>
+</body></html>

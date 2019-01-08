@@ -410,5 +410,18 @@
 		$query = $this->db->get();
 		return $query->result();
 	}
+
+	function save_incidencia($data){
+		$array = array
+		(
+			'tipoincidencia' => $data['tipo'], 
+			'cert_id' => $data['cert_id'],
+			'idasegurado' => $data['aseg_id'],
+			'descripcion' => $data['descripcion'],
+			'idusuario_registra' => $data['idusu']
+		);
+
+		$this->db->insert("incidencia",$array);
+	}
 }
 ?>

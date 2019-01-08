@@ -11,7 +11,7 @@ class incidencias_cnt extends CI_Controller {
         //$this->sessionRS = @$this->session->userdata('sess_reds_'.substr(base_url(),-20,7));
         //$this->load->helper(array('fechas','otros')); 
         $this->load->model('menu_mdl');
-
+        $this->load->model('incidencia_mdl');
     }
 
 	/**
@@ -45,13 +45,40 @@ class incidencias_cnt extends CI_Controller {
 			$data['menu1'] = $menuLista;
 
 			$submenuLista = $this->menu_mdl->getSubMenu($idusuario);
-			$data['menu2'] = $submenuLista;			
+			$data['menu2'] = $submenuLista;	
 
-			$this->load->view('dsb/html/incidencias.php',$data);
+			$data['pendientes'] = $this->incidencia_mdl->getMisPendientes($idusuario);
+
+			$this->load->view('dsb/html/incidente/incidencias.php',$data);
 		}
 		else{
 			redirect('/');
 		}	
+	}
+
+	public function derivar_incidencia($id,$es)
+	{
+		$data['id'] = $id;
+		$data['estado'] = $es;
+		$user = $this->session->userdata('user');
+		extract($user);
+		$data['usuarios'] = $this->incidencia_mdl->getUsuarios($idusuario);
+
+		$this->load->view('dsb/html/incidente/derivar_incidente.php',$data);
+	}
+
+	public function reg_derivacion(){
+		$user = $this->session->userdata('user');
+		extract($user);
+		$data['idusuario_deriva'] = $idusuario;
+		$data['id'] = $_POST['id'];
+		$data['idusuario_recepciona'] = $_POST['recepciona'];
+		$this->incidencia_mdl->reg_derivacion($data);
+		echo "<script>
+				alert('Se derivó el incidente con éxito.');
+				parent.location.reload(true);
+				parent.$.fancybox.close();
+				</script>";
 	}
 
 }

@@ -11,6 +11,7 @@
 		<!-- bootstrap & fontawesome -->
 		<link rel="stylesheet" href="<?=base_url()?>public/assets/css/bootstrap.css" />
 		<link rel="stylesheet" href="<?=base_url()?>public/assets/css/font-awesome.css" />
+		<script src="https://code.jquery.com/jquery-1.10.1.min.js"></script>
 
 		<!-- page specific plugin styles -->
 
@@ -44,7 +45,7 @@
 		?>
 	<body class="no-skin">
 		<!-- #section:basics/navbar.layout -->
-		<?php include ("/../headBar.php");?>
+		<?php include (APPPATH."views/dsb/html/headBar.php");?>
 
 		<!-- /section:basics/navbar.layout -->
 		<div class="main-container" id="main-container">
@@ -53,7 +54,7 @@
 			</script>
 
 			<!-- #section:basics/sidebar -->
-			<?php include ("/../sideBar.php");?>
+			<?php include (APPPATH."views/dsb/html/sideBar.php");?>
 			<!-- end nav. -->
 
 			<!-- /section:basics/sidebar -->
@@ -95,8 +96,8 @@
 								<!-- PAGE CONTENT BEGINS -->
 								<div class="well well-sm">
 									Puedes descargar el manual de certificado aquí:
-									<a href="http://www.red-salud.com" target="_blank">
-										http://www.red-salud.com
+									<a href="https://www.red-salud.com" target="_blank">
+										https://www.red-salud.com
 										<i class="fa fa-external-link bigger-110"></i>
 									</a>
 								</div>								
