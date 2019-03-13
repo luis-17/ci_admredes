@@ -50,31 +50,17 @@
 			<div class="page-content">
 						<div class="page-header">
 							<h1>
-								Derivar Incidencia					
+								Registrar Solución					
 							</h1>
 						</div>
 						<div class="row">
 							<div class="col-xs-12">
 								<!-- PAGE CONTENT BEGINS -->
-								<form class="form-horizontal" role="form" method="post" action="<?=base_url()?>index.php/reg_derivacion">
+								<form class="form-horizontal" role="form" method="post" action="<?=base_url()?>index.php/reg_solucion">
 									<input type="hidden" name="id" id="id" value="<?=$id?>">
 
 									<div class="form-group">
-										<label class="col-sm-3 control-label no-padding-right" for="form-field-1"> Derivar a: </label>
-										<div class="col-sm-9">
-											<select required="Seleccione una opción de la lista." name="recepciona" id="recepciona">
-												<option value="">Seleccionar</option>
-												<?php 
-													foreach($usuarios as $u){?>
-														<option value="<?=$u->idusuario?>"><?=$u->colaborador?></option>
-													<?php } ?>
-											</select>
-										</div>
-									</div>
-
-									<div class="form-group">
-										<label class="col-sm-3 control-label no-padding-right" for="form-field-1">Comentario: </label>
-
+										<label class="col-sm-3 control-label no-padding-right" for="form-field-1"> Descripción: </label>
 										<div class="col-sm-9">
 											<textarea cols="71" rows="5" placeholder="Escriba un comentario" id="desc" name="desc"></textarea>
 										</div>

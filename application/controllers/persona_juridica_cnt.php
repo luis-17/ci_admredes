@@ -1,5 +1,13 @@
 <?php
+ini_set('max_execution_time', 6000);
+ini_set('memory_limit', -1);
+ini_set("soap.wsdl_cache_enabled", 0);
+ini_set('soap.wsdl_cache_ttl',0); 
+date_default_timezone_set('America/Lima');
 defined('BASEPATH') OR exit('No direct script access allowed');
+use RobRichards\XMLSecLibs\XMLSecurityDSig;
+use RobRichards\XMLSecLibs\XMLSecurityKey;
+use Greenter\XMLSecLibs\Sunat\SignedXml;
 
 class persona_juridica_cnt extends CI_Controller {
 
@@ -274,5 +282,259 @@ class persona_juridica_cnt extends CI_Controller {
 
 
 		redirect(base_url()."index.php/persona_juridica");
+	}
+
+	public function solicitud_cancelacion(){
+		//load session library
+		$this->load->library('session');
+
+		//restrict users to go to home if not logged in
+		if($this->session->userdata('user')){
+			//$this->load->view('home');
+
+			$user = $this->session->userdata('user');
+			extract($user);
+
+			$menuLista = $this->menu_mdl->getMenu($idusuario);
+			$data['menu1'] = $menuLista;
+
+			$submenuLista = $this->menu_mdl->getSubMenu($idusuario);
+			$data['menu2'] = $submenuLista;
+		
+		$data['getSolicitudes'] = $this->canal_mdl->getSolicitudes();
+		$data['getSolicitudesProcesadas'] = $this->canal_mdl->getSolicitudesProcesadas();
+		$this->load->view('dsb/html/canal/solicitud_cancelacion.php',$data);
+		}
+		else{
+			redirect('/');
+		}
+		
+	}
+
+	public function aceptar_solicitud($id){
+		//load session library
+		$this->load->library('session');
+		$user = $this->session->userdata('user');
+		extract($user);
+
+		$data['idusuario'] = $idusuario;
+		$data['fecha'] = date('Y-m-d H:i:s');
+		$data['cert_id'] = $id;
+
+		$certificado = $this->canal_mdl->getCertificado($id);
+
+		foreach ($certificado as $c) {
+			$data['plan_id'] = $c->plan_id;
+			$data['cert_num'] = $c->cert_num;
+		}
+
+		$this->canal_mdl->RegCancelado($data);
+		$this->canal_mdl->upSolicitud($data);
+
+		echo "<script>
+				alert('El realizó la cancelación del certificado ".$data['cert_num']." con éxito.');
+				location.href='".base_url()."index.php/solicitud_cancelacion';
+				</script>";
+
+	}
+
+	public function rechazar_solicitud($id){
+		$data['cert_id'] = $id;		
+		$this->load->view('dsb/html/canal/form_rechazo.php',$data);
+	}
+
+	public function save_rechazo(){
+		$data['cert_id'] = $_POST['cert_id'];
+		$motivo = $_POST['motivo'];
+
+		if($motivo=='Otro'){
+			$data['motivo'] = $_POST['motivo2'];
+		}else{
+			$data['motivo'] = $motivo;
+		}
+
+		//load session library
+		$this->load->library('session');
+		$user = $this->session->userdata('user');
+		extract($user);
+
+		$data['idusuario'] = $idusuario;
+		$data['fecha'] = date('Y-m-d H:i:s');
+
+		$this->canal_mdl->upSolicitud2($data);
+		$this->canal_mdl->upCertificado($data);
+		$this->canal_mdl->upCertificadoAsegurado($data);
+
+		echo "<script>
+				alert('El rechazó la cancelación del certificado con éxito.');
+				parent.location.reload(true);
+				parent.$.fancybox.close();
+				</script>";
+
+	}
+
+	public function generar_cobros(){
+		//load session library
+		$this->load->library('session');
+
+		//restrict users to go to home if not logged in
+		if($this->session->userdata('user')){
+			//$this->load->view('home');
+
+			$user = $this->session->userdata('user');
+			extract($user);
+
+			$menuLista = $this->menu_mdl->getMenu($idusuario);
+			$data['menu1'] = $menuLista;
+
+			$submenuLista = $this->menu_mdl->getSubMenu($idusuario);
+			$data['menu2'] = $submenuLista;
+
+			$month = date('m');
+	      	$year = date('Y');
+	      	$day = date("d", mktime(0,0,0, $month+1, 0, $year));
+
+			$data['plan'] = "";
+			$data['fecinicio'] = date('Y-m-d', mktime(0,0,0, $month, 1, $year));
+			$data['feccobro'] = date('Y-m-d', mktime(0,0,0, $month, 1, $year));
+			$data['fecfin'] = date('Y-m-d', mktime(0,0,0, $month, $day, $year));
+			$planes = $this->canal_mdl->getPlanes();
+			$data['planes'] = $planes;
+			$canales = $this->canal_mdl->getCanales();
+			$data['canales'] = $canales;
+			$data['canal'] = '';
+			$data['get_cobros'] = '';
+			$data['estilo1'] = '';
+			$data['estilo2'] = 'none';
+
+			$this->load->view('dsb/html/canal/generar_cobros.php',$data);
+		}
+		else{
+			redirect('/');
+		}		
+	}
+
+	public function buscar_cobros(){
+		//load session library
+		$this->load->library('session');
+
+		//restrict users to go to home if not logged in
+		if($this->session->userdata('user')){
+			//$this->load->view('home');
+
+			$user = $this->session->userdata('user');
+			extract($user);
+
+			$menuLista = $this->menu_mdl->getMenu($idusuario);
+			$data['menu1'] = $menuLista;
+
+			$submenuLista = $this->menu_mdl->getSubMenu($idusuario);
+			$data['menu2'] = $submenuLista;
+
+			$month = date('m');
+	      	$year = date('Y');
+	      	$day = date("d", mktime(0,0,0, $month+1, 0, $year));
+
+					
+			$canal = $_POST['canal'];
+			$id = $_POST['plan'];	
+			$data['plan'] = $id;	
+			$canales = $this->canal_mdl->getCanales();
+			$data['canales'] = $canales;
+			$planes = $this->canal_mdl->getPlanes2($canal);
+			$data['canal'] = $canal;
+			$data['planes'] = $planes;
+			$fec_ini = $_POST['fechainicio'];
+			$fec_fin = $_POST['fechafin'];
+			$fec_cobro = $_POST['feccobro'];
+
+			$data['fecinicio'] = $fec_ini;
+			$data['fecfin'] = $fec_fin;
+			$data['feccobro'] = $fec_cobro;
+
+
+			$cobros = $this->canal_mdl->getCobros($id,$fec_ini,$fec_fin);
+			if(empty($cobros)){				
+				$data['estilo1'] = '';
+				$data['estilo2'] = 'none';
+			}else{				
+				$data['estilo1'] = 'none';
+				$data['estilo2'] = '';
+			}
+			$data['get_cobros'] = $cobros;
+
+			$this->load->view('dsb/html/canal/generar_cobros.php',$data);
+		}
+		else{
+			redirect('/');
+		}		
+		
+	}
+
+	public function registrar_cobros(){
+		//load session library
+		$this->load->library('session');
+
+		//restrict users to go to home if not logged in
+		if($this->session->userdata('user')){
+			//$this->load->view('home');
+
+			$user = $this->session->userdata('user');
+			extract($user);
+
+			$menuLista = $this->menu_mdl->getMenu($idusuario);
+			$data['menu1'] = $menuLista;
+
+			$submenuLista = $this->menu_mdl->getSubMenu($idusuario);
+			$data['menu2'] = $submenuLista;
+
+			$month = date('m');
+	      	$year = date('Y');
+	      	$day = date("d", mktime(0,0,0, $month+1, 0, $year));
+
+			$data['fecinicio'] = date('Y-m-d', mktime(0,0,0, $month, 1, $year));
+			$data['fecfin'] = date('Y-m-d', mktime(0,0,0, $month, $day, $year));		
+			$canal = $_POST['canal'];
+			$id = $_POST['plan'];	
+			$data['plan'] = $id;	
+			$canales = $this->canal_mdl->getCanales();
+			$data['canales'] = $canales;
+			$planes = $this->canal_mdl->getPlanes2($canal);
+			$data['canal'] = $canal;
+			$data['planes'] = $planes;
+			$fecha_ini = $_POST['fechainicio'];
+			$fecha_fin = $_POST['fechafin'];
+
+			$cobros = $this->canal_mdl->getCobros($id,$fecha_ini,$fecha_fin);
+			$data['fecha_cobro'] = $_POST['feccobro'];
+				foreach ($cobros as $c) {
+					$prima = ($c->prima_monto + (($c->cant-1)*$c->prima_adicional))*100;
+					$data['fecha_ini'] = $fecha_ini;
+					$data['fecha_fin'] = $fecha_fin;
+					$data['cert_id'] = $c->cert_id;
+					$data['cert_num'] = $c->cert_num;
+					$data['vez_cobro'] = $c->vez_cobro;
+					$data['cob_importe'] = $prima;
+					$data['plan'] = $c->plan_id;
+
+					$accion = $c->accion;
+
+					if($accion=='Nuevo Cobro'){
+						$this->canal_mdl->regCobro($data);
+						$this->canal_mdl->upCert($data);
+						$this->canal_mdl->upCertAseg($data);
+					}elseif ($accion=='Actualizar Cobro') {
+						$this->canal_mdl->upCobro($data);
+					}
+				}
+
+			echo "<script>
+				alert('Se registraron los cobros con éxito.');
+				location.href='".base_url()."index.php/generar_cobros';
+				</script>";
+		}
+		else{
+			redirect('/');
+		}		
 	}
 }

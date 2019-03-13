@@ -63,10 +63,11 @@
 									<div class="form-group">
 										<label class="col-sm-3 control-label no-padding-right" for="form-field-1"> Tipo: </label>
 										<div class="col-sm-9">
-											<p><input type="checkbox" name="tipo" value="Mala venta del canal." id="1"> Mala Venta del canal.</p>
-											<p><input type="checkbox" name="tipo" value="Insatisfacción con las coberturas del plan." id="2"> Insatisfacción con las coberturas del plan.</p>
-											<p><input type="checkbox" name="tipo" value="Inconvenientes al reclamar medicamentos." id="3"> Inconvenientes al reclamar medicamentos.</p>
-											<p><input type="checkbox" name="tipo" value="Insatisfacción con la atención del centro médico." id="3"> Insatisfacción con la atención del centro médico.</p>
+											<p><input type="radio" name="tipo" value="Mala venta del canal." id="1"> Mala Venta del canal.</p>
+											<p><input type="radio" name="tipo" value="Insatisfacción con las coberturas del plan." id="2"> Insatisfacción con las coberturas del plan.</p>
+											<p><input type="radio" name="tipo" value="Inconvenientes al reclamar medicamentos." id="3"> Inconvenientes al reclamar medicamentos.</p>
+											<p><input type="radio" name="tipo" value="Insatisfacción con la atención del centro médico." id="4"> Insatisfacción con la atención del centro médico.</p>
+											<p><input type="radio" name="tipo" value="Vigencia desactualizada, no figura en trama de cobros." id="4"> Vigencia desactualizada, no figura en trama de cobros.</p>
 										</div>
 									</div>
 

@@ -175,7 +175,6 @@
 											<div class="col-sm-9">											
 												<select id="eventos" name="eventos" value="" onchange="tiempo(this.value)">
 													<option <?php if($tiempo==""): echo "selected"; endif; ?> value="">Sin eventos</option>
-													<option <?php if($tiempo=='ilimitados'): echo "selected"; endif; ?> value="1 year">Ilimintados</option>
 													<option <?php if($tiempo=='1 month'): echo "selected"; endif; ?> value="1 month">Mensuales</option>
 													<option <?php if($tiempo=='2 month'): echo "selected"; endif; ?> value="2 month">Bimestrales</option>
 													<option <?php if($tiempo=='3 month'): echo "selected"; endif; ?> value="3 month">Trimestrales</option>

@@ -72,6 +72,107 @@ class Liquidacion_cnt extends CI_Controller {
 		}	
 	}
 
+	public function pre_liquidacion($id)
+	{
+		//load session library
+		$this->load->library('session');
+
+		//restrict users to go to home if not logged in
+		if($this->session->userdata('user')){
+			//$this->load->view('home');
+
+			$user = $this->session->userdata('user');
+			extract($user);
+
+			$menuLista = $this->menu_mdl->getMenu($idusuario);
+			$data['menu1'] = $menuLista;
+
+			$submenuLista = $this->menu_mdl->getSubMenu($idusuario);
+			$data['menu2'] = $submenuLista;	
+
+			$pre_liquidaciones = $this->liquidacion_mdl->getLiquidaciones($id);
+			$data['pre_liquidaciones'] = $pre_liquidaciones;
+
+			$preorden = $this->atencion_mdl->getPreOrden();
+			$data['preorden'] = $preorden;
+
+			$data['prov_id'] = $id;
+
+			// datos para combo especialidad
+			$this->load->model('siniestro_mdl');        
+	        $data['especialidad'] = $this->siniestro_mdl->getEspecialidad();
+
+	        // datos para combo especialidad		
+			$data['proveedor'] = $this->atencion_mdl->getProveedor();
+
+			$this->load->view('dsb/html/liquidacion/liquidacion.php',$data);
+		}
+		else{
+			redirect('/');
+		}	
+	}
+
+
+	public function agrupar_liquidacion($id)
+	{
+		//load session library
+		$this->load->library('session');
+
+		//restrict users to go to home if not logged in
+		if($this->session->userdata('user')){
+			//$this->load->view('home');
+
+			$user = $this->session->userdata('user');
+			extract($user);
+
+			$menuLista = $this->menu_mdl->getMenu($idusuario);
+			$data['menu1'] = $menuLista;
+
+			$submenuLista = $this->menu_mdl->getSubMenu($idusuario);
+			$data['menu2'] = $submenuLista;	
+
+			$data['prov_id'] = $id;
+
+			$liquidacion_grupo_p = $this->liquidacion_mdl->get_liquidaciongrupo_p($id);
+			$data['liquidacion_grupo_p'] = $liquidacion_grupo_p;
+
+			$this->load->view('dsb/html/liquidacion/agrupar_liquidaciones.php',$data);
+		}
+		else{
+			redirect('/');
+		}	
+	}
+
+	public function gastos_proveedor(){
+		//load session library
+		$this->load->library('session');
+
+		//restrict users to go to home if not logged in
+		if($this->session->userdata('user')){
+			//$this->load->view('home');
+
+			$user = $this->session->userdata('user');
+			extract($user);
+
+			$menuLista = $this->menu_mdl->getMenu($idusuario);
+			$data['menu1'] = $menuLista;
+
+			$submenuLista = $this->menu_mdl->getSubMenu($idusuario);
+			$data['menu2'] = $submenuLista;	
+
+			$liquidaciones = $this->liquidacion_mdl->get_liquidaciongrupo();
+			$data['liquidaciones'] = $liquidaciones;
+
+			$gastos = $this->liquidacion_mdl->gastos_proveedor();
+			$data['gastos'] = $gastos;
+
+			$this->load->view('dsb/html/liquidacion/gastos.php',$data);
+		}
+		else{
+			redirect('/');
+		}	
+	}
+
 
 	public function registraPago()
 	{
@@ -122,8 +223,6 @@ class Liquidacion_cnt extends CI_Controller {
 		}	
 	}
 
-	
-
 	public function orden($id,$est)
 	{
 		$orden = $this->atencion_mdl->orden($id,$est);
@@ -134,6 +233,7 @@ class Liquidacion_cnt extends CI_Controller {
 	{
 		$liq_det=$_POST['liq_det'];
 		$num=count($liq_det);
+		$data['idprov'] = $_POST['idprov'];
 
 		$user = $this->session->userdata('user');
 		extract($user);
@@ -153,16 +253,53 @@ class Liquidacion_cnt extends CI_Controller {
 
 		$detraccion = $this->liquidacion_mdl->calcular_detraccion($data);
 		$detra=0;
+		$tot=0;
+
 		foreach ($detraccion as $d) {
 			$detra=$detra + $d->detraccion;
+			$tot= $tot + $d->neto - $detra;
 		}
 
 		$data['detra'] = $detra;
+		$data['tot'] = $tot;
 		$this->liquidacion_mdl->up_liqgrupo($data);
 
 		echo "<script>
 				alert('Se ha generado la liquidación N° L".$numero." con éxito.');
-				location.href='".base_url()."index.php/liquidacion';
+				location.href='".base_url()."index.php/gastos';
+				</script>";
+	}
+
+	public function save_gasto(){
+		$liq_grupo=$_POST['liq_grupo'];
+		$num=count($liq_grupo);
+		$data['idprov'] = $_POST['idprov'];
+
+		$user = $this->session->userdata('user');
+		extract($user);
+		$data['idusuario'] = $idusuario;
+		$data['fecha'] = date('Y-m-d H:i:s');
+
+		$this->liquidacion_mdl->save_agrupacion($data);
+		$data['idpago'] = $this->db->insert_Id();
+
+		for($i=0;$i<$num;$i++){
+			$data['liq_id']=$liq_grupo[$i];
+			$this->liquidacion_mdl->save_pago_detalle($data);
+			$this->liquidacion_mdl->upLiqgrupo($data);
+		}
+
+		$importe = $this->liquidacion_mdl->get_importe($data);
+		foreach ($importe as $i) {
+			$data['importe'] = $i->importe;
+			$data['detraccion'] = $i->detraccion;
+		}
+
+		$this->liquidacion_mdl->up_importe($data);
+
+		echo "<script>
+				alert('Se gruparon las liquidaciones con éxito.');
+				location.href='".base_url()."index.php/liquidacion_grupo';
 				</script>";
 	}
 
@@ -174,7 +311,6 @@ class Liquidacion_cnt extends CI_Controller {
 		$data['numero'] = $num;
 		$data['liquidacion_grupo'] = $this->liquidacion_mdl->getLiquidacionGrupo($id);
 		$this->load->view('dsb/html/liquidacion/liquidacion_detalle.php',$data);
-
 	}
 
 	public function liquidacion_grupo(){
@@ -184,7 +320,6 @@ class Liquidacion_cnt extends CI_Controller {
 		//restrict users to go to home if not logged in
 		if($this->session->userdata('user')){
 			//$this->load->view('home');
-
 			$user = $this->session->userdata('user');
 			extract($user);
 
@@ -194,12 +329,13 @@ class Liquidacion_cnt extends CI_Controller {
 			$submenuLista = $this->menu_mdl->getSubMenu($idusuario);
 			$data['menu2'] = $submenuLista;	
 
-			$liquidacion_grupo_p = $this->liquidacion_mdl->get_liquidaciongrupo_p();
+			$liquidacion_grupo_p = $this->liquidacion_mdl->getLiquidacionesProveedor();
 			$data['liquidacion_grupo_p'] = $liquidacion_grupo_p;
 
-			$liquidacion_grupo_c = $this->liquidacion_mdl->get_liquidaciongrupo_c();
+			$liquidacion_grupo_c = $this->liquidacion_mdl->getLiqAgrupadas();
 			$data['liquidacion_grupo_c'] = $liquidacion_grupo_c;
-
+			// $liquidacion_grupo_c = $this->liquidacion_mdl->get_liquidaciongrupo_c();
+			// $data['liquidacion_grupo_c'] = $liquidacion_grupo_c;
 			$this->load->view('dsb/html/liquidacion/liquidacion_grupo.php',$data);
 		}
 		else{
@@ -207,30 +343,56 @@ class Liquidacion_cnt extends CI_Controller {
 		}	
 	}
 
-	public function liquidacion_regpago($id, $num){
-		$data['liqgrupoid'] = $id;
-		$data['numero'] = $num;
-		$data['bancos'] = $this->liquidacion_mdl->getBancos();
-		$data['forma_pago'] =$this->liquidacion_mdl->getFormaPago();
+	public function pagos(){
+		//load session library
+		$this->load->library('session');
+
+		//restrict users to go to home if not logged in
+		if($this->session->userdata('user')){
+			//$this->load->view('home');
+			$user = $this->session->userdata('user');
+			extract($user);
+
+			$menuLista = $this->menu_mdl->getMenu($idusuario);
+			$data['menu1'] = $menuLista;
+
+			$submenuLista = $this->menu_mdl->getSubMenu($idusuario);
+			$data['menu2'] = $submenuLista;	
+
+			$data['pagos_pendientes'] = $this->liquidacion_mdl->getPagospendientes();
+			$data['getPagosRealizados'] = $this->liquidacion_mdl->getPagosRealizados();
+
+			$this->load->view('dsb/html/liquidacion/liquidacion_pago.php',$data);
+		}
+		else{
+			redirect('/');
+		}	
+	}
+
+	public function liquidacion_regpago($idpago){
+		$data['idpago'] = $idpago;
+		$data['getInfoPago'] = $this->liquidacion_mdl->getInfoPago($idpago);
 		$this->load->view('dsb/html/liquidacion/registrar_pago.php',$data);
+	}
+
+	public function pagoDetalle($idpago){
+		$data['pagoDet'] = $this->liquidacion_mdl->pagoDet($idpago);
+		$this->load->view('dsb/html/liquidacion/pago_detalle.php',$data);
 	}
 
 	public function save_regPago(){
 
-		$id = $_POST['liqgrupoid'];
-		$num = $_POST['numero'];
+		$idpago = $_POST['idpago'];
+        $config['upload_path'] = './uploads/';
+        $config['file_name'] = $idpago;
+        $config['allowed_types'] = 'pdf';
+        $config['max_size'] = 50000;
+        $config['max_width'] = 2000;
+        $config['max_height'] = 2000;
 
-		$mi_archivo = 'mi_archivo';
-        $config['upload_path'] = APPPATH."third_party/uploads/";
-        $config['file_name'] = $id;
-        $config['allowed_types'] = "pdf";
-        $config['max_size'] = "50000";
-        $config['max_width'] = "2000";
-        $config['max_height'] = "2000";
-
-        $this->load->library('Upload', $config);
+        $this->load->library('upload', $config);
         
-        if (!$this->upload->do_upload($mi_archivo)) {
+        if (!$this->upload->do_upload('mi_archivo')) {
             //*** ocurrio un error
             $data['uploadError'] = $this->upload->display_errors();
             echo $this->upload->display_errors();
@@ -239,54 +401,56 @@ class Liquidacion_cnt extends CI_Controller {
 
         $data['uploadSuccess'] = $this->upload->data();
 
-
 		$user = $this->session->userdata('user');
 		extract($user);
 
-		$data['liqgrupoid'] = $id;
-		$data['idbanco'] = $_POST['banco'];
-		$data['forma'] = $_POST['forma'];
+		$data['idpago'] = $idpago;
 		$data['nro_operacion'] = $_POST['nro_operacion'];
 		$data['fecha'] = $_POST['fecha'];
 		$data['correo'] = $_POST['correo'];
 		$data['idusuario'] = $idusuario;
-		$data['cta_corriente'] = $_POST['cta_corriente'];
-		$data['cta_detracciones'] = $_POST['cta_detracciones'];
 
 		$this->liquidacion_mdl->save_Pago($data);
 
-		//Crear formato de liquidación
-        $this->load->library('Pdf');
-
+		// //Crear formato de liquidación
+		$this->load->library('Pdf');
         $this->pdf = new Pdf();
-	    $this->pdf->AddPage();
-	    $this->pdf->AliasNbPages();
-	    
-	    $liquidacion = $this->liquidacion_mdl->liquidacionpdf($id); 
-	    $liquidacion_det = $this->liquidacion_mdl->liquidacionpdf_detalle($id);
-	    $detracciones=0;
-	    foreach ($liquidacion as $l){
-	    		$razon_social = $l->razon_social_pr;
-	    		$ruc = $l->numero_documento_pr;
-	    		$banco = $l->descripcion;
-	    		$tipo = $l->descripcion_fp;
-	    		$op = $l->num_operacion;
-	    		$total = $l->total;
-	    		$igv = $total * 0.18;
-	    		$subtotal = $total - $igv;
-	    		$cta_corriente = $l->cta_corriente;
-	    		$cta_detracciones = $l->cta_detracciones;
-	    		$colaborador = $l->colaborador;
-	    		$detracciones = $l->detraccion;
-	    		$fecha = $l->fecha_liquida;
-	    		$fecha = date('d/m/Y',strtotime($fecha));
+	    $liqgrupo = $this->liquidacion_mdl->getLiqGrupo($idpago);
 
-	    		$igv = number_format((float)$igv, 2, '.', '');
-	    		$subtotal = number_format((float)$subtotal, 2, '.', '');
-	    		$total = number_format((float)$total, 2, '.', '');
-	    	}
+	    foreach ($liqgrupo as $lg) {	    	
+	    	$id = $lg->liqgrupo_id;
+	    	$num = $lg->num;
+	    	$liquidacion = $this->liquidacion_mdl->liquidacionpdf($id); 
+		    $liquidacion_det = $this->liquidacion_mdl->liquidacionpdf_detalle($id);
+		    $detracciones=0;
 
-	    		          
+		    foreach ($liquidacion as $l){
+		    	$razon_social = $l->razon_social_pr;
+		    	$ruc = $l->numero_documento_pr;
+		    	$banco = $l->descripcion;
+		    	$tipo = $l->descripcion_fp;
+		    	$op = $l->numero_operacion;
+		    	$total = $l->total;
+		    	$igv = $total * 0.18;
+		    	$subtotal = $total - $igv;
+		    	$cta_corriente = $l->cta_corriente;
+		    	$cta_detracciones = $l->cta_detracciones;
+		    	$colaborador = $l->colaborador;
+		    	$detracciones = $l->detraccion;
+		    	$email_notifica = $l->email_notifica;
+		    	$fecha = $l->fecha_pago;
+		    	$fecha = date('d/m/Y',strtotime($fecha));
+
+		    	$igv = number_format((float)$igv, 2, '.', '');
+		    	$subtotal = number_format((float)$subtotal, 2, '.', '');
+		    	$total = number_format((float)$total, 2, '.', '');
+		    }
+
+		    //$num = printf('%08d', $id);
+	    		
+			    $this->pdf->AddPage();
+			    $this->pdf->AliasNbPages();
+			    $this->pdf->Ln();      
 	            $this->pdf->Ln();
 	          	$this->pdf->SetFont('Arial','I',10); 
 	          	$this->pdf->MultiCell(0,6,'Fecha: '.$fecha,0,'R',false);
@@ -353,27 +517,29 @@ class Liquidacion_cnt extends CI_Controller {
 	            $this->pdf->SetFont('Arial','BI',9);
 	            $this->pdf->Cell(40,6,utf8_decode("Banco"),1,0,'C',false);
 	            $this->pdf->Cell(40,6,utf8_decode("Tipo"),1,0,'C',false);
-	            $this->pdf->Cell(40,6,utf8_decode("N° Operación/Cheque"),1,0,'C',false);
-	            $this->pdf->Cell(40,6,utf8_decode("N° Cuenta"),1,0,'C',false);
+	            $this->pdf->Cell(30,6,utf8_decode("N° Op./Cheque"),1,0,'C',false);
+	            $this->pdf->Cell(50,6,utf8_decode("N° Cuenta"),1,0,'C',false);
 	            $this->pdf->Cell(0,6,utf8_decode("Neto a Pagar"),1,0,'C',false);
 	            $this->pdf->Ln();
 	            $this->pdf->SetFont('Arial','',9);
 	            $this->pdf->Cell(40,6,utf8_decode($banco),1,0,'C',false);
 	            $this->pdf->Cell(40,6,utf8_decode($tipo),1,0,'C',false);
-	            $this->pdf->Cell(40,6,utf8_decode($op),1,0,'C',false);
-	            $this->pdf->Cell(40,6,utf8_decode($cta_corriente),1,0,'C',false);
-	            $this->pdf->Cell(0,6,utf8_decode($total_neto),1,0,'C',false);
+	            $this->pdf->Cell(30,6,utf8_decode($op),1,0,'C',false);
+	            $this->pdf->Cell(50,6,utf8_decode($cta_corriente),1,0,'C',false);
+	            $this->pdf->Cell(0,6,"S/. ".utf8_decode($total_neto),1,0,'C',false);
 	            $this->pdf->Ln(15);
 	            $this->pdf->SetFont('Arial','BI',8);
 	            $this->pdf->Cell(20,6,utf8_decode("Emitido por:"),0,0,'R',false);
 	            $this->pdf->Cell(0,6,utf8_decode($colaborador),0,0,'L',false);
+	         
 	            $this->pdf->Line(10, 280 , 200, 280); 
-			    $this->pdf->SetTitle(utf8_decode("Liquidación L").$num);
+			    $this->pdf->SetTitle(utf8_decode("Liquidación GR").$idpago);
 			    $this->pdf->SetLeftMargin(15);
 			    $this->pdf->SetRightMargin(15);
-			    $this->pdf->SetFillColor(200,200,200);
+			    $this->pdf->SetFillColor(200,200,200);			   
+	    }
 
-		        $this->pdf->Output("uploads/L".$num.".pdf", 'F');
+		$this->pdf->Output("uploads/GR".$idpago.".pdf", 'F');
 
 		// Enviar email de liquidación a proveedor 
 		    $user = $this->session->userdata('user');
@@ -381,119 +547,34 @@ class Liquidacion_cnt extends CI_Controller {
 
 			$liquidacionDet = $this->liquidacion_mdl->getLiquidacionDet($id);
 			$liquidacion_grupo = $this->liquidacion_mdl->getLiquidacionGrupo($id);
+			$gasto_detalle = $this->liquidacion_mdl->pagoDet($idpago);
 
 				$tipo="'Century Gothic'";
-				$texto='<table class="table table-striped table-bordered table-hover"  style="font-size: 1vw; width: 100%; font-family: '.$tipo.', CenturyGothic, AppleGothic, sans-serif;" border="1">
-										<tr>
-										<th width="30%">Nombre/Razón Social</th>
-										<td>'.$razon_social.'</td>
-										</tr>
-										<tr>
-										<th width="30%">DNI/RUC</th>
-										<td>'.$ruc.'</td>
-										</tr>
-										<tr>
-										<th width="30%">Concepto</th>
-										<td>Liquidación de Facturas</td>
-										</tr>
-									</table>
+				$texto='<p>Estimado(a) '.$razon_social.' se ha realizo el pago de las siguientes liquidaciones, se adjunta el detalle y constancia de pago de las mismas.</p>
+				<table class="table table-striped table-bordered table-hover"  style="font-size: 1vw; width: 100%; font-family: '.$tipo.', CenturyGothic, AppleGothic, sans-serif;" border="1">
+							<thead>
+								<tr>
+									<th>N° Liquidación</th>
+									<th>Importe Inc. IGV</th>
+									<th>Importe Detracción</th>
+								</tr>
+							</thead>
+							<tbody>';
 
-									<h4>N° Documentos:</h4>	
-									<table id="example" class="table table-striped table-bordered table-hover"  style="font-size: 1vw; width: 100%; font-family: '.$tipo.', CenturyGothic, AppleGothic, sans-serif;" border="1">
-										<thead>
-											<tr>
-												<th>N° Factura</th>
-												<th>N° Orden Atención</th>
-												<th>Afiliado</th>
-												<th>Concepto</th>
-												<th>Importe Bruto</th>
-												<th>Importe Neto</th>
-											</tr>
-										</thead>
-										<tbody>';
-										foreach ($liquidacionDet as $ld){
-											$texto.='<tr>
-												<td>'.$ld->liqdetalle_numfact.'</td>
-												<td>'.$ld->num_orden_atencion.'</td>
-												<td>'.$ld->afiliado.'</td>
-												<td>'.$ld->nombre_var.' '.$ld->detalle.'</td>
-												<td style="text-align: right;">'.$ld->liqdetalle_monto.' PEN</td>
-												<td style="text-align: right;">'.$ld->liqdetalle_neto.' PEN</td>
-											</tr>';
-										}
+						foreach ($gasto_detalle as $gd) {
+						$texto.='<tr>
+									<td>L'.$gd->liq_num.'</td>
+									<td style="text-align: right;">'.$gd->total.' PEN</td>
+									<td style="text-align: right;">'.$gd->detraccion.' PEN</td>
+								</tr>';
+						}
+					$texto.='</tbody>
+						</table>';
 
-									$texto.='</tbody>
-									</table>
-
-									<h4>Detalle a Pagar</h4>	
-
-									<div style="float: left; width: 49%">
-									<table class="table table-striped table-bordered table-hover"  style="font-size: 1vw; width: 100%; font-family: '.$tipo.', CenturyGothic, AppleGothic, sans-serif;" border="1">
-										<tr>
-											<th width="30%" align="right"> Sub Total</th>
-											<td style="text-align: right;">'.$subtotal.' PEN</td>
-										</tr>
-										<tr>
-											<th width="30%" align="right"> IGV</th>
-											<td style="text-align: right;">'.$igv.' PEN</td>
-										</tr>
-										<tr>
-											<th width="30%" align="right"> Total</th>
-											<td style="text-align: right;">'.$total.' PEN</td>
-										</tr>
-									</table>
-									</div>
-									<div style="float: right; width: 49%">
-									<table class="table table-striped table-bordered table-hover"  style="font-size: 1vw; width: 100%; font-family: '.$tipo.', CenturyGothic, AppleGothic, sans-serif;" border="1">
-										<tr>
-											<th width="30%" align="right"> Detracciones</th>
-											<td style="text-align: right;">'.$detracciones.' PEN</td>
-										</tr>
-										<tr>
-											<th width="30%" align="right"> NETO A PAGAR</th>
-											<th style="text-align: right; color: red">'.$total_neto.' PEN</th>
-										</tr>
-									</table>
-									</div>
-									<br>
-									<div style="width: 100%"></div>
-									<br>';
-
-
-									if(!empty($liquidacion_grupo)){
-
-									$texto.='<h4>Detalle del Pago Realizado</h4>
-									<table class="table table-striped table-bordered table-hover"  style="font-size: 1vw; width: 100%; font-family: '.$tipo.', CenturyGothic, AppleGothic, sans-serif;" border="1">
-										<thead>
-											<tr>
-												<th>Usuario Liquida</th>
-												<th>Fecha</th>
-												<th>Banco</th>
-												<th>Forma de Pago</th>
-												<th>N° Operación</th>
-												<th>Correo Notificación</th>
-											</tr>														
-										</thead>
-										<tbody>';
-										foreach ($liquidacion_grupo as $lg) {
-											$texto.='<tr>
-												<td>'.$lg->username.'</td>
-												<td>'.$lg->fecha_liquida.'</td>
-												<td>'.$lg->descripcion.'</td>
-												<td>'.$lg->descripcion_fp.'</td>
-												<td>'.$lg->num_operacion.'</td>
-												<td>'.$lg->email_notifica.'</td>
-											</tr>';
-											$email_notifica=$lg->email_notifica;
-										}
-										$texto.='</tbody>
-									</table>';
-									}
-									$texto.='</div>';
 			
 			$mail = new PHPMailer;	
 			$mail->isSMTP();
-	        $mail->Host     = 'relay-hosting.secureserver.net';;
+	        $mail->Host     = 'relay-hosting.secureserver.net';
 	        $mail->SMTPAuth = false;
 	        $mail->Username = '';
 	        $mail->Password = '';
@@ -503,7 +584,8 @@ class Liquidacion_cnt extends CI_Controller {
 			$mail->setFrom($correo_laboral, 'Red Salud');
 			$mail->addAddress($correo_laboral, $nombres_col);
 			$mail->addAddress($email_notifica, $razon_social);
-			$mail->addAddress("pvigil@red-salud.com", "Angie Luna");
+			$mail->addAddress("pvigil@red-salud.com", "Pilar Vigil");			
+			$mail->addAddress("aluna@red-salud.com", "Angie Luna");
 			// El asunto
 			$mail->Subject = "NOTIFICACION RED SALUD: LIQUIDACION DE FACTURAS";
 			// El cuerpo del mail (puede ser HTML)
@@ -516,7 +598,9 @@ class Liquidacion_cnt extends CI_Controller {
 	                </div>
 	                <div style="padding-right: 15%; padding-left: 8%;"><b><label style="color: #000000;"> </b></div>
 	                <div style="padding-right: 15%; padding-left: 8%; padding-bottom: 1%; color: #12283E;">
+	                <br>
 	                '.$texto.'
+	                <br>
 	                <div style="background-color: #BF3434; padding-top: 0.5%; padding-bottom: 0.5%">
 	                <div style="text-align: center;"><b><a href="https://www.google.com/maps/place/Red+Salud/@-12.11922,-77.0370327,17z/data=!3m1!4b1!4m5!3m4!1s0x9105c83d49a4312b:0xf0959641cc08826!8m2!3d-12.11922!4d-77.034844" style="text-decoration-color: #FFFFFF; text-decoration: none; color:  #FFFFFF;">Av. Jos&eacute; Pardo Nro 601 Of. 502, Miraflores - Lima.</a></b></div>
 	                <div style="text-align: center;"><b><a href="https://www.red-salud.com" style="text-decoration-color: #FFFFFF; text-decoration: none; color:  #FFFFFF;">www.red-salud.com</a></b></div>
@@ -526,8 +610,8 @@ class Liquidacion_cnt extends CI_Controller {
 	            </body>
 				</html>';
 			$mail->IsHTML(true);
-			$mail->addAttachment('uploads/'.$id.'.pdf', 'Constancia de pago L'.$num.'.pdf');
-            $mail->addAttachment('uploads/L'.$num.'.pdf', 'Formato L'.$num.'.pdf');
+			$mail->addAttachment('uploads/'.$idpago.'.pdf', 'Constancia de pago GR'.$idpago.'.pdf');
+            $mail->addAttachment('uploads/GR'.$idpago.'.pdf', 'Formato GR'.$idpago.'.pdf');
 			$mail->CharSet = 'UTF-8';
 			// Los archivos adjuntos
 			//$mail->addAttachment('adjunto/'.$plan.'.pdf', 'Condicionado.pdf');
@@ -535,47 +619,52 @@ class Liquidacion_cnt extends CI_Controller {
 			// Enviar
 			$mail->send();
 
-		unlink('uploads/L'.$num.'.pdf');
+		unlink('uploads/GR'.$idpago.'.pdf');
 		echo "<script>
-				alert('Se registró el pago para la liquidación N° L".$_POST['numero']." con éxito.');
+				alert('Se registró el pago con éxito.');
 				parent.location.reload(true);
 				parent.$.fancybox.close();
 				</script>";
 	}
 
-	public function liquidacion_pdf($id,$num){
-		//Carga la librería que agregamos
+	public function liquidacion_pdf($idpago){
         $this->load->library('Pdf');
-
         $this->pdf = new Pdf();
-	    $this->pdf->AddPage();
-	    $this->pdf->AliasNbPages();
-	    
-	    $liquidacion = $this->liquidacion_mdl->liquidacionpdf($id); 
-	    $liquidacion_det = $this->liquidacion_mdl->liquidacionpdf_detalle($id);
-	    $detracciones=0;
-	    foreach ($liquidacion as $l){
-	    	$razon_social = $l->razon_social_pr;
-	    	$ruc = $l->numero_documento_pr;
-	    	$banco = $l->descripcion;
-	    	$tipo = $l->descripcion_fp;
-	    	$op = $l->num_operacion;
-	    	$total = $l->total;
-	    	$igv = $total * 0.18;
-	    	$subtotal = $total - $igv;
-	    	$cta_corriente = $l->cta_corriente;
-	    	$cta_detracciones = $l->cta_detracciones;
-	    	$colaborador = $l->colaborador;
-	    	$detracciones = $l->detraccion;
-	    	$fecha = $l->fecha_liquida;
-	    	$fecha = date('d/m/Y',strtotime($fecha));
+	    $liqgrupo = $this->liquidacion_mdl->getLiqGrupo($idpago);
 
-	    	$igv = number_format((float)$igv, 2, '.', '');
-	    	$subtotal = number_format((float)$subtotal, 2, '.', '');
-	    	$total = number_format((float)$total, 2, '.', '');
-	    }
+	    foreach ($liqgrupo as $lg) {	    	
+	    	$id = $lg->liqgrupo_id;
+	    	$num = $lg->num;
+	    	$liquidacion = $this->liquidacion_mdl->liquidacionpdf($id); 
+		    $liquidacion_det = $this->liquidacion_mdl->liquidacionpdf_detalle($id);
+		    $detracciones=0;
 
-	    		          
+		    foreach ($liquidacion as $l){
+		    	$razon_social = $l->razon_social_pr;
+		    	$ruc = $l->numero_documento_pr;
+		    	$banco = $l->descripcion;
+		    	$tipo = $l->descripcion_fp;
+		    	$op = $l->numero_operacion;
+		    	$total = $l->total;
+		    	$igv = $total * 0.18;
+		    	$subtotal = $total - $igv;
+		    	$cta_corriente = $l->cta_corriente;
+		    	$cta_detracciones = $l->cta_detracciones;
+		    	$colaborador = $l->colaborador;
+		    	$detracciones = $l->detraccion;
+		    	$fecha = $l->fecha_pago;
+		    	$fecha = date('d/m/Y',strtotime($fecha));
+
+		    	$igv = number_format((float)$igv, 2, '.', '');
+		    	$subtotal = number_format((float)$subtotal, 2, '.', '');
+		    	$total = number_format((float)$total, 2, '.', '');
+		    }
+
+		    //$num = printf('%08d', $id);
+	    		
+			    $this->pdf->AddPage();
+			    $this->pdf->AliasNbPages();
+			    $this->pdf->Ln();      
 	            $this->pdf->Ln();
 	          	$this->pdf->SetFont('Arial','I',10); 
 	          	$this->pdf->MultiCell(0,6,'Fecha: '.$fecha,0,'R',false);
@@ -642,30 +731,152 @@ class Liquidacion_cnt extends CI_Controller {
 	            $this->pdf->SetFont('Arial','BI',9);
 	            $this->pdf->Cell(40,6,utf8_decode("Banco"),1,0,'C',false);
 	            $this->pdf->Cell(40,6,utf8_decode("Tipo"),1,0,'C',false);
-	            $this->pdf->Cell(40,6,utf8_decode("N° Operación/Cheque"),1,0,'C',false);
-	            $this->pdf->Cell(40,6,utf8_decode("N° Cuenta"),1,0,'C',false);
+	            $this->pdf->Cell(30,6,utf8_decode("N° Op./Cheque"),1,0,'C',false);
+	            $this->pdf->Cell(50,6,utf8_decode("N° Cuenta"),1,0,'C',false);
 	            $this->pdf->Cell(0,6,utf8_decode("Neto a Pagar"),1,0,'C',false);
 	            $this->pdf->Ln();
 	            $this->pdf->SetFont('Arial','',9);
 	            $this->pdf->Cell(40,6,utf8_decode($banco),1,0,'C',false);
 	            $this->pdf->Cell(40,6,utf8_decode($tipo),1,0,'C',false);
-	            $this->pdf->Cell(40,6,utf8_decode($op),1,0,'C',false);
-	            $this->pdf->Cell(40,6,utf8_decode($cta_corriente),1,0,'C',false);
-	            $this->pdf->Cell(0,6,utf8_decode($total_neto),1,0,'C',false);
+	            $this->pdf->Cell(30,6,utf8_decode($op),1,0,'C',false);
+	            $this->pdf->Cell(50,6,utf8_decode($cta_corriente),1,0,'C',false);
+	            $this->pdf->Cell(0,6,'S/. '.utf8_decode($total_neto),1,0,'C',false);
 	            $this->pdf->Ln(15);
 	            $this->pdf->SetFont('Arial','BI',8);
 	            $this->pdf->Cell(20,6,utf8_decode("Emitido por:"),0,0,'R',false);
-	            $this->pdf->Cell(0,6,utf8_decode($colaborador),0,0,'L',false);
-	         
+	            $this->pdf->Cell(0,6,utf8_decode($colaborador),0,0,'L',false);	         
+	            $this->pdf->Line(10, 280 , 200, 280); 
+			    $this->pdf->SetTitle(utf8_decode("Liquidación GR").$idpago);
+			    $this->pdf->SetLeftMargin(15);
+			    $this->pdf->SetRightMargin(15);
+			    $this->pdf->SetFillColor(200,200,200);			   
+	    }
+		
+		$this->pdf->Output("GR".$idpago.".pdf", 'I');
+	}
+
+	public function liquidacion_pdf2($id,$num){
+        $this->load->library('Pdf');
+        $this->pdf = new Pdf();
+	    $liquidacion = $this->liquidacion_mdl->liquidacionpdf2($id); 
+		$liquidacion_det = $this->liquidacion_mdl->liquidacionpdf_detalle($id);
+		$detracciones=0;
+
+		    foreach ($liquidacion as $l){
+		    	$razon_social = $l->razon_social_pr;
+		    	$ruc = $l->numero_documento_pr;
+		    	$banco = $l->descripcion;
+		    	$tipo = $l->descripcion_fp;
+		    	$op = $l->numero_operacion;
+		    	$total = $l->total;
+		    	$igv = $total * 0.18;
+		    	$subtotal = $total - $igv;
+		    	$cta_corriente = $l->cta_corriente;
+		    	$cta_detracciones = $l->cta_detracciones;
+		    	$colaborador = $l->colaborador;
+		    	$detracciones = $l->detraccion;
+		    	$fecha = $l->fecha_pago;
+		    	$fecha = date('d/m/Y',strtotime($fecha));
+
+		    	$igv = number_format((float)$igv, 2, '.', '');
+		    	$subtotal = number_format((float)$subtotal, 2, '.', '');
+		    	$total = number_format((float)$total, 2, '.', '');
+		    }
+
+		    //$num = printf('%08d', $id);
+	    		
+			    $this->pdf->AddPage();
+			    $this->pdf->AliasNbPages();
+			    $this->pdf->Ln();      
+	            $this->pdf->Ln();
+	          	$this->pdf->SetFont('Arial','I',10); 
+	          	$this->pdf->MultiCell(0,6,'Fecha: '.$fecha,0,'R',false);
+	          	$this->pdf->Ln();
+	          	$this->pdf->SetFont('Arial','BU',12);
+	            $this->pdf->MultiCell(0,6,utf8_decode('ORDEN DE PAGO A PROVEEDORES')." Nro: L".$num,0,'C', false);
+	            $this->pdf->Ln();
+	            $this->pdf->SetFont('Arial','',10);
+	            $this->pdf->Cell(50,6,utf8_decode("Nombres/Razón Social"),1,0,'L',false);
+	            $this->pdf->Cell(0,6,utf8_decode($razon_social),1,0,'L',false);
+	            $this->pdf->Ln();
+	            $this->pdf->Cell(50,6,"DNI/RUC",1,0,'L',false);
+	            $this->pdf->Cell(0,6,$ruc,1,0,'L',false);
+	            $this->pdf->Ln();
+	            $this->pdf->Cell(50,6,"Concepto",1,0,'L',false);
+	            $this->pdf->Cell(0,6,utf8_decode("Liquidación de Facturas"),1,0,'L',false);
+	            $this->pdf->Ln(8);
+	            $this->pdf->SetFont('Arial','B',10);
+	            $this->pdf->Cell(50,6,utf8_decode("N° Documentos:"),0,0,'L',false);
+	            $this->pdf->Ln();
+	            $this->pdf->SetFont('Arial','BI',10);
+	            $this->pdf->Cell(35,6,utf8_decode("N° Factura"),1,0,'C',false);
+	            $this->pdf->Cell(35,6,utf8_decode("N° Orden Atención"),1,0,'C',false);
+	            $this->pdf->Cell(90,6,utf8_decode("Paciente"),1,0,'C',false);
+	            $this->pdf->Cell(30,6,utf8_decode("Importe"),1,0,'C',false);
+	            $this->pdf->Ln();
+	            $this->pdf->SetFont('Arial','',10);
+	            foreach ($liquidacion_det as $ld) {            
+	            $this->pdf->Cell(35,6,utf8_decode($ld->liqdetalle_numfact),1,0,'L',false);
+	            $this->pdf->Cell(35,6,utf8_decode("OA".$ld->num_orden_atencion),1,0,'L',false);
+	            $this->pdf->Cell(90,6,utf8_decode($ld->afiliado),1,0,'L',false);
+	            $this->pdf->Cell(30,6,number_format((float)$ld->neto, 2, '.', ''),1,0,'R',false);
+	            $this->pdf->Ln();
+	            }
+	            $detracciones = number_format((float)$detracciones, 2, '.', '');
+	            $total_neto=$total-$detracciones;
+	            $total_neto = number_format((float)$total_neto, 2, '.', '');
+	            $this->pdf->SetFont('Arial','BI',10);
+	            $this->pdf->Cell(160,6,utf8_decode("Total"),1,0,'R',false);
+	            $this->pdf->Cell(30,6,utf8_decode($total),1,0,'R',false);
+	            $this->pdf->Ln(10);
+	            $this->pdf->SetFont('Arial','BU',11);
+	            $this->pdf->MultiCell(0,6,utf8_decode('DETALLE TOTAL A PAGAR'),0,'C', false);
+	            $this->pdf->Ln();
+	            $this->pdf->SetFont('Arial','',10);
+	            $this->pdf->Cell(45,6,utf8_decode("SUB TOTAL"),1,0,'R',false);
+	            $this->pdf->Cell(45,6,$subtotal,1,0,'R',false);
+	            $this->pdf->Ln();
+	            $this->pdf->Cell(45,6,utf8_decode("IGV"),1,0,'R',false);
+	            $this->pdf->Cell(45,6,$igv,1,0,'R',false);	
+	            $this->pdf->Cell(5,6,"",0,0,'L',false);            
+	            $this->pdf->Cell(45,6,utf8_decode("N° CTA DETARCCIONES"),1,0,'R',false);
+	            $this->pdf->Cell(0,6,utf8_decode($cta_detracciones),1,0,'R',false);
+	            $this->pdf->Ln();
+	            $this->pdf->Cell(45,6,utf8_decode("TOTAL"),1,0,'R',false);
+	            $this->pdf->Cell(45,6,$total,1,0,'R',false);	            
+	            $this->pdf->Cell(5,6,"",0,0,'L',false);            
+	            $this->pdf->Cell(45,6,utf8_decode("DETRACCIÓN 12%"),1,0,'R',false);
+	            $this->pdf->Cell(0,6,utf8_decode($detracciones),1,0,'R',false);
+	            $this->pdf->Ln(15);
+	            $this->pdf->SetFont('Arial','B',10);
+	            $this->pdf->Cell(50,6,utf8_decode("FORMA DE PAGO:"),0,0,'L',false);
+	            $this->pdf->Ln();
+	            $this->pdf->SetFont('Arial','BI',9);
+	            $this->pdf->Cell(40,6,utf8_decode("Banco"),1,0,'C',false);
+	            $this->pdf->Cell(40,6,utf8_decode("Tipo"),1,0,'C',false);
+	            $this->pdf->Cell(30,6,utf8_decode("N° Op./Cheque"),1,0,'C',false);
+	            $this->pdf->Cell(50,6,utf8_decode("N° Cuenta"),1,0,'C',false);
+	            $this->pdf->Cell(0,6,utf8_decode("Neto a Pagar"),1,0,'C',false);
+	            $this->pdf->Ln();
+	            $this->pdf->SetFont('Arial','',9);
+	            $this->pdf->Cell(40,6,utf8_decode($banco),1,0,'C',false);
+	            $this->pdf->Cell(40,6,utf8_decode($tipo),1,0,'C',false);
+	            $this->pdf->Cell(30,6,utf8_decode($op),1,0,'C',false);
+	            $this->pdf->Cell(50,6,utf8_decode($cta_corriente),1,0,'C',false);
+	            $this->pdf->Cell(0,6,"S/. ".utf8_decode($total_neto),1,0,'C',false);
+	            $this->pdf->Ln(15);
+	            $this->pdf->SetFont('Arial','BI',8);
+	            $this->pdf->Cell(20,6,utf8_decode("Emitido por:"),0,0,'R',false);
+	            $this->pdf->Cell(0,6,utf8_decode($colaborador),0,0,'L',false);	         
 	            $this->pdf->Line(10, 280 , 200, 280); 
 			    $this->pdf->SetTitle(utf8_decode("Liquidación L").$num);
 			    $this->pdf->SetLeftMargin(15);
 			    $this->pdf->SetRightMargin(15);
-			    $this->pdf->SetFillColor(200,200,200);
-
-		        $this->pdf->Output("L".$num.".pdf", 'I');
-
+			    $this->pdf->SetFillColor(200,200,200);		
+		
+		$this->pdf->Output("L".$num.".pdf", 'I');
 	}
+
 
 	function view_reenviar($id,$num){
 		$data['id'] = $id;
@@ -675,39 +886,53 @@ class Liquidacion_cnt extends CI_Controller {
 
 	function reenviar_liquidacion(){
 		$id = $_POST['id'];
-		$num = $_POST['num'];
+		$idpago = $id;
 		$correo = $_POST['correo'];
 		//Crear formato de liquidación
-        $this->load->library('Pdf');
+        $user = $this->session->userdata('user');
+		extract($user);
+
+		$data['idusuario'] = $idusuario;
+
+		// //Crear formato de liquidación
+		$this->load->library('Pdf');
         $this->pdf = new Pdf();
-	    $this->pdf->AddPage();
-	    $this->pdf->AliasNbPages();
-	    
-	    $liquidacion = $this->liquidacion_mdl->liquidacionpdf($id); 
-	    $liquidacion_det = $this->liquidacion_mdl->liquidacionpdf_detalle($id);
-	    $detracciones=0;
-	    foreach ($liquidacion as $l){
-	    		$razon_social = $l->razon_social_pr;
-	    		$ruc = $l->numero_documento_pr;
-	    		$banco = $l->descripcion;
-	    		$tipo = $l->descripcion_fp;
-	    		$op = $l->num_operacion;
-	    		$total = $l->total;
-	    		$igv = $total * 0.18;
-	    		$subtotal = $total - $igv;
-	    		$cta_corriente = $l->cta_corriente;
-	    		$cta_detracciones = $l->cta_detracciones;
-	    		$colaborador = $l->colaborador;
-	    		$detracciones = $l->detraccion;
-	    		$fecha = $l->fecha_liquida;
-	    		$fecha = date('d/m/Y',strtotime($fecha));
+	    $liqgrupo = $this->liquidacion_mdl->getLiqGrupo($idpago);
 
-	    		$igv = number_format((float)$igv, 2, '.', '');
-	    		$subtotal = number_format((float)$subtotal, 2, '.', '');
-	    		$total = number_format((float)$total, 2, '.', '');
-	    	}
+	    foreach ($liqgrupo as $lg) {	    	
+	    	$id = $lg->liqgrupo_id;
+	    	$num = $lg->num;
+	    	$liquidacion = $this->liquidacion_mdl->liquidacionpdf($id); 
+		    $liquidacion_det = $this->liquidacion_mdl->liquidacionpdf_detalle($id);
+		    $detracciones=0;
 
-	    		          
+		    foreach ($liquidacion as $l){
+		    	$razon_social = $l->razon_social_pr;
+		    	$ruc = $l->numero_documento_pr;
+		    	$banco = $l->descripcion;
+		    	$tipo = $l->descripcion_fp;
+		    	$op = $l->numero_operacion;
+		    	$total = $l->total;
+		    	$igv = $total * 0.18;
+		    	$subtotal = $total - $igv;
+		    	$cta_corriente = $l->cta_corriente;
+		    	$cta_detracciones = $l->cta_detracciones;
+		    	$colaborador = $l->colaborador;
+		    	$detracciones = $l->detraccion;
+		    	$email_notifica = $l->email_notifica;
+		    	$fecha = $l->fecha_pago;
+		    	$fecha = date('d/m/Y',strtotime($fecha));
+
+		    	$igv = number_format((float)$igv, 2, '.', '');
+		    	$subtotal = number_format((float)$subtotal, 2, '.', '');
+		    	$total = number_format((float)$total, 2, '.', '');
+		    }
+
+		    //$num = printf('%08d', $id);
+	    		
+			    $this->pdf->AddPage();
+			    $this->pdf->AliasNbPages();
+			    $this->pdf->Ln();      
 	            $this->pdf->Ln();
 	          	$this->pdf->SetFont('Arial','I',10); 
 	          	$this->pdf->MultiCell(0,6,'Fecha: '.$fecha,0,'R',false);
@@ -774,27 +999,29 @@ class Liquidacion_cnt extends CI_Controller {
 	            $this->pdf->SetFont('Arial','BI',9);
 	            $this->pdf->Cell(40,6,utf8_decode("Banco"),1,0,'C',false);
 	            $this->pdf->Cell(40,6,utf8_decode("Tipo"),1,0,'C',false);
-	            $this->pdf->Cell(40,6,utf8_decode("N° Operación/Cheque"),1,0,'C',false);
-	            $this->pdf->Cell(40,6,utf8_decode("N° Cuenta"),1,0,'C',false);
+	            $this->pdf->Cell(30,6,utf8_decode("N° Op./Cheque"),1,0,'C',false);
+	            $this->pdf->Cell(50,6,utf8_decode("N° Cuenta"),1,0,'C',false);
 	            $this->pdf->Cell(0,6,utf8_decode("Neto a Pagar"),1,0,'C',false);
 	            $this->pdf->Ln();
 	            $this->pdf->SetFont('Arial','',9);
 	            $this->pdf->Cell(40,6,utf8_decode($banco),1,0,'C',false);
 	            $this->pdf->Cell(40,6,utf8_decode($tipo),1,0,'C',false);
-	            $this->pdf->Cell(40,6,utf8_decode($op),1,0,'C',false);
-	            $this->pdf->Cell(40,6,utf8_decode($cta_corriente),1,0,'C',false);
-	            $this->pdf->Cell(0,6,utf8_decode($total_neto),1,0,'C',false);
+	            $this->pdf->Cell(30,6,utf8_decode($op),1,0,'C',false);
+	            $this->pdf->Cell(50,6,utf8_decode($cta_corriente),1,0,'C',false);
+	            $this->pdf->Cell(0,6,"S/. ".utf8_decode($total_neto),1,0,'C',false);
 	            $this->pdf->Ln(15);
 	            $this->pdf->SetFont('Arial','BI',8);
 	            $this->pdf->Cell(20,6,utf8_decode("Emitido por:"),0,0,'R',false);
 	            $this->pdf->Cell(0,6,utf8_decode($colaborador),0,0,'L',false);
+	         
 	            $this->pdf->Line(10, 280 , 200, 280); 
-			    $this->pdf->SetTitle(utf8_decode("Liquidación L").$num);
+			    $this->pdf->SetTitle(utf8_decode("Liquidación GR").$idpago);
 			    $this->pdf->SetLeftMargin(15);
 			    $this->pdf->SetRightMargin(15);
-			    $this->pdf->SetFillColor(200,200,200);
+			    $this->pdf->SetFillColor(200,200,200);			   
+	    }
 
-		        $this->pdf->Output("uploads/L".$num.".pdf", 'F');
+		$this->pdf->Output("uploads/GR".$idpago.".pdf", 'F');
 
 		// Enviar email de liquidación a proveedor 
 		    $user = $this->session->userdata('user');
@@ -802,132 +1029,45 @@ class Liquidacion_cnt extends CI_Controller {
 
 			$liquidacionDet = $this->liquidacion_mdl->getLiquidacionDet($id);
 			$liquidacion_grupo = $this->liquidacion_mdl->getLiquidacionGrupo($id);
+			$gasto_detalle = $this->liquidacion_mdl->pagoDet($idpago);
 
 				$tipo="'Century Gothic'";
-				$texto='<table class="table table-striped table-bordered table-hover"  style="font-size: 1vw; width: 100%; font-family: '.$tipo.', CenturyGothic, AppleGothic, sans-serif;" border="1">
-										<tr>
-										<th width="30%">Nombre/Razón Social</th>
-										<td>'.$razon_social.'</td>
-										</tr>
-										<tr>
-										<th width="30%">DNI/RUC</th>
-										<td>'.$ruc.'</td>
-										</tr>
-										<tr>
-										<th width="30%">Concepto</th>
-										<td>Liquidación de Facturas</td>
-										</tr>
-									</table>
+				$texto='<p>Estimado(a) '.$razon_social.' se ha realizo el pago de las siguientes liquidaciones, se adjunta el detalle y constancia de pago de las mismas.</p>
+				<table class="table table-striped table-bordered table-hover"  style="font-size: 1vw; width: 100%; font-family: '.$tipo.', CenturyGothic, AppleGothic, sans-serif;" border="1">
+							<thead>
+								<tr>
+									<th>N° Liquidación</th>
+									<th>Importe Inc. IGV</th>
+									<th>Importe Detracción</th>
+								</tr>
+							</thead>
+							<tbody>';
 
-									<h4>N° Documentos:</h4>	
-									<table id="example" class="table table-striped table-bordered table-hover"  style="font-size: 1vw; width: 100%; font-family: '.$tipo.', CenturyGothic, AppleGothic, sans-serif;" border="1">
-										<thead>
-											<tr>
-												<th>N° Factura</th>
-												<th>N° Orden Atención</th>
-												<th>Afiliado</th>
-												<th>Concepto</th>
-												<th>Importe Bruto</th>
-												<th>Importe Neto</th>
-											</tr>
-										</thead>
-										<tbody>';
-										foreach ($liquidacionDet as $ld){
-											$texto.='<tr>
-												<td>'.$ld->liqdetalle_numfact.'</td>
-												<td>'.$ld->num_orden_atencion.'</td>
-												<td>'.$ld->afiliado.'</td>
-												<td>'.$ld->nombre_var.' '.$ld->detalle.'</td>
-												<td style="text-align: right;">'.$ld->liqdetalle_monto.' PEN</td>
-												<td style="text-align: right;">'.$ld->liqdetalle_neto.' PEN</td>
-											</tr>';
-										}
+						foreach ($gasto_detalle as $gd) {
+						$texto.='<tr>
+									<td>L'.$gd->liq_num.'</td>
+									<td style="text-align: right;">'.$gd->total.' PEN</td>
+									<td style="text-align: right;">'.$gd->detraccion.' PEN</td>
+								</tr>';
+						}
+					$texto.='</tbody>
+						</table>';
 
-									$texto.='</tbody>
-									</table>
-
-									<h4>Detalle a Pagar</h4>	
-
-									<div style="float: left; width: 49%">
-									<table class="table table-striped table-bordered table-hover"  style="font-size: 1vw; width: 100%; font-family: '.$tipo.', CenturyGothic, AppleGothic, sans-serif;" border="1">
-										<tr>
-											<th width="30%" align="right"> Sub Total</th>
-											<td style="text-align: right;">'.$subtotal.' PEN</td>
-										</tr>
-										<tr>
-											<th width="30%" align="right"> IGV</th>
-											<td style="text-align: right;">'.$igv.' PEN</td>
-										</tr>
-										<tr>
-											<th width="30%" align="right"> Total</th>
-											<td style="text-align: right;">'.$total.' PEN</td>
-										</tr>
-									</table>
-									</div>
-									<div style="float: right; width: 49%">
-									<br><br><br><br>
-									<table class="table table-striped table-bordered table-hover"  style="font-size: 1vw; width: 100%; font-family: '.$tipo.', CenturyGothic, AppleGothic, sans-serif;" border="1">
-										<tr>
-											<th width="30%" align="right"> Detracciones</th>
-											<td style="text-align: right;">'.$detracciones.' PEN</td>
-										</tr>
-										<tr>
-											<th width="30%" align="right"> NETO A PAGAR</th>
-											<th style="text-align: right; color: red">'.$total_neto.' PEN</th>
-										</tr>
-									</table>
-									</div>
-									<br>
-									<div style="width: 100%"></div>
-									<br>';
-
-
-									if(!empty($liquidacion_grupo)){
-
-									$texto.='<h4>Detalle del Pago Realizado</h4>
-									<table class="table table-striped table-bordered table-hover"  style="font-size: 1vw; width: 100%; font-family: '.$tipo.', CenturyGothic, AppleGothic, sans-serif;" border="1">
-										<thead>
-											<tr>
-												<th>Usuario Liquida</th>
-												<th>Fecha</th>
-												<th>Banco</th>
-												<th>Forma de Pago</th>
-												<th>N° Operación</th>
-												<th>Correo Notificación</th>
-											</tr>														
-										</thead>
-										<tbody>';
-										foreach ($liquidacion_grupo as $lg) {
-											$texto.='<tr>
-												<td>'.$lg->username.'</td>
-												<td>'.$lg->fecha_liquida.'</td>
-												<td>'.$lg->descripcion.'</td>
-												<td>'.$lg->descripcion_fp.'</td>
-												<td>'.$lg->num_operacion.'</td>
-												<td>'.$lg->email_notifica.'</td>
-											</tr>';
-											$email_notifica=$lg->email_notifica;
-										}
-										$texto.='</tbody>
-									</table>';
-									}
-									$texto.='</div>';
 			
-			$mail = new PHPMailer;		
-			// Armo el FROM y el TO
+			$mail = new PHPMailer;	
 			$mail->isSMTP();
-	        $mail->Host     = 'relay-hosting.secureserver.net';;
+	        $mail->Host     = 'relay-hosting.secureserver.net';
 	        $mail->SMTPAuth = false;
 	        $mail->Username = '';
 	        $mail->Password = '';
 	        $mail->SMTPSecure = 'false';
-	        $mail->Port     = 25;
-
+	        $mail->Port     = 25;	
+			// Armo el FROM y el TO
 			$mail->setFrom($correo_laboral, 'Red Salud');
 			$mail->addAddress($correo_laboral, $nombres_col);
 			$mail->addAddress($email_notifica, $razon_social);
-			$mail->addAddress($correo, $razon_social);
-			$mail->addAddress("pvigil@red-salud.com", "Angie Luna");
+			$mail->addAddress("pvigil@red-salud.com", "Pilar Vigil");
+			$mail->addAddress("aluna@red-salud.com", "Angie Luna");
 			// El asunto
 			$mail->Subject = "NOTIFICACION RED SALUD: LIQUIDACION DE FACTURAS";
 			// El cuerpo del mail (puede ser HTML)
@@ -940,7 +1080,9 @@ class Liquidacion_cnt extends CI_Controller {
 	                </div>
 	                <div style="padding-right: 15%; padding-left: 8%;"><b><label style="color: #000000;"> </b></div>
 	                <div style="padding-right: 15%; padding-left: 8%; padding-bottom: 1%; color: #12283E;">
+	                <br>
 	                '.$texto.'
+	                <br>
 	                <div style="background-color: #BF3434; padding-top: 0.5%; padding-bottom: 0.5%">
 	                <div style="text-align: center;"><b><a href="https://www.google.com/maps/place/Red+Salud/@-12.11922,-77.0370327,17z/data=!3m1!4b1!4m5!3m4!1s0x9105c83d49a4312b:0xf0959641cc08826!8m2!3d-12.11922!4d-77.034844" style="text-decoration-color: #FFFFFF; text-decoration: none; color:  #FFFFFF;">Av. Jos&eacute; Pardo Nro 601 Of. 502, Miraflores - Lima.</a></b></div>
 	                <div style="text-align: center;"><b><a href="https://www.red-salud.com" style="text-decoration-color: #FFFFFF; text-decoration: none; color:  #FFFFFF;">www.red-salud.com</a></b></div>
@@ -950,8 +1092,8 @@ class Liquidacion_cnt extends CI_Controller {
 	            </body>
 				</html>';
 			$mail->IsHTML(true);
-			$mail->addAttachment('uploads/'.$id.'.pdf', 'Constancia de pago L'.$num.'.pdf');
-            $mail->addAttachment('uploads/L'.$num.'.pdf', 'Formato L'.$num.'.pdf');
+			$mail->addAttachment('uploads/'.$idpago.'.pdf', 'Constancia de pago GR'.$idpago.'.pdf');
+            $mail->addAttachment('uploads/GR'.$idpago.'.pdf', 'Formato GR'.$idpago.'.pdf');
 			$mail->CharSet = 'UTF-8';
 			// Los archivos adjuntos
 			//$mail->addAttachment('adjunto/'.$plan.'.pdf', 'Condicionado.pdf');
@@ -959,9 +1101,9 @@ class Liquidacion_cnt extends CI_Controller {
 			// Enviar
 			$mail->send();
 
-		unlink('uploads/L'.$num.'.pdf');
+		unlink('uploads/GR'.$idpago.'.pdf');
 		echo "<script>
-				alert('Se reenvió el correo electrónico de notificación para la liquidación N° L".$_POST['numero']." con éxito.');
+				alert('Se reenvió el correo electrónico con éxito.');
 				parent.location.reload(true);
 				parent.$.fancybox.close();
 				</script>";

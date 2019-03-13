@@ -10,7 +10,7 @@
  		$this->db->select("idclienteempresa, nombre_comercial_cli");
  		$this->db->from("cliente_empresa");
         $this->db->where("idcategoriacliente",2);
-        $this->db->where("estado_cli",1);
+        //$this->db->where("estado_cli",1);
  		$this->db->order_by("nombre_comercial_cli");
 
  	$canal = $this->db->get();
@@ -20,7 +20,7 @@
 	function getPlanes2($id){
  		$this->db->select("idplan, nombre_plan, flg_cancelar");
  		$this->db->from("plan");		
-    	$this->db->where("estado_plan",1);
+    	//$this->db->where("estado_plan",1);
  		$this->db->where("idclienteempresa",$id);
 
  	$planes = $this->db->get();
@@ -32,7 +32,7 @@
  		$this->db->from("plan p");
  		$this->db->join("cliente_empresa c","p.idclienteempresa=c.idclienteempresa");
  		$this->db->where("p.idclienteempresa",$id); 		
-    	$this->db->where("estado_plan",1);
+    	//$this->db->where("estado_plan",1);
  		$this->db->order_by("nombre_comercial_cli,nombre_plan");
 
  	$planes = $this->db->get();
@@ -45,8 +45,7 @@
  		$this->db->join("contratante co", "c.cont_id=co.cont_id");
  		$this->db->join("plan p","c.plan_id=p.idplan");
  		$this->db->join("cliente_empresa ce","ce.idclienteempresa=p.idclienteempresa");
- 		$this->db->join("(select count(certase_id) as cant, c.cert_id from certificado c inner join contratante co on c.cont_id=co.cont_id inner join plan p on p.idplan=c.plan_id LEFT JOIN certificado_asegurado ca on c.cert_id = ca.cert_id WHERE `p`.`idclienteempresa` = ".$data['canal']." AND `idplan` = ".$data['plan']." AND `cont_numDoc` = '".$data['doc']."'
-GROUP BY c.cert_id)b","b.cert_id=c.cert_id");
+ 		$this->db->join("(select count(certase_id) as cant, c.cert_id from certificado c inner join contratante co on c.cont_id=co.cont_id inner join plan p on p.idplan=c.plan_id LEFT JOIN certificado_asegurado ca on c.cert_id = ca.cert_id WHERE `p`.`idclienteempresa` = ".$data['canal']." AND `idplan` = ".$data['plan']." AND `cont_numDoc` = '".$data['doc']."' GROUP BY c.cert_id)b","b.cert_id=c.cert_id");
  		$this->db->where("p.idclienteempresa",$data['canal']);
  		$this->db->where("idplan",$data['plan']);
  		$this->db->where("cont_numDoc",$data['doc']);
@@ -155,7 +154,6 @@ GROUP BY c.cert_id)b","b.cert_id=c.cert_id");
 	}
 
 	function getAseg_editar($id,$cert){
-
 		$this->db->select("a.aseg_id, aseg_nom1, aseg_nom2, aseg_ape1, aseg_ape2, aseg_direcc, coalesce(SUBSTR(aseg_ubg, 1,2),'') as dep, coalesce(SUBSTR(aseg_ubg, 1,4),'') as prov, coalesce(SUBSTR(aseg_ubg, 1,6),'') as dist, aseg_email, aseg_telf, concat(SUBSTR(aseg_fechNac,1,4),'-',SUBSTR(aseg_fechNac,5,2),'-',SUBSTR(aseg_fechNac,7,2)) as aseg_fechNac, tipoDoc_id, aseg_numDoc, aseg_sexo, aseg_estCiv");
 		$this->db->from('asegurado a ');
 		$this->db->join("certificado_asegurado ca","a.aseg_id=ca.aseg_id");
@@ -419,5 +417,17 @@ GROUP BY c.cert_id)b","b.cert_id=c.cert_id");
     	$this->db->insert('certificado',$array);
     }
 
+    function getPlanesDni($dni){
+    	$this->db-select("ca.certase_id, concat(nombre_comercial_cli,'-',nombre_plan) as plan ");
+    	$this->db->from("asegurado a ");
+    	$this->db->join("certificado_asegurado ca","a.aseg_id= ca.aseg_id");
+    	$this->db->join("certificado c","c.cert_id=ca.cert_id");
+    	$this->db->join("plan p","c.plan_id=p.idplan");
+    	$this->db->join("cliente_empresa ce","ce.idclienteempresa=p.idclienteempresa");
+    	$this->db->where("aseg_numDoc",$dni);
+
+    	$query = $this->db->get();
+    	return $query->result();
+    }
 }
 ?>

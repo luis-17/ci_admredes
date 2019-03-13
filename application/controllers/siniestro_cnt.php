@@ -197,74 +197,68 @@ class Siniestro_cnt extends CI_Controller {
 	        	}
 
 	        	$texto .= '<div class="panel panel-default">
-													<div class="panel-heading">
-														<a href="#faq-3-'.$cont.'" data-parent="#faq-list-3" data-toggle="collapse" class="accordion-toggle collapsed">
-															<i class="ace-icon fa fa-chevron-right smaller-80" data-icon-hide="ace-icon fa fa-chevron-down align-top" data-icon-show="ace-icon fa fa-chevron-right"></i>&nbsp;
-															'.$s->nombre_var.'
-														</a>
-													</div>
+							<div class="panel-heading">
+								<a href="#faq-3-'.$cont.'" data-parent="#faq-list-3" data-toggle="collapse" class="accordion-toggle collapsed">
+									<i class="ace-icon fa fa-chevron-right smaller-80" data-icon-hide="ace-icon fa fa-chevron-down align-top" data-icon-show="ace-icon fa fa-chevron-right"></i>&nbsp;
+										'.$s->nombre_var.'
+								</a>
+							</div>
 
-													<div class="panel-collapse collapse" id="faq-3-'.$cont.'">
-													<div class="panel-body">
-															
-															<!-- star table -->	
-														<div style="float: left;">
-															<label>Número de Eventos </label> <button class="btn btn-white btn-danger btn-sm">'.$s->vez_actual2.''.$s->total_vez.'</button>
-														</div>	
-														<br><br>
-														<div class="col-xs-12">
-															
-															<div class="form-group">
-															<form method="post" action="'.base_url().'index.php/save_siniestro_analisis">
-															<input type="hidden" name="sin_id" id="sin_id" value="'.$s->idsiniestro.'">
-															<input type="hidden" name="idplandetalle" value="'.$s->idplandetalle.'" id="idplandetalle">
-																<table id="example'.$s->idplandetalle.'" class="table table-striped table-bordered table-hover">
-																	<thead>
-																		<tr>
-																			<th>ID</th>
-																			<th>Descripción</th>
-																			<th>Tipo</th>
-																			<th></th>
-																		</tr>
-																	</thead>
-																	<tbody>';
-																	foreach ($producto_analisis as $pr) {
-																$texto.='<tr>
-																			<td>'.$pr->idproducto.'</td>
-																			<td>'.$pr->descripcion_prod.'</td>
-																			<td>Cubierto</td>
-																			<td><input type="checkbox" name="chk'.$s->idplandetalle.'[]" id="chk'.$s->idplandetalle.'[]" value="'.$pr->idproducto.'" '.$pr->checked.' '.$disabled.'></td>
-																		</tr>';
+							<div class="panel-collapse collapse" id="faq-3-'.$cont.'">
+								<div class="panel-body">
+									<!-- star table -->	
+									<div style="float: left;">
+										<label>Número de Eventos </label> <button class="btn btn-white btn-danger btn-sm">'.$s->vez_actual2.''.$s->total_vez.'</button>
+									</div>	
+									<br><br>
+									<div class="col-xs-12">
+										<div class="form-group">
+											<form method="post" action="'.base_url().'index.php/save_siniestro_analisis">
+												<input type="hidden" name="sin_id" id="sin_id" value="'.$s->idsiniestro.'">
+												<input type="hidden" name="idplandetalle" value="'.$s->idplandetalle.'" id="idplandetalle">
+												<table id="example'.$s->idplandetalle.'" class="table table-striped table-bordered table-hover">
+													<thead>
+														<tr>
+															<th>ID</th>
+															<th>Descripción</th>
+															<th>Tipo</th>
+															<th></th>
+														</tr>
+													</thead>
+													<tbody>';
+													foreach ($producto_analisis as $pr) {
+												$texto.='<tr>
+															<td>'.$pr->idproducto.'</td>
+															<td>'.$pr->descripcion_prod.'</td>
+															<td>Cubierto</td>
+															<td><input type="checkbox" name="chk'.$s->idplandetalle.'[]" id="chk'.$s->idplandetalle.'[]" value="'.$pr->idproducto.'" '.$pr->checked.' '.$disabled.'></td>
+														</tr>';
 																	}
-															$texto.='</tbody>
-																</table>
-
-															</div>
-															<script>	
-															$(document).ready(function() {
-														    $("#example'.$s->idplandetalle.'").DataTable( {
-														        "pagingType": "full_numbers"
-														    } );
-														} );
-													</script>
-														</div>
-														<div class="form-group">
-														<input type="hidden" name="idnc'.$s->idplandetalle.'" id="idnc'.$s->idplandetalle.'" value='.$ida.' >
-															<label class="col-sm-3 control-label no-padding-right" for="form-field-1" align="right">No cubierto: </label>
-
-															<div class="col-sm-6" align="left">
-																<input class="form-control input-mask-date" type="text" name="servicio'.$s->idplandetalle.'" id="servicio'.$s->idplandetalle.'" value="'.$desc.'" placeholder="'.$s->nombre_var.' no cubierto por el plan" />
-															</div>
-														</div>
-														<br><br><br>
-														<div align="right"><button class="btn btn-info" type="submit">Guardar</button></div>
-
-
-														</form>
-														<!-- end table --> 
-
-															</div></div></div>
-													';
+											$texto.='</tbody>
+												</table>
+											</div>
+											<script>	
+												$(document).ready(function() {
+													$("#example'.$s->idplandetalle.'").DataTable( {
+														"pagingType": "full_numbers"
+													} );
+													} );
+											</script>
+										</div>
+										<div class="form-group">
+											<input type="hidden" name="idnc'.$s->idplandetalle.'" id="idnc'.$s->idplandetalle.'" value='.$ida.' >
+											<label class="col-sm-3 control-label no-padding-right" for="form-field-1" align="right">No cubierto: </label>
+											<div class="col-sm-6" align="left">
+												<input class="form-control input-mask-date" type="text" name="servicio'.$s->idplandetalle.'" id="servicio'.$s->idplandetalle.'" value="'.$desc.'" placeholder="'.$s->nombre_var.' no cubierto por el plan" />
+											</div>
+										</div>
+										<br><br><br>
+										<div align="right"><button class="btn btn-info" type="submit">Guardar</button></div>
+										</form>
+									<!-- end table --> 
+									</div>
+								</div>
+							</div>';
 				$cont = $cont+1;
 	        }
 	        $texto.='</div>';
@@ -325,10 +319,12 @@ class Siniestro_cnt extends CI_Controller {
 		       	if($data['idtriaje']==""){	       		
 
 			 		$this->siniestro_mdl->guardaTriaje($data);
+			 		$this->siniestro_mdl->updateSiniestro_tria($data);
 
 		       	}else{
 
 		       		$this->siniestro_mdl->updateTriaje($data);
+		       		$this->siniestro_mdl->updateSiniestro_tria($data);
 
 		       	}
 		    
@@ -444,7 +440,11 @@ class Siniestro_cnt extends CI_Controller {
 				}
 
 
-			$this->load->view('dsb/html/atencion/test.php',$data);
+			echo "<script>
+				alert('Se registró el medicamento con éxito.');
+				parent.location.reload(true);
+				parent.$.fancybox.close();
+				</script>";
 		}
 		else{
 			redirect('/');
@@ -786,8 +786,7 @@ class Siniestro_cnt extends CI_Controller {
 
 				   }
 				}
-
-
+				
 			$this->load->view('dsb/html/atencion/test.php',$data);
 		}
 		else{
@@ -897,7 +896,6 @@ class Siniestro_cnt extends CI_Controller {
 		    //actualizamos el tratamiento
 
 		    $this->siniestro_mdl->updateTratamiento($data);
-
 			//$this->load->view('dsb/html/atencion/test.php',$data);
 		}
 		else{
@@ -976,10 +974,34 @@ class Siniestro_cnt extends CI_Controller {
 		$idnc = $_POST['idnc'.$idplandetalle];
 		$data['servicio'] = $_POST['servicio'.$idplandetalle];
 
+		$cert = $this->siniestro_mdl->getCert($data);
+
+					$data['cert'] = "";
+					$vez_actual = 0;
+					$cant = 0;
+					$cant_tot = 0;
+
+			if(!empty($cert)){
+				foreach ($cert as $c) {
+					$data['cert'] = $c->cert_id;
+					$vez_actual = $c->vez_actual;
+					$cant = $c->cant;
+					$cant_tot = $c->cant_tot;
+				}
+			}
+
 		if(!empty($_POST['chk'.$idplandetalle])){
 
-		$chk = $_POST['chk'.$idplandetalle];		
-		$num = count($chk);
+				if($cant_tot==0){
+				$data['vez_actual'] = $vez_actual;
+				}elseif($cant==0){
+					$data['vez_actual'] = $vez_actual;
+				}else{
+					$data['vez_actual'] = $vez_actual-1;
+				}	
+
+			$chk = $_POST['chk'.$idplandetalle];		
+			$num = count($chk);
 
 			for($i=0;$i<$num;$i++){
 				$data['idpr']=$chk[$i];
@@ -1013,6 +1035,7 @@ class Siniestro_cnt extends CI_Controller {
 					alert('Se registraron los servicios con éxito.');
 					location.href='".base_url()."index.php/siniestro/".$data['sin_id']."';
 					</script>";
+
 		}elseif ($data['servicio']!="") {
 			
 			if($idnc==0){
@@ -1022,23 +1045,40 @@ class Siniestro_cnt extends CI_Controller {
 				$this->siniestro_mdl->update_NC($data);
 			}
 			$this->siniestro_mdl->eliminar_todo($data);
+
+				if($cant_tot==0){
+				$data['vez_actual'] = $vez_actual-1;
+				}else{
+					$data['vez_actual'] = $vez_actual-2;
+				}
+
 			echo "<script>
 					alert('Se registraron los servicios con éxito.');
 					location.href='".base_url()."index.php/siniestro/".$data['sin_id']."';
 					</script>";
-		}else{
 
+		}else{
 			if($idnc!=0){
 				$data['idnc'] = $idnc;
 				$this->siniestro_mdl->eliminar_servicio($data);
 			}
+
 			$this->siniestro_mdl->eliminar_todo($data);
+
+				if($cant_tot==0){
+				$data['vez_actual'] = $vez_actual-1;
+				}else{
+					$data['vez_actual'] = $vez_actual-2;
+				}
 
 			echo "<script>
 					alert('No se registró ningún servicio para la atención.');
 					location.href='".base_url()."index.php/siniestro/".$data['sin_id']."';
-					</script>";			
+					</script>";
+		}
 
+		if(!empty($cert)){
+			$this->siniestro_mdl->up_periodo_evento($data);
 		}
 		
 	}

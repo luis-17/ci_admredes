@@ -66,7 +66,7 @@
 			countRow ++;
 			rowNum ++;
 			var valor=$( "#add_qty option:selected" ).text();
-			var row = '<p id="rowNum'+rowNum+'"><div class="form-group col-md-6"><table class="table"><tr class="fila-base"><td><input type="hidden" name="idMedi'+rowNum+'" value="'+frm.add_name.value+'"></td> <td style="width:17.5em;"><input class="form-control" type="text" name="sin_trat'+rowNum+'" value="'+valor+'" readonly></td> <td style="width:10.5em;"><input class="form-control" type="text" name="sin_cant'+rowNum+'" value="'+frm.add_cant.value+'" readonly></td> <td style="width:13.5em;"><input class="form-control" type="text" name="sin_dosis'+rowNum+'" value="'+frm.add_name.value+'" readonly></td> <td><input type="button" class="btn btn-danger" value="Eliminar" onclick="removeRow('+rowNum+');"></td></tr></table></div></p>';
+			var row = '<p id="rowNum'+rowNum+'"><div class="form-group col-md-6"><table class="table"><tr class="fila-base"><td><input type="hidden" name="idMedi'+rowNum+'" value="'+frm.add_qty.value+'"></td> <td style="width:17.5em;"><input class="form-control" type="text" name="sin_trat'+rowNum+'" value="'+valor+'" readonly></td> <td style="width:10.5em;"><input class="form-control" type="text" name="sin_cant'+rowNum+'" value="'+frm.add_cant.value+'" readonly></td> <td style="width:13.5em;"><input class="form-control" type="text" name="sin_dosis'+rowNum+'" value="'+frm.add_name.value+'" readonly></td> <td><input type="button" class="btn btn-danger" value="Eliminar" onclick="removeRow('+rowNum+');"></td></tr></table></div></p>';
 			jQuery('#itemRows').append(row);
 			frm.add_qty.value = '';
 			frm.add_name.value = '';
@@ -243,8 +243,8 @@
 			//document.getElementById("demo").innerHTML = 5 + 6;
 			//alert(dianostico_temp);
 			document.getElementById("form2").submit();
-			parent.location.reload(true);
-			parent.$.fancybox.close();
+			//parent.location.reload(true);
+			//parent.$.fancybox.close();
 			
 		}
 		

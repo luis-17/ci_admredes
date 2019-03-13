@@ -46,7 +46,7 @@
  	function getCanales(){
  		$this->db->select("idclienteempresa, nombre_comercial_cli");
  		$this->db->from("cliente_empresa");
-        $this->db->where("estado_cli",1);
+        //$this->db->where("estado_cli",1);
  		$this->db->order_by("nombre_comercial_cli");
 
  	$canal = $this->db->get();
@@ -56,7 +56,7 @@
 	function getPlanes2($id){
  		$this->db->select("idplan, nombre_plan, flg_cancelar");
  		$this->db->from("plan");		
-    	$this->db->where("estado_plan",1);
+    	//$this->db->where("estado_plan",1);
  		$this->db->where("idclienteempresa",$id);
 
  	$planes = $this->db->get();
@@ -67,7 +67,7 @@
  		$this->db->select("*");
  		$this->db->from("plan p");
  		$this->db->join("cliente_empresa c","p.idclienteempresa=c.idclienteempresa");		
-    	$this->db->where("estado_plan",1);
+    	//$this->db->where("estado_plan",1);
  		$this->db->order_by("nombre_comercial_cli,nombre_plan");
 
  	$planes = $this->db->get();
@@ -81,11 +81,11 @@
  		$this->db->join("usuario u ","u.idusuario=ci.idusuario","left");
  		$this->db->join("asegurado a","s.idasegurado=a.aseg_id");
  		$this->db->join("certificado_asegurado ca","ca.aseg_id=a.aseg_id");
- 		$this->db->join("certificado c","ca.cert_id=c.cert_id");
+ 		$this->db->join("certificado c","s.idcertificado=c.cert_id and ca.cert_id=c.cert_id");
  		$this->db->join("contratante co","c.cont_id=co.cont_id");
  		$this->db->join("especialidad e","e.idespecialidad=s.idespecialidad");
  		$this->db->join("proveedor p","s.idproveedor=p.idproveedor");
- 		$this->db->where("fecha_atencion>='".$data['inicio']."' and fecha_atencion<='".$data['fin']."' and plan_id=".$data['plan']." and aseg_numDoc not in (16678790,16658405,16678789,07269819,16678783,16442021,16405620,45645645,46448942,16427997,45636363,6565656,54545454,42450852,16678785,16678784,16678787,16678788,16678786,30303030,00212121,42611112,46736156,18756402)");
+ 		$this->db->where("fecha_atencion>='".$data['inicio']."' and fecha_atencion<='".$data['fin']."' and plan_id=".$data['plan']." and c.cert_num not like 'PR%'");
  		$this->db->order_by("fecha_atencion, aseg_numDoc");
  	$query = $this->db->get();
  	return $query->result();
@@ -97,7 +97,7 @@
  		$this->db->join("certificado_asegurado ca","a.aseg_id=ca.aseg_id");
  		$this->db->join("certificado c","c.cert_id=ca.cert_id");
  		$this->db->join("contratante co","co.cont_id=c.cont_id");
- 		$this->db->where("c.plan_id=".$data['plan']." and ca.cert_estado=".$data['tipo']." and cert_num <> '777777' and cont_numDoc not in (16678790,16658405,16678789,07269819,16678783,16442021,16405620,45645645,46448942,16427997,45636363, 56565656,54545454,42450852,16678785,16678784,16678787,16678788,16678786,30303030,00212121,42611112,46736156,18756402, 46736156)");
+ 		$this->db->where("c.plan_id=".$data['plan']." and ca.cert_estado=".$data['tipo']." and c.cert_num not like 'PR%'");
  	$query = $this->db->get();
  	return $query->result();
  	}

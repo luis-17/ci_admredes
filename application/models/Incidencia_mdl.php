@@ -19,16 +19,31 @@
  	return $query->result();
  }
 
+ function up_derivacion($data){
+ 	$array = array
+ 	(
+ 		'estado' => 1 
+ 	);
+ 	$this->db->where("idincidencia",$data['id']);
+ 	$this->db->update("incidencia_deriva",$array);
+ }
+
  function reg_derivacion($data){
  	$array = array
  		(
  			'idincidencia' => $data['id'], 
  			'idusuario_deriva' => $data['idusuario_deriva'],
  			'idusuario_recepciona' => $data['idusuario_recepciona'],
- 			'estado_deriva' => $data['estado']
+ 			'comentario' => $data['desc']
  		);
 
  	$this->db->insert("incidencia_deriva", $array);
+ }
+
+ function up_estado($data){
+ 	$array = array('estado_deriva' => 1 );
+ 	$this->db->where('idincidencia',$data['id']);
+ 	$this->db->update('incidencia',$array);
  }
 
  function getMisPendientes($id){
@@ -36,6 +51,86 @@
  	$this->db->from("(select * from incidencia where idusuario_registra=$id and estado_deriva=0 union select i.* from incidencia i inner join incidencia_deriva id on i.idincidencia=id.idincidencia where id.idusuario_recepciona=$id and estado=0)b");
  	$this->db->join("certificado c","c.cert_id=b.cert_id");
  	$this->db->join("asegurado a","a.aseg_id=b.idasegurado");
+
+ 	$query = $this->db->get();
+ 	return $query->result();
+ }
+
+ function save_solucion($data){
+ 	$array = array
+ 		(
+ 			'respuesta' => $data['respuesta'],
+ 			'idusuario_soluciona' => $data['idusuario_soluciona'],
+ 			'estado_deriva' =>2,
+ 			'fecha_solucion' => $data['fecha']
+ 		);
+ 	$this->db->where('idincidencia', $data['id']);
+ 	$this->db->update('incidencia', $array);
+ }
+
+ function up_solucion($data){
+ 	$array = array('estado' => 1 );
+ 	$this->db->where('idincidencia',$data['id']);
+ 	$this->db->where('estado',0);
+ 	$this->db->update("incidencia_deriva",$array);
+ }
+
+ function getHistorial($id){
+ 	$this->db->select(" fech_reg, concat(username,': ',i.descripcion) as colaborador, 'Registró' as accion from incidencia i inner join usuario c on i.idusuario_registra=c.idusuario where idincidencia=$id union select fecha_hora as fech_reg, concat(c.username,': ',coalesce(i.comentario,'')) as colaborador, 'Derivó' as accion from incidencia_deriva i inner join usuario c on i.idusuario_deriva=c.idusuario where idincidencia=$id union select fecha_solucion as fech_reg, concat(username,': ',i.respuesta) as colaborador, 'Solucionó' as accion from incidencia i inner join usuario c on i.idusuario_soluciona=c.idusuario where idincidencia=$id");
+ 	$query=$this->db->get();
+ 	return $query->result();
+ }
+
+ function getResueltas(){
+ 	$this->db->select("LPAD(idincidencia,6,'0')as id, b.*, cert_num, aseg_numDoc, concat(aseg_ape1,' ',aseg_ape2,' ',aseg_nom1,' ',coalesce(aseg_nom2,''))as afiliado");
+ 	$this->db->from("(select * from incidencia where estado_deriva=2)b");
+ 	$this->db->join("certificado c","c.cert_id=b.cert_id");
+ 	$this->db->join("asegurado a","a.aseg_id=b.idasegurado");
+
+ 	$query=$this->db->get();
+ 	return $query->result();
+ }
+
+ function getOtrosPendientes($id){
+ 	$this->db->select("LPAD(idincidencia, 6, '0')as id, b.*, cert_num, aseg_numDoc, concat(aseg_ape1, ' ', aseg_ape2, ' ', aseg_nom1, ' ', coalesce(aseg_nom2, ''))as afiliado, username");
+ 	$this->db->from("(select i.*, i.idusuario_registra as id_usu from incidencia i where idusuario_registra<>$id and estado_deriva=0 )b");
+ 	$this->db->join("certificado c","c.cert_id=b.cert_id");
+ 	$this->db->join("asegurado a","a.aseg_id=b.idasegurado");
+ 	$this->db->join("usuario u","u.idusuario=b.id_usu");
+
+ 	$query = $this->db->get();
+ 	return $query->result();
+ }
+
+ function getOtrosPendientes2($id){
+ 	$this->db->select("LPAD(idincidencia, 6, '0')as id, b.*, cert_num, aseg_numDoc, concat(aseg_ape1, ' ', aseg_ape2, ' ', aseg_nom1, ' ', coalesce(aseg_nom2, ''))as afiliado, username");
+ 	$this->db->from("(select i.*, id.idusuario_recepciona as id_usu from incidencia i inner join incidencia_deriva id on id.idincidencia=i.idincidencia where idusuario_recepciona<>$id and estado=0 and estado_deriva<>2)b");
+ 	$this->db->join("certificado c","c.cert_id=b.cert_id");
+ 	$this->db->join("asegurado a","a.aseg_id=b.idasegurado");
+ 	$this->db->join("usuario u","u.idusuario=b.id_usu");
+
+ 	$query = $this->db->get();
+ 	return $query->result();
+ }
+
+ function contenido_mail($data){
+ 	$this->db->select("nombre_comercial_cli, nombre_plan, cert_num, aseg_numDoc, concat(aseg_ape1, ' ', aseg_ape2, ' ', aseg_nom1, ' ', aseg_nom2)as afiliado, aseg_telf, aseg_email, fech_reg, tipoincidencia, descripcion");
+ 	$this->db->from("incidencia i");
+ 	$this->db->join("incidencia_deriva id","i.idincidencia=id.idincidencia");
+ 	$this->db->join("asegurado a","i.idasegurado=a.aseg_id");
+ 	$this->db->join("certificado c","i.cert_id=c.cert_id");
+ 	$this->db->join("plan p","c.plan_id=p.idplan");
+ 	$this->db->join("cliente_empresa ce","ce.idclienteempresa=p.idclienteempresa");
+ 	$this->db->where("i.idincidencia",$data['id']);
+
+ 	$query = $this->db->get();
+ 	return $query->result();
+ }
+
+ function destinatario($data){
+ 	$this->db->select("*");
+ 	$this->db->from("colaborador");
+ 	$this->db->where("idusuario",$data['idusuario_recepciona']);
 
  	$query = $this->db->get();
  	return $query->result();

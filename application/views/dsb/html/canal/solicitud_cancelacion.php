@@ -43,6 +43,24 @@
 		<script src="../assets/js/respond.js"></script>
 		<![endif]-->
 
+		<!-- Add fancyBox -->
+		<link rel="stylesheet" href="<?=  base_url()?>public/fancybox/source/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen" />
+		<script type="text/javascript" src="<?=  base_url()?>public/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+		<script>
+			$(".fancybox")
+	    .attr('rel', 'gallery')
+	    .fancybox({
+	        type: 'iframe',
+	        autoSize : false,
+	        beforeLoad : function() {         
+	            this.width  = parseInt(this.element.data('fancybox-width'));  
+	            this.height = parseInt(this.element.data('fancybox-height'));
+	        }
+	    });
+	</script>
+		<!-- inline styles related to this page -->
+
 		<!-- Include Date Range Picker -->
 		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/js/bootstrap-datepicker.min.js"></script>
 		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/css/bootstrap-datepicker3.css"/>
@@ -59,12 +77,14 @@
 	        	$("#dni").each(function () {
 		            dni=$('#dni').val();
 		            $.post("<?=base_url();?>index.php/planesDni", { dni: dni}, function(data){
-		            $("#data").html(data);
+		            $("#plan").html(data);
 		            });
 		        });	               
 	        })
 	    });
-		</script>	
+		</script>
+		
+		
 
 		<script>
 		   $(document).ready(function() {
@@ -107,8 +127,12 @@
 								<a href="<?=base_url()?>">Home</a>
 							</li>
 
+							<li>
+								Cliente
+							</li>
+
 							<li class="active">
-								Atenciones
+								Solicitudes de Cancelación
 							</li>
 						</ul><!-- /.breadcrumb -->
 
@@ -121,7 +145,7 @@
 						<!-- /section:settings.box -->
 						<div class="page-header">
 							<h1>
-								Atenciones
+								Solicitudes de Cancelación
 								<small>
 									<i class="ace-icon fa fa-angle-double-right"></i>
 								</small>
@@ -136,21 +160,16 @@
 									<ul class="nav nav-tabs padding-18 tab-size-bigger" id="myTab">
 										<li class="active">
 											<a data-toggle="tab" href="#faq-tab-1">
-												Órdenes
+												Solicitudes Pendientes
 											</a>
 										</li>
 
 										<li>
 											<a data-toggle="tab" href="#faq-tab-2">
-												Pre-Órdenes
+												Solicitudes Procesadas
 											</a>
 										</li>
-
-										<li>
-											<a data-toggle="tab" href="#faq-tab-3">
-												Nueva Orden
-											</a>
-										</li>										
+							
 									</ul>
 
 									<!-- /section:pages/faq -->
@@ -162,119 +181,72 @@
 													<table id="example" class="table table-striped table-bordered table-hover">
 														<thead>
 															<tr>
-																<th>No Orden</th>
-																<th>No Certificado</th>
 																<th>Cliente</th>
 																<th>Plan</th>
-																<th>Fecha</th>
-																<th>Centro Médico</th>
-																<th>Especialidad</th>
-																<th>Asegurado</th>
-																<th>Dni</th>
-																<th style="width: 5%;">Detalle</th>
+																<th>N° Certificado</th>
+																<th>DNI</th>
+																<th>Contratante</th>
+																<th>Fecha Solicitud</th>
+																<th>Motivo</th>
+																<th></th>
 															</tr>
 														</thead>
 
 														<tbody>
-															<?php foreach($ordenes as $o):
-																if($o->idcita==''):
-																	$cita='No';
-																	else:
-																	$cita='Sí';
-																endif;
-																$fecha=$o->fecha_atencion;
-																$fecha=date("d/m/Y", strtotime($fecha));
-																if($o->liquidacion_estado!=1){
+															<?php foreach ($getSolicitudes as $s) { 
+																$fecha = $s->fecha_solicitud;
+																$fecha = date('d/m/Y H:i:s', strtotime($fecha));
 																?>
-
 															<tr>
-																<td <?php if($o->estado_siniestro==0){ echo "style='color:red;'"; } ?>>OA<?=$o->num_orden_atencion;?></td>
-																<td <?php if($o->estado_siniestro==0){ echo "style='color:red;'"; } ?> id = "cert"><?=$o->cert_num;?></td>
-																<td <?php if($o->estado_siniestro==0){ echo "style='color:red;'"; } ?>><?=$o->nombre_comercial_cli?></td>
-																<td <?php if($o->estado_siniestro==0){ echo "style='color:red;'"; } ?>><?=$o->nombre_plan;?></td>
-																<td <?php if($o->estado_siniestro==0){ echo "style='color:red;'"; } ?>><?=$fecha;?></td>
-																<td <?php if($o->estado_siniestro==0){ echo "style='color:red;'"; } ?>><?=$o->nombre_comercial_pr;?></td>
-																<td <?php if($o->estado_siniestro==0){ echo "style='color:red;'"; } ?>><?=$o->nombre_esp;?></td>
-																<td <?php if($o->estado_siniestro==0){ echo "style='color:red;'"; } ?>><?=$o->asegurado;?></td>
-																<td <?php if($o->estado_siniestro==0){ echo "style='color:red;'"; } ?>><?=$o->aseg_numDoc;?></td>
-																<td  style="width: 5%;">
+																<td><?=$s->nombre_comercial_cli?></td>
+																<td><?=$s->nombre_plan?></td>
+																<td><?=$s->cert_num?></td>
+																<td><?=$s->cont_numDoc?></td>
+																<td><?=$s->contratante?></td>
+																<td><?=$fecha?></td>
+																<td><?=$s->motivo?></td>
+																<td>
 																	<div class="hidden-sm hidden-xs btn-group">
-																		<div title="Ver Detalle" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
-																			&nbsp;
-																			<a href="<?=base_url()?>index.php/siniestro/<?=$o->idsiniestro?>" title="Detalle Siniestro"><i class="ace-icon fa fa-external-link bigger-120"></i></a>
-																		</div>
-																		<?php switch ($o->activacion){
-																			case 'activar': ?>
-																				<div title="Reactivar Atención" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
-																						&nbsp;
-																						<a onclick="activar(<?=$o->idsiniestro?>,'<?=$o->num_orden_atencion?>')" title="Reactivar Atención"><i class="ace-icon fa fa-unlock bigger-120"></i></a>
-																					</div>
-																			<?php break;
-
-																			case 'restablecer': ?>
-																			<div title="Restablecer Atención" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
-																						&nbsp;
-																						<a onclick="restablecer(<?=$o->idsiniestro?>,'<?=$o->num_orden_atencion?>')" title="Restablecer Atención"><i class="ace-icon fa fa-lock bigger-120"></i></a>
-																					</div>
-																				<?php break;
-																			} ?>
-																		<?php if($o->estado_siniestro<>0){ ?>
-																		<div title="Anular Siniestro" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
-																			&nbsp;<a onclick="elegir(<?=$o->idsiniestro?>,'<?=$o->num_orden_atencion?>');">
-																				<i class="ace-icon glyphicon glyphicon-trash"></i>
+																		<div title="Aceptar Solicitud" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
+																			&nbsp;<a href="<?=base_url()?>index.php/aceptar_solicitud/<?=$s->cert_id?>" >
+																				<i class="blue ace-icon glyphicon glyphicon-ok bigger-120"></i>
 																			</a>
-																		</div>
-																		<?php } ?>																		
+																		</div>	
+																		<div title="Rechazar Solicitud" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
+																			&nbsp;<a class="boton fancybox" href="<?=base_url()?>index.php/rechazar_solicitud/<?=$s->cert_id?>" data-fancybox-width="750" data-fancybox-height="600">
+																				<i class="red ace-icon glyphicon glyphicon-remove bigger-120"></i>
+																			</a>
+																		</div>													
 																	</div>
 
 																	<div class="hidden-md hidden-lg">
 																		<div class="inline pos-rel">
-																			<button class="btn btn-info btn-primary dropdown-toggle" data-toggle="dropdown" data-position="auto">
+																			<button class="btn btn-minier btn-info dropdown-toggle" data-toggle="dropdown" data-position="auto">
 																				<i class="ace-icon fa fa-cog icon-only bigger-110"></i>
 																			</button>
 
-																			<ul class="dropdown-menu dropdown-only-icon dropdown-yellow dropdown-menu-right dropdown-caret dropdown-close">
+																			<ul class="dropdown-menu dropdown-only-icon dropdown-yellow dropdown-menu-right dropdown-caret dropdown-close">	
 																				<li>
-																					<div title="Ver Detalle" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
-																						&nbsp;
-																						<a href="<?=base_url()?>index.php/siniestro/<?=$o->idsiniestro?>" title="Detalle Siniestro"><i class="ace-icon fa fa-external-link bigger-120"></i></a>
-																								</div>
-																				</li>
-																				<?php switch ($o->activacion){
-																				case 'activar': ?>
-																					<li>
-																						<div title="Reactivar Atención" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
-																							&nbsp;
-																							<a onclick="activar(<?=$o->idsiniestro?>,'<?=$o->num_orden_atencion?>')" title="Reactivar Atención"><i class="ace-icon fa fa-unlock bigger-120"></i></a>
-																						</div>
-																					</li>
-																				<?php break;
-
-																				case 'restablecer': ?>
-																				<li>
-																					<div title="Restablecer Atención" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
-																							&nbsp;
-																							<a onclick="restablecer(<?=$o->idsiniestro?>,'<?=$o->num_orden_atencion?>')" title="Restablecer Atención"><i class="ace-icon fa fa-lock bigger-120"></i></a>
-																						</div>
-																				</li>
-																					<?php break;
-																				} ?>
-																				<?php if($o->estado_siniestro<>0){ ?>
-																				<li>
-																					<div title="Anular Siniestro" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
-																						&nbsp;<a href="<?=base_url()?>index.php/anular_siniestro/<?=$o->idsiniestro?>/OA<?=$o->num_orden_atencion?>">
-																							<i class="ace-icon glyphicon glyphicon-trash"></i>
+																					<div title="Aceptar Solicitud" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
+																						&nbsp;<a href="<?=base_url()?>index.php/aceptar_solicitud/<?=$s->cert_id?>" >
+																							<i class="blue ace-icon glyphicon glyphicon-ok bigger-120"></i>
 																						</a>
 																					</div>	
 																				</li>
-																				<?php } ?>																					
+
+																				<li>
+																					<div title="Rechazar Solicitud" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
+																						&nbsp;<a class="boton fancybox" href="<?=base_url()?>index.php/rechazar_solicitud/<?=$s->cert_id?>" data-fancybox-width="750" data-fancybox-height="600">
+																							<i class="red ace-icon glyphicon glyphicon-remove bigger-120"></i>
+																						</a>
+																					</div>	
+																				</li>
 																			</ul>
 																		</div>
 																	</div>
 																</td>
 															</tr>
-														<?php } 
-														endforeach; ?>
+															<?php } ?>
 														</tbody>
 													</table>
 												</div>
@@ -295,83 +267,55 @@
 										<div id="faq-tab-2" class="tab-pane fade">
 											<!-- star table -->		
 												<div class="col-xs-12">
-													<table id="simple-table" class="table table-striped table-bordered table-hover">
+													<table id="example2" class="table table-striped table-bordered table-hover">
 														<thead>
 															<tr>
-																<th>Nro Pre-Orden</th>
-																<th>Nro. Certificado</th>
 																<th>Cliente</th>
 																<th>Plan</th>
-																<th>Fecha</th>
-																<th>Centro Médico</th>
-																<th>Especialidad</th>
-																<th>Asegurado</th>
+																<th>N° Certificado</th>
 																<th>DNI</th>
-																<th></th>
+																<th>Contratante</th>
+																<th>Fecha</th>
+																<th>Estado</th>
+																<th>Motivo</th>
 															</tr>
 														</thead>
 
 														
 														<tbody>
-															<?php foreach($preorden as $po):
-																if($po->idcita==''):
-																	$cita='No';
-																	else:
-																	$cita='Sí';
-																endif;
-																$fecha=$po->fecha_atencion;
-																$fecha=date("d/m/Y", strtotime($fecha));
+															<?php foreach ($getSolicitudesProcesadas as $sp) { 
+																$fecha = $sp->fecha_procesamiento;
+																$fecha = date('d/m/Y H:i:s', strtotime($fecha));
 																?>
 
 															<tr>
-																<td>PO<?=$po->num_orden_atencion;?></td>
-																<td><?=$po->cert_num;?></td>
-																<td><?=$po->nombre_comercial_cli?></td>
-																<td><?=$po->nombre_plan;?></td>
-																<td><?=$fecha;?></td>
-																<td><?=$po->nombre_comercial_pr;?></td>
-																<td><?=$po->nombre_esp;?></td>
-																<td><?=$po->asegurado;?></td>
-																<td><?=$po->aseg_numDoc;?></td>
-																<td>
-																	<div>
-																		<a href="<?=base_url()?>index.php/orden/<?=$po->idsiniestro?>/O"  title="Generar Orden">
-																			<span class="ace-icon glyphicon glyphicon-ok"></span>
-																		</a>
-																	</div>
-																	<div>
-																		<a href="<?=base_url()?>index.php/orden/<?=$po->idsiniestro?>/A" title="Anular Pre Orden">
-																			<span class="ace-icon glyphicon glyphicon-remove"></span>
-																		</a>
-																	</div>
-																</td>
+																<td><?=$sp->nombre_comercial_cli?></td>
+																<td><?=$sp->nombre_plan?></td>
+																<td><?=$sp->cert_num?></td>
+																<td><?=$sp->cont_numDoc?></td>
+																<td><?=$sp->contratante?></td>
+																<td><?=$fecha?></td>
+																<td><span class="<?=$sp->class?>"><?=$sp->estado?></span></td>
+																<td><?=$sp->motivo?></td>
 															</tr>
-														<?php endforeach; ?>
+
+															<?php } ?>
+
 														</tbody>
 													</table>
 												</div>
+												<script>			
+													//para paginacion
+													$(document).ready(function() {
+													    $('#example2').DataTable( {
+													        "pagingType": "full_numbers"
+													    } );
+													} );
+												</script>
 												<!-- end table -->
 										</div>
 
-										<div id="faq-tab-3" class="tab-pane fade">
-											<!-- star table -->
-										<form id="creaSin" action="<?=base_url()?>index.php/reg_siniestro" method="post">
-										<div style="align-content: center;">
-											<div class="row">
-											  <div class="col-sm-3">
-											  	<div class="form-group">
-													<b class="text-primary">Ingrese DNI del Afiliado:</b>
-													<input type="text" class="form-control" value="" id="dni" name="dni" required autocomplete="off">		
-												</div>
-											  </div>											  
-											  <div class="col-sm-4">
-											  </div>
-											</div>
-
-											<div id="data"></div>
-										</div>
-										</form>
-										</div>
+										
 								</div>
 
 								<!-- PAGE CONTENT ENDS -->
@@ -417,34 +361,9 @@
 </script>
 <![endif]-->
 		<script type="text/javascript">
-			if('ontouchstart' in document.documentElement) document.write("<?=base_url()?>script src='public/assets/js/jquery.mobile.custom.js'>"+"<"+"/script>");
+			if('ontouchstart' in document.documentElement) document.write("<<?=base_url()?>script src='public/assets/js/jquery.mobile.custom.js'>"+"<"+"/script>");
 		</script>
 		<script src="<?=base_url()?>public/assets/js/bootstrap.js"></script>
-		<script>
-			function elegir(id,num) {
-				if (confirm('¿Está seguro de anular la atención OA'+num+'?')) {
-				location.href="<?=base_url()?>index.php/anular_siniestro/"+id+"/"+num;
-				} else {
-				alert('Regresar al consolidado de atenciones.');
-				}
-			}
-
-			function activar(id,num){
-				if (confirm('¿Está seguro de reactivar la atención OA'+num+'?')) {
-				location.href="<?=base_url()?>index.php/reactivar_siniestro/"+id+"/"+num;
-				} else {
-				alert('Regresar al consolidado de atenciones.');
-				}
-			}
-
-			function restablecer(id,num){
-				if (confirm('¿Está seguro de restablecer la atención OA'+num+'?')) {
-				location.href="<?=base_url()?>index.php/restablecer_siniestro/"+id+"/"+num;
-				} else {
-				alert('Regresar al consolidado de atenciones.');
-				}
-			}
-		</script>
 
 		
 		<!-- page specific plugin scripts -->

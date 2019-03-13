@@ -49,7 +49,7 @@
 	 $certificadoap = $this->db->get();
 	 return $certificadoap->result();
 	}
-
+	
 	function activar_certificado($id){
 		$data = array(
 			'cert_upProv' => 1
@@ -202,7 +202,7 @@
 		$this->db->join("certificado c","c.cert_id=ca.cert_id ");
 		$this->db->join("plan pl","pl.idplan=c.plan_id ");
 		$this->db->where("DATEDIFF(".$data['fecha_cita'].",fecha_cita) <= dias_atencion and idcertificadoasegurado=".$data['certase_id']." and estado_cita<>0");
-		$this->db->order_by("idcita","desc");
+		$this->db->order_by("idcita","desc"); 
 		$this->db->limit(1);
 
 	$numcitas=$this->db->get();

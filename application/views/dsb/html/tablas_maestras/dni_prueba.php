@@ -7,6 +7,8 @@
 
 		<meta name="description" content="overview &amp; stats" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+		<script src="https://code.jquery.com/jquery-1.10.1.min.js"></script>
+
 
 		<!-- bootstrap & fontawesome -->
 		<link rel="stylesheet" href="<?=base_url()?>public/assets/css/bootstrap.css" />
@@ -21,18 +23,39 @@
 		<link rel="stylesheet" href="<?=base_url()?>public/assets/css/ace.css" class="ace-main-stylesheet" id="main-ace-style" />
 
 		
+			<!-- Add fancyBox -->
+		<link rel="stylesheet" href="<?=  base_url()?>public/fancybox/source/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen" />
+		<script type="text/javascript" src="<?=  base_url()?>public/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+		<script>
+			$(".fancybox")
+	    .attr('rel', 'gallery')
+	    .fancybox({
+	        type: 'iframe',
+	        autoSize : false,
+	        beforeLoad : function() {         
+	            this.width  = parseInt(this.element.data('fancybox-width'));  
+	            this.height = parseInt(this.element.data('fancybox-height'));
+	        }
+	    });
+	</script>
 		<!-- inline styles related to this page -->
 
 		<!-- ace settings handler -->
 		<script src="<?=base_url()?>public/assets/js/ace-extra.js"></script>
 
 		<!-- HTML5shiv and Respond.js for IE8 to support HTML5 elements and media queries -->
+			<!-- para paginacion -->
+		<script src="<?=base_url()?>public/pagination/jquery.dataTables.min.css"></script>
+		<script src="<?=base_url()?>public/pagination/jquery-1.12.4.js"></script>
+		<script src="<?=base_url()?>public/pagination/jquery.dataTables.min.js"></script>
+		<script src="<?=base_url()?>public/pagination/dataTables.bootstrap.min.js"></script>
 
 	</head>
 
 	<body class="no-skin">
 		<!-- #section:basics/navbar.layout -->
-		<?php include ("headBar.php");?>
+		<?php include (APPPATH."views/dsb/html/headBar.php");?>
 
 		<!-- /section:basics/navbar.layout -->
 		<div class="main-container" id="main-container">
@@ -41,9 +64,8 @@
 			</script>
 
 			<!-- #section:basics/sidebar -->
-			<?php include ("sideBar.php");?>
+			<?php include (APPPATH."views/dsb/html/sideBar.php");?>
 			<!-- end nav. -->
-
 
 			<!-- /section:basics/sidebar -->
 			<div class="main-content">
@@ -57,13 +79,13 @@
 						<ul class="breadcrumb">
 							<li>
 								<i class="ace-icon fa fa-home home-icon"></i>
-								<a href="#">Home</a>
+								<a href="#">Inicio</a>
 							</li>
 
 							<li>
-								<a href="#">Forms</a>
+								<a href="#">Tablas Maestras</a>
 							</li>
-							<li class="active">Niveles de Acceso</li>
+							<li class="active">DNI de Prueba</li>
 						</ul><!-- /.breadcrumb -->
 
 						<!-- /section:basics/content.searchbox -->
@@ -75,10 +97,9 @@
 						<!-- /section:settings.box -->
 						<div class="page-header">
 							<h1>
-								Niveles de Acceso
+								DNI's de Prueba
 								<small>
-									<i class="ace-icon fa fa-angle-double-right"></i>
-									
+									<i class="ace-icon fa fa-angle-double-right"></i>									
 								</small>
 							</h1>
 						</div><!-- /.page-header -->
@@ -86,8 +107,74 @@
 						<div class="row">
 							<div class="col-xs-12">
 								<!-- PAGE CONTENT BEGINS -->
-								<div align="center">
-									<img class="" src="<?=base_url();?>public/assets/images/mantenimiento.jpg" alt="" />
+									<div class="widget-toolbar no-border invoice-info">
+										<a href="<?=base_url()?>index.php/nuevo_afiliado">
+											<button class="btn btn-white btn-info">
+											Nuevo DNI
+											</button>
+										</a>
+									</div>
+									<br/>
+									<br/>
+									<div>
+										<table id="example" class="table table-striped table-bordered table-hover">
+											<thead>
+												<tr>
+													<th>Canal</th>
+													<th>Plan</th>
+													<th>DNI</th>
+													<th>Afiliado</th>
+													<th></th>
+												</tr>
+											</thead>
+											<tbody>
+											
+											<?php foreach ($dnis as $d) {?>
+												<tr>
+													<td><?=$d->nombre_comercial_cli;?></td>
+													<td><?=$d->nombre_plan;?></td>
+													<td><?=$d->aseg_numDoc;?></td>
+													<td><?=$d->afiliado?></td>
+													<td>
+														<div class="hidden-sm hidden-xs btn-group">
+															<div title="Dar de Baja" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
+																&nbsp;<a href="<?=base_url()?>index.php/baja/<?=$d->cert_id?>/<?=$d->certase_id?>">
+																	<i class="ace-icon fa fa-ban bigger-120"></i>
+																</a>
+															</div>														
+														</div>
+
+															<div class="hidden-md hidden-lg">
+																<div class="inline pos-rel">
+																	<button class="btn btn-minier btn-primary dropdown-toggle" data-toggle="dropdown" data-position="auto">
+																		<i class="ace-icon fa fa-cog icon-only bigger-110"></i>
+																	</button>
+
+																	<ul class="dropdown-menu dropdown-only-icon dropdown-yellow dropdown-menu-right dropdown-caret dropdown-close">	
+																		<li>
+																			<div title="Dar de Baja" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
+																					&nbsp;<a href="<?=base_url()?>index.php/baja/<?=$d->cert_id?>/<?=$d->certase_id?>">
+																						<i class="ace-icon fa fa-ban bigger-120"></i>
+																					</a>
+																			</div>
+																		</li>
+																	</ul>
+																</div>
+															</div>
+														</td>
+													</tr>
+												<?php } ?>
+											</tbody>
+										</table>									
+									</div><!-- PAGE CONTENT ENDS -->	
+									<script>			
+											//para paginacion
+											$(document).ready(function() {
+											$('#example').DataTable( {
+											"pagingType": "full_numbers"
+											} );
+										} );
+										</script>	
 								</div><!-- PAGE CONTENT ENDS -->
 							</div><!-- /.col -->
 						</div><!-- /.row -->
@@ -163,7 +250,7 @@
 
 		<!-- ace scripts -->
 		<script src="<?=base_url()?>public/assets/js/ace/elements.scroller.js"></script>
-		<script src="<?=base_url()?>public/assets/js/ace/elements.colorpicker.js"></script>
+		<script src="<?=base_url()?><?=base_url()?>public/assets/js/ace/elements.colorpicker.js"></script>
 		<script src="<?=base_url()?>public/assets/js/ace/elements.fileinput.js"></script>
 		<script src="<?=base_url()?>public/assets/js/ace/elements.typeahead.js"></script>
 		<script src="<?=base_url()?>public/assets/js/ace/elements.wysiwyg.js"></script>

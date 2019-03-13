@@ -224,12 +224,12 @@ class Certificadodetalle_cnt extends CI_Controller {
 			$mail = new PHPMailer;	
 			$mail->Host     = 'relay-hosting.secureserver.net';;
 	        $mail->SMTPAuth = false;
-	        $mail->Username = '';
-	        $mail->Password = '';
+	        $mail->Username = 'contacto@red-salud.com';
+	        $mail->Password = 'Redperu2017HCA';
 	        $mail->SMTPSecure = 'false';
 	        $mail->Port     = 25;	
 			// Armo el FROM y el TO
-			$mail->setFrom($correo_laboral, 'Red Salud');
+			$mail->setFrom('contacto@red-salud.com', 'Red Salud');
 			$destinatarios = $this->certificado_mdl->destinatarios($data);
 			if(!empty($destinatarios)){
 				foreach ($destinatarios as $d) {				
@@ -239,7 +239,7 @@ class Certificadodetalle_cnt extends CI_Controller {
 				$texto='<div><p>El proveedor no registra contactos con env&iacute;o a email de reservas de atenciones.</p></div>';
 				$mail->addAddress('contacto@red-salud.com', 'Red Salud');
 			}
-			$mail->addAddress($correo_laboral, $nombres_col);
+			$mail->AddCC($correo_laboral, $nombres_col);
 			// El asunto
 			$mail->Subject = "RESERVA DE CONSULTA MEDICA - ".$plan;
 			// El cuerpo del mail (puede ser HTML)
@@ -276,7 +276,7 @@ class Certificadodetalle_cnt extends CI_Controller {
 				$nom=$c2->afiliado;
 				$texto2='<div><p>Afiliado(a), '.$nom.'</p>
 					<p> Sabemos lo importante que es para ti el cuidado de tu salud, <b>tu cita m&eacute;dica ha sido reservada con &eacute;xito. </b>Te detallamos los datos registrados:</p>
-					<table align="center" border="1" width="90%">
+					<table align="center" border="1" width="90%"> 
 						<tr>
 							<th>DNI Afiliado:</th>
 							<td>'.$c2->aseg_numDoc.'</td>
@@ -311,19 +311,19 @@ class Certificadodetalle_cnt extends CI_Controller {
 			// Armo el FROM y el TO
 			$mail2->setFrom($correo_laboral, 'Red Salud');
 			
-			if($to!=''){			
+			if($to!==''){			
 				$mail2->addAddress($to, $nom);
 			}else {
 				$texto2='<div><p>El asegurado no cuenta con un correo electrónico registrado.</p></div>';
 				$mail2->addAddress('contacto@red-salud.com', 'Red Salud');
 			}
-			$mail2->AddBCC($correo_laboral, $nombres_col);
+			$mail2->AddCC($correo_laboral, $nombres_col);
 			// El asunto
 			$mail2->Subject = "RESERVA DE CONSULTA MEDICA - ".$plan2;
 			// El cuerpo del mail (puede ser HTML)
 			$mail2->Body = '<!DOCTYPE html>
 					<head>
-	                <meta charset="UTF-8" />
+	                <meta charset="UTF-8" /> 
 	                </head>
 	                <body style="font-size: 1vw; width: 100%; font-family: '.$tipo.', CenturyGothic, AppleGothic, sans-serif;">
 	                <div style="padding-top: 2%; text-align: right; padding-right: 15%;"><img src="https://www.red-salud.com/mail/logo.png" width="17%" style="text-align: right;"></img>
@@ -623,7 +623,7 @@ class Certificadodetalle_cnt extends CI_Controller {
 				</script>";
 		}else{
 			echo "<script>
-				location.href='".base_url()."index.php/derivar_incidencia/".$id."/0';
+				location.href='".base_url()."index.php/derivar_incidencia/".$id."';
 				</script>";
 		}
 	}

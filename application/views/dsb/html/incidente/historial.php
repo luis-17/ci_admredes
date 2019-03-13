@@ -38,11 +38,11 @@
 		<script src="<?=  base_url()?>public/assets/js/ace-extra.js"></script>
 
 		<!-- HTML5shiv and Respond.js for IE8 to support HTML5 elements and media queries -->
-
-		<!--[if lte IE 8]>
-		<script src="../assets/js/html5shiv.js"></script>
-		<script src="../assets/js/respond.js"></script>
-		<![endif]-->
+		<!-- para paginacion -->
+		<script src="<?=base_url()?>public/pagination/jquery.dataTables.min.css"></script>
+		<script src="<?=base_url()?>public/pagination/jquery-1.12.4.js"></script>
+		<script src="<?=base_url()?>public/pagination/jquery.dataTables.min.js"></script>
+		<script src="<?=base_url()?>public/pagination/dataTables.bootstrap.min.js"></script>
 	</head>
 
 	<body style="">	
@@ -50,46 +50,44 @@
 			<div class="page-content">
 						<div class="page-header">
 							<h1>
-								Derivar Incidencia					
+								Historial de Eventos				
 							</h1>
 						</div>
 						<div class="row">
 							<div class="col-xs-12">
-								<!-- PAGE CONTENT BEGINS -->
-								<form class="form-horizontal" role="form" method="post" action="<?=base_url()?>index.php/reg_derivacion">
-									<input type="hidden" name="id" id="id" value="<?=$id?>">
+													<table id="example" class="table table-striped table-bordered table-hover">
+														<thead>
+															<tr>
+																<th>Fecha</th>
+																<th>Usuario</th>
+																<th>Accion</th>
+															</tr>
+														</thead>
 
-									<div class="form-group">
-										<label class="col-sm-3 control-label no-padding-right" for="form-field-1"> Derivar a: </label>
-										<div class="col-sm-9">
-											<select required="Seleccione una opción de la lista." name="recepciona" id="recepciona">
-												<option value="">Seleccionar</option>
-												<?php 
-													foreach($usuarios as $u){?>
-														<option value="<?=$u->idusuario?>"><?=$u->colaborador?></option>
-													<?php } ?>
-											</select>
-										</div>
-									</div>
+														<tbody>
+															<?php foreach($historial as $h){
+																$fecha = date("d-m-Y H:i", strtotime($h->fech_reg));
+															?>
+															<tr>
+																<td><?=$fecha?></td>
+																<td><?=$h->colaborador?></td>
+																<td><?=$h->accion?></td>
+																
+															</tr>
+															<?php } ?>
+														</tbody>
+													</table>
+												</div>
+												<script>			
+													//para paginacion
+													$(document).ready(function() {
+													    $('#example').DataTable( {
+													        "pagingType": "full_numbers"
+													    } );
+													} );
+												</script>
+												<!-- end table -->
 
-									<div class="form-group">
-										<label class="col-sm-3 control-label no-padding-right" for="form-field-1">Comentario: </label>
-
-										<div class="col-sm-9">
-											<textarea cols="71" rows="5" placeholder="Escriba un comentario" id="desc" name="desc"></textarea>
-										</div>
-									</div>
-
-									<div class="clearfix form-actions">
-										<div class="col-md-offset-3 col-md-9">
-											<button class="btn btn-info" type="submit" id="guardar" name="guardar">
-												<i class="ace-icon fa fa-check bigger-110"></i>
-												Guardar
-											</button>
-										</div>
-									</div>
-								</form>
-							</div><!-- /.col -->
 						</div>
 					</div>
 				</div><!-- /.main-content -->			

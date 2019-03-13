@@ -36,7 +36,7 @@
 	}
 
 	function dataproveedor($id){
-		$this->db->select("idproveedor, idtipoproveedor, numero_documento_pr, cod_sunasa_pr, razon_social_pr, nombre_comercial_pr, direccion_pr, referencia_pr, cod_distrito_pr, cod_provincia_pr, cod_departamento_pr, 'editarproveedor' as funcion, pr.idusuario, username, password_view");
+		$this->db->select("idproveedor, idtipoproveedor, numero_documento_pr, cod_sunasa_pr, razon_social_pr, nombre_comercial_pr, direccion_pr, referencia_pr, cod_distrito_pr, cod_provincia_pr, cod_departamento_pr, 'editarproveedor' as funcion, pr.idusuario, username, password_view, forma_pago, medio_pago, cta_corriente, cta_detracciones");
 		$this->db->from("proveedor pr");
 		$this->db->join("usuario u","pr.idusuario=u.idusuario");
 		$this->db->where("idproveedor",$id);
@@ -109,7 +109,11 @@
 			'cod_distrito_pr' => substr($data['distrito'], 4,2),
 			'cod_provincia_pr' => substr($data['provincia'], 2,2),
 			'cod_departamento_pr' => $data['departamento'],
-			'cod_sunasa_pr' => $data['codigosunasa']
+			'cod_sunasa_pr' => $data['codigosunasa'],
+			'medio_pago' => $data['banco'],
+			'forma_pago' => $data['forma_pago'],
+			'cta_corriente' => $data['cta_corriente'],
+			'cta_detracciones' => $data['cta_detracciones']
 		);
 
 		$this->db->insert('proveedor',$array);
@@ -129,7 +133,11 @@
 			'cod_distrito_pr' => substr($data['distrito'], 4,2),
 			'cod_provincia_pr' => substr($data['provincia'], 2,2),
 			'cod_departamento_pr' => $data['departamento'],
-			'cod_sunasa_pr' => $data['codigosunasa']
+			'cod_sunasa_pr' => $data['codigosunasa'],
+			'medio_pago' => $data['banco'],
+			'forma_pago' => $data['forma_pago'],
+			'cta_corriente' => $data['cta_corriente'],
+			'cta_detracciones' => $data['cta_detracciones']
 		);
 		$this->db->where("idproveedor",$data['id']);
 		return $this->db->update("proveedor",$array);
@@ -218,6 +226,16 @@
 		$array = array('estado_cp' => 1 );		
 		$this->db->where("idcontactoproveedor",$idcp);
 		$this->db->update("contacto_proveedor",$array);
+	}
+
+	function getBancos(){
+		$query = $this->db->get('banco');
+		return $query->result();
+	}
+	
+	function getFormaPago(){
+		$query = $this->db->get('forma_pago');
+		return $query->result();
 	}
 }
 ?>

@@ -101,7 +101,7 @@
 										$mostrar="S";
 									}else{
 										$atencion="OA".$a->num_orden_atencion;
-										$fecha=$a->fecha_atencion;
+										$fecha=$a->fecha_atencion;3
 										$fecha=date("d-m-Y", strtotime($fecha));
 										switch($a->estado_siniestro):
 											case 0: 
@@ -161,7 +161,6 @@
 																		<i class="ace-icon glyphicon glyphicon-pencil bigger-120"></i>
 																	</a>
 																</div>
-
 															</li>
 															<li>			
 																<div title="Anular Reserva" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">

@@ -77,6 +77,69 @@
 		});
 
 		</script>
+
+
+
+		<script>		
+			$(document).ready(function(){
+		    $('#aseg_numDoc').on('change',function(){
+		        var dniAseg = $('#aseg_numDoc').val();
+		        $.ajax({
+		            type:'POST',
+		            url:'<?=base_url()?>public/population/getEmployeeId.php',
+		            dataType: "json",
+		            data:{dniAseg:dniAseg},
+		            success:function(data){
+		                if(data.status == 'ok'){
+		                    $('#aseg_nom1').val(data.result.aseg_nom1);
+		                    $('#aseg_ape1').val(data.result.aseg_ape1);
+		                    $('#aseg_ape2').val(data.result.aseg_ape2);
+		                    //$('#aseg_fechNac').val(data.result.aseg_fechNac);
+		                    $('#aseg_id').val(data.result.aseg_id);
+		                    //var aseg_id = 	data.result.aseg_id                    
+		                    $('.user-content').slideDown();
+		                    
+
+		                }else{
+		                    $('.user-content').slideUp();
+		                    alert("User not found...");
+		                } 
+		            }
+		        });
+
+		        $.ajax({		            
+
+		            url:"<?=base_url()?>public/population/getPlan.php",
+			        type:'POST',
+			        data:{dniAseg:dniAseg},
+			        success:function(response) {
+			          //var resp = $.trim(response);
+			          if(response != '') {
+			            $("#plan").removeAttr('disabled','disabled').html(response);
+			            
+			          } else {
+			            $("#plan").attr('disabled','disabled').html("<option value=''>------- Select --------</option>");
+			          }
+			        }
+
+		        });		        
+		        
+			});
+		});
+		</script>
+
+		<script>
+		   $(document).ready(function() {
+		   $(window).keydown(function(event){
+		     if(event.keyCode == 13) {
+		       event.preventDefault();
+		       return false;
+		     }
+		   });
+		 });
+		</script>
+
+
 	</head>
 
 	<body class="no-skin">
@@ -108,8 +171,12 @@
 								<a href="<?=base_url()?>">Inicio</a>
 							</li>
 
+							<li>
+								<a href="<?=base_url()?>index.php/liquidacion_grupo">Liquidaciones</a>
+							</li>
+
 							<li class="active">
-								Liquidaciones
+								Agrupar Liquidaciones
 							</li>
 						</ul><!-- /.breadcrumb -->
 
@@ -121,7 +188,7 @@
 						<!-- /section:settings.box -->
 						<div class="page-header">
 							<h1>
-								Gestionar Liquidaciones
+								Agrupar Liquidaciones
 								<small>
 									<i class="ace-icon fa fa-angle-double-right"></i>
 								</small>
@@ -136,12 +203,7 @@
 									<ul class="nav nav-tabs padding-18 tab-size-bigger" id="myTab">
 										<li class="active">
 											<a data-toggle="tab" href="#faq-tab-1">
-												Agrupar Liquidaciones
-											</a>
-										</li>
-										<li>
-											<a data-toggle="tab" href="#faq-tab-2">
-												Grupos Pendientes de Pago
+												Liquidaciones
 											</a>
 										</li>																				
 									</ul>
@@ -151,28 +213,35 @@
 										<div id="faq-tab-1" class="tab-pane fade in active">								
 
 											<!-- star table -->	
-												<form method="post" action="<?=base_url()?>index.php/save_pago">	
+												<form method="post" action="<?=base_url()?>index.php/save_gasto">
+												<input type="hidden" name="idprov" id="idprov" value="<?=$prov_id?>">	
 												<div class="col-xs-12">
 													<table id="example" class="table table-striped table-bordered table-hover">
 														<thead>
 															<tr>
-																<th>N° RUC</th>
-																<th>Razón Social</th>
-																<th>Nombre Comercial</th>
-																<th>N° Liquidaciones</th>
+																<th>N° Liquidación</th>
+																<th>Proveedor</th>
+																<th>Doc. Referencia</th>
+																<th>Importe Total</th>
+																<th>Generado por</th>
 																<th></th>
 															</tr>
 														</thead>
 
+														
 														<tbody>
-														<?php foreach ($liquidacion_grupo_p as $lp) { ?>
+														<?php foreach ($liquidacion_grupo_p as $l2) {
+															$total = $l2->total;
+															$detraccion = $l2->detraccion;
+															$total = $total-$detraccion;
+															$total = number_format((float)$total, 2, '.', '');?>
 															<tr>
-																<input type="hidden" name="monto" value="">
-																<td><?=$lp->numero_documento_pr?></td>
-																<td><?=$lp->razon_social_pr?></td>
-																<td><?=$lp->nombre_comercial_pr?></td>
-																<td><?=$lp->num_liq?></td>
-																<td><a href="<?=base_url()?>index.php/agrupar_liquidacion/<?=$lp->idproveedor?>" title="Ver Detalle de Liquidaciones"><i class="ace-icon glyphicon glyphicon-zoom-in"></i></a></td>
+																<td>L<?=$l2->numero?></td>
+																<td><?=$l2->proveedor?></td>
+																<td><?=$l2->ref?></td>
+																<td style="text-align: right;"><?=$total?> PEN</td>
+																<td><?=$l2->usuario_genera?> el <?=$l2->fecha_genera?></td>
+																<td><input type="checkbox" name="liq_grupo[]" id="liq_grupo[]" value="<?=$l2->liqgrupo_id?>"></td>
 															</tr>
 														<?php } ?>
 														</tbody>
@@ -191,60 +260,14 @@
 													} );
 												</script>
 
+												<div style="text-align: center;">
+													<input type="submit" class="btn btn-info" name="" value="Agrupar Liquidaciones">
+												</div>
+
 												</form>
 										</div>
 
-										<div id="faq-tab-2" class="tab-pane fade">
-											<!-- star table -->		
-												<div class="col-xs-12">
-													<table id="example2" class="table table-striped table-bordered table-hover">
-														<thead>
-															<tr>
-																<th>N° Grupo</th>
-																<th>Razón Social</th>
-																<th>Banco</th>
-																<th>Tipo de Pago</th>
-																<th>Cta. Corriente</th>																
-																<th>Importe inc. IGV</th>
-																<th>Cta. Detracciones</th>	
-																<th>Importe inc. IGV</th>
-																<th>Liq. Agrupadas</th>
-															</tr>
-														</thead>
-
-														
-														<tbody>
-														<?php foreach ($liquidacion_grupo_c as $l2) { 
-															$total = $l2->importe;
-															$total = number_format((float)$total, 2, '.', '');
-															$detraccion = $l2->importe_detraccion;
-															$detraccion = number_format((float)$detraccion, 2, '.', '');
-															?>
-															<tr>
-																<td><?=$l2->numero?></td>
-																<td><?=$l2->razon_social_pr?></td>
-																<td><?=$l2->banco?></td>
-																<td><?=$l2->descripcion_fp?></td>
-																<td><?=$l2->cta_corriente?></td>
-																<td style="text-align: right;"><b><?=$total?> PEN</b></td>
-																<td><?=$l2->cta_detracciones?></td>
-																<td style="text-align: right;"><?=$detraccion?> PEN</td>
-																<td><?=$l2->num?></td>
-															</tr>
-														<?php } ?>
-														</tbody>
-													</table>
-												</div>
-												<script>			
-													//para paginacion
-													$(document).ready(function() {
-													    $('#example2').DataTable( {
-													        "pagingType": "full_numbers"
-													    } );
-													} );
-												</script>
-												<!-- end table -->
-										</div>
+										
 								</div>
 
 								<!-- .tabbale -->

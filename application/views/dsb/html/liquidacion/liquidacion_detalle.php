@@ -72,7 +72,7 @@
 								    		$ruc = $l->numero_documento_pr;
 								    		$banco = $l->descripcion;
 								    		$tipo = $l->descripcion_fp;
-								    		$op = $l->num_operacion;
+								    		$op = $l->numero_operacion;
 								    		$total = $l->total;
 								    		$igv = $total * 0.18;
 								    		$subtotal = $total - $igv;
@@ -122,7 +122,7 @@
 												<td><?=$ld->liqdetalle_numfact?></td>
 												<td><?=$ld->num_orden_atencion?></td>
 												<td><?=$ld->afiliado?></td>
-												<td><?=$ld->nombre_var?> <?=$ld->detalle?></td>
+												<td><?=$ld->nombre_var?></td>
 												<td style="text-align: right;"><?=$ld->liqdetalle_monto?> PEN</td>
 												<td style="text-align: right;"><?=$ld->liqdetalle_neto?> PEN</td>
 											</tr>
@@ -190,10 +190,10 @@
 											<?php foreach ($liquidacion_grupo as $lg) { ?>
 											<tr>
 												<td><?=$lg->username?></td>
-												<td><?=$lg->fecha_liquida?></td>
+												<td><?=$lg->fecha_pago?></td>
 												<td><?=$lg->descripcion?></td>
 												<td><?=$lg->descripcion_fp?></td>
-												<td><?=$lg->num_operacion?></td>
+												<td><?=$lg->numero_operacion?></td>
 												<td><?=$lg->email_notifica?></td>
 											</tr>
 											<?php } ?>
@@ -201,10 +201,6 @@
 									</table>
 									<?php } ?>
 									</div><!-- /.col -->
-											
-												
-												
-
 						</div>
 					</div>
 				</div><!-- /.main-content -->			

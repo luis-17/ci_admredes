@@ -60,36 +60,27 @@
 	</head>
 
 	<body class="no-skin">
-		
-
 			<!-- /section:basics/sidebar -->
 			<div class="main-content">
-				<div class="main-content-inner">
-					
-					
+				<div class="main-content-inner">					
 					<!-- /section:basics/content.breadcrumbs -->
 					<div class="page-content">
 						<div class="page-header">
 							<h1>	
-							Registrar Pago: L<?=$numero?>						
+							Registrar Pago: GR<?php printf('%08d', $idpago);?>						
 							</h1>
-						</div>
+						</div>						
 						<div class="row">
 							<div class="col-xs-12">
 								<!-- PAGE CONTENT BEGINS -->
 								<form class="form-horizontal" role="form" method="post" action="<?=base_url()?>index.php/save_regPago" enctype="multipart/form-data">
-								<input type="hidden" name="liqgrupoid" id="liqgrupoid" value="<?=$liqgrupoid?>">
-								<input type="hidden" name="numero" id="numero" value="<?=$numero?>">
+									<?php foreach ($getInfoPago as $ip) {?>
+										<input type="hidden" name="idpago" value="<?=$ip->idpago?>">
 									<div class="form-group">
 										<label class="col-sm-3 control-label no-padding-right" for="form-field-1">Banco: </label>
 
 										<div class="col-sm-9">
-											<select id="banco" name="banco">
-												<option value="">Seleccionar</option>
-												<?php foreach ($bancos as $b) { ?>
-													<option value="<?=$b->idbanco?>"><?=$b->descripcion?></option>
-												<?php } ?>
-											</select><label style="color: #FF0101;">&nbsp;*</label>
+											<input type="text" value="<?=$ip->banco?>" disabled class="col-xs-10 col-sm-5">
 										</div>
 									</div>
 
@@ -97,12 +88,39 @@
 										<label class="col-sm-3 control-label no-padding-right" for="form-field-1"> Tipo: </label>
 
 										<div class="col-sm-9">
-											<select name="forma" id="forma">
-												<option value="">Seleccionar</option>
-												<?php foreach ($forma_pago as $fp) { ?>
-													<option value="<?=$fp->idformapago?>"><?=$fp->descripcion_fp?></option>
-												<?php } ?>
-											</select><label style="color: #FF0101;">&nbsp;*</label>
+											<input type="text" value="<?=$ip->descripcion_fp?>" disabled class="col-xs-10 col-sm-5">
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label class="col-sm-3 control-label no-padding-right" for="form-field-1"> Nro Cta. Corriente: </label>
+
+										<div class="col-sm-9">
+											<input type="text" value="<?=$ip->cta_corriente?>" disabled class="col-xs-10 col-sm-5">
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label class="col-sm-3 control-label no-padding-right" for="form-field-1"> Importe: </label>
+
+										<div class="col-sm-9">
+											<input type="text" value="<?=$ip->importe?> PEN" disabled class="col-xs-10 col-sm-5">
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label class="col-sm-3 control-label no-padding-right" for="form-field-1"> N° Cta. Detracciones: </label>
+
+										<div class="col-sm-9">
+											<input type="text" value="<?=$ip->cta_detracciones?>" disabled class="col-xs-10 col-sm-5">
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label class="col-sm-3 control-label no-padding-right" for="form-field-1"> Importe: </label>
+
+										<div class="col-sm-9">
+											<input type="text" value="<?=$ip->importe_detraccion?> PEN" disabled class="col-xs-10 col-sm-5">
 										</div>
 									</div>
 
@@ -123,22 +141,6 @@
 									</div>
 
 									<div class="form-group">
-										<label class="col-sm-3 control-label no-padding-right" for="form-field-1">N° Cta Corriente: </label>
-
-										<div class="col-sm-9">
-											<input type="text" id="cta_corriente" name="cta_corriente" class="col-xs-10 col-sm-5" value="" >
-										</div>
-									</div>
-
-									<div class="form-group">
-										<label class="col-sm-3 control-label no-padding-right" for="form-field-1">N° Cta Detracciones: </label>
-
-										<div class="col-sm-9">
-											<input type="text" id="cta_detracciones" name="cta_detracciones" class="col-xs-10 col-sm-5" value="">
-										</div>
-									</div>
-
-									<div class="form-group">
 										<label class="col-sm-3 control-label no-padding-right" for="form-field-1">Correo de Notificación: </label>
 
 										<div class="col-sm-9">
@@ -153,6 +155,8 @@
 											<input type="file" id="mi_archivo" name="mi_archivo" class="col-xs-10 col-sm-5" value="" accept="application/pdf">
 										</div>
 									</div>
+
+									<?php } ?>
 
 									<div align="center">
 										<div class="col-md-offset-3 col-md-9">
@@ -169,21 +173,6 @@
 					</div>
 				</div><!-- /.main-content -->
 				<br/>
-
-				<div class="footer">
-					<div class="footer-inner">
-						<!-- #section:basics/footer -->
-						<div class="footer-content">
-							<span class="bigger-120">
-								<span class="blue bolder">Red Salud</span>
-								Application &copy; 2018
-							</span>                                                              
-							&nbsp; &nbsp;
-						</div>
-
-						<!-- /section:basics/footer -->
-					</div>
-				</div>
 
 			<a href="#" id="btn-scroll-up" class="btn-scroll-up btn btn-sm btn-inverse">
 				<i class="ace-icon fa fa-angle-double-up icon-only bigger-110"></i>

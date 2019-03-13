@@ -348,7 +348,7 @@
 		 $this->db->set('idasegurado', $data['idasegurado']);
 		 $this->db->set('idsiniestro', $data['idsiniestro']);
 		 $this->db->set('motivo_consulta', $data['motivo_consulta']);
-
+		 //$this->db->set('idespecialidad', $data['idespecialidad']);
 		 $this->db->set('presion_arterial_mm', $data['presion_arterial_mm']);
 		 $this->db->set('frec_cardiaca', $data['frec_cardiaca']);
 		 $this->db->set('frec_respiratoria', $data['frec_respiratoria']);
@@ -374,7 +374,7 @@
 		 $this->db->set('idasegurado', $data['idasegurado']);
 		 $this->db->set('idsiniestro', $data['idsiniestro']);
 		 $this->db->set('motivo_consulta', $data['motivo_consulta']);
-
+		 //$this->db->set('idespecialidad', $data['idespecialidad']);
 		 $this->db->set('presion_arterial_mm', $data['presion_arterial_mm']);
 		 $this->db->set('frec_cardiaca', $data['frec_cardiaca']);
 		 $this->db->set('frec_respiratoria', $data['frec_respiratoria']);
@@ -394,6 +394,13 @@
 		 $this->db->where('idtriaje', $data['idtriaje']);
  		 $this->db->update('triaje');
 	}
+
+	function updateSiniestro_tria($data) { 		
+		$this->db->set('idespecialidad', $data['idespecialidad']);
+		$this->db->where('idsiniestro', $data['idsiniestro']); 
+		$this->db->update('siniestro');
+	}
+
 
 
 
@@ -474,20 +481,34 @@
 	}
 	
 	function getVariable($id){
-		$this->db->select("s.*,c.*,dp.*,vp.*, CONCAT('(', left(GROUP_CONCAT(descripcion_prod),40), case when CHAR_LENGTH(GROUP_CONCAT(descripcion_prod))>40 then '...)'else ')' end) as detalle, coalesce(liqdetalleid,0) as liqdetalleid, coalesce(liqdetalle_aprovpago,0) as liqdetalle_aprovpago, coalesce(liqdetalle_monto,0.00) as liqdetalle_monto, coalesce(liqdetalle_neto,0.00) as liqdetalle_neto, coalesce(ld.idproveedor,0) as idprov,coalesce(liqdetalle_numfact,'') as liqdetalle_numfact, liquidacionTotal, liquidacionTotal_neto, coalesce(l.liquidacionId,0) as liq_id");
-		$this->db->from("siniestro s");
-		$this->db->join("certificado c","s.idcertificado=c.cert_id");
-		$this->db->join('plan_detalle dp',"dp.idplan=c.plan_id"); 		
- 		$this->db->join('variable_plan vp','dp.idvariableplan=vp.idvariableplan');
- 		$this->db->join("producto_detalle pd","dp.idplandetalle=pd.idplandetalle","left");
- 		$this->db->join("producto p","p.idproducto=pd.idproducto","left");
- 		$this->db->join("liquidacion l","l.idsiniestro=s.idsiniestro","left"); 		
-		$this->db->join("liquidacion_detalle ld","l.liquidacionId=ld.liquidacionId and ld.idplandetalle=dp.idplandetalle","left");
-		$this->db->where("s.idsiniestro=$id and valor_detalle is not null and simbolo_detalle is not null and flg_liquidacion='S'");
-		$this->db->group_by('pd.idplandetalle');		
- 		$this->db->order_by("vp.idvariableplan");
-		$query = $this->db->get();
-		return $query->result();
+
+		$query = $this->db->query("select dp.idplandetalle, nombre_var, simbolo_detalle, valor_detalle, CONCAT('(',LEFT (GROUP_CONCAT(descripcion_prod),40), CASE WHEN CHAR_LENGTH(GROUP_CONCAT(descripcion_prod)) > 40 THEN '...)' ELSE ')' END ) AS detalle, COALESCE (liqdetalleid, 0) AS liqdetalleid, COALESCE (liqdetalle_aprovpago, 0) AS liqdetalle_aprovpago, COALESCE (liqdetalle_monto, 0.00) AS liqdetalle_monto,	COALESCE (liqdetalle_neto, 0.00) AS liqdetalle_neto,	COALESCE (ld.idproveedor, 0) AS idprov,	COALESCE (liqdetalle_numfact, '') AS liqdetalle_numfact, 	liquidacionTotal,	liquidacionTotal_neto,	COALESCE (l.liquidacionId, 0) AS liq_id 
+			FROM siniestro s
+			JOIN certificado c ON s.idcertificado = c.cert_id
+			JOIN plan_detalle dp ON dp.idplan = c.plan_id
+			JOIN variable_plan vp ON dp.idvariableplan = vp.idvariableplan
+			LEFT JOIN producto_detalle pd ON dp.idplandetalle = pd.idplandetalle
+			LEFT JOIN producto p ON p.idproducto = pd.idproducto
+			LEFT JOIN liquidacion l ON l.idsiniestro = s.idsiniestro
+			LEFT JOIN liquidacion_detalle ld ON l.liquidacionId = ld.liquidacionId
+			AND ld.idplandetalle = dp.idplandetalle
+			WHERE
+			s.idsiniestro = $id
+			AND valor_detalle IS NOT NULL
+			AND simbolo_detalle IS NOT NULL
+			AND flg_liquidacion = 'S'
+			GROUP BY pd.idplandetalle
+
+			UNION 
+
+			SELECT 0 as idplandetalle,'Gastos Aprobados'as nombre_var, 1 as simbolo_detalle, 100 as valor_detalle, '' AS detalle, COALESCE (liqdetalleid, 0) AS liqdetalleid,	COALESCE (liqdetalle_aprovpago, 0) AS liqdetalle_aprovpago,	COALESCE (liqdetalle_monto, 0.00) AS liqdetalle_monto,	COALESCE (liqdetalle_neto, 0.00) AS liqdetalle_neto,	COALESCE (ld.idproveedor, 0) AS idprov,	COALESCE (liqdetalle_numfact, '') AS liqdetalle_numfact,	liquidacionTotal,	liquidacionTotal_neto,	COALESCE (l.liquidacionId, 0) AS liq_id
+			FROM siniestro s
+			JOIN certificado c ON s.idcertificado = c.cert_id
+			LEFT JOIN liquidacion l ON l.idsiniestro = s.idsiniestro
+			LEFT JOIN liquidacion_detalle ld ON l.liquidacionId = ld.liquidacionId
+			WHERE
+			s.idsiniestro = $id  and (case when liqdetalleid is not null then ld.idplandetalle=0 else 1=1 end)"); 
+ 		return $query->result();
 	}
 
 	function save_liquidacion($data){
@@ -696,6 +717,26 @@
 	function eliminar_diagnostico($id){
 		$this->db->where("idsiniestrodiagnostico",$id);
 		$this->db->delete("siniestro_diagnostico");
+	}
+
+	function getCert($data){
+		$this->db->select("c.cert_id, (vez_actual)+1 as vez_actual, cant, cant_tot");
+		$this->db->from("certificado c");
+		$this->db->join("siniestro s","c.cert_id=s.idcertificado");
+		$this->db->join("(select count(idsiniestro) as cant, idsiniestro from siniestro_analisis where idsiniestro=".$data['sin_id']." and estado_sian in (1,2))a","s.idsiniestro=a.idsiniestro","left");
+		$this->db->join("(select count(idsiniestro) as cant_tot, idsiniestro from siniestro_analisis where idsiniestro=".$data['sin_id'].")b","s.idsiniestro=b.idsiniestro","left");
+		$this->db->join("periodo_evento pe","pe.cert_id=c.cert_id");
+		$this->db->where("s.idsiniestro",$data['sin_id']);		
+		$this->db->where("idplandetalle",$data['idplandetalle']);
+		$query =  $this->db->get();
+		return $query->result();
+	}
+
+	function up_periodo_evento($data){
+		$array = array('vez_actual' => $data['vez_actual'] );
+		$this->db->where('idplandetalle',$data['idplandetalle']);
+		$this->db->where('cert_id',$data['cert']);
+		$this->db->update('periodo_evento',$array);
 	}
 
 }

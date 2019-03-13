@@ -707,7 +707,7 @@
 
 											<div class="form-group" id="hidden_fields3">
 													<input type="checkbox" id="cerrar_atencion" name="cerrar_atencion" value="1">
-													<b class="text-primary">Generar Pre-liquidación</b>
+													<b class="text-primary">Cerrar Siniestro</b>
 											</div>
 
 											<fieldset style="padding-top: 25px;">

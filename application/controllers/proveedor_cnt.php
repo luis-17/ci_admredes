@@ -97,6 +97,8 @@ class Proveedor_cnt extends CI_Controller {
 			$provincia = $this->proveedor_mdl->provincia($id);
 			$data['provincia'] = $provincia;
 			$distrito = $this->proveedor_mdl->distrito($id);
+			$data['banco'] = $this->proveedor_mdl->getBancos();
+			$data['forma'] =$this->proveedor_mdl->getFormaPago();
 			$distrito['distrito'] = $distrito;
 			$data['nom'] = "Nuevo Proveedor";
 			$data['accion'] = "Registrar Proveedor";
@@ -136,6 +138,8 @@ class Proveedor_cnt extends CI_Controller {
 			$data['provincia'] = $provincia;
 			$distrito = $this->proveedor_mdl->distrito($id);
 			$data['distrito'] = $distrito;
+			$data['banco'] = $this->proveedor_mdl->getBancos();
+			$data['forma'] =$this->proveedor_mdl->getFormaPago();
 			$data['accion'] = "Actualizar Proveedor";
 			$this->load->view('dsb/html/proveedor/form_proveedor.php',$data);
 		}
@@ -175,7 +179,11 @@ class Proveedor_cnt extends CI_Controller {
 			$data['usuario'] = $_POST['usuario'];
 			$data['contrasena'] = $_POST['contrasena'];
 			$data['id'] = $_POST['idproveedor'];
-
+			$data['banco'] = $_POST['banco'];
+			$data['forma_pago'] = $_POST['forma_pago'];
+			$data['cta_corriente'] = $_POST['cta_corriente'];
+			$data['cta_detracciones'] = $_POST['cta_detracciones'];
+ 
 			if($data['id']==0){
 				$this->proveedor_mdl->in_usuario($data);
 				$data['idusuario2'] = $this->db->insert_id();

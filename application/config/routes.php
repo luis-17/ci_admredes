@@ -71,7 +71,7 @@ $route['categoria_elemento'] = 'Categoria_elemento_cnt/index';
 $route['elemento'] = 'Elemento_cnt/index';
 $route['concepto'] = 'Concepto_cnt/index';
 $route['empresa'] = 'Empresa_cnt/index';
-$route['banco'] = 'Banco_cnt/index';
+$route['dni_prueba'] = 'DniPrueba_cnt/index';
 $route['certificado'] = 'Certificado_cnt/index';
 $route['incidencias'] = 'Incidencias_cnt/index';
 $route['atenciones'] = 'Atenciones_cnt/index';
@@ -97,6 +97,8 @@ $route['consultar_afiliados'] = 'Reportes_cnt/consultar_afiliados';
 $route['reservas'] = 'Reservas_cnt/index';
 $route['afiliacion'] = 'Afiliacion_cnt/index';
 $route['denegado/(:any)'] = 'Login_cnt/denegado/$1';
+$route['gastos'] = 'Liquidacion_cnt/gastos_proveedor';
+$route['pagos'] = 'Liquidacion_cnt/pagos';
 
 $route['planes'] = 'Afiliacion_cnt/plan';
 $route['buscar'] = 'Afiliacion_cnt/buscar';
@@ -203,8 +205,11 @@ $route['reenviar_afiliado/(:any)'] = 'Certificadodetalle_cnt/reenviar_afiliado/$
 $route['registrar_incidencia/(:any)/(:any)'] =  'Certificadodetalle_cnt/registrar_incidencia/$1/$2';
 $route['save_incidencia'] = 'Certificadodetalle_cnt/save_incidencia';
 
-$route['derivar_incidencia/(:any)/(:any)'] = 'Incidencias_cnt/derivar_incidencia/$1/$2';
+$route['derivar_incidencia/(:any)'] = 'Incidencias_cnt/derivar_incidencia/$1';
 $route['reg_derivacion'] = 'Incidencias_cnt/reg_derivacion';
+$route['solucion_incidencia/(:any)'] = 'Incidencias_cnt/solucion_incidencia/$1';
+$route['reg_solucion'] = 'Incidencias_cnt/reg_solucion';
+$route['historial/(:any)'] = 'Incidencias_cnt/historial/$1'; 
 
 $route['save_liqgrupo'] = 'Liquidacion_cnt/save_liqgrupo';
 $route['view_reenviar/(:any)/(:any)'] = 'Liquidacion_cnt/view_reenviar/$1/$2';
@@ -228,6 +233,14 @@ $route['detalle_roles'] = 'Usuario_cnt/detalle_roles';
 $route['usuario_anular/(:any)'] = 'Usuario_cnt/usuario_anular/$1';
 $route['usuario_activar/(:any)'] = 'Usuario_cnt/usuario_activar/$1';
 $route['reenviar_usuario/(:any)'] = 'Usuario_cnt/reenviar_usuario/$1';
+$route['nuevo_afiliado'] = 'DniPrueba_cnt/nuevo_afiliado';
+$route['verifica_dni_in2'] = 'DniPrueba_cnt/verifica_dni_in';
+$route['cont_save2'] = 'DniPrueba_cnt/cont_save';
+$route['baja/(:any)/(:any)'] = 'DniPrueba_cnt/baja/$1/$2';
+$route['planesDni'] = 'Atenciones_cnt/getPlanesDni';
+$route['especialidadPlan'] = 'Atenciones_cnt/especialidadPlan';
+$route['reg_siniestro'] = 'Atenciones_cnt/reg_siniestro';
+$route['pago_detalle/(:any)'] = 'Liquidacion_cnt/pagoDetalle/$1';
 // Rutas Ariel (Escribir debajo)
 
 $route['404_override'] = '';
@@ -235,13 +248,29 @@ $route['translate_uri_dashes'] = FALSE;
 
 $route['creaSiniestro'] = 'Siniestro_cnt/creaSiniestro';
 $route['guardaGasto'] = 'Siniestro_cnt/guardaGasto';
-$route['liquidacion'] = 'Liquidacion_cnt/index';
+$route['pre_liquidacion/(:any)'] = 'Liquidacion_cnt/pre_liquidacion/$1';
 $route['liquidacion_detalle/(:any)/(:any)'] ='Liquidacion_cnt/getLiquidacionDet/$1/$2';
 $route['registraPago'] = 'Liquidacion_cnt/registraPago';
 $route['liquidacion_grupo'] = 'Liquidacion_cnt/liquidacion_grupo';
-$route['liquidacion_regpago/(:any)/(:any)'] = 'Liquidacion_cnt/liquidacion_regpago/$1/$2';
+$route['liquidacion_regpago/(:any)'] = 'Liquidacion_cnt/liquidacion_regpago/$1';
 $route['save_regPago'] = 'Liquidacion_cnt/save_regPago';
-$route['imprimir_liquidacion/(:any)/(:any)'] = 'Liquidacion_cnt/liquidacion_pdf/$1/$2';
+$route['imprimir_liquidacion/(:any)'] = 'Liquidacion_cnt/liquidacion_pdf/$1';
+$route['imprimir_liquidacion2/(:any)/(:any)'] = 'Liquidacion_cnt/liquidacion_pdf2/$1/$2';
+$route['generar_cobros'] = 'Persona_juridica_cnt/generar_cobros';
+$route['buscar_cobros'] = 'Persona_juridica_cnt/buscar_cobros';
+$route['registrar_cobros'] ='Persona_juridica_cnt/registrar_cobros';
+
+
+$route['solicitud_cancelacion'] = 'Persona_juridica_cnt/solicitud_cancelacion';
+$route['aceptar_solicitud/(:any)'] = 'Persona_juridica_cnt/aceptar_solicitud/$1';
+$route['rechazar_solicitud/(:any)'] = 'Persona_juridica_cnt/rechazar_solicitud/$1';
+$route['save_rechazo'] = 'Persona_juridica_cnt/save_rechazo';
+
+$route['agrupar_liquidacion/(:any)'] = 'Liquidacion_cnt/agrupar_liquidacion/$1';
+$route['save_gasto'] = 'Liquidacion_cnt/save_gasto';
+$route['anular_siniestro/(:any)/(:any)'] = 'Atenciones_cnt/anular_siniestro/$1/$2';
+$route['reactivar_siniestro/(:any)/(:any)'] = 'Atenciones_cnt/reactivar_siniestro/$1/$2';
+$route['restablecer_siniestro/(:any)/(:any)'] = 'Atenciones_cnt/restablecer_siniestro/$1/$2';
 
 $route['start_sesion'] = 'Login_cnt/start_sesion';
 $route['logout'] = 'Login_cnt/logout';

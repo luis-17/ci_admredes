@@ -33,7 +33,7 @@
 		<script type="text/javascript" src="<?=  base_url()?>public/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
 
 		<script>
-			$(".fancybox")
+			$(".fancybox") 
 	    .attr('rel', 'gallery')
 	    .fancybox({
 	        type: 'iframe',
@@ -131,6 +131,10 @@
 										$user=$dg->username;
 										$pass=$dg->password_view;
 										$user_id=$dg->idusuario;
+										$forma_pago=$dg->forma_pago;
+										$medio_pago=$dg->medio_pago;
+										$cta_corriente=$dg->cta_corriente;
+										$cta_detracciones=$dg->cta_detracciones;
 									endforeach;
 								else:
 									$idt1="";
@@ -147,6 +151,10 @@
 									$user="";
 									$pass="";
 									$user_id="";
+									$forma_pago="";
+									$medio_pago="";
+									$cta_corriente="";
+									$cta_detracciones="";
 								endif;
 							?>
 					<div class="page-content">
@@ -295,6 +303,69 @@
 											</select>
 										</div>
 									</div>
+
+									<div class="form-group">
+										<label class="control-label col-xs-12 col-sm-3 no-padding-right" for="name">Banco:</label>	
+										<div class="col-xs-12 col-sm-9">
+										<?php ?>
+											<select class="input-medium valid" id="banco"  name="banco" aria-required="true" aria-invalid="false" aria-describedby="platform-error">
+												<option value="">Seleccione</option>
+												<?php
+														foreach ($banco as $b) {
+															if($medio_pago==$b->idbanco){
+																$estb="selected";
+															}else{
+																$estb="";
+															} 
+												?>
+												<option value="<?=$b->idbanco?>" <?=$estb?> ><?=$b->descripcion?> </option>
+												<?php 
+														}
+												?>
+											</select>
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label class="control-label col-xs-12 col-sm-3 no-padding-right" for="name">Forma de Pago:</label>	
+										<div class="col-xs-12 col-sm-9">
+										<?php ?>
+											<select class="input-medium valid" id="forma_pago"  name="forma_pago" aria-required="true" aria-invalid="false" aria-describedby="platform-error">
+												<option value="">Seleccione</option>
+												<?php
+														foreach ($forma as $fp) {
+															if($forma_pago==$fp->idformapago){
+																$estfp="selected";
+															}else{
+																$estfp="";
+															} 
+												?>
+												<option value="<?=$fp->idformapago?>" <?=$estfp?> ><?=$fp->descripcion_fp?> </option>
+												<?php 
+														}
+												?>
+											</select>
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label class="control-label col-xs-12 col-sm-3 no-padding-right" for="name">Cta. Corriente:</label>
+										<div class="col-xs-12 col-sm-9">
+											<div class="clearfix">
+												<input  type="text" id="cta_corriente" name="cta_corriente" class="col-xs-12 col-sm-5" value="<?=$cta_corriente?>">
+											</div>
+										</div>																
+									</div>
+
+									<div class="form-group">
+										<label class="control-label col-xs-12 col-sm-3 no-padding-right" for="name">Cta. Detracciones:</label>
+										<div class="col-xs-12 col-sm-9">
+											<div class="clearfix">
+												<input  type="text" id="cta_detracciones" name="cta_detracciones" class="col-xs-12 col-sm-5" value="<?=$cta_detracciones?>">
+											</div>
+										</div>																
+									</div>
+
 									<div class="form-group">
 										<label class="control-label col-xs-12 col-sm-3 no-padding-right" for="name">Usuario:</label>
 										<div class="col-xs-12 col-sm-9">

@@ -1,8 +1,3 @@
-<?php
-	$user = $this->session->userdata('user');
-	extract($user);
-	date_default_timezone_set('America/Lima');
-?>
 <html lang="en"><head>
 		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 		<meta charset="utf-8">
@@ -43,57 +38,96 @@
 		<script src="../assets/js/html5shiv.js"></script>
 		<script src="../assets/js/respond.js"></script>
 		<![endif]-->
+			<!-- para paginacion -->
+		<script src="<?=base_url()?>public/pagination/jquery.dataTables.min.css"></script>
+		<script src="<?=base_url()?>public/pagination/jquery-1.12.4.js"></script>
+		<script src="<?=base_url()?>public/pagination/jquery.dataTables.min.js"></script>
+		<script src="<?=base_url()?>public/pagination/dataTables.bootstrap.min.js"></script>
 	</head>
 
 	<body style="">	
 			<!-- /section:basics/sidebar -->
-			<div class="page-content">
+			<div class="main-content">
+				<div class="main-content-inner">
+					<!-- #section:basics/content.breadcrumbs -->
+					
+					<!-- /section:basics/content.breadcrumbs -->
+					<div class="page-content">
 						<div class="page-header">
-							<h1>
-								Derivar Incidencia					
+							<h1>	
+							Detalle Grupo:					
 							</h1>
 						</div>
+
 						<div class="row">
 							<div class="col-xs-12">
 								<!-- PAGE CONTENT BEGINS -->
-								<form class="form-horizontal" role="form" method="post" action="<?=base_url()?>index.php/reg_derivacion">
-									<input type="hidden" name="id" id="id" value="<?=$id?>">
 
-									<div class="form-group">
-										<label class="col-sm-3 control-label no-padding-right" for="form-field-1"> Derivar a: </label>
-										<div class="col-sm-9">
-											<select required="Seleccione una opción de la lista." name="recepciona" id="recepciona">
-												<option value="">Seleccionar</option>
-												<?php 
-													foreach($usuarios as $u){?>
-														<option value="<?=$u->idusuario?>"><?=$u->colaborador?></option>
-													<?php } ?>
-											</select>
-										</div>
-									</div>
+							<div class="tabbable">
+									<!-- #section:pages/faq -->
+								<div class="col-xs-12">	
+									<table id="example" class="table table-striped table-bordered table-hover"  style="font-size: 12px;">
+										<thead>
+											<tr>
+												<th>N° Liquidación</th>
+												<th>Fecha Creación</th>
+												<th>Usuario Genera</th>
+												<th>Importe Inc. IGV</th>
+												<th>Importe Detracción</th>
+												<th></th>
+											</tr>
+										</thead>
+										<tbody>
+										<?php foreach ($pagoDet as $pd){ ?>
+											<tr>
+												<td><?=$pd->liq_num?></td>
+												<td><?=$pd->fecha_genera?></td>
+												<td><?=$pd->username?></td>
+												<td style="text-align: right;"><?=$pd->total?> PEN</td>
+												<td style="text-align: right;"><?=$pd->detraccion?> PEN</td>
+												<td style="width: 5%;"><div class="hidden-sm hidden-xs btn-group">
+														<div title="Ver Detalle" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
+															<a class="boton fancybox" href="<?=base_url()?>index.php/liquidacion_detalle/<?=$pd->liqgrupo_id?>/<?=$pd->liq_num?>" data-fancybox-width="950" data-fancybox-height="690">
+																<i class="ace-icon glyphicon glyphicon-zoom-in"></i>
+															</a>&nbsp;
+														</div>																		
+													</div>
 
-									<div class="form-group">
-										<label class="col-sm-3 control-label no-padding-right" for="form-field-1">Comentario: </label>
+													<div class="hidden-md hidden-lg">
+														<div class="inline pos-rel">
+															<button class="btn btn-info btn-primary dropdown-toggle" data-toggle="dropdown" data-position="auto">
+																<i class="ace-icon fa fa-cog icon-only bigger-110"></i>
+															</button>
 
-										<div class="col-sm-9">
-											<textarea cols="71" rows="5" placeholder="Escriba un comentario" id="desc" name="desc"></textarea>
-										</div>
-									</div>
-
-									<div class="clearfix form-actions">
-										<div class="col-md-offset-3 col-md-9">
-											<button class="btn btn-info" type="submit" id="guardar" name="guardar">
-												<i class="ace-icon fa fa-check bigger-110"></i>
-												Guardar
-											</button>
-										</div>
-									</div>
-								</form>
-							</div><!-- /.col -->
+															<ul class="dropdown-menu dropdown-only-icon dropdown-yellow dropdown-menu-right dropdown-caret dropdown-close">
+																<li>
+																	<div title="Ver Detalle" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
+																		<a class="boton fancybox" href="<?=base_url()?>index.php/liquidacion_detalle/<?=$pd->liqgrupo_id?>/<?=$pd->liq_num?>" data-fancybox-width="950" data-fancybox-height="690">
+																			<i class="ace-icon glyphicon glyphicon-zoom-in"></i>
+																		</a>&nbsp;
+																	</div>
+																</li>																			
+															</ul>
+														</div>
+													</div>
+												</td>
+											</tr>
+										<?php } ?>
+										</tbody>
+									</table>
+									<script>			
+										//para paginacion
+										$(document).ready(function() {
+										    $('#example').DataTable( {
+										        "pagingType": "full_numbers"
+										    } );
+										} );
+									</script>
 						</div>
 					</div>
 				</div><!-- /.main-content -->			
 			</div><!-- /.main-container -->
+		
 		<!-- basic scripts -->
 
 		<!--[if !IE]> -->
@@ -102,13 +136,11 @@
 		</script><script src="<?=  base_url()?>public/assets/js/jquery.js"></script>
 
 		<!-- <![endif]-->
-
 		<!--[if IE]>
 <script type="text/javascript">
  window.jQuery || document.write("<script src='../assets/js/jquery1x.js'>"+"<"+"/script>");
 </script>
 <![endif]-->
-		</script>
 		<script type="text/javascript">
 			if('ontouchstart' in document.documentElement) document.write("<script src='<?=  base_url()?>public/assets/js/jquery.mobile.custom.js'>"+"<"+"/script>");
 		</script>
@@ -142,7 +174,6 @@
 		<script src="<?=  base_url()?>public/assets/js/ace/ace.settings-skin.js"></script>
 		<script src="<?=  base_url()?>public/assets/js/ace/ace.widget-on-reload.js"></script>
 		<script src="<?=  base_url()?>public/assets/js/ace/ace.searchbox-autocomplete.js"></script>
-
 		<!-- the following scripts are used in demo only for onpage help and you don't need them -->
 		<link rel="stylesheet" href="<?=  base_url()?>public/assets/css/ace.onpage-help.css">
 		<link rel="stylesheet" href="<?=  base_url()?>public/docs/assets/js/themes/sunburst.css">

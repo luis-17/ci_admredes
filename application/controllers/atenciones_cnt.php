@@ -113,4 +113,191 @@ class Atenciones_cnt extends CI_Controller {
 		redirect ('index.php/atenciones');
 	}
 
+	public function getPlanesDni(){
+		$dni = $_POST['dni'];
+
+		$datos = $this->atencion_mdl->getDatosDni($dni);
+
+		$options="";
+
+		if(!empty($datos)){
+			foreach ($datos as $d) {
+			$aseg_id = $d->aseg_id;
+			$apellidos = $d->apellidos;
+			$nombres = $d->nombres;
+			}
+
+			$proveedor = $this->atencion_mdl->getProveedores();
+			$planes = $this->atencion_mdl->getPlanes($dni);
+
+			$options.='<div class="row">
+						 <div class="col-sm-3">
+							<div class="form-group">
+								<b class="text-primary">Nombres:</b>
+								<input class="form-control" type="text" name="aseg_nom1" id="aseg_nom1" value="'.$nombres.'" disabled/>
+							</div>
+						</div>
+						<div class="col-sm-3">
+							<div class="form-group">
+								<b class="text-primary">Apellidos:</b>
+								<input class="form-control" type="text" name="aseg_ape1" id="aseg_ape1" value="'.$apellidos.'" disabled/>            
+							</div>	
+						</div>
+					</div>
+					<div class="row">
+						 <div class="col-sm-3">
+							<div class="form-group">
+								<b class="text-primary">Plan:</b>
+								<select class="form-control" id="plan" name="plan"  required="Seleccionar una opción de la lista">
+									<option>Seleccionar</option>';
+								foreach ($planes as $pl) {
+							$options.='<option value="'.$pl->certase_id.'">'.$pl->nombre_plan.'</option>';
+								}
+					$options.=' </select>
+							</div>
+						</div>
+						<div class="col-sm-3">
+							<div class="form-group">
+								<b class="text-primary">Centro Médico:</b>
+								<select class="form-control" id="proveedor" name="proveedor" required="Seleccionar una opción de la lista">
+									<option>Seleccionar</option>';
+
+								foreach ($proveedor as $p) {
+							$options.='<option value="'.$p->idproveedor.'">'.$p->nombre_comercial_pr.'</option>';
+								}
+
+					$options.='	</select>            
+							</div>	
+						</div>
+						<div class="col-sm-3">
+							<div class="form-group">
+								<b class="text-primary">Especialidad:</b>
+								<select class="form-control" id="especialidad" name="especialidad"  required="Seleccionar una opción de la lista">
+									<option>Seleccionar</option>
+								</select>
+							</div>
+						</div>
+						<div class="col-sm-3">
+							<div class="form-group">
+								<b class="text-primary">Fecha:</b>
+								<input class="form-control" type="date" name="fecha" id="fecha" value="" required/>            
+							</div>	
+						</div>
+					</div>
+					<div class="row">
+						 <div class="col-sm-6">
+							<input class="btn btn-info" name="enviar" type="submit" value="Guardar">
+						 </div>
+					</div>
+
+					<script type="text/javascript">
+					$(document).ready(function(){
+				       $("#plan").change(function () {
+				               $("#plan option:selected").each(function () {
+				                plan=$("#plan").val();
+				                $.post("'.base_url().'index.php/especialidadPlan", { plan: plan}, function(data){
+				                $("#especialidad").html(data);
+				                });            
+				            });
+				       })
+				    });
+					</script>';
+		}else{
+			$options.='<div>No se encontraron coincidencias con el DNI ingresado.</div>';
+		}	
+		echo $options;
+	}
+
+	public function especialidadPlan(){
+		$certase_id = $_POST['plan'];
+		$especialidad = $this->atencion_mdl->getEspecialidad($certase_id);
+
+		$options = '<option>Seleccionar</option>';
+		foreach ($especialidad as $e) {
+			$options.='<option value="'.$e->idespecialidad.'">'.$e->descripcion_prod.'</option>';
+		}
+		echo $options;
+	}
+
+	public function reg_siniestro(){
+		$user = $this->session->userdata('user');
+		extract($user);
+		$data['idusuario'] = $idusuario;
+		$certase_id = $_POST['plan'];
+		$datos =  $this->atencion_mdl->certase_id($certase_id);
+			foreach ($datos as $d) {
+				$aseg_id = $d->aseg_id;
+				$cert_id = $d->cert_id;
+			}
+
+		$data['aseg_id'] = $aseg_id;
+		$data['cert_id'] = $cert_id;
+		$historia = $this->atencion_mdl->historia($aseg_id);
+		if(empty($historia)){
+			$this->atencion_mdl->inHistoria($aseg_id);
+			$data['historia'] = $this->db->insert_id();
+		}else{
+			foreach ($historia as $h) {
+			$data['historia'] = $h->idhistoria;
+			}
+		}
+		
+		$data['idproveedor'] = $_POST['proveedor'];
+		$data['fecha'] = $_POST['fecha'];
+		$data['idespecialidad'] = $_POST['especialidad'];
+		$num = $this->atencion_mdl->num_orden_atencion();
+			foreach ($num as $n) {
+				$numero=$n->num_orden_atencion;
+				$data['num'] = $numero;
+			}
+
+		$this->atencion_mdl->reg_siniestro($data);
+		echo "<script>
+				alert('Se registró la atención con éxito');
+				location.href='".base_url()."index.php/atenciones';
+				</script>";
+	}
+
+	public function anular_siniestro($id, $num){
+		$user = $this->session->userdata('user');
+		extract($user);
+
+		$this->atencion_mdl->anular_siniestro($id,$idusuario);
+		echo "<script>
+				alert('Se anuló la atención OA".$num." con éxito');
+				location.href='".base_url()."index.php/atenciones';
+				</script>";
+	}
+
+	public function reactivar_siniestro($id, $num){
+		$user = $this->session->userdata('user');
+		extract($user);
+		$data['id'] = $id;
+		$data['idusuario'] = $idusuario;
+		$data['hoy'] = date('Y-m-d');
+		$fechas = $this->atencion_mdl->getFechas($data);
+		foreach ($fechas as $f) {
+			$data['fecha'] = $f->fecha_atencion;
+		}
+		$this->atencion_mdl->reactivar_siniestro($data);
+		echo "<script>
+				alert('Se reactivó la atención OA".$num." con éxito');
+				location.href='".base_url()."index.php/atenciones';
+				</script>";
+	}
+
+	public function restablecer_siniestro($id, $num){
+		$data['id'] = $id;
+		$data['hoy'] = date('Y-m-d');
+		$fechas = $this->atencion_mdl->getFechas($data);
+		foreach ($fechas as $f) {
+			$data['fecha'] = $f->fecha_atencion;
+			$data['fecha_act'] = $f->fecha_atencion_act;
+		}
+		$this->atencion_mdl->restablecer_siniestro($data);
+		echo "<script>
+				alert('Se restableció la atención OA".$num." con éxito');
+				location.href='".base_url()."index.php/atenciones';
+				</script>";
+	}
 }
