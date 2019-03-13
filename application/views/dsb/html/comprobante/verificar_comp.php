@@ -26,7 +26,7 @@
 		<!--<script type="text/javascript" src="<?=  base_url()?>public/fancybox/lib/jquery.mousewheel-3.0.6.pack.js"></script>-->
 		<!-- FancyBox -->
 		<!-- Add jQuery library -->
-		<script type="text/javascript" src="https://code.jquery.com/jquery-latest.min.js"></script>
+		<script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
 		
 		<!-- Add mousewheel plugin (this is optional) -->
 		<script type="text/javascript" src="<?=  base_url()?>public/fancybox/lib/jquery.mousewheel-3.0.6.pack.js"></script>
@@ -64,7 +64,7 @@
 	</head>
 		<body class="no-skin">
 		<!-- #section:basics/navbar.layout -->
-		<?php include ("/../headBar.php");?>
+		<?php include (APPPATH."views/dsb/html/headBar.php");?>
 		<!-- #section:basics/navbar.layout -->
 		<!-- /section:basics/navbar.layout -->
 		<div class="main-container" id="main-container">
@@ -73,7 +73,7 @@
 			</script>
 
 			<!-- #section:basics/sidebar -->
-			<?php include ("/../sideBar.php");?>
+			<?php include (APPPATH."views/dsb/html/sideBar.php");?>
 			<!-- end nav. -->
 
 			<!-- /section:basics/sidebar -->
@@ -93,7 +93,7 @@
 							</li>
 							<li>
 							<a href="<?=base_url()?>index">Comprobantes de Pago</a></li>
-							<li class="active">Historial de Ventas</li>
+							<li class="active">Anulaciones</li>
 						</ul><!-- /.breadcrumb -->
 
 						<!-- /section:basics/content.searchbox -->
@@ -105,7 +105,7 @@
 						<!-- /section:settings.box -->
 						<div class="page-header">
 							<h1>
-								Historial de Ventas
+								Anulaciones
 								<small>
 									<i class="ace-icon fa fa-angle-double-right"></i>
 									
@@ -119,7 +119,7 @@
 									<div class="col-xs-9 col-sm-12">
 										<div class="widget-box transparent">
 												
-												<form name="formCategoria" id="formCategoria" method="post" action='<?=base_url()."index.php/verificar"?>'>
+												<form name="formCategoria" id="formCategoria" method="post" action='<?=base_url()."index.php/anulaciones"?>'>
 
 													<div class="profile-user-info profile-user-info-striped">
 														<div class="profile-info-row">
@@ -171,18 +171,36 @@
 
 														<div class="profile-user-info profile-user-info-striped">
 															<div  class="profile-info-row">
-																<div class="profile-info-name"></div>
 																<div class="profile-info-name">
-																	<button type="button" id="buttoncdr" name="buttoncdr" class="btn btn-white btn-info btn-bold btn-xs"> Descargar CDR SUNAT <i class="ace-icon fa fa-file-excel-o bigger-110 icon-only"></i>
+																	<button type="button" id="buttonAnularComprobante" name="buttonAnularComprobante" class="btn btn-white btn-info btn-bold btn-xs" data-toggle="modal" data-target="#modalXML"> Anular Comprobante <i class="ace-icon fa fa-file-code-o bigger-110 icon-only"></i>
 																	</button>
 																</div>
-																<div class="profile-info-name"></div>
 																<div class="profile-info-name"></div>
 															</div>
 														</div>
 													</div>
 
 												</form>
+
+												<div class="modal fade" id="modalXML" name="modalXML" tabindex="-1" role="dialog" aria-labelledby="saveModalLabel" aria-hidden="true">
+												  <div class="modal-dialog" role="document">
+												    <div class="modal-content">
+												      <div class="modal-header">
+												        <h5 class="modal-title" id="saveModalLabel">Anular Comprobantes</h5>
+												        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+												          <span aria-hidden="true">&times;</span>
+												        </button>
+												      </div>
+												      <div class="modal-body">
+												       ¿Seguro que desea anular los comprobantes de pago electrónicos?
+												      </div>
+												      <div class="modal-footer">
+												        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+												        <button type="button" id="buttonAnular" name="buttonAnular" class="btn btn-primary">Aceptar</button>
+												      </div>
+												    </div>
+												  </div>
+												</div>
 											</div>
 										</div>
 									</div>
@@ -323,17 +341,35 @@
 			       	return false;
 			    });
 
-			    $('#buttoncdr').click(function(){
+			    $(function() {
+				    $("#buttonAnular").click(function(){    
+				    	//location.reload(true);    
+				      $('#modalXML').modal('hide');
+				    });
+				});
+
+
+			    $('#buttonAnular').click(function(){
 			        $.ajax({                        
-			           	url: "<?= BASE_URL()?>index.php/verificar_cnt/descargarCDR",   
+			           	url: "<?= BASE_URL()?>index.php/verificar_cnt/crearXmlAnulaciones",   
 			           	type: 'POST',
 			           	dataType: 'json',                                 
 			           	data: $("#formCategoria").serialize(),
-			           	success: function(file)             
-			           	{
-			           		window.location = "data:application/zip;base64," + file; 
-			           	}
+			           	beforeSend: function(){
+				            $('#resp4').html("<img src='<?=base_url()."public/assets/img/loading2.gif"?>'><br><br>");
+				            $("#accionesTablaVerificar").hide();
+				        },
+				        complete:function() {
+					        $("#resp4").remove();
+					        alert("Comprobante electrónico anulado.");
+			    			location.reload();
+					    },
+					    success: function(data)
+					    {
+			           		
+					    }
 			       	});
+			    	$('#canales').val() == 0;
 			       	return false;
 			    });
 

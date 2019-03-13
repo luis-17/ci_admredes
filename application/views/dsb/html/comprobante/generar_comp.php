@@ -22,7 +22,7 @@
 		<!--<script type="text/javascript" src="<?=  base_url()?>public/fancybox/lib/jquery.mousewheel-3.0.6.pack.js"></script>-->
 		<!-- FancyBox -->
 		<!-- Add jQuery library -->
-		<script type="text/javascript" src="https://code.jquery.com/jquery-latest.min.js"></script>
+		<script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
 		
 		<!-- Add mousewheel plugin (this is optional) -->
 		<script type="text/javascript" src="<?=  base_url()?>public/fancybox/lib/jquery.mousewheel-3.0.6.pack.js"></script>
@@ -123,12 +123,17 @@
 											<a data-toggle="tab" href="#faq-tab-2">
 												Comprobantes manuales
 											</a>
-										</li>
+										</li>	
 										<li>
 											<a data-toggle="tab" href="#faq-tab-3">
-												Emitir Boletas y Facturas
+												Envío de comprobantes
 											</a>
-										</li>									
+										</li>
+										<li>
+											<a data-toggle="tab" href="#faq-tab-4">
+												Comprobantes enviados
+											</a>
+										</li>								
 									</ul>
 
 									<!-- /section:pages/faq -->
@@ -185,7 +190,6 @@
 																	<div id="resp4"></div>	
 																	<div id="resp2"></div>
 																	<div id="accionesTabla">
-																		
 																		<div class="profile-user-info profile-user-info-striped">
 																			<div  class="profile-info-row">
 																				<div class="profile-info-name"></div>
@@ -316,7 +320,7 @@
 
 																	<div class="profile-user-info profile-user-info-striped">
 																		<div class="profile-info-row">
-
+	<div class="profile-info-name"></div>
 																			<div class="profile-info-name"> Canal: </div>
 																			<div class="profile-info-name">
 																				<select name="canalesDos" id="canalesDos" required="Seleccione una opción de la lista">
@@ -331,15 +335,14 @@
 																					<?php endforeach; ?>
 																				</select>
 																			</div>
-																			<div class="profile-info-name"> Inicio: </div>
+																			<div class="profile-info-name"> Fecha: </div>
 																			<div class="profile-info-name">
 																				<input class="form-control input-mask-date" type="date" id="fechainicioDos" name="fechainicioDos" required="Seleccione una fecha de inicio" value="<?=$fecinicio;?>">
 																			</div>
-																			<div class="profile-info-name"> Fin: </div>
+																			<!--<div class="profile-info-name"> Fin: </div>
 																			<div class="profile-info-name">
 																				<input class="form-control input-mask-date" type="date" id="fechafinDos" name="fechafinDos" required="Seleccione una fecha de fin" value="<?=$fecfin;?>">					
-																			</div>	
-
+																			</div>-->	
 																			<div class="profile-info-name"></div>
 																			<div class="profile-info-name">
 																				<button type="button" id="buttonBuscarDos" class="btn btn-info btn-xs">Buscar 
@@ -361,16 +364,10 @@
 
 																		<div class="profile-user-info profile-user-info-striped">
 																			<div  class="profile-info-row">
-																				<div class="profile-info-name"></div>
-																				<div class="profile-info-name">
-																					<button type="button" id="buttonExcel" name="buttonExcel" class="btn btn-white btn-info btn-bold btn-xs"> Enviar archivos Concar <i class="ace-icon fa fa-file-excel-o bigger-110 icon-only"></i>
-																					</button>
-																				</div>
 																				<div class="profile-info-name">
 																					<button type="button" id="buttonComprobante" name="buttonComprobante" class="btn btn-white btn-info btn-bold btn-xs" data-toggle="modal" data-target="#modalXML"> Emitir Comprobante <i class="ace-icon fa fa-file-code-o bigger-110 icon-only"></i>
 																					</button>
 																				</div>
-																				<div class="profile-info-name"></div>
 																				<div class="profile-info-name"></div>
 																			</div>
 																		</div>
@@ -414,6 +411,103 @@
 																    </div>
 																</div>
 
+															</div>
+														</div>
+													</div>
+												</div>									
+												<br/>		
+												<br/>
+												<br/>		
+											</div>
+										</div>
+
+										<div id="faq-tab-4" class="tab-pane fade">
+											<div class="space-8"></div>
+											<div class="row">
+												<div class="col-xs-12">
+													<!-- PAGE CONTENT BEGINS -->						
+													<div align="center">								
+														<div class="col-xs-9 col-sm-12">
+															<div class="widget-box transparent">
+																	
+																<form name="formCategoriaDeclarado" id="formCategoriaDeclarado" method="post" action='<?=base_url()."index.php/boleta/crearXml/"?>'>
+
+																	<div class="profile-user-info profile-user-info-striped">
+																		<div class="profile-info-row">
+
+																			<div class="profile-info-name"> Canal: </div>
+																			<div class="profile-info-name">
+																				<select name="canalesDeclarado" id="canalesDeclarado" required="Seleccione una opción de la lista">
+																					<option value=0>Seleccione</option>
+																					<?php foreach ($canales as $c):
+																						if($idclienteempresa==$c->idclienteempresa):
+																							$estp='selected';
+																						else:
+																							$estp='';
+																						endif;?>
+																						<option value="<?=$c->idclienteempresa;?>" <?=$estp?> ><?=$c->nombre_comercial_cli?></option>
+																					<?php endforeach; ?>
+																				</select>
+																			</div>
+																			<div class="profile-info-name"> Inicio: </div>
+																			<div class="profile-info-name">
+																				<input class="form-control input-mask-date" type="date" id="fechainicioDeclarado" name="fechainicioDeclarado" required="Seleccione una fecha de inicio" value="<?=$fecinicio;?>">
+																			</div>
+																			<div class="profile-info-name"> Fin: </div>
+																			<div class="profile-info-name">
+																				<input class="form-control input-mask-date" type="date" id="fechafinDeclarado" name="fechafinDeclarado" required="Seleccione una fecha de fin" value="<?=$fecfin;?>">					
+																			</div>	
+
+																			<div class="profile-info-name"></div>
+																			<div class="profile-info-name">
+																				<button type="button" id="buttonBuscarDeclarado" class="btn btn-info btn-xs">Buscar 
+																					<i class="ace-icon glyphicon glyphicon-search bigger-110 icon-only"></i>
+																				</button>
+																			</div>
+																			<div class="profile-info-name"></div>
+																		</div>											
+																	</div>	
+																	<div id="resp10">
+																		<input type='text' class='hidden' id='numeroSerieDeclarado' name='numeroSerieDeclarado' value=''>
+																	</div>
+																	<br/>
+																	<div id="resp400"></div>
+																	<div id="resp200"></div>
+
+																	<div id="accionesTablaDeclarado">
+																		<hr>
+
+																		<div class="profile-user-info profile-user-info-striped">
+																			<div  class="profile-info-row">
+																				<div class="profile-info-name"></div>
+																				<div class="profile-info-name"> Correlativo Concar: </div>
+																				<div class="profile-info-name" id="correConcar" name="correConcar">
+																					<input class='form-control' name='correlativoConcar' type='text' value='' id='correlativoConcar'>
+																				</div>
+																				<div class="profile-info-name"> Fecha Concar: </div>
+																				<div class="profile-info-name" id="fechaDeConcar" name="fechaDeConcar">
+																					<input class="form-control input-mask-date" type="date" id="fechaConcar" name="fechaConcar" required="Seleccione una fecha de Concar" value="<?=$fecAct;?>">
+																				</div>
+																				<div class="profile-info-name"></div>
+																				<div class="profile-info-name">
+																					<button type="button" id="buttonExcel" name="buttonExcel" class="btn btn-white btn-info btn-bold btn-xs"> Concar ventas <i class="ace-icon fa fa-file-excel-o bigger-110 icon-only"></i>
+																					</button>
+																				</div>
+																				<div class="profile-info-name">
+																					<button type="button" id="buttonExcelCob" name="buttonExcelCob" class="btn btn-white btn-info btn-bold btn-xs"> Concar cobranzas <i class="ace-icon fa fa-file-excel-o bigger-110 icon-only"></i>
+																					</button>
+																				</div>
+																				<div class="profile-info-name">
+																					<button type="button" id="buttonComprobanteDeclarado" name="buttonComprobanteDeclarado" class="btn btn-white btn-info btn-bold btn-xs" data-toggle="modal" data-target="#modalXML"> Descargar Reporte Excel <i class="ace-icon fa fa-file-code-o bigger-110 icon-only"></i>
+																					</button>
+																				</div>
+																				<div class="profile-info-name"></div>
+																			</div>
+																		</div>
+																	</div>				
+																	<div id="resp3"></div>
+
+																</form>
 															</div>
 														</div>
 													</div>
@@ -765,6 +859,13 @@
 				});
 
 				$(function() {
+				    $("#buttonExcelCob").click(function(){    
+				    	//location.reload(true);    
+				      $('#modalExcel').modal('show');
+				    });
+				});
+
+				$(function() {
 				    $("#buttonEmitir").click(function(){    
 				    	//location.reload(true);    
 				      $('#modalXML').modal('hide');
@@ -773,10 +874,11 @@
 
 				$('#buttonExcel').click(function(){
 
-					var fechainicio = $("#fechainicioDos").val();
-			    	var fechafin = $("#fechafinDos").val();
-			    	var numeroSerie = $("#numeroSerie").val();
-			    	var canales = $("#canalesDos").val();
+					var fechainicio = $("#fechainicioDeclarado").val();
+			    	var fechafin = $("#fechafinDeclarado").val();
+			    	var numeroSerie = $("#numeroSerieDeclarado").val();
+			    	var canales = $("#canalesDeclarado").val();
+			    	var concar = $("#correlativoConcar").val();
 
 			        $.ajax({                        
 			           	url: "<?= BASE_URL()?>index.php/ventas_cnt/generarExcel",   
@@ -785,7 +887,35 @@
 			           	data:  {fechainicio:fechainicio,
 			           			fechafin:fechafin,
 			           			numeroSerie:numeroSerie,
-			           			canales:canales}, 
+			           			canales:canales,
+			           			concar:concar}, 
+			           	success: function(data)             
+			           	{
+
+			           	}
+			       	});
+			       	return false;
+			    });
+
+				$('#buttonExcelCob').click(function(){
+
+					var fechainicio = $("#fechainicioDeclarado").val();
+			    	var fechafin = $("#fechafinDeclarado").val();
+			    	var numeroSerie = $("#numeroSerieDeclarado").val();
+			    	var canales = $("#canalesDeclarado").val();
+			    	var concar = $("#correlativoConcar").val();
+			    	var fechaConcar = $("#fechaConcar").val();
+
+			        $.ajax({                        
+			           	url: "<?= BASE_URL()?>index.php/ventas_cnt/generarExcelCob",   
+			           	type: 'POST',
+			           	dataType: 'json',                                 
+			           	data:  {fechainicio:fechainicio,
+			           			fechafin:fechafin,
+			           			numeroSerie:numeroSerie,
+			           			canales:canales,
+			           			concar:concar,
+			           			fechaConcar:fechaConcar}, 
 			           	success: function(data)             
 			           	{
 
@@ -817,6 +947,97 @@
 			    	$('#canales').val() == 0;
 			       	return false;
 			    });
+
+//Reporte--------------------------------------------------------------------------------------------------------------------------
+				$("#accionesTablaDeclarado").hide();
+
+				$("#canalesDeclarado").change(function() {
+					var canales = $("#canalesDeclarado").val();
+					//ajax para pasar los parámetros
+					$.ajax({
+						url: "<?= BASE_URL()?>index.php/ventas_cnt/generarListaDeclarada",
+						type: 'POST',
+						dataType: 'json',
+						data: {canales:canales},
+						success: function(data)
+						{
+							//#resp es el id del div donde se van a crear los checkbozx
+							if ($('#canalesDeclarado').val() == 0) {
+						       	$("#numeroSerieDeclarado").val(null);
+						    } else {
+								$("#numeroSerieDeclarado").val(data.numeroSerieDeclarado);
+						    }
+
+						}
+					});
+					return false;
+				});
+
+				//función para enviar datos a la tabla dinámica que se va a generar    
+			    $('#buttonBuscarDeclarado').click(function(){
+			        $.ajax({                        
+			           	url: "<?= BASE_URL()?>index.php/ventas_cnt/mostrarDatosComprobantesDeclarados",   
+			           	type: 'POST',
+			           	dataType: 'json',                                 
+			           	data: $("#formCategoriaDeclarado").serialize(),
+			           	beforeSend: function(){
+				            $('#resp200').html("<br><br><img src='<?=base_url()."public/assets/img/loading2.gif"?>'>");
+				            $("#accionesTablaDeclarado").hide();
+				        },
+			           	success: function(data)             
+			           	{
+			           		$("#resp200").html(null);
+			             	$('#resp200').html(data); 
+			             	$("#accionesTablaDeclarado").show();
+			             	$('#tablaDatos').DataTable({
+								"pagingType": "full_numbers"
+							});
+			           	}
+			       	});
+			       	return false;
+			    });
+
+			   /* $('#buttonComprobanteDeclarado').click(function(){
+					var fechainicioDeclarado = $("#fechainicioDeclarado").val();
+			    	var fechafinDeclarado = $("#fechafinDeclarado").val();
+			    	var numeroSerieDeclarado = $("#numeroSerieDeclarado").val();
+			    	var canalesDeclarado = $("#canalesDeclarado").val();
+
+			        $.ajax({                        
+			           	url: "<?= BASE_URL()?>index.php/ventas_cnt/generarExcelReporte",   
+			           	type: 'POST',
+			           	dataType: 'json',                                 
+			           	data:  {fechainicioDeclarado:fechainicioDeclarado,
+			           			fechafinDeclarado:fechafinDeclarado,
+			           			numeroSerieDeclarado:numeroSerieDeclarado,
+			           			canalesDeclarado:canalesDeclarado}, 
+			           	success: function(data)             
+			           	{
+
+			           	}
+			       	});
+			       	return false;
+			    });*/
+
+			     $('#buttonComprobanteDeclarado').click(function(){
+			        $.ajax({
+					    type:'POST',
+					    url:"<?= BASE_URL()?>index.php/ventas_cnt/generarExcelReporte",
+					    dataType:'json',
+					    data: $("#formCategoriaDeclarado").serialize()
+					}).done(function(data){
+					    var $a = $("<a>");
+					    $a.attr("href",data.file);
+					    $("body").append($a);
+
+					    $a.attr("download","Reporte - Comprobantes Declarados.xls");
+
+					    $a[0].click();
+					    $a.remove();
+					});
+			    });
+
+
 
 			});
     	</script>
