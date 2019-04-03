@@ -578,7 +578,20 @@ class ventas_cnt extends CI_Controller {
 							$html .= "<td align='center'>S/. ".$importe2."</td>";
 							if ($estado == 2) {
 								$html .= "<td align='center' class='danger'>".$b->descripcion."</td>";
-								$html .= "<td align='left'></td>";
+								$html .= "<td align='left'>";
+									$html .= "<ul class='ico-stack'>";
+										$html .="<div title='ver PDF' id='pdfButton' onclick=''>";
+											$html .="<a class='boton fancybox' href='".base_url()."index.php/ventas_cnt/generarPdf/".$b->idcomprobante."/".$canales."' data-fancybox-width='950' data-fancybox-height='800' target='_blank'>";
+												$html .= "<i class='ace-icon fa fa-file-pdf-o bigger-120'></i>";
+											$html .="</a>";
+										$html .="</div>";
+											$html .="<div title='enviar PDF' id='pdfButtonEnviar' onclick=''>";
+												$html .="<a class='boton fancybox' href='".base_url()."index.php/ventas_cnt/enviarPdf/".$b->idcomprobante."/".$canales."' data-fancybox-width='750' data-fancybox-height='275' target='_blank'>";
+													$html .= "<i class='ace-icon fa fa-envelope bigger-120'></i>";
+												$html .="</a>";
+											$html .="</div>";
+									$html .= "</ul>";
+								$html .="</td>";
 							} elseif ($estado == 3) {
 								$html .= "<td align='center' class='success'>".$b->descripcion."</td>";
 								$html .= "<td align='left'>";
@@ -654,13 +667,26 @@ class ventas_cnt extends CI_Controller {
 								$html .= "<td align='center'>S/. ".$importe2."</td>";
 								if ($estado == 2) {
 									$html .= "<td align='center' class='danger'>".$f->descripcion."</td>";
-									$html .= "<td align='left'></td>";
+									$html .= "<td align='left'>";
+										$html .= "<ul class='ico-stack'>";
+											$html .="<div title='ver PDF' id='pdfButton' onclick=''>";
+												$html .="<a class='boton fancybox' href='".base_url()."index.php/ventas_cnt/generarPdf/".$f->idcomprobante."/".$canales."/F001' data-fancybox-width='950' data-fancybox-height='800' target='_blank'>";
+													$html .= "<i class='ace-icon fa fa-file-pdf-o bigger-120'></i>";
+												$html .="</a>";
+											$html .="</div>";
+											$html .="<div title='enviar PDF' id='pdfButtonEnviar' onclick=''>";
+												$html .="<a class='boton fancybox' href='".base_url()."index.php/ventas_cnt/enviarPdf/".$f->idcomprobante."/".$canales."' data-fancybox-width='750' data-fancybox-height='275' target='_blank'>";
+													$html .= "<i class='ace-icon fa fa-envelope bigger-120'></i>";
+												$html .="</a>";
+											$html .="</div>";
+										$html .= "</ul>";
+									$html .="</td>";
 								} elseif ($estado == 3) {
 									$html .= "<td align='center' class='success'>".$f->descripcion."</td>";
 									$html .= "<td align='left'>";
 										$html .= "<ul class='ico-stack'>";
 											$html .="<div title='ver PDF' id='pdfButton' onclick=''>";
-												$html .="<a class='boton fancybox' href='".base_url()."index.php/ventas_cnt/generarPdf/".$f->idcomprobante."/".$canales."' data-fancybox-width='950' data-fancybox-height='800' target='_blank'>";
+												$html .="<a class='boton fancybox' href='".base_url()."index.php/ventas_cnt/generarPdf/".$f->idcomprobante."/".$canales."/F001' data-fancybox-width='950' data-fancybox-height='800' target='_blank'>";
 													$html .= "<i class='ace-icon fa fa-file-pdf-o bigger-120'></i>";
 												$html .="</a>";
 											$html .="</div>";
@@ -760,7 +786,7 @@ class ventas_cnt extends CI_Controller {
 								$html .= "<td align='left'>";
 									$html .= "<ul class='ico-stack'>";
 										$html .="<div title='ver PDF' id='pdfButton' onclick=''>";
-											$html .="<a class='boton fancybox' href='".base_url()."index.php/ventas_cnt/generarPdf/".$b->idcomprobante."/".$canales."/".$serie."' data-fancybox-width='950' data-fancybox-height='800' target='_blank'>";
+											$html .="<a class='boton fancybox' href='".base_url()."index.php/ventas_cnt/generarPdf/".$b->idcomprobante."/".$canales."' data-fancybox-width='950' data-fancybox-height='800' target='_blank'>";
 												$html .= "<i class='ace-icon fa fa-file-pdf-o bigger-120'></i>";
 											$html .="</a>";
 										$html .="</div>";
@@ -834,7 +860,7 @@ class ventas_cnt extends CI_Controller {
 									$html .= "<td align='left'>";
 										$html .= "<ul class='ico-stack'>";
 											$html .="<div title='ver PDF' id='pdfButton' onclick=''>";
-												$html .="<a class='boton fancybox' href='".base_url()."index.php/ventas_cnt/generarPdf/".$f->idcomprobante."/".$canales."/".$serie."' data-fancybox-width='950' data-fancybox-height='800' target='_blank'>";
+												$html .="<a class='boton fancybox' href='".base_url()."index.php/ventas_cnt/generarPdf/".$f->idcomprobante."/".$canales."' data-fancybox-width='950' data-fancybox-height='800' target='_blank'>";
 													$html .= "<i class='ace-icon fa fa-file-pdf-o bigger-120'></i>";
 												$html .="</a>";
 											$html .="</div>";
@@ -1760,6 +1786,7 @@ class ventas_cnt extends CI_Controller {
 			$this->excel->getActiveSheet()->setCellValue("AM3", "1 Caracter");
 			$this->excel->getActiveSheet()->setCellValue("AN3", "Numérico 14,2");
 
+ 
 			$contador1=5;
 			$contador2=null;
 
@@ -1770,11 +1797,11 @@ class ventas_cnt extends CI_Controller {
 
 		        	//$plan=$b->idplan;
 
-					$centroCosto = $this->comprobante_pago_mdl->getCentroCosto($canales);					
+					/*$centroCosto = $this->comprobante_pago_mdl->getCentroCosto($canales);					
 
 					foreach($centroCosto as $c){
 						$centCosto = $c->centro_costo;
-					}
+					}*/
 
 					$sumaTotal = $this->comprobante_pago_mdl->getSumaExcel($fechainicio, $fechafin, $numeroSerie);					
 
@@ -1805,7 +1832,7 @@ class ventas_cnt extends CI_Controller {
 					$this->excel->getActiveSheet()->setCellValue("I{$contador1}","S");
 					$this->excel->getActiveSheet()->setCellValue("K{$contador1}","121201");
 					$this->excel->getActiveSheet()->setCellValue("L{$contador1}",$b->cont_numDoc);
-					$this->excel->getActiveSheet()->setCellValue("M{$contador1}",$centCosto);
+					$this->excel->getActiveSheet()->setCellValue("M{$contador1}",$b->centro_costo);
 					$this->excel->getActiveSheet()->setCellValue("N{$contador1}","H");
 					$this->excel->getActiveSheet()->setCellValue("O{$contador1}",$total);
 					$this->excel->getActiveSheet()->setCellValue("R{$contador1}","BV");
@@ -1837,7 +1864,7 @@ class ventas_cnt extends CI_Controller {
 					$this->excel->getActiveSheet()->setCellValue("L{$contador2}","014");
 					$this->excel->getActiveSheet()->setCellValue("X{$contador2}","014");
 				}
-				$this->excel->getActiveSheet()->setCellValue("M{$contador2}",$centCosto);
+				$this->excel->getActiveSheet()->setCellValue("M{$contador2}",$b->centro_costo);
 				$this->excel->getActiveSheet()->setCellValue("N{$contador2}","D");
 				$this->excel->getActiveSheet()->setCellValue("O{$contador2}",$totalExcel);
 				$this->excel->getActiveSheet()->setCellValue("R{$contador2}","TI");
@@ -1859,8 +1886,8 @@ class ventas_cnt extends CI_Controller {
 			        'file' => "data:application/vnd.ms-excel;base64,".base64_encode($xlsData)
 			    );
 
-				//die(json_encode($response));
-				file_put_contents('adjunto/dbf/COBRANZAS'.$numeroSerie.'.xls', $xlsData);
+				die(json_encode($response));
+				/*file_put_contents('adjunto/dbf/COBRANZAS'.$numeroSerie.'.xls', $xlsData);
 
 				$mail->isSMTP();
 		        $mail->Host     = 'relay-hosting.secureserver.net';;
@@ -1869,12 +1896,12 @@ class ventas_cnt extends CI_Controller {
 		        $mail->Password = '';
 		        $mail->SMTPSecure = 'false';
 		        $mail->Port     = 25;
-		        $mail->SetFrom('aespinoza@red-salud.com', utf8_decode('RED SALUD'));
-		        $mail->AddReplyTo('aespinoza@red-salud.com', utf8_decode('RED SALUD')); 
+		        $mail->SetFrom('contabilidad@red-salud.com', utf8_decode('RED SALUD'));
+		        $mail->AddReplyTo('contabilidad@red-salud.com', utf8_decode('RED SALUD')); 
 		        $mail->Subject    = "Archivo CONCAR";
 		        $mail->Body 	  = "Se adjunta archivo Excel de Cobranzas con serie ".$numeroSerie.". <br>";
 		        $mail->AltBody    = "Se adjunta archivo Excel de Cobranzas con serie ".$numeroSerie.".";
-		        $mail->AddAddress('aespinoza@red-salud.com', 'RED SALUD');
+		        $mail->AddAddress('contabilidad@red-salud.com', 'RED SALUD');
 
 		       	$mail->AddAttachment("adjunto/dbf/COBRANZAS".$numeroSerie.".xls", "COBRANZAS".$numeroSerie.".xls");
 		       	$mail->IsHTML(true);
@@ -1888,7 +1915,7 @@ class ventas_cnt extends CI_Controller {
 
 		       	//unlink("adjunto/dbf/VENTAS".$numeroSerie.".xls");
 				//header("Content-disposition: attachment; filename=anexos.dbf");
-				//header("Content-type: MIME");
+				//header("Content-type: MIME");*/
 
 		    } elseif (substr($numeroSerie, 0, 1) == 'F') {
 
@@ -1975,12 +2002,12 @@ class ventas_cnt extends CI_Controller {
 		        $mail->Password = '';
 		        $mail->SMTPSecure = 'false';
 		        $mail->Port     = 25;
-		        $mail->SetFrom('aespinoza@red-salud.com', utf8_decode('RED SALUD'));
-		        $mail->AddReplyTo('aespinoza@red-salud.com', utf8_decode('RED SALUD')); 
+		        $mail->SetFrom('contabilidad@red-salud.com', utf8_decode('RED SALUD'));
+		        $mail->AddReplyTo('contabilidad@red-salud.com', utf8_decode('RED SALUD')); 
 		        $mail->Subject    = "Archivo CONCAR";
 		        $mail->Body 	  = "Se adjunta archivo Excel de Cobranzas con serie ".$numeroSerie.". <br>";
 		        $mail->AltBody    = "Se adjunta archivo Excel de Cobranzas con serie ".$numeroSerie.".";
-		        $mail->AddAddress('aespinoza@red-salud.com', 'RED SALUD');
+		        $mail->AddAddress('contabilidad@red-salud.com', 'RED SALUD');
 
 		       	//$mail->AddAttachment("adjunto/dbf/CAN03.dbf", "CAN03.dbf");
 		       	$mail->AddAttachment("adjunto/dbf/COBRANZAS".$numeroSerie.".xls", "COBRANZAS".$numeroSerie.".xls");
@@ -1999,7 +2026,7 @@ class ventas_cnt extends CI_Controller {
 		    }
 	}
 
-	public function generarPdf($idcomprobante, $canales, $serie){
+	public function generarPdf($idcomprobante, $canales){
 
 		include ('./application/libraries/phpqrcode/qrlib.php');
 
@@ -2012,6 +2039,10 @@ class ventas_cnt extends CI_Controller {
 		$data['fechaEmision'] = date('Y-m-d');
 			
 		$boletas = $this->comprobante_pago_mdl->getDatosPdfBoletas($idcomprobante);
+		$boletasArray = json_decode(json_encode($boletas), true);
+		$boletasstring = array_values($boletasArray)[0];
+		$serie = $boletasstring['serie'];
+
 		$facturas = $this->comprobante_pago_mdl->getDatosPdfFacturas($idcomprobante);
 
 		//Carga la librería que agregamos
@@ -2166,7 +2197,7 @@ class ventas_cnt extends CI_Controller {
 	            $this->pdf->SetFont('Arial','',10);
 	            $this->pdf->SetTextColor(000,000,000);
 	            $this->pdf->Cell(25,10,"1",1,0,'C');
-	            $this->pdf->Cell(80,10,$f->nombre_plan,1,0,'C');
+	            $this->pdf->Cell(80,10,$f->sustento_nota,1,0,'C');
 	            $this->pdf->Cell(30,10,"S/. ".$neto,1,0,'C');
 	            $this->pdf->Cell(25,10,"S/. 0.00",1,0,'C');
 	            $this->pdf->Cell(30,10,"S/. ".$neto,1,0,'C');
@@ -2794,6 +2825,7 @@ class ventas_cnt extends CI_Controller {
     	$mail = new PHPMailer();
 
     	//$datos = null;
+    	$numeroSeriePost = $_POST['numSerie'];
     	$numSerie = $this->input->post('numSerie');
     	$idPlan = $this->input->post('nameCheck');
     	$canales = $this->input->post('canalesDos');
@@ -2801,7 +2833,8 @@ class ventas_cnt extends CI_Controller {
     	//$fecfin = $this->input->post('fechafinDos');
     	//$numSerieU = reset($numSerie);
     	$numSerieUno = reset($numSerie);
-    	if (substr($numSerieUno, 0, 1) == 'B') {
+    	$serieInicial=substr($numSerieUno, 0, 1);
+    	if ($serieInicial == 'B') {
 
     		$boletasAgr = $this->comprobante_pago_mdl->getDatosXmlBoletasAgrupadas($fecinicio, $numSerieUno);
 
@@ -2918,11 +2951,11 @@ $datos.='</SummaryDocuments>';
 				unlink($filename.".xml");
 				unlink($carpetaBoleta.'/'.$filename.".xml");
 
-				//$service = 'adjunto/wsdl/billService.wsdl'; 
-				$service = 'https://e-beta.sunat.gob.pe/ol-ti-itcpfegem-beta/billService?wsdl';
+				$service = 'adjunto/wsdl/billService.wsdl'; 
+				//$service = 'https://e-beta.sunat.gob.pe/ol-ti-itcpfegem-beta/billService?wsdl';
 				
-		    	$headers = new CustomHeaders('20600258894MODDATOS', 'MODDATOS');
-		    	//$headers = new CustomHeaders('20600258894DCACEDA2', 'DCACE716186'); 
+		    	//$headers = new CustomHeaders('20600258894MODDATOS', 'MODDATOS');
+		    	$headers = new CustomHeaders('20600258894DCACEDA2', 'DCACE716186'); 
 			    	
 		    	$client = new SoapClient($service, array(
 		    		'cache_wsdl' => WSDL_CACHE_NONE,
@@ -2979,7 +3012,7 @@ $datos.='</SummaryDocuments>';
 				
 			}
 
-    	} elseif (substr($numSerie, 0, 1) == 'F') {
+    	} elseif ($serieInicial == 'F') {
 	    		
 		    	$facturas = $this->comprobante_pago_mdl->getDatosXmlFacturas($fecinicio, $numSerie);
 		    	
@@ -3151,11 +3184,11 @@ $datos.='</SummaryDocuments>';
 					//unlink($filename.".xml");
 					//unlink('adjunto/xml/facturas/'.$fileFactura.'/'.$filename.'.xml');
 
-					//$service = 'adjunto/wsdl/billService.wsdl'; 
-					$service = 'https://e-beta.sunat.gob.pe/ol-ti-itcpfegem-beta/billService?wsdl';
+					$service = 'adjunto/wsdl/billService.wsdl'; 
+					//$service = 'https://e-beta.sunat.gob.pe/ol-ti-itcpfegem-beta/billService?wsdl';
 					
-			    	$headers = new CustomHeaders('20600258894MODDATOS', 'MODDATOS');
-			    	//$headers = new CustomHeaders('20600258894DCACEDA2', 'DCACE716186'); 
+			    	//$headers = new CustomHeaders('20600258894MODDATOS', 'MODDATOS');
+			    	$headers = new CustomHeaders('20600258894DCACEDA2', 'DCACE716186'); 
 
 			    	
 			    	$client = new SoapClient($service, array(
