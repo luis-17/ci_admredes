@@ -170,6 +170,8 @@
 													$fin2= strtotime($fin); 
 													$fin=date("d-m-Y", strtotime($cert->cert_finVig));
 													$can=$cert->fec_can;
+													$cliente = $cert->nombre_comercial_cli;
+													$plan = $cert->nombre_plan;
 													if($can==''){
 														$can='-';
 													}else{
@@ -295,9 +297,103 @@
 																</div>
 															</div>
 														</div>
-												
+													</div>												
 											</div>
 										</div>
+
+										<!-- coberturas del plan -->
+										<div class="panel panel-default">
+											<div class="panel-heading">
+												<a href="#faq-2-5" data-parent="#faq-list-2" data-toggle="collapse" class="accordion-toggle collapsed">
+													<i class="ace-icon fa fa-chevron-right smaller-80" data-icon-hide="ace-icon fa fa-chevron-down align-top" data-icon-show="ace-icon fa fa-chevron-right"></i>&nbsp;
+													COBERTURAS DEL PLAN
+												</a>
+											</div>
+
+											<div class="panel-collapse collapse" id="faq-2-5">
+												<div class="panel-body">
+													<h4 class="blue">
+														<i class="ace-icon glyphicon glyphicon-file bigger-110"></i>
+														<?=$cliente?>: <?=$plan?>
+													</h4>
+													<br>
+
+													<table id="simple-table" class="table table-striped table-bordered table-hover">
+														<thead>
+															<tr>
+																<th colspan="2" width="60%">Cobertura</th>
+																<th width="20%">Copago/Coaseguro</th>
+																<th width="20%">Eventos</th>
+															</tr>
+														</thead>
+														<tbody>
+															<?php foreach ($cobertura_operador as $co1) {
+																switch($co1->tiempo){
+													                case '':
+													                    $men ="Ilimitados";
+													                break;
+													                case '1 month':
+													                    if($co1->num_eventos==1){
+													                      $men = "evento al mes";
+													                    }else{
+													                      $men = "eventos mensuales";
+													                    }													                    
+													                    break;
+													                 case '2 month':
+													                    if($co1->num_eventos==1){
+													                      $men = "evento bimestral";
+													                    }else{
+													                      $men = "eventos bimestrales";
+													                    }
+													                    break;
+													                 case '3 month':
+													                    if($co1->num_eventos==1){
+													                      $men = "evento trimestral";
+													                    }else{
+													                      $men = "eventos trimestrales";
+													                    }
+													                    break;
+													                case '6 month':
+													                    if($co1->num_eventos==1){
+													                      $men = "evento semestral";
+													                    }else{
+													                      $men = "eventos semestrales";
+													                    }
+													                    break;
+													                case '1 year':
+													                    if($co1->num_eventos==1){
+													                      $men = "evento al año";
+													                    }else{
+													                      $men = "eventos anuales";
+													                    }
+													                    break;
+													            }
+													           
+													            if($co1->num_eventos==0){
+													            	$num_eve='';
+													            }else{
+													            	$num_eve=$co1->num_eventos;
+													            }
+															?>
+															<tr>
+																<td width="20%"><?=$co1->nombre_var?></td>
+																<td width="40%"><?=$co1->texto_web?></td>
+																<td width="20%"><?=$co1->coaseguro?></td>
+																<td width="20%"><?php echo $num_eve.' '.$men;?></td>
+															</tr>
+															<?php } 
+															foreach($coberturas as $co2){?>
+															<tr>
+																<td><?=$co2->nombre_var?></td>
+																<td colspan="3"><?=$co2->texto_web?></td>
+															</tr>
+															<?php } ?>
+														</tbody>
+													</table>
+												</div>
+											</div>
+										</div>
+										<!--  end coberturas del plan -->
 
 										<div class="panel panel-default">
 											<div class="panel-heading">
@@ -437,6 +533,7 @@
 												<?php } ?>
 												</div>
 											</div>
+										</div>
 										<div class="panel panel-default">
 											<div class="panel-heading">
 												<a href="#faq-2-3" data-parent="#faq-list-2" data-toggle="collapse" class="accordion-toggle collapsed">
@@ -481,7 +578,7 @@
 																<tr>
 																	<td><?=$aseg->aseg_numDoc;?></td>
 																	<td><?=$aseg->asegurado;?></td>
-																	<td><?=$fec;?>
+																	<td><?=$fec;?></td>
 																	<td><?=$aseg->aseg_telf;?></td>
 																	<td><?=$aseg->aseg_email;?></td>
 																	<td>
@@ -558,6 +655,7 @@
 															<?php endforeach;?>
 															</tbody>
 														</table>							
+												</div>
 											</div>
 										</div>
 										<div class="panel panel-default">

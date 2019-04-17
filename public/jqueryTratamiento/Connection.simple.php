@@ -20,10 +20,10 @@ function dbConnect (){
  	$pwd = 	'doc$%&54321';*/
 
  	$conn =	null;
- 	$host = 'localhost';
- 	$db = 	'new_redes_peru';
- 	$user = 'redperu_admin';
- 	$pwd = 	'du2las0de1r8@peru';
+ 	$host = '50.62.209.11:3306';
+ 	$db = 	'db_devrs';
+ 	$user = 'dev_user_rs';
+ 	$pwd = 	'redsaludRS@2018';
  	
 
 	try {

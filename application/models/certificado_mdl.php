@@ -185,13 +185,11 @@
 	return $proveedores->result();
 	}
 
-	function getProductos(){
-		$this->db->select("idespecialidad, descripcion_prod");
-		$this->db->from("producto");
-		$this->db->where("idvariableplan",1);
-		$this->db->order_by("descripcion_prod");
-
-	$productos=$this->db->get();
+	function getProductos($id){
+		$productos = $this->db->query("select idespecialidad, descripcion_prod from producto pr 
+										inner join producto_detalle prd on pr.idproducto=prd.idproducto
+										inner join plan_detalle pd on pd.idplandetalle=prd.idplandetalle
+										where pd.idvariableplan=1 and pd.idplan=(select plan_id from certificado where cert_id=$id)");
 	return $productos->result();
 	}
 
@@ -422,6 +420,26 @@
 		);
 
 		$this->db->insert("incidencia",$array);
+	}
+
+	function getCoberturasOperador($id){
+		$query = $this->db->query("select nombre_var, texto_web, num_eventos, tiempo, concat(o.descripcion,' ',valor_detalle, case when idoperador=1 then '%' else '' end)as coaseguro FROM variable_plan vp 
+									inner join plan_detalle pd on vp.idvariableplan=pd.idvariableplan
+									inner join operador o on  pd.simbolo_detalle=o.idoperador
+									inner join plan p on pd.idplan=p.idplan 
+									inner join certificado c on c.plan_id=p.idplan
+									where c.cert_id=$id order by vp.idvariableplan and estado_pd=1");
+		return $query->result();
+	}
+
+	function getCoberturas($id){
+		$query = $this->db->query("select nombre_var, texto_web
+									FROM variable_plan vp 
+									inner join plan_detalle pd on vp.idvariableplan=pd.idvariableplan
+									inner join plan p on pd.idplan=p.idplan 
+									inner join certificado c on c.plan_id=p.idplan
+									where c.cert_id=$id and simbolo_detalle='' and estado_pd=1");
+		return $query->result();
 	}
 }
 ?>

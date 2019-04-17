@@ -101,7 +101,7 @@
 										$mostrar="S";
 									}else{
 										$atencion="OA".$a->num_orden_atencion;
-										$fecha=$a->fecha_atencion;3
+										$fecha=$a->fecha_atencion;
 										$fecha=date("d-m-Y", strtotime($fecha));
 										switch($a->estado_siniestro):
 											case 0: 

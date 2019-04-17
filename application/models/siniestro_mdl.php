@@ -587,7 +587,8 @@
 		$this->db->join("plan_detalle pd","pd.idplan=c.plan_id");
 		$this->db->join("variable_plan vp","vp.idvariableplan=pd.idvariableplan");
 		$this->db->join("producto_detalle pr","pr.idplandetalle=pd.idplandetalle");
-		$this->db->join("periodo_evento pe","pd.idplandetalle=pe.idplandetalle and c.cert_id=pe.cert_id","left");
+		$this->db->join("certificado_asegurado ca","ca.aseg_id=s.idasegurado and ca.cert_id=s.idsiniestro");
+		$this->db->join("periodo_evento pe","pe.certase_id=ca.certase_id");
 		$this->db->where("idsiniestro=$id and vp.idvariableplan <> 1");
 
 		$query = $this->db->get();
@@ -720,12 +721,13 @@
 	}
 
 	function getCert($data){
-		$this->db->select("c.cert_id, (vez_actual)+1 as vez_actual, cant, cant_tot");
+		$this->db->select("c.cert_id, (vez_actual)+1 as vez_actual, cant, cant_tot, ca.certase_id");
 		$this->db->from("certificado c");
 		$this->db->join("siniestro s","c.cert_id=s.idcertificado");
 		$this->db->join("(select count(idsiniestro) as cant, idsiniestro from siniestro_analisis where idsiniestro=".$data['sin_id']." and estado_sian in (1,2))a","s.idsiniestro=a.idsiniestro","left");
 		$this->db->join("(select count(idsiniestro) as cant_tot, idsiniestro from siniestro_analisis where idsiniestro=".$data['sin_id'].")b","s.idsiniestro=b.idsiniestro","left");
-		$this->db->join("periodo_evento pe","pe.cert_id=c.cert_id");
+		$this->db->join("certificado_asegurado ca","ca.aseg_id=s.idasegurado and ca.cert_id=s.idsiniestro");
+		$this->db->join("periodo_evento pe","pe.certase_id=ca.certase_id");
 		$this->db->where("s.idsiniestro",$data['sin_id']);		
 		$this->db->where("idplandetalle",$data['idplandetalle']);
 		$query =  $this->db->get();
@@ -735,7 +737,7 @@
 	function up_periodo_evento($data){
 		$array = array('vez_actual' => $data['vez_actual'] );
 		$this->db->where('idplandetalle',$data['idplandetalle']);
-		$this->db->where('cert_id',$data['cert']);
+		$this->db->where('certase_id',$data['certase_id']);
 		$this->db->update('periodo_evento',$array);
 	}
 

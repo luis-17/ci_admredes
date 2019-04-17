@@ -987,6 +987,7 @@ class Siniestro_cnt extends CI_Controller {
 					$vez_actual = $c->vez_actual;
 					$cant = $c->cant;
 					$cant_tot = $c->cant_tot;
+					$data['certase_id'] = $c->certase_id;
 				}
 			}
 

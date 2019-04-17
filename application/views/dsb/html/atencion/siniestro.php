@@ -35,7 +35,6 @@
 		<link rel="stylesheet" href="<?=  base_url()?>public/fancybox/source/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen" />
 		<script type="text/javascript" src="<?=  base_url()?>public/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
 
-
 		<script>
 			$(".fancybox")
 		    .attr('rel', 'gallery')
@@ -253,94 +252,94 @@
 
 												  <div class="form-row">
 												  	<div class="form-group col-md-4">
-												    <b class="text-primary">PA (Presión Arterial)</b>
-												    <input type="text" class="form-control" name="presion_arterial_mm" id="presion_arterial_mm" value="<?php echo $presion_arterial_mm?>">
+													    <b class="text-primary">PA (Presión Arterial)</b>
+													    <input type="text" class="form-control" name="presion_arterial_mm" id="presion_arterial_mm" value="<?php echo $presion_arterial_mm?>">
 													</div>
 
 													<div class="form-group col-md-4">
-												    <b class="text-primary">FC (Frecuencia Cardiaca) </b>
-												    <input type="text" class="form-control" name="frec_cardiaca" id="frec_cardiaca" value="<?php echo $frec_cardiaca?>">
+													    <b class="text-primary">FC (Frecuencia Cardiaca) </b>
+													    <input type="text" class="form-control" name="frec_cardiaca" id="frec_cardiaca" value="<?php echo $frec_cardiaca?>">
 													</div>
 
 													<div class="form-group col-md-4">
-												    <b class="text-primary">FR (Frecuencia Respiratoria)</b>
-												    <input type="text" class="form-control" name="frec_respiratoria" id="frec_respiratoria" value="<?php echo $frec_respiratoria?>">
+													    <b class="text-primary">FR (Frecuencia Respiratoria)</b>
+													    <input type="text" class="form-control" name="frec_respiratoria" id="frec_respiratoria" value="<?php echo $frec_respiratoria?>">
 													</div>
 												  </div>
 
 												  <div class="form-row">
 												  	<div class="form-group col-md-2">
-												    <b class0="text-primary">Peso (en Kg)</b>
-												    <input type="text" class="form-control" name="peso" id="peso" value="<?php echo $peso?>">
+													    <b class0="text-primary">Peso (en Kg)</b>
+													    <input type="text" class="form-control" name="peso" id="peso" value="<?php echo $peso?>">
 													</div>
 
 													<div class="form-group col-md-2">
-												    <b class="text-primary">Talla</b>
-												    <input type="text" class="form-control" name="talla" id="talla" value="<?php echo $talla?>">
+													    <b class="text-primary">Talla</b>
+													    <input type="text" class="form-control" name="talla" id="talla" value="<?php echo $talla?>">
 													</div>
 
 													<div class="form-group col-md-8">
-												    <b class="text-primary">Cabeza</b>
-												    <input type="text" class="form-control" name="estado_cabeza" id="estado_cabeza" value="<?php echo $estado_cabeza?>">
+													    <b class="text-primary">Cabeza</b>
+													    <input type="text" class="form-control" name="estado_cabeza" id="estado_cabeza" value="<?php echo $estado_cabeza?>">
 													</div>
 												  </div>
 
 												  <div class="form-row">
 												  	<div class="form-group col-md-12">
-												    <b class="text-primary">Piel y Faneras</b>
-												    <input type="text" class="form-control" name="piel_faneras" id="piel_faneras" value="<?php echo $piel_faneras?>">
+													    <b class="text-primary">Piel y Faneras</b>
+													    <input type="text" class="form-control" name="piel_faneras" id="piel_faneras" value="<?php echo $piel_faneras?>">
 													</div>												
 												  </div>
 
 												  <div class="form-row">
 												  	<div class="form-group col-md-12">
-												    <b class="text-primary">CV:CR (Cardiovascular : Ruidos Cardiacos)</b>
-												    <input type="text" class="form-control" name="cv_ruido_cardiaco" id="cv_ruido_cardiaco" value="<?php echo $cv_ruido_cardiaco?>">
+													    <b class="text-primary">CV:CR (Cardiovascular : Ruidos Cardiacos)</b>
+													    <input type="text" class="form-control" name="cv_ruido_cardiaco" id="cv_ruido_cardiaco" value="<?php echo $cv_ruido_cardiaco?>">
 													</div>												
 												  </div>
 
 												  <div class="form-row">
 												  	<div class="form-group col-md-12">
-												    <b class="text-primary">TP:MV (Tórax y pulmones: Murmullo Vesicular)</b>
-												    <input type="text" class="form-control" name="tp_murmullo_vesicular" id="tp_murmullo_vesicular" value="<?php echo $tp_murmullo_vesicular?>">
+													    <b class="text-primary">TP:MV (Tórax y pulmones: Murmullo Vesicular)</b>
+													    <input type="text" class="form-control" name="tp_murmullo_vesicular" id="tp_murmullo_vesicular" value="<?php echo $tp_murmullo_vesicular?>">
 													</div>												
 												  </div>
 
 												  <div class="form-row">
 												  	<div class="form-group col-md-6">
-												    <b class="text-primary">Abdomen</b>
-												    <input type="text" class="form-control" name="estado_abdomen" id="estado_abdomen" value="<?php echo $estado_abdomen?>">
+													    <b class="text-primary">Abdomen</b>
+													    <input type="text" class="form-control" name="estado_abdomen" id="estado_abdomen" value="<?php echo $estado_abdomen?>">
 													</div>
 
 													<div class="form-group col-md-6">
-												    <b class="text-primary">RHA (Ruidos hidroaéreos)</b>
-												    <input type="text" class="form-control" name="ruido_hidroaereo" id="ruido_hidroaereo" value="<?php echo $ruido_hidroaereo?>">
+													    <b class="text-primary">RHA (Ruidos hidroaéreos)</b>
+													    <input type="text" class="form-control" name="ruido_hidroaereo" id="ruido_hidroaereo" value="<?php echo $ruido_hidroaereo?>">
 													</div>												
 												  </div>
 
 												  <div class="form-row">
 												  	<div class="form-group col-md-12">
-												    <b class="text-primary">Neuro</b>
-												    <input type="text" class="form-control" name="estado_neurologico" id="estado_neurologico" value="<?php echo $estado_neurologico?>">
+													    <b class="text-primary">Neuro</b>
+													    <input type="text" class="form-control" name="estado_neurologico" id="estado_neurologico" value="<?php echo $estado_neurologico?>">
 													</div>												
 												  </div>
 
 												  <div class="form-row">
 												  	<div class="form-group col-md-12">
-												    <b class="text-primary">Osteomuscular</b>
-												    <input type="text" class="form-control" name="estado_osteomuscular" id="estado_osteomuscular" value="<?php echo $estado_osteomuscular?>">
+													    <b class="text-primary">Osteomuscular</b>
+													    <input type="text" class="form-control" name="estado_osteomuscular" id="estado_osteomuscular" value="<?php echo $estado_osteomuscular?>">
 													</div>												
 												  </div>
 
 												  <div class="form-row">
 												  	<div class="form-group col-md-6">
-												    <b class="text-primary">GU:PPL (Genito-Urinario: Puño percusion lumbar.)</b>
-												    <input type="text" class="form-control" name="gu_puno_percusion_lumbar" id="gu_puno_percusion_lumbar" value="<?php echo $gu_puno_percusion_lumbar?>">
+													    <b class="text-primary">GU:PPL (Genito-Urinario: Puño percusion lumbar.)</b>
+													    <input type="text" class="form-control" name="gu_puno_percusion_lumbar" id="gu_puno_percusion_lumbar" value="<?php echo $gu_puno_percusion_lumbar?>">
 													</div>
 
 													<div class="form-group col-md-6">
-												    <b class="text-primary">GU:PRU (Genito-Urinario: Puntos Renouretelares)</b>
-												    <input type="text" class="form-control" name="gu_puntos_reno_uretelares" id="gu_puntos_reno_uretelares" value="<?php echo $gu_puntos_reno_uretelares?>">
+													    <b class="text-primary">GU:PRU (Genito-Urinario: Puntos Renouretelares)</b>
+													    <input type="text" class="form-control" name="gu_puntos_reno_uretelares" id="gu_puntos_reno_uretelares" value="<?php echo $gu_puntos_reno_uretelares?>">
 													</div>												
 												  </div>
 
@@ -511,8 +510,7 @@
 																</tr>
 
 																<?php
-																foreach($medicamento as $u):
-																
+																foreach($medicamento as $u):																
 																if($u->idsiniestrodiagnostico==$o->idsiniestrodiagnostico and $u->tipo_tratamiento){ 
 																?>
 																<tr>
@@ -614,7 +612,7 @@
 											      $cont=0;
 											      foreach ($variable as $v){
 											      	if($v->liqdetalle_aprovpago==2){
-											      		$estado="disabled";
+											      		$estado='readonly="readonly"';
 											      	}else{
 											      		$estado="";
 											      	}
@@ -651,7 +649,9 @@
 											          	<input type="text" id= "neto<?=$cont?>" name= "neto<?=$cont?>" class="form-control txtCal2" placeholder="0,00" value="<?=$v->liqdetalle_neto;?>" <?=$estado?> /></div>
 											          </td>
 											          <td><input type="text" id= "factura<?=$cont?>" name= "factura<?=$cont?>" class="form-control" placeholder="000-000000" value="<?=$v->liqdetalle_numfact?>" <?=$estado?> /></td>
-											          <td><input type="hidden" name="aprovpago<?=$cont?>" id="aprovpago<?=$cont?>" value="<?=$v->liqdetalle_aprovpago?>" /><input onclick="aprovpago(<?=$cont?>)" type="checkbox" id="pago<?=$cont?>" name="pago<?=$cont?>" <?=$estado?> <?php if($v->liqdetalle_aprovpago!=0){ echo "checked";} ?> ></td>          
+											          <td><input type="hidden" name="aprovpago<?=$cont?>" id="aprovpago<?=$cont?>" value="<?=$v->liqdetalle_aprovpago?>" />
+											          	<input type="hidden" name="estado<?=$cont?>" id="estado<?=$cont?>" value="<?=$v->liqdetalle_aprovpago?>">
+											          	<input onclick="aprovpago(<?=$cont?>)" type="checkbox" id="pago<?=$cont?>" name="pago<?=$cont?>" <?=$estado?> <?php if($v->liqdetalle_aprovpago!=0){ echo "checked";} ?> ></td>          
 											        </tr>
 											        <?php $cont=$cont+1;
 											        	  $liqTotal=$v->liquidacionTotal;
@@ -821,10 +821,15 @@
 
 			function aprovpago(cont){
 				
+				estado = document.getElementById("aprovpago"+cont).value;
+
 				if(document.getElementById("pago"+cont).checked==true){
 					document.getElementById("aprovpago"+cont).value=1;
 				}else{
 					document.getElementById("aprovpago"+cont).value=0;
+				}
+				if(estado==2){
+					document.getElementById("aprovpago"+cont).value=2;
 				}
 			}
 

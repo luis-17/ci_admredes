@@ -59,6 +59,9 @@ class Certificadodetalle_cnt extends CI_Controller {
 			$asegurado = $this->certificado_mdl->getAsegurados($id);	
 			$data['asegurado'] = $asegurado;
 
+			$data['cobertura_operador'] = $this->certificado_mdl->getCoberturasOperador($id);
+			$data['coberturas'] = $this->certificado_mdl->getCoberturas($id);
+
 			$cobros = $this->certificado_mdl->getCobros($id);	
 			$data['cobros'] = $cobros;
 			$data['doc']=$doc;
@@ -135,7 +138,7 @@ class Certificadodetalle_cnt extends CI_Controller {
 		$proveedores = $this->certificado_mdl->getProveedores();
 		$data['proveedores'] = $proveedores;
 
-		$productos = $this->certificado_mdl->getProductos();
+		$productos = $this->certificado_mdl->getProductos($id);
 		$data['productos'] = $productos;
 
 		if($data['cita']==null){

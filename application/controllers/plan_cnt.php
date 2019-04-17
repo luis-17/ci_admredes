@@ -325,7 +325,7 @@ class plan_cnt extends CI_Controller {
 
 			$cob = $this->plan_mdl->selecionar_cobertura2($data['iddet']);
 
-			//email para proveedor
+			/*//email para proveedor
 			foreach ($cob as $c) {
 				
 				switch ($c->tiempo) {
@@ -414,7 +414,7 @@ class plan_cnt extends CI_Controller {
 			//$mail->addAttachment('adjunto/'.$plan.'.pdf', 'Condicionado.pdf');
 			//$mail->addAttachment('adjunto/RED_MEDICA_2018.pdf', 'Red_Medica.pdf');
 			// Enviar
-			$mail->send();
+			$mail->send();*/
 		}		
 
 		$cobertura = $this->plan_mdl->getCobertura($data['id']);

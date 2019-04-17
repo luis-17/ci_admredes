@@ -64,6 +64,12 @@ class notas_cnt extends CI_Controller {
 			$planes = $this->comprobante_pago_mdl->getPlanesSelect();
 			$data['planes'] = $planes;
 
+			$canales = $this->comprobante_pago_mdl->getCanales();
+			$data['canales'] = $canales;
+
+			$canalesDev = $this->comprobante_pago_mdl->getCanales();
+			$data['canalesDev'] = $canalesDev;
+
 
 			$this->load->view('dsb/html/comprobante/notas_comp.php',$data);
 
@@ -204,8 +210,403 @@ class notas_cnt extends CI_Controller {
 
 	}
 
-	public function mostrarDocumentoNotaCredito()
-	{
+	public function mostrarCorrelativoMasivo(){
+
+		$html=null;
+		$serie='B006';
+
+		$correlativo=$this->comprobante_pago_mdl->getUltimoCorrelativoMasUno($serie);
+
+		foreach ($correlativo as $c):
+
+			$html.="<input class='form-control' name='correGen' type='text' value='".$c->correlativo."' id='correGen'>";
+
+		endforeach;			
+
+		echo json_encode($html);
+	}
+
+	public function mostrarListaNotaCreditoMasiva(){
+		$html = null;
+
+		$canales=$_POST['canales'];
+		$inicio = $_POST['fechainicioMas'];
+		$fin = $_POST['fechafinMas'];
+		$month = date('m');
+      	$year = date('Y');
+      	$day = date('d');
+
+		$fechaAct= date('Y-m-d');
+
+		$certCuotas = $this->comprobante_pago_mdl->mostrarCertCuotas($inicio, $fin);
+
+		$html .="<hr>";
+		$html .= "<div  align='center' class='col-xs-12'>";
+			$html .= "<table align='center' id='tablaDatos' class='table table-striped table-bordered table-hover'>";
+				$html .= "<thead>";
+					$html .= "<tr>";
+						$html .= "<th>Fecha de devolución</th>";
+						$html .= "<th>N° de certificado</th>";
+						$html .= "<th>Nombres y Apellidos</th>";
+						$html .= "<th>DNI</th>";
+						$html .= "<th>Plan</th>";
+						$html .= "<th>Importe (S/.)</th>";
+						$html .= "<th>Fecha de cobro</th>";
+					$html .= "</tr>";
+				$html .= "</thead>";
+				$html .= "<tbody>";
+
+				foreach ($certCuotas as $cc) {
+
+					$certificado = $cc->cert_num;
+					$importeDev = $cc->importe;
+					$importeDev2 = $importeDev*100;
+					$fechaIn = $cc->fecha_inicio;
+					$fechaFi = $cc->fecha_fin;
+
+					$cobros = $this->comprobante_pago_mdl->mostrarCobroDevolucionCert($certificado, $canales, $cc->cuotas, $inicio, $fin, $fechaIn, $fechaFi);
+
+					foreach ($cobros as $cb) {
+
+						$importe = $cb->importe;
+						$importe = $importe;
+						$importe2=number_format((float)$importe, 2, '.', ',');
+						$newDate = date("d/m/Y", strtotime($cb->fecha_dev));
+						$newDate2 = date("d/m/Y", strtotime($cb->cob_fechCob));
+
+						$html .= "<tr>";
+							$html .= "<td align='left'>".$newDate."<input type='text' class='hidden' id='fechEmiNota' name='fechEmiNota[]' value='".$cb->fecha_dev."'></td>";
+							$html .= "<td align='left'>".$cb->cert_num."</td>";
+							$html .= "<td align='left'>".utf8_decode($cb->contratante)."<input type='text' class='hidden' id='contratante' name='contratante[]' value=''></td>";
+							$html .= "<td align='left'>".$cb->cont_num."<input type='text' class='hidden' id='cobro' name='cobro[]' value=''></td>";
+							$html .= "<td align='left'>".utf8_decode($cb->nombre_plan)."<input type='text' class='hidden' id='idplan' name='idplan[]' value=''></td>";
+							$html .= "<td align='center'>S/. ".$importe2."<input type='text' class='hidden' id='impNota' name='impNota[]' value='".$importe2."'></td>";
+							$html .= "<td align='left'>".$newDate2."<input type='text' class='hidden' id='numSerie' name='numSerie[]' value='B00".$cb->idclienteempresa."'></td>";
+						$html .= "</tr>";
+
+					}
+
+				}
+
+				$html .= "</tbody>";
+			$html .= "</table>";
+		$html .= "</div>";
+
+		$html .= "<hr>";
+		$html .= "<div class='form-row'>";
+		  	$html .= "<div class='form-group col-md-4'>";
+		    	$html .= "<b class='text-primary'>Serie de Referencia</b>";
+		    	$html .= "<input type='text' class='form-control' name='numSerieRefMasivo' id='numSerieRefMasivo' value=''>";
+			$html .= "</div>";
+
+			$html .= "<div class='form-group col-md-4'>";
+		    	$html .= "<b class='text-primary'>Correlativo de Referencia</b>";
+		   		$html .= "<input type='number' class='form-control' name='CorreRefMasivo' id='CorreRefMasivo' required='Ingrese importe de la nota de crédito' value=''>";
+			$html .= "</div>";
+
+			$html .= "<div class='form-group col-md-4'>";
+		    	$html .= "<b class='text-primary'>Fecha Comprobante de Referencia</b>";
+		   		$html .= "<input type='date' class='form-control' name='fechEmiRefMasivo' id='fechEmiRefMasivo' required='Ingrese importe de la nota de crédito' value='".$fechaAct."'>";
+			$html .= "</div>";
+		$html .= "</div>";
+		$html .= "<div class='form-row'>";
+		  	$html .= "<div class='form-group col-md-12'>";
+		    	$html .= "<b class='text-primary'>Motivo de Nota de Crédito</b>";
+		   		$html .= "<textarea type='textarea' class='form-control' name='motivoMasivo' id='motivoManual' value='' required='Ingrese el motivo de la nota de crédito'></textarea>";
+			$html .= "</div>";							
+		$html .= "</div>";
+
+
+		echo json_encode($html);
+
+	}
+
+	public function guardarNotaCreditoMasiva(){
+		
+		//$fechEmiNota = $_POST['fechEmiNota'];
+		//$impTotal = $_POST['impNota'];
+		$idTipoDoc = 5;
+		$canales = $_POST['canales'];
+		$numSerie = $_POST['numSerie'];
+		$correGen = $_POST['correGen'];
+		$inicio = $_POST['fechainicioMas'];
+		$fin = $_POST['fechafinMas'];
+		//$serieRef = 'BC01';
+		$correRef = 1;
+		//$fechaRef = '2018-01-31';
+		$sustento = 'reporte';
+
+		$certCuotas = $this->comprobante_pago_mdl->mostrarCertCuotas($inicio, $fin);
+
+		foreach ($certCuotas as $cc) { 
+	
+			$certificado = $cc->cert_num;
+			$cuotas = $cc->cuotas;
+			$dni = $cc->cont_num;
+			$importeDev = $cc->importe;
+			$dev_id = $cc->dev_id;
+			$fechaIn = $cc->fecha_inicio;
+			$fechaFi = $cc->fecha_fin;
+			$importeDev2 = $importeDev*100;
+
+			$cobros = $this->comprobante_pago_mdl->mostrarCobroDevolucionCert($certificado, $canales, $cuotas, $inicio, $fin, $fechaIn, $fechaFi);
+			$contar = count($cobros);
+			$validar = $cuotas - $contar;
+
+			foreach ((array)$cobros as $cb) {
+
+				if ($contar == 0) {
+					$this->comprobante_pago_mdl->updateEstadoDevId($dev_id);
+				} else {
+					$import = $cb->importe;
+					$this->comprobante_pago_mdl->insertDatosBoletasNotas($cb->fecha_dev, 'BC01', $correGen, $cb->cont_id, $idTipoDoc, $import, $cb->idplan, $cd->serie, $cd->correlativo, $sustento, $fechaIn, 1);
+
+					$dev_id_cobro = $cb->dev_id;
+					$this->comprobante_pago_mdl->updateEstadoDevCobro($cb->cob_id);
+
+					if ($validar == 0) {
+						$correGen = $correGen+1;
+						$this->comprobante_pago_mdl->updateEstadoDevCero($validar, $dev_id);
+					} else {
+						$this->comprobante_pago_mdl->updateEstadoDev($validar, $dev_id);
+					}
+				}
+	
+			}
+		}
+		$this->comprobante_pago_mdl->updateEstadoDevUno($inicio, $fin);
+
+	}
+
+	public function devolucionesSinCobros(){
+		$html = null;
+
+		$canales=$_POST['canales'];
+		$inicio = $_POST['fechainicioDev'];
+		$fin = $_POST['fechafinDev'];
+
+		$html .="<hr>";
+		$html .= "<div  align='center' class='col-xs-12'>";
+			$html .= "<table align='center' id='tablaDatos' class='table table-striped table-bordered table-hover'>";
+				$html .= "<thead>";
+					$html .= "<tr>";
+						$html .= "<th>Fecha de devolución</th>";
+						$html .= "<th>N° de certificado</th>";
+						$html .= "<th>Nombres y Apellidos</th>";
+						$html .= "<th>DNI</th>";
+						$html .= "<th>Plan</th>";
+						$html .= "<th>Importe (S/.)</th>";
+						$html .= "<th>Cuotas</th>";
+						$html .= "<th>Estado</th>";
+					$html .= "</tr>";
+				$html .= "</thead>";
+				$html .= "<tbody>";
+
+				if ($canales == 0) {
+					$dev = $this->comprobante_pago_mdl->getDevolucionesSinCobroDos($inicio, $fin);
+
+					foreach ($dev as $d) {
+
+						$importe = $d->importe;
+						$importe2=number_format((float)$importe, 2, '.', ',');
+						$newDate = date("d/m/Y", strtotime($d->fecha_dev));
+						
+						$html .= "<tr>";
+							$html .= "<td align='left'>".$newDate."<input type='text' class='hidden' id='fechEmiNota' name='fechEmiNota[]' value='".$d->fecha_dev."'></td>";
+
+							$html .= "<td align='left'>".$d->cert_num."<input type='text' class='hidden' id='cert_num' name='cert_num[]' value='".$d->cert_num."'></td>";
+
+							$html .= "<td align='left'>".utf8_decode($d->contratante)."<input type='text' class='hidden' id='contratante' name='contratante[]' value='".utf8_decode($d->contratante)."'></td>";
+
+							$html .= "<td align='left'>".$d->cont_num."<input type='text' class='hidden' id='dni' name='dni[]' value='".$d->cont_num."'></td>";
+
+							$html .= "<td align='left'>".utf8_decode($d->nombre_plan)."<input type='text' class='hidden' id='plan' name='plan[]' value='".utf8_decode($d->nombre_plan)."'></td>";
+
+							$html .= "<td align='center'>S/. ".$importe2."<input type='text' class='hidden' id='impDev' name='impDev[]' value='".$importe2."'></td>";
+
+							$html .= "<td align='left'>".$d->cuotas."<input type='text' class='hidden' id='cuotas' name='cuotas[]' value='".$d->cuotas."'></td>";
+							if ($d->estado = 3) {
+								$html .= "<td align='left'>Sin Cobro<input type='text' class='hidden' id='cuotas' name='cuotas[]' value='".$d->estado."'></td>";
+							} elseif ($d->estado = 4) {
+								$html .= "<td align='left'>Certificado no registrado<input type='text' class='hidden' id='cuotas' name='cuotas[]' value='".$d->estado."'></td>";
+							}
+								
+						$html .= "</tr>";
+					}
+
+				} else {
+					$dev = $this->comprobante_pago_mdl->getDevolucionesSinCobro($canales, $inicio, $fin);
+
+					foreach ($dev as $d) {
+
+						$importe = $d->importe;
+						$importe2=number_format((float)$importe, 2, '.', ',');
+						$newDate = date("d/m/Y", strtotime($d->fecha_dev));
+						
+						$html .= "<tr>";
+							$html .= "<td align='left'>".$newDate."<input type='text' class='hidden' id='fechEmiNota' name='fechEmiNota[]' value='".$d->fecha_dev."'></td>";
+
+							$html .= "<td align='left'>".$d->cert_num."<input type='text' class='hidden' id='cert_num' name='cert_num[]' value='".$d->cert_num."'></td>";
+
+							$html .= "<td align='left'>".utf8_decode($d->contratante)."<input type='text' class='hidden' id='contratante' name='contratante[]' value='".utf8_decode($d->contratante)."'></td>";
+
+							$html .= "<td align='left'>".$d->cont_num."<input type='text' class='hidden' id='dni' name='dni[]' value='".$d->cont_num."'></td>";
+
+							$html .= "<td align='left'>".utf8_decode($d->nombre_plan)."<input type='text' class='hidden' id='plan' name='plan[]' value='".utf8_decode($d->nombre_plan)."'></td>";
+
+							$html .= "<td align='center'>S/. ".$importe2."<input type='text' class='hidden' id='impDev' name='impDev[]' value='".$importe2."'></td>";
+
+							$html .= "<td align='left'>".$d->cuotas."<input type='text' class='hidden' id='cuotas' name='cuotas[]' value='".$d->cuotas."'></td>";
+							if ($d->estado = 3) {
+								$html .= "<td align='left'>Sin Cobro<input type='text' class='hidden' id='cuotas' name='cuotas[]' value='".$d->estado."'></td>";
+							} elseif ($d->estado = 4) {
+								$html .= "<td align='left'>Certificado no registrado<input type='text' class='hidden' id='cuotas' name='cuotas[]' value='".$d->estado."'></td>";
+							}
+								
+						$html .= "</tr>";
+					}
+				}
+
+				$html .= "</tbody>";
+			$html .= "</table>";
+		$html .= "</div>";
+
+		echo json_encode($html);
+	}
+
+	public function generarExcelDevSinCobros(){
+
+		$inicio = $_POST['fechainicioDev'];
+		$fin = $_POST['fechafinDev'];
+
+		$canales = $_POST['canales'];
+
+		//Se carga la librería de excel
+		$this->load->library('excel');
+		$this->excel->setActiveSheetIndex(0);
+		$this->excel->getActiveSheet()->setTitle('Hoja 1');
+
+		$estiloBorde = array(
+		   'borders' => array(
+		     'allborders' => array(
+		       'style' => PHPExcel_Style_Border::BORDER_THIN
+		     )
+		   )
+		 );
+
+		$this->excel->getActiveSheet()->getStyle('A1:I1')->applyFromArray($estiloBorde);
+		unset($styleArray); 
+
+		$estiloCentrar = array( 
+		 	'alignment' => array( 
+		  		'horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_CENTER, 
+		  		'vertical' => PHPExcel_Style_Alignment::VERTICAL_CENTER, 
+		  	) 
+		);
+
+		$this->excel->getActiveSheet()->getStyle('A1:I1')->applyFromArray($estiloCentrar);
+		$this->excel->getActiveSheet()->getStyle('A1:I1')->getAlignment()->setWrapText(true);
+
+		$estiloColor = array(
+	    	'fill' => array(
+		        'type' => PHPExcel_Style_Fill::FILL_SOLID,
+		        'color' => array('rgb' => 'F4A900')
+	    	)
+	    );
+
+		$this->excel->getActiveSheet()->getStyle('A1:I1')->applyFromArray($estiloColor);
+
+		$this->excel->getActiveSheet()->getRowDimension('A1:I1')->setRowHeight(20);
+
+		//Definimos cabecera de la tabla excel
+		$this->excel->getActiveSheet()->setCellValue("A1", "FECHA DE DEVOLUCIÓN")->getColumnDimension('A')->setWidth(15);
+		$this->excel->getActiveSheet()->setCellValue("B1", "CERTIFICADO")->getColumnDimension('B')->setWidth(20);
+		$this->excel->getActiveSheet()->setCellValue("C1", "CONTRATANTE")->getColumnDimension('C')->setWidth(50);
+		$this->excel->getActiveSheet()->setCellValue("D1", "DOCUMENTO DE IDENTIDAD")->getColumnDimension('D')->setWidth(20);
+		$this->excel->getActiveSheet()->setCellValue("E1", "NOMBRE DE PLAN")->getColumnDimension('E')->setWidth(30);
+		$this->excel->getActiveSheet()->setCellValue("F1", "IMPORTE")->getColumnDimension('F')->setWidth(15);
+		$this->excel->getActiveSheet()->setCellValue("G1", "CUOTAS")->getColumnDimension('G')->setWidth(10);
+		$this->excel->getActiveSheet()->setCellValue("H1", "ESTADO")->getColumnDimension('H')->setWidth(40);
+		$this->excel->getActiveSheet()->setCellValue("I1", "TOTAL")->getColumnDimension('I')->setWidth(15);
+
+		$contador = 2;
+
+		if ($canales == 0) {
+
+			$dev = $this->comprobante_pago_mdl->getDevolucionesSinCobroDos($canales, $inicio, $fin);
+
+			foreach ($dev as $d) {
+
+				$importe = $d->importe;
+				$importe2=number_format((float)$importe, 2, '.', ',');
+				$newDate = date("d/m/Y", strtotime($d->fecha_dev));
+				$total = $importe * $d->cuotas;
+
+				//Informacion de las filas de la consulta.
+				$this->excel->getActiveSheet()->setCellValue("A{$contador}",$newDate);
+				$this->excel->getActiveSheet()->setCellValue("B{$contador}",$d->cert_num);
+				$this->excel->getActiveSheet()->setCellValue("C{$contador}","No se encontró en el sistema");
+				$this->excel->getActiveSheet()->setCellValue("D{$contador}",$d->cont_num);
+				$this->excel->getActiveSheet()->setCellValue("E{$contador}","No se encontró en el sistema");
+				$this->excel->getActiveSheet()->setCellValue("F{$contador}",$importe2);
+				$this->excel->getActiveSheet()->setCellValue("G{$contador}",$d->cuotas);
+				if ($d->estado = 3) {
+					$this->excel->getActiveSheet()->setCellValue("H{$contador}",utf8_decode("Sin Cobro"));
+				} elseif ($d->estado = 4) {
+					$this->excel->getActiveSheet()->setCellValue("H{$contador}",utf8_decode("Certificado no registrado"));
+				}
+				$this->excel->getActiveSheet()->setCellValue("I{$contador}",$total);
+
+				$contador = $contador + 1;
+			}	
+
+		} else {
+
+			$dev = $this->comprobante_pago_mdl->getDevolucionesSinCobro($canales, $inicio, $fin);
+
+			foreach ($dev as $d) {
+
+				$importe = $d->importe;
+				$importe2=number_format((float)$importe, 2, '.', ',');
+				$newDate = date("d/m/Y", strtotime($d->fecha_dev));
+				$total = $importe * $d->cuotas;
+
+				//Informacion de las filas de la consulta.
+				$this->excel->getActiveSheet()->setCellValue("A{$contador}",$newDate);
+				$this->excel->getActiveSheet()->setCellValue("B{$contador}",$d->cert_num);
+				$this->excel->getActiveSheet()->setCellValue("C{$contador}",utf8_decode($d->contratante));
+				$this->excel->getActiveSheet()->setCellValue("D{$contador}",$d->cont_num);
+				$this->excel->getActiveSheet()->setCellValue("E{$contador}",utf8_decode($d->nombre_plan));
+				$this->excel->getActiveSheet()->setCellValue("F{$contador}",$importe2);
+				$this->excel->getActiveSheet()->setCellValue("G{$contador}",$d->cuotas);
+				if ($d->estado = 3) {
+					$this->excel->getActiveSheet()->setCellValue("H{$contador}",utf8_decode("Sin Cobro"));
+				} elseif ($d->estado = 4) {
+					$this->excel->getActiveSheet()->setCellValue("H{$contador}",utf8_decode("Certificado no registrado"));
+				}
+				$this->excel->getActiveSheet()->setCellValue("I{$contador}",$total);
+
+				$contador = $contador + 1;
+			}			
+		}
+
+	  	//Le ponemos un nombre al archivo que se va a generar.
+	    $objWriter = new PHPExcel_Writer_Excel5($this->excel);
+		ob_start();
+		$objWriter->save("php://output");
+		$xlsData = ob_get_contents();
+		ob_end_clean();
+		
+		$response =  array(
+	        'op' => 'ok',
+	        'file' => "data:application/vnd.ms-excel;base64,".base64_encode($xlsData)
+	    );
+
+		die(json_encode($response));
+	}
+
+	public function mostrarDocumentoNotaCredito(){
+
 		$month = date('m');
       	$year = date('Y');
       	$day = date("d", mktime(0,0,0, $month+1, 0, $year));
@@ -221,7 +622,7 @@ class notas_cnt extends CI_Controller {
 
 			$boletasCert = $this->comprobante_pago_mdl->mostrarBoletaCert($certNotaCredito);
 
-			foreach ((array)$boletas as $bc) {
+			foreach ((array)$boletasCert as $bc) {
 				$data['contratante'] = $bc->contratante;
 				$data['cont_numDoc'] = $bc->cont_numDoc;
 				$data['id_contratante'] = $bc->id_contratante;
@@ -370,7 +771,12 @@ class notas_cnt extends CI_Controller {
 		$idplan = $_POST['idplanManual'];
 		//print_r($serieCredito);
 		//exit();
-		
+
+		$correlativoRC = $this->comprobante_pago_mdl->getUltimoCorrelativoMasUnoRes($fechaEmi);
+		$correlativoRCArray = json_decode(json_encode($correlativoRC), true);
+		$correlativoRCstring = array_values($correlativoRCArray)[0];
+		$correRC = $correlativoRCstring['nume_corre_res'];
+
 		$this->comprobante_pago_mdl->insertDatosBoletasNotasManuales($fechEmiNotaManual, $serieCredito, $correGenManual, $idTipoDoc, $impNotaManual, $idplan, $numSerieRefManual, $CorreRefManual, $motivoManual, $fechEmiRefManual, $nomClienteManual, $dniRucManual, $impTotalManual);
 	}
 
@@ -478,7 +884,7 @@ class notas_cnt extends CI_Controller {
 		$datos['canales'] = $canales;
 
 		$inicio = $_POST['fechainicio'];
-		$fin = $_POST['fechafin'];
+		//$fin = $_POST['fechafin'];
 
 		if (substr($canales, 0, 1) == 'B') {
 
@@ -501,7 +907,7 @@ class notas_cnt extends CI_Controller {
 					$html .= "</thead>";
 					$html .= "<tbody>";
 
-					$boletas = $this->comprobante_pago_mdl->getDatosNotasBoletas($canales, $inicio, $fin);
+					$boletas = $this->comprobante_pago_mdl->getDatosNotasBoletasMasivas($canales, $inicio);
 
 					foreach ((array)$boletas as $b) {
 
@@ -636,7 +1042,7 @@ class notas_cnt extends CI_Controller {
 		if ($canales == "BC01" || $canales == "FC01") {
 			$tipo = "NA";
 			$nomArchivo = "NOTACREDITO".$canales;
-		} elseif ($canales == "FD01" || $canales == "FD01") {
+		} elseif ($canales == "BD01" || $canales == "FD01") {
 			$tipo = "ND";
 			$nomArchivo = "NOTADEBITO".$canales;
 		}
@@ -935,13 +1341,13 @@ class notas_cnt extends CI_Controller {
 				//die(json_encode($response));
 				file_put_contents('adjunto/dbf/'.$nomArchivo.'.xls', $xlsData);
 
-		        $mail->IsSMTP();
-		        $mail->SMTPAuth   = true;
-		        $mail->SMTPSecure = "none";
-		        $mail->Host       = "smtpout.secureserver.net";
-		        $mail->Port       = 25; 
-		        $mail->Username   = "dcaceda@red-salud.com"; 
-		        $mail->Password   = "redsalud2018caceda"; 
+				$mail->isSMTP();
+		        $mail->Host     = 'relay-hosting.secureserver.net';;
+		        $mail->SMTPAuth = false;
+		        $mail->Username = '';
+		        $mail->Password = '';
+		        $mail->SMTPSecure = 'false';
+		        $mail->Port     = 25;
 		        $mail->SetFrom('dcaceda@red-salud.com', utf8_decode('RED SALUD'));
 		        $mail->AddReplyTo('dcaceda@red-salud.com', utf8_decode('RED SALUD')); 
 		        $mail->Subject    = "Archivo CONCAR";
@@ -1069,13 +1475,13 @@ class notas_cnt extends CI_Controller {
 
 				file_put_contents('adjunto/dbf/'.$nomArchivo.'.xls', $xlsData);
 
-				$mail->IsSMTP();
-		        $mail->SMTPAuth   = true;
-		        $mail->SMTPSecure = "none";
-		        $mail->Host       = "smtpout.secureserver.net";
-		        $mail->Port       = 25; 
-		        $mail->Username   = "dcaceda@red-salud.com"; 
-		        $mail->Password   = "redsalud2018caceda"; 
+				$mail->isSMTP();
+		        $mail->Host     = 'relay-hosting.secureserver.net';;
+		        $mail->SMTPAuth = false;
+		        $mail->Username = '';
+		        $mail->Password = '';
+		        $mail->SMTPSecure = 'false';
+		        $mail->Port     = 25;
 		        $mail->SetFrom('dcaceda@red-salud.com', utf8_decode('RED SALUD'));
 		        $mail->AddReplyTo('dcaceda@red-salud.com', utf8_decode('RED SALUD')); 
 		        $mail->Subject    = "Archivo CONCAR";
@@ -1115,7 +1521,7 @@ class notas_cnt extends CI_Controller {
 		$facturas = $this->comprobante_pago_mdl->getDatosPdfFacturasNota($idcomprobante);
 
 		//Carga la librería que agregamos
-        $this->load->library('Pdf');
+        $this->load->library('pdf');
 
         $this->pdf = new Pdf();
 	    $this->pdf->AddPage();
@@ -1173,11 +1579,11 @@ class notas_cnt extends CI_Controller {
 	            $this->pdf->SetFont('Arial','B',7);
 	            $this->pdf->SetTextColor(255,255,255);
 	            $this->pdf->SetFillColor(204, 006, 005); 
-	            $this->pdf->Cell(190,10,"Motivo de Referencia",1,0,'C', true);
+	            $this->pdf->Cell(190,10,"Motivo de Devolución",1,0,'C', true);
 	            $this->pdf->Ln('10');
 	            $this->pdf->SetFont('Arial', '',7);
 	            $this->pdf->SetTextColor(000,000,000);
-	            $this->pdf->MultiCell(190,10, utf8_decode($b->sustento_nota),1, 'C');
+	            $this->pdf->MultiCell(190,10, utf8_decode($b->sustento_nota)."\n"."Documento de Referencia: ".$b->seriecorrelativoDoc,1, 'C');
 	            $this->pdf->Ln('5');
 	            //--
 	            $this->pdf->SetFont('Arial', '',8);
@@ -1326,156 +1732,127 @@ class notas_cnt extends CI_Controller {
     	include ('./application/libraries/xmldsig/src/Sunat/SignedXml.php');
     	include ('./application/libraries/CustomHeaders.php');
 
-    	$this->zip = new ZipArchive();
+    	//$this->zip = new ZipArchive();
+		$numLet = new NumeroALetras();
+
+        $this->load->library('pdf');
+		$this->pdf = new Pdf();
+	    $this->pdf->AddPage();
+	    $this->pdf->AliasNbPages();
 
     	$this->xml = new XMLWriter();
-
-    	//$numSerie = $this->input->post('numSerie');
+    	$mail = new PHPMailer();
+    	$numSerie = $this->input->post('numSerie');
     	//$idPlan = $this->input->post('nameCheck');
     	$canales = $this->input->post('canales');
     	$fecinicio = $this->input->post('fechainicio');
     	$fecfin = $this->input->post('fechafin');
+    	$numSerieUno = reset($numSerie);
 
 		if ($canales == 'BC01') {
-			$notaCredito = $this->comprobante_pago_mdl->getDatosXmlNotasBoleta($fecinicio, $fecfin, $canales);
+			$notaCredito = $this->comprobante_pago_mdl->getDatosXmlBoletasAgrupadas($fecinicio, $numSerieUno);
 
 			foreach ($notaCredito as $nc) {
 
+				$linea=1;
+
+				$numeroConCeros = str_pad($nc->corre, 5, "0", STR_PAD_LEFT);
+	    		$fechanombre = str_replace ("-" , "", $nc->fecha_emision);
 				$idestadocobro = $nc->idestadocobro;
 
 				if ($idestadocobro == 2) {
 
-					$filename="20600258894-07-".$nc->serie."-".$nc->correlativo;
+					$filename="20600258894-RC-".$fechanombre."-".$nc->nume_corre_res;
+					//agregar -'.$b->nume_corre_res.' en ID en caso no funcione el envío.
+	    		$datos = '<?xml version="1.0" encoding="UTF-8"?>
+<SummaryDocuments xmlns="urn:sunat:names:specification:ubl:peru:schema:xsd:SummaryDocuments-1" 
+xmlns:cac="urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2" 
+xmlns:cbc="urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2"
+xmlns:ds="http://www.w3.org/2000/09/xmldsig#"
+xmlns:ext="urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2" 
+xmlns:sac="urn:sunat:names:specification:ubl:peru:schema:xsd:SunatAggregateComponents-1" 
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<ext:UBLExtensions>
+	<ext:UBLExtension>
+      	<ext:ExtensionContent>
 
-					$datos = '<CreditNote xmlns="urn:oasis:names:specification:ubl:schema:xsd:CreditNote-2"
-            xmlns:cac="urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2"
-            xmlns:cbc="urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2"
-            xmlns:ccts="urn:un:unece:uncefact:documentation:2"
-            xmlns:ds="http://www.w3.org/2000/09/xmldsig#"
-            xmlns:ext="urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2"
-            xmlns:qdt="urn:oasis:names:specification:ubl:schema:xsd:QualifiedDatatypes-2"
-            xmlns:sac="urn:sunat:names:specification:ubl:peru:schema:xsd:SunatAggregateComponents-1"
-            xmlns:udt="urn:un:unece:uncefact:data:specification:UnqualifiedDataTypesSchemaModule:2"
-            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-  <ext:UBLExtensions>
-    <ext:UBLExtension>
-      <ext:ExtensionContent>
-      </ext:ExtensionContent>
-    </ext:UBLExtension>
-  </ext:UBLExtensions>
-  <cbc:UBLVersionID>2.1</cbc:UBLVersionID>
-  <cbc:CustomizationID>2.0</cbc:CustomizationID>
-  <cbc:ID>'.$nc->serie.'-'.$nc->correlativo.'</cbc:ID>
-  <cbc:IssueDate>'.$nc->fecha_emision.'</cbc:IssueDate>
-  <cbc:DocumentCurrencyCode>PEN</cbc:DocumentCurrencyCode>
-  <cac:DiscrepancyResponse>
-    <cbc:ReferenceID>'.$nc->serie_doc.'-'.$nc->correlativo_doc.'</cbc:ReferenceID>
-    <cbc:ResponseCode>07</cbc:ResponseCode>
-    <cbc:Description>'.$nc->sustento_nota.'</cbc:Description>
-  </cac:DiscrepancyResponse>
-  <cac:BillingReference>
-    <cac:InvoiceDocumentReference>
-      <cbc:ID>'.$nc->serie_doc.'-'.$nc->correlativo_doc.'</cbc:ID>
-      <cbc:DocumentTypeCode>03</cbc:DocumentTypeCode>
-    </cac:InvoiceDocumentReference>
-  </cac:BillingReference>
-  <cac:Signature>
-    <cbc:ID>LlamaSign</cbc:ID>
-    <cac:SignatoryParty>
-      <cac:PartyIdentification>
-        <cbc:ID>20600258894</cbc:ID>
-      </cac:PartyIdentification>
-      <cac:PartyName>
-        <cbc:Name>HEALTH CARE ADMINISTRATION RED SALUD S.A.C.</cbc:Name>
-      </cac:PartyName>
-    </cac:SignatoryParty>
-    <cac:DigitalSignatureAttachment>
-      <cac:ExternalReference>
-        <cbc:URI>#LlamaSign</cbc:URI>
-      </cac:ExternalReference>
-    </cac:DigitalSignatureAttachment>
-  </cac:Signature>
-  <cac:AccountingSupplierParty>
-    <cac:Party>
-      <cac:PartyIdentification>
-        <cbc:ID schemeID="6" schemeName="SUNAT:Identificador de Documento de Identidad" schemeAgencyName="PE:SUNAT" schemeURI="urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo06">20600258894</cbc:ID>
-      </cac:PartyIdentification>
-      <cac:PartyName>
-        <cbc:Name>HEALTH CARE ADMINISTRATION RED SALUD S.A.C.</cbc:Name>
-      </cac:PartyName>
-      <cac:PartyLegalEntity>
-        <cbc:RegistrationName>HEALTH CARE ADMINISTRATION RED SALUD S.A.C.</cbc:RegistrationName>
-        <cac:RegistrationAddress>
-          <cbc:AddressTypeCode>0001</cbc:AddressTypeCode>
-        </cac:RegistrationAddress>
-      </cac:PartyLegalEntity>
-    </cac:Party>
-  </cac:AccountingSupplierParty>
-  <cac:AccountingCustomerParty>
-    <cac:Party>
-      <cac:PartyIdentification>
-        <cbc:ID schemeID="1" schemeName="SUNAT:Identificador de Documento de Identidad" schemeAgencyName="PE:SUNAT" schemeURI="urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo06">'.$nc->cont_numDoc.'</cbc:ID>
-      </cac:PartyIdentification>
-      <cac:PartyLegalEntity>
-        <cbc:RegistrationName>'.$nc->contratante.'</cbc:RegistrationName>
-      </cac:PartyLegalEntity>
-    </cac:Party>
-  </cac:AccountingCustomerParty>
-  <cac:TaxTotal>
-    <cbc:TaxAmount currencyID="PEN">'.$nc->igv.'</cbc:TaxAmount>
-    <cac:TaxSubtotal>
-      <cbc:TaxableAmount currencyID="PEN">'.$nc->neto.'</cbc:TaxableAmount>
-      <cbc:TaxAmount currencyID="PEN">'.$nc->igv.'</cbc:TaxAmount>
-      <cac:TaxCategory>
-        <cac:TaxScheme>
-          <cbc:ID schemeID="UN/ECE 5153" schemeAgencyID="6">1000</cbc:ID>
-          <cbc:Name>IGV</cbc:Name>
-          <cbc:TaxTypeCode>VAT</cbc:TaxTypeCode>
-        </cac:TaxScheme>
-      </cac:TaxCategory>
-    </cac:TaxSubtotal>
-  </cac:TaxTotal>
-  <cac:LegalMonetaryTotal>
-    <cbc:PayableAmount currencyID="PEN">'.$nc->total.'</cbc:PayableAmount>
-  </cac:LegalMonetaryTotal>
-  <cac:CreditNoteLine>
-    <cbc:ID>1</cbc:ID>
-    <cbc:CreditedQuantity unitCode="NIU">1</cbc:CreditedQuantity>
-    <cbc:LineExtensionAmount currencyID="PEN">'.$nc->neto.'</cbc:LineExtensionAmount>
-    <cac:PricingReference>
-      <cac:AlternativeConditionPrice>
-        <cbc:PriceAmount currencyID="PEN">'.$nc->total.'</cbc:PriceAmount>
-        <cbc:PriceTypeCode>01</cbc:PriceTypeCode>
-      </cac:AlternativeConditionPrice>
-    </cac:PricingReference>
-    <cac:TaxTotal>
-      <cbc:TaxAmount currencyID="PEN">'.$nc->igv.'</cbc:TaxAmount>
-      <cac:TaxSubtotal>
-        <cbc:TaxableAmount currencyID="PEN">'.$nc->neto.'</cbc:TaxableAmount>
-        <cbc:TaxAmount currencyID="PEN">'.$nc->igv.'</cbc:TaxAmount>
-        <cac:TaxCategory>
-          <cbc:Percent>18.00</cbc:Percent>
-          <cbc:TaxExemptionReasonCode>10</cbc:TaxExemptionReasonCode>
-          <cac:TaxScheme>
-            <cbc:ID>1000</cbc:ID>
-            <cbc:Name>IGV</cbc:Name>
-            <cbc:TaxTypeCode>VAT</cbc:TaxTypeCode>
-          </cac:TaxScheme>
-        </cac:TaxCategory>
-      </cac:TaxSubtotal>
-    </cac:TaxTotal>
-    <cac:Item>
-      <cbc:Description>'.$nc->nombre_plan.'</cbc:Description>
-    </cac:Item>
-    <cac:Price>
-      <cbc:PriceAmount currencyID="PEN">'.$nc->neto.'</cbc:PriceAmount>
-    </cac:Price>
-  </cac:CreditNoteLine>
-</CreditNote>';
+      	</ext:ExtensionContent>
+	</ext:UBLExtension>
+	</ext:UBLExtensions>
+<cbc:UBLVersionID>2.0</cbc:UBLVersionID>
+<cbc:CustomizationID>1.1</cbc:CustomizationID>
+<cbc:ID>RC-'.$fechanombre.'-'.$nc->nume_corre_res.'</cbc:ID>
+<cbc:ReferenceDate>'.$nc->fecha_emision.'</cbc:ReferenceDate>
+<cbc:IssueDate>'.$nc->fecha_emision.'</cbc:IssueDate>
+<cac:AccountingSupplierParty>
+	<cbc:CustomerAssignedAccountID>20600258894</cbc:CustomerAssignedAccountID>
+	<cbc:AdditionalAccountID>6</cbc:AdditionalAccountID>
+	<cac:Party>
+		<cac:PartyLegalEntity>
+			<cbc:RegistrationName>HEALTH CARE ADMINISTRATION RED SALUD S.A.C.</cbc:RegistrationName>
+		</cac:PartyLegalEntity>
+	</cac:Party>
+</cac:AccountingSupplierParty>';
+		$boletas = $this->comprobante_pago_mdl->getDatosXmlNotasBoleta($fecinicio, $numSerieUno);
+		foreach ($notas as $n) {
+			$datos.='<sac:SummaryDocumentsLine>
+	<cbc:LineID>'.$linea.'</cbc:LineID>
+	<cbc:DocumentTypeCode>07</cbc:DocumentTypeCode>
+	<cbc:ID>'.$n->serie.'-'.$n->correlativo.'</cbc:ID>
+	<cac:BillingReference>
+		<cac:InvoiceDocumentReference>
+			<cbc:ID>'.$n->serie_doc.'-'.$n->correlativo_doc.'</cbc:ID>
+			<cbc:DocumentTypeCode>03</cbc:DocumentTypeCode>
+		</cac:InvoiceDocumentReference> 
+	</cac:BillingReference>
+	<cac:Status>
+		<cbc:ConditionCode>1</cbc:ConditionCode>
+	</cac:Status>
+	<sac:TotalAmount currencyID="PEN">'.$n->total.'</sac:TotalAmount>
+	<sac:BillingPayment>
+		<cbc:PaidAmount currencyID="PEN">'.$n->neto.'</cbc:PaidAmount>
+		<cbc:InstructionID>01</cbc:InstructionID>
+	</sac:BillingPayment>
+	<cac:TaxTotal>
+		<cbc:TaxAmount currencyID="PEN">'.$n->igv.'</cbc:TaxAmount>
+		<cac:TaxSubtotal>
+			<cbc:TaxAmount currencyID="PEN">'.$n->igv.'</cbc:TaxAmount>
+			<cac:TaxCategory>
+				<cac:TaxScheme>
+					<cbc:ID>1000</cbc:ID>
+					<cbc:Name>IGV</cbc:Name>
+					<cbc:TaxTypeCode>VAT</cbc:TaxTypeCode>
+				</cac:TaxScheme>
+			</cac:TaxCategory>
+		</cac:TaxSubtotal>
+	</cac:TaxTotal>
+	<cac:TaxTotal>
+		<cbc:TaxAmount currencyID="PEN">0.00</cbc:TaxAmount>
+		<cac:TaxSubtotal>
+			<cbc:TaxAmount currencyID="PEN">0.00</cbc:TaxAmount>
+			<cac:TaxCategory>
+				<cac:TaxScheme>
+					<cbc:ID>2000</cbc:ID>
+					<cbc:Name>ISC</cbc:Name>
+					<cbc:TaxTypeCode>EXC</cbc:TaxTypeCode>
+				</cac:TaxScheme>
+			</cac:TaxCategory>
+		</cac:TaxSubtotal>
+	</cac:TaxTotal>
+</sac:SummaryDocumentsLine>';
+			$linea=$linea+1;
+		}
+$datos.='</SummaryDocuments>';
+	/*<cac:BillingReference>
+		<cac:InvoiceDocumentReference>
+			<cbc:ID>'.$nc->serie.'-'.$nc->correlativo.'</cbc:ID>
+			<cbc:DocumentTypeCode>07</cbc:DocumentTypeCode>
+		</cac:InvoiceDocumentReference>
+	</cac:BillingReference>*/
 
-					$nameDoc=$nc->serie."-".$nc->correlativo;
-					$filecdr=$nc->mesanio.'-cdrNotaCreditoBoleta';
-					$fileNota=$nc->mesanio.'-NotaCreditoBoleta';
+					$nameDoc='RC-'.$fechanombre.'-'.$nc->nume_corre_res;
+					$filecdr=$nc->mesanio.'-cdrNotaCreditoBoleta'.$nc->serie;
+					$fileNota=$nc->mesanio.'-NotaCreditoBoleta'.$nc->serie;
 					$carpetaCdr = 'adjunto/xml/notasdecredito/'.$filecdr;
 			    	$carpetaNota = 'adjunto/xml/notasdecredito/'.$fileNota;
 
@@ -1499,21 +1876,20 @@ class notas_cnt extends CI_Controller {
 					$xmlSigned = $signer->signFromFile($xmlPath);
 					file_put_contents($filename.'.xml', $xmlSigned);
 
-					//echo $xmlSigned;
-					if ($this->zip->open($carpetaNota.'/'.$filename.".zip", ZIPARCHIVE::CREATE)===true) {
-						$this->zip->addFile($filename.'.xml');
-						$this->zip->close();
-						unlink($filename.".xml");
-						unlink($carpetaNota.'/'.$filename.".xml");
-					} else {
-						unlink($filename.".xml");
-						unlink($carpetaNota.'/'.$filename.".xml");
-					}
+					$this->load->library('zip');
 
-					$service = 'adjunto/wsdl/billService.wsdl';
-					//$service = 'https://e-beta.sunat.gob.pe/ol-ti-itcpfegem-beta/billService?wsdl';
+				    $this->zip->add_data($filename.'.xml', $xmlSigned);
+					$this->zip->archive('adjunto/xml/notasdecredito/'.$fileNota.'/'.$filename.'.zip');
+					$this->zip->clear_data();
 
-			    	$headers = new CustomHeaders('20600258894DCACEDA2', 'DCACE716186'); 
+					unlink($filename.".xml");
+					unlink($carpetaNota.'/'.$filename.".xml");
+
+					//$service = 'adjunto/wsdl/billService.wsdl'; 
+					$service = 'https://e-beta.sunat.gob.pe/ol-ti-itcpfegem-beta/billService?wsdl';
+					
+			    	$headers = new CustomHeaders('20600258894MODDATOS', 'MODDATOS');
+			    	//$headers = new CustomHeaders('20600258894DCACEDA2', 'DCACE716186'); 
 
 			    	$client = new SoapClient($service, array(
 			    		'cache_wsdl' => WSDL_CACHE_NONE,
@@ -1530,8 +1906,13 @@ class notas_cnt extends CI_Controller {
 			    		'contentFile' => file_get_contents($carpetaNota.'/'.$zipXml) 
 			    	); 
 			    	
-			    	$client->sendBill($params);
+			    	$client->sendSummary($params);
 			    	$status = $client->__getLastResponse();
+
+			    	$carpeta = 'adjunto/xml/notasdecredito/'.$filecdr;
+					if (!file_exists($carpeta)) {
+					    mkdir($carpeta, 0777, true);
+					}
 
 			    	//Descargamos el Archivo Response
 					$archivo = fopen($carpetaCdr.'/'.'C'.$filename.'.xml','w+');
@@ -1540,19 +1921,30 @@ class notas_cnt extends CI_Controller {
 
 					//LEEMOS EL ARCHIVO XML
 					$responsexml = simplexml_load_file($carpetaCdr.'/'.'C'.$filename.'.xml');
-					foreach ($responsexml->xpath('//applicationResponse') as $response){ }
 					
-					//AQUI DESCARGAMOS EL ARCHIVO CDR(CONSTANCIA DE RECEPCIÓN)
-					$cdr=base64_decode($response);
-					$archivo = fopen($carpetaCdr.'/'.'R-'.$filename.'.zip','w+');
-					fputs($archivo,$cdr);
+					$xml = file_get_contents($carpetaCdr.'/C'.$filename.'.xml');
+					$DOM = new DOMDocument('1.0', 'utf-8');
+					$DOM->loadXML($xml);
+					$respuesta = $DOM->getElementsByTagName('ticket');
+					foreach ($respuesta as $r) {
+						$ticket = $r->nodeValue;
+					}
+
+					$estado = $client->getStatus(array('ticket' => $ticket));
+					$estadoArray = (array)$estado;
+					$contenido = (array)$estadoArray['status'];
+					//print_r($contenido['content']);
+					$archivo = fopen('adjunto/xml/notasdecredito/'.$filecdr.'/'.'R-'.$filename.'.zip','w+');
+					fputs($archivo,$contenido['content']);
 					fclose($archivo);
-					$archivo2 = chmod($carpetaCdr.'/'.'R-'.$filename.'.zip', 0777);
 
-					unlink($carpetaCdr.'/'.'C'.$filename.'.xml');
+					$archivo2 = chmod('adjunto/xml/notasdecredito/'.$filecdr.'/'.'R-'.$filename.'.zip', 0777);
 
+					unlink('adjunto/xml/notasdecredito/'.$filecdr.'/'.'C'.$filename.'.xml');
+					
+					
 					//verificar respuesta SUNAT
-					if (file_exists($carpetaCdr.'/R-'.$filename.'.zip')) {
+					/*if (file_exists($carpetaCdr.'/R-'.$filename.'.zip')) {
 						if ($this->zip->open($carpetaCdr.'/R-'.$filename.'.zip') === TRUE) {
 						    $this->zip->extractTo($carpetaCdr.'/');
 						    $this->zip->close();
@@ -1567,14 +1959,16 @@ class notas_cnt extends CI_Controller {
 					foreach ($respuesta as $r) {
 						$descripcion = $r->nodeValue;
 					}
-
-					if ($descripcion == 'La '.$tipodocumento.' numero '.$nameDoc.', ha sido aceptada') {
+					
+					if ($descripcion == 'La '.$tipodocumento.' numero '.$nameDoc.', ha sido aceptada') {*/
+					if (!file_exists('adjunto/xml/notasdecredito/'.$filecdr.'/'.'R-'.$filename.'.zip')) {
 						$this->comprobante_pago_mdl->updateEstadoCobroEmitido($nc->fecha_emision, $nc->corre, $nc->serie);
 					}
+					//}
 				}
 			}
 
-		} elseif ($canales == 'FC01') {
+		} elseif ($canales == 'F002') {
 
 			$notaCredito = $this->comprobante_pago_mdl->getDatosXmlNotasFactura($fecinicio, $fecfin, $canales);
 
@@ -1739,7 +2133,7 @@ class notas_cnt extends CI_Controller {
 					file_put_contents($filename.'.xml', $xmlSigned);
 
 					//echo $xmlSigned;
-					if ($this->zip->open($carpetaNota.'/'.$filename.".zip", ZIPARCHIVE::CREATE)===true) {
+					/*if ($this->zip->open($carpetaNota.'/'.$filename.".zip", ZIPARCHIVE::CREATE)===true) {
 						$this->zip->addFile($filename.'.xml');
 						$this->zip->close();
 						unlink($filename.".xml");
@@ -1747,12 +2141,13 @@ class notas_cnt extends CI_Controller {
 					} else {
 						unlink($filename.".xml");
 						unlink($carpetaNota.'/'.$filename.".xml");
-					}
+					}*/
 
-					$service = 'adjunto/wsdl/billService.wsdl';
-					//$service = 'https://e-beta.sunat.gob.pe/ol-ti-itcpfegem-beta/billService?wsdl';
-
-			    	$headers = new CustomHeaders('20600258894DCACEDA2', 'DCACE716186'); 
+					//$service = 'adjunto/wsdl/billService.wsdl'; 
+					$service = 'https://e-beta.sunat.gob.pe/ol-ti-itcpfegem-beta/billService?wsdl';
+					
+			    	$headers = new CustomHeaders('20600258894MODDATOS', 'MODDATOS');
+			    	//$headers = new CustomHeaders('20600258894DCACEDA2', 'DCACE716186'); 
 
 			    	$client = new SoapClient($service, array(
 			    		'cache_wsdl' => WSDL_CACHE_NONE,
@@ -1768,7 +2163,7 @@ class notas_cnt extends CI_Controller {
 			    		'fileName' => $zipXml, 
 			    		'contentFile' => file_get_contents($carpetaNota.'/'.$zipXml) 
 			    	); 
-			    	
+
 			    	$client->sendBill($params);
 			    	$status = $client->__getLastResponse();
 
@@ -1780,7 +2175,7 @@ class notas_cnt extends CI_Controller {
 					//LEEMOS EL ARCHIVO XML
 					$responsexml = simplexml_load_file($carpetaCdr.'/'.'C'.$filename.'.xml');
 					foreach ($responsexml->xpath('//applicationResponse') as $response){ }
-					
+
 					//AQUI DESCARGAMOS EL ARCHIVO CDR(CONSTANCIA DE RECEPCIÓN)
 					$cdr=base64_decode($response);
 					$archivo = fopen($carpetaCdr.'/'.'R-'.$filename.'.zip','w+');
@@ -1791,13 +2186,13 @@ class notas_cnt extends CI_Controller {
 					unlink($carpetaCdr.'/'.'C'.$filename.'.xml');
 
 					//verificar respuesta SUNAT
-					if (file_exists($carpetaCdr.'/R-'.$filename.'.zip')) {
+					/*if (file_exists($carpetaCdr.'/R-'.$filename.'.zip')) {
 						if ($this->zip->open($carpetaCdr.'/R-'.$filename.'.zip') === TRUE) {
 						    $this->zip->extractTo($carpetaCdr.'/');
 						    $this->zip->close();
 						}
 						unlink($carpetaCdr.'/R-'.$filename.'.zip');
-					}
+					}*/
 
 					$xml = file_get_contents($carpetaCdr.'/R-'.$filename.'.xml');
 					$DOM = new DOMDocument('1.0', 'utf-8');
@@ -1813,7 +2208,7 @@ class notas_cnt extends CI_Controller {
 			}
 
 
-		} elseif ($canales == 'BD01') {
+		} /*elseif ($canales == 'B007') {
 			$notaDebito = $this->comprobante_pago_mdl->getDatosXmlNotasBoleta($fecinicio, $fecfin, $canales);
 
 			foreach ($notaDebito as $nd) {
@@ -2058,7 +2453,7 @@ class notas_cnt extends CI_Controller {
 				}
 			}
 
-		} elseif ($canales == 'FD01') {
+		} elseif ($canales == 'F003') {
 			$notaDebito = $this->comprobante_pago_mdl->getDatosXmlNotasFactura($fecinicio, $fecfin, $canales);
 
 			foreach ($notaDebito as $nd) {
@@ -2302,6 +2697,6 @@ class notas_cnt extends CI_Controller {
 					}
 				}
 			}
-		}
+		}*/
 	}
 }
