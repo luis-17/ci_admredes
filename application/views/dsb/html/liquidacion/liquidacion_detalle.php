@@ -87,6 +87,8 @@
 								    		$detraccion = number_format((float)$detraccion,2,'.','');
 
 								    		$neto = $total - $detraccion;
+								    		$neto = number_format((float)$neto,2,'.','');
+
 										} 
 									?>
 									<table class="table table-striped table-bordered table-hover"  style="font-size: 12px;">
@@ -117,14 +119,19 @@
 											</tr>
 										</thead>
 										<tbody>
-										<?php foreach ($liquidacionDet as $ld){ ?>
+										<?php foreach ($liquidacionDet as $ld){ 
+											$liqdetalle_monto = $ld->liqdetalle_monto;
+											$liqdetalle_monto = number_format((float)$liqdetalle_monto, 2, '.', '');
+											$liqdetalle_neto = $ld->liqdetalle_neto;
+											$liqdetalle_neto = number_format((float)$liqdetalle_neto, 2, '.', '');
+											?>
 											<tr>
 												<td><?=$ld->liqdetalle_numfact?></td>
 												<td><?=$ld->num_orden_atencion?></td>
 												<td><?=$ld->afiliado?></td>
 												<td><?=$ld->nombre_var?></td>
-												<td style="text-align: right;"><?=$ld->liqdetalle_monto?> PEN</td>
-												<td style="text-align: right;"><?=$ld->liqdetalle_neto?> PEN</td>
+												<td style="text-align: right;"><?=$liqdetalle_monto?> PEN</td>
+												<td style="text-align: right;"><?=$liqdetalle_neto?> PEN</td>
 											</tr>
 										<?php } ?>
 										</tbody>

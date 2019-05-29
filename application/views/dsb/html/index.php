@@ -1,3 +1,16 @@
+<?php
+	$user = $this->session->userdata('user');
+	extract($user);
+	date_default_timezone_set('America/Lima');
+	$hora = date("H");
+	if($hora>0 && $hora<=12){
+		$turno = "buenos días";
+	}elseif($hora>12 && $hora<=18){
+		$turno = "buenas tardes";
+	}elseif($hora>18 && $hora<=24){
+		$turno = "buenas noches";
+	}
+?>
 <!DOCTYPE html>
 <html lang="en">
 	<head>
@@ -67,13 +80,36 @@
 								<!-- PAGE CONTENT BEGINS -->
 								<div class="widget-main">
 									<div class="col-xs-12"></br>
-										<div class="col-xs-3"> <img style="width: 90%;" src="<?=base_url()?>public/assets/images/3.png"/></div>								
-			  							<div class="col-xs-9"><h2 style="font-family: 'Montserrat', sans-serif; font-size:36px; color: #161b52;">Hola <?php $user = strtoupper($nombres_col.' '.$ap_paterno_col);
-			  							echo $user; ?>!!</h2></div> <br>
+										<div class="col-xs-3"> <img style="width: 90%;" src="<?=base_url()?>public/assets/images/3.png"/></div>							
+			  							<div class="col-xs-9"><p><h2 style="font-family: 'Montserrat', sans-serif; font-size:36px; color: #161b52;">Hola <?php $user = strtoupper($nombres_col.' '.$ap_paterno_col);
+			  							echo $user; ?>!!</h2></p>
+			  							<p><h2 style="color: #B61414;">¡Te damos la bienvenida al sistema Red Salud Admin!</h2></p></div>
+			  							<div class="col-xs-3"><br><br><br></div>
+			  							<div class="col-xs-9"> 
+			  								<div class="well well-sm">
+												<h4 class="lighter no-margin-bottom">
+													 <img style="width: 2%;" src="<?=base_url()?>public/assets/images/call_center.png"/>
+													<b>Brinda soporte al afiliado</b>
+												</h4>
+											</div>
+											<div class="alert alert-info">
+												RED SALUD <b><?=$turno?></b>, lo / la saluda <b><?=$nombres_col?> <?=$ap_paterno_col?></b> ¿Por favor me brinda su número de DNI? 
+											</div>
+											<div class="alert alert-danger">
+												Respuesta del Afiliado
+											</div>
 
-			  							<div class="col-xs-3"><h2></h2></div>
-			  							<div class="col-xs-9"> <h2 style="color: #B61414;">¡Te damos la bienvenida al sistema Red Salud Admin!</h2> <br>
-
+											<form method="post" action="<?=base_url()?>index.php/consulta_certificado">
+												<span class="input-icon">
+													<input type="text" id="nom" name="nom" placeholder="Apellidos ..." class="nav-search-input" id="nav-search-input" size="30" value="<?=$nom;?>">									
+												</span>	
+												<span class="input-icon">
+													<input type="text" id="doc" name="doc" placeholder="DNI contratante ó asegurado ..." class="nav-search-input" id="nav-search-input" size="30" value="<?=$id; ?>">
+													<button type="submit" class="btn btn-info btn-xs">
+														<i class="ace-icon glyphicon glyphicon-search bigger-110 icon-only"></i>
+													</button>
+												</span>		
+											</form>		
 			  							</div>
 								</div>
 

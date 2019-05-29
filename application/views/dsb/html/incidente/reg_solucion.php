@@ -141,4 +141,5 @@
 		<script src="<?=  base_url()?>public/docs/assets/js/language/html.js"></script>
 		<script src="<?=  base_url()?>public/docs/assets/js/language/css.js"></script>
 		<script src="<?=  base_url()?>public/docs/assets/js/language/javascript.js"></script>
-</body></html>
+</body>
+</html>

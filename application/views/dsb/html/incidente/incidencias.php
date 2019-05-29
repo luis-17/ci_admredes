@@ -123,13 +123,7 @@
 											<a data-toggle="tab" href="#faq-tab-2">
 												Otras Incidencias Pendientes
 											</a>
-										</li>
-
-										<li>
-											<a data-toggle="tab" href="#faq-tab-3">
-												Incidencias Resueltas
-											</a>
-										</li>								
+										</li>						
 									</ul>
 
 									<!-- /section:pages/faq -->
@@ -141,9 +135,7 @@
 													<table id="example" class="table table-striped table-bordered table-hover">
 														<thead>
 															<tr>
-																<th>ID</th>
 																<th>Fecha</th>
-																<th>N° Certificado</th>
 																<th>DNI</th>
 																<th>Afiliado</th>
 																<th>Tipo</th>
@@ -165,9 +157,7 @@
 																$fecha = date("d-m-Y", strtotime($p->fech_reg));
 															?>
 															<tr>
-																<td style="color: <?=$color?>">I<?=$p->id?></td>
 																<td style="color: <?=$color?>"><?=$fecha?></td>
-																<td style="color: <?=$color?>"><?=$p->cert_num?></td>
 																<td style="color: <?=$color?>"><?=$p->aseg_numDoc?></td>
 																<td style="color: <?=$color?>"><?=$p->afiliado?></td>
 																<td style="color: <?=$color?>"><?=$p->tipoincidencia?></td>
@@ -249,13 +239,11 @@
 													<table id="example1" class="table table-striped table-bordered table-hover">
 														<thead>
 															<tr>
-																<th>ID</th>
 																<th>Fecha</th>
-																<th>N° Certificado</th>
 																<th>DNI</th>
 																<th>Afiliado</th>
-																<th>Tipo</th>
-																<th>Descripción</th>
+																<th width="25%">Tipo</th>
+																<th width="30%">Descripción</th>
 																<th>U. Asignado</th>
 																<th></th>
 															</tr>
@@ -274,13 +262,12 @@
 																$fecha = date("d-m-Y", strtotime($o->fech_reg));
 															?>
 															<tr>
-																<td style="color: <?=$color?>">I<?=$o->id?></td>
 																<td style="color: <?=$color?>"><?=$fecha?></td>
-																<td style="color: <?=$color?>"><?=$o->cert_num?></td>
 																<td style="color: <?=$color?>"><?=$o->aseg_numDoc?></td>
 																<td style="color: <?=$color?>"><?=$o->afiliado?></td>
-																<td style="color: <?=$color?>"><?=$o->tipoincidencia?></td>
-																<td style="color: <?=$color?>"><?=$o->descripcion?></td>
+																<td style="color: <?=$color?>; width: 25%;"><?=$o->tipoincidencia?></td>
+																<td style="color: <?=$color?>; width: 30%;
+																"><?=$o->descripcion?></td>
 																<td><?=$o->username?></td>
 																<td>
 																	<div class="hidden-sm hidden-xs btn-group">
@@ -324,9 +311,7 @@
 																$fecha = date("d-m-Y", strtotime($o2->fech_reg));
 															?>
 															<tr>
-																<td style="color: <?=$color?>">I<?=$o2->id?></td>
 																<td style="color: <?=$color?>"><?=$fecha?></td>
-																<td style="color: <?=$color?>"><?=$o2->cert_num?></td>
 																<td style="color: <?=$color?>"><?=$o2->aseg_numDoc?></td>
 																<td style="color: <?=$color?>"><?=$o2->afiliado?></td>
 																<td style="color: <?=$color?>"><?=$o2->tipoincidencia?></td>
@@ -375,8 +360,7 @@
 												<!-- end table -->
 										</div>
 
-										<div id="faq-tab-3" class="tab-pane fade">
-											<!-- star table -->		
+										<!-- <div id="faq-tab-3" class="tab-pane fade">
 											<div class="col-xs-12">
 
 												<table id="example2" class="table table-striped table-bordered table-hover">
@@ -443,7 +427,6 @@
 														</tbody>
 													</table>
 												</div>
-												<!-- end table -->
 
 												<script>			
 													//para paginacion
@@ -453,7 +436,7 @@
 													    } );
 													} );
 												</script>
-										</div>
+										</div> -->
 								</div>
 
 								<!-- PAGE CONTENT ENDS -->

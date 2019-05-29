@@ -78,13 +78,18 @@
 											</tr>
 										</thead>
 										<tbody>
-										<?php foreach ($pagoDet as $pd){ ?>
+										<?php foreach ($pagoDet as $pd){ 
+											$total = $pd->total;
+											$total = number_format((float)$total, 2, '.', '');
+											$detraccion = $pd->detraccion;
+											$detraccion = number_format((float)$detraccion, 2, '.', '');
+											?>
 											<tr>
 												<td><?=$pd->liq_num?></td>
 												<td><?=$pd->fecha_genera?></td>
 												<td><?=$pd->username?></td>
-												<td style="text-align: right;"><?=$pd->total?> PEN</td>
-												<td style="text-align: right;"><?=$pd->detraccion?> PEN</td>
+												<td style="text-align: right;"><?=$total?> PEN</td>
+												<td style="text-align: right;"><?=$detraccion?> PEN</td>
 												<td style="width: 5%;"><div class="hidden-sm hidden-xs btn-group">
 														<div title="Ver Detalle" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
 															<a class="boton fancybox" href="<?=base_url()?>index.php/liquidacion_detalle/<?=$pd->liqgrupo_id?>/<?=$pd->liq_num?>" data-fancybox-width="950" data-fancybox-height="690">

@@ -253,12 +253,14 @@ class usuario_cnt extends CI_Controller {
 			
 			$mail = new PHPMailer;
 			$mail->isSMTP();
-	        $mail->Host     = 'relay-hosting.secureserver.net';;
+	        //$mail->Host     = 'relay-hosting.secureserver.net';
+	       	$mail->Host = 'localhost';
 	        $mail->SMTPAuth = false;
-	        $mail->Username = '';
-	        $mail->Password = '';
-	        $mail->SMTPSecure = 'false';
-	        $mail->Port     = 25;		
+	        $mail->SMTPSecure = false;
+	        $mail->Username = 'contacto@red-salud.com';
+	        $mail->Password = 'Redperu2017HCA';
+	        $mail->Port     = 25;
+	        $mail->SMTPDebug = 3;		
 			// Armo el FROM y el TO
 			$mail->setFrom($correo_laboral, $nombres_col);
 			$destinatario = $this->usuario_mdl->destinatario($id);
@@ -308,11 +310,18 @@ class usuario_cnt extends CI_Controller {
 				</html>';
 			$mail->IsHTML(true);
 			$mail->CharSet = 'UTF-8';
-			$mail->send();
+			//$mail->send();
+
+			$estadoEnvio = $mail->Send(); 
+                if($estadoEnvio){
+                    echo"El correo fue enviado correctamente.";
+                } else {
+                    echo"Ocurrió un error inesperado. " . $mail->ErrorInfo;
+                }
+
 
 			echo "<script>
 				alert('Se reenvió el correo con éxito.');
-				location.href='".base_url()."index.php/usuario';
 				</script>";
 	}
 

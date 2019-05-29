@@ -18,7 +18,7 @@
  	}
 
  	function getCobertura($id){
- 		$this->db->select("dp.idplandetalle, dp.idplan,dp.idvariableplan,dp.valor_detalle,dp.simbolo_detalle, dp.texto_web, dp.visible, dp.estado_pd, dp.flg_liquidacion, dp.tiempo, dp.num_eventos, vp.nombre_var, detalle, o.descripcion");
+ 		$this->db->select("dp.idplandetalle, dp.idplan,dp.idvariableplan,dp.valor_detalle,dp.simbolo_detalle, dp.texto_web, dp.visible, dp.estado_pd, dp.flg_liquidacion, dp.tiempo, dp.num_eventos, vp.nombre_var, detalle, o.descripcion, case when iniVig =0 then 0 else SUBSTRING_INDEX(iniVig,' ',1)end as num11, case when iniVig=0 then '' else SUBSTRING_INDEX(iniVig,' ',-1)end as tiempo11, case when finVig =0 then 0 else SUBSTRING_INDEX(finVig,' ',1)end as num22, case when finVig=0 then '' else SUBSTRING_INDEX(finVig,' ',-1)end as tiempo22");
  		$this->db->from('plan_detalle dp'); 		
  		$this->db->join('variable_plan vp','dp.idvariableplan=vp.idvariableplan');
  		$this->db->join('operador o','o.idoperador=dp.simbolo_detalle','left');
@@ -102,11 +102,8 @@
 				 'idvariableplan' => $data['item'],
 				 'texto_web' => $data['descripcion'],
 				 'visible' => $data['visible'],
-				 'flg_liquidacion' => $data['flg_liqui'],
-				 'simbolo_detalle' => $data['operador'],
-				 'valor_detalle' => $data['valor'],
-				 'tiempo' => $data['tiempo'],
-				 'num_eventos' => $data['num_eventos']
+				 'iniVig' => $data['iniVig'],
+				 'finVig' => $data['finVig']			 
  				 );
 		$this->db->insert('plan_detalle',$array);
  	}
@@ -117,11 +114,8 @@
 				 'idvariableplan' => $data['item'],
 				 'texto_web' => $data['descripcion'],
 				 'visible' => $data['visible'],
-				 'flg_liquidacion' => $data['flg_liqui'],
-				 'simbolo_detalle' => $data['operador'],
-				 'valor_detalle' => $data['valor'],
-				 'tiempo' => $data['tiempo'],
-				 'num_eventos' => $data['num_eventos']
+				 'iniVig' => $data['iniVig'],
+				 'finVig' => $data['finVig']	
  				 );
  		$this->db->where('idplandetalle',$data['iddet']);
 		return $this->db->update('plan_detalle', $array);
@@ -160,7 +154,7 @@
  	}
 
  	function selecionar_cobertura($id){
- 		$this->db->select("*");
+ 		$this->db->select("pd.*, case when iniVig =0 then 0 else SUBSTRING_INDEX(iniVig,' ',1)end as num1, case when iniVig=0 then '' else SUBSTRING_INDEX(iniVig,' ',-1)end as tiempo1, case when finVig =0 then 0 else SUBSTRING_INDEX(finVig,' ',1)end as num2, case when finVig=0 then '' else SUBSTRING_INDEX(finVig,' ',-1)end as tiempo2");
  		$this->db->from("plan_detalle pd");
  		$this->db->where("idplandetalle",$id);
  	$cobertura = $this->db->get();
@@ -168,7 +162,7 @@
  	}
 
  	function selecionar_cobertura2($id){
- 		$this->db->select("*");
+ 		$this->db->select("pd.*,vp.*,pl.*,o.*, case when finVig =0 then 0 else SUBSTRING_INDEX(finVig,' ',1)end as num1, case when finVig=0 then '' else SUBSTRING_INDEX(finVig,' ',-1)end as tiempo1, case when finVig =0 then 0 else SUBSTRING_INDEX(finVig,' ',1)end as num2, case when finVig=0 then '' else SUBSTRING_INDEX(finVig,' ',-1)end as tiempo2");
  		$this->db->from("plan_detalle pd");
  		$this->db->join("variable_plan vp","vp.idvariableplan=pd.idvariableplan");
  		$this->db->join("plan pl","pd.idplan=pl.idplan");
@@ -231,6 +225,21 @@
  		$this->db->where('idproducto', $idprod);
  		$this->db->where('idplandetalle',$iddet);
 		$this->db->delete('producto_detalle');
+ 	}
+
+ 	function getEventos($id){
+ 		$query = $this->db->query("select * from plan_detalle pd inner join variable_plan vp on pd.idvariableplan=vp.idvariableplan where idplandetalle=$id");
+ 		return $query->row_array();
+ 	}
+
+ 	function upEventos($data){
+ 		$array = array
+ 		(
+ 			'num_eventos' => $data['num_eventos'], 
+ 			'tiempo' => $data['tiempo']
+ 		);
+ 		$this->db->where("idplandetalle",$data['id']);
+ 		$this->db->update("plan_detalle",$array);
  	}
 }
 ?>

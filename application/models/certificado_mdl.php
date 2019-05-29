@@ -77,7 +77,7 @@
 	}
 
 	function getAsegurados($id){
-		$this->db->select("ca.certase_id, a.aseg_id, aseg_numDoc, aseg_telf, (now()-aseg_fechNac) as edad, aseg_fechNac, aseg_email, aseg_direcc, concat(coalesce(aseg_ape1,''),' ',coalesce(aseg_ape2,''),' ',coalesce(aseg_nom1,''),' ',coalesce(aseg_nom2,''))as asegurado");
+		$this->db->select("ca.certase_id, a.aseg_id, aseg_numDoc, aseg_telf, (now()-aseg_fechNac) as edad, aseg_fechNac, aseg_email, aseg_direcc, concat(coalesce(aseg_ape1,''),' ',coalesce(aseg_ape2,''),' ',coalesce(aseg_nom1,''),' ',coalesce(aseg_nom2,''))as asegurado, ca.certase_id, ca.cert_estado, ca.cert_finVig");
 		$this->db->select("(select descripcion_ubig from ubigeo where iddepartamento=SUBSTR(aseg_ubg,4,2) and idprovincia='00' and iddistrito='00' )as departamento");
 		$this->db->select("(select descripcion_ubig from ubigeo where iddepartamento=SUBSTR(aseg_ubg,4,2) and idprovincia=SUBSTR(aseg_ubg,6,2) and iddistrito='00' )as provincia");
 		$this->db->select("(select descripcion_ubig from ubigeo where iddepartamento=SUBSTR(aseg_ubg,4,2) and idprovincia=SUBSTR(aseg_ubg,6,2) and iddistrito=SUBSTR(aseg_ubg,8,2) )as distrito");
@@ -176,7 +176,7 @@
 	}
 
 	function getProveedores(){
-		$this->db->select("idproveedor, nombre_comercial_pr");
+		$this->db->select("idproveedor, nombre_comercial_pr, direccion_pr, (select descripcion_ubig from ubigeo where iddepartamento=cod_departamento_pr and idprovincia='00' and iddistrito='00')as dep, (select descripcion_ubig from ubigeo where iddepartamento=cod_departamento_pr and idprovincia= cod_provincia_pr and iddistrito='00')as prov, (select descripcion_ubig from ubigeo where iddepartamento=cod_departamento_pr and idprovincia= cod_provincia_pr and iddistrito=cod_distrito_pr)as dist");
 		$this->db->from("proveedor");
 		$this->db->where("estado_pr",1);
 		$this->db->order_by("nombre_comercial_pr");
@@ -226,14 +226,17 @@
 				 'idasegurado' => $data['aseg_id'],
 				 'idcertificadoasegurado' => $data['certase_id'],
 				 'idproveedor' => $data['idproveedor'],
-				 'idusuario' => $data['idusuario'],
+				 'idusuario_reserva' => $data['idusuario'],
 				 'hora_cita_inicio' => $data['inicio'],
 				 'hora_cita_fin' => $data['fin'],
 				 'idempresaadmin' => 1,
 				 'fecha_cita' => $data['fecha_cita'],
 				 'idespecialidad' => $data['idespecialidad'],
 				 'estado_cita' => $data['estado'],
-				 'observaciones_cita' => $data['obs']
+				 'observaciones_cita' => $data['obs'],
+				 'idusuario' => $data['idusuario_confirma'],
+				 'createdat' => $data['hoy'],
+				 'updatedat' => $data['hoy']
  				 );
 		$this->db->insert('cita',$array);
 	}
@@ -250,7 +253,8 @@
 				 'fecha_cita' => $data['fecha_cita'],
 				 'idespecialidad' => $data['idespecialidad'],
 				 'estado_cita' => $data['estado'],
-				 'observaciones_cita' => $data['obs']
+				 'observaciones_cita' => $data['obs'],
+				 'updatedat' => $data['hoy']
  				 );
 		$this->db->where('idcita',$data['idcita']);
 		return $this->db->update('cita', $array);
@@ -416,7 +420,8 @@
 			'cert_id' => $data['cert_id'],
 			'idasegurado' => $data['aseg_id'],
 			'descripcion' => $data['descripcion'],
-			'idusuario_registra' => $data['idusu']
+			'idusuario_registra' => $data['idusu'],
+			'fech_reg' => date('Y-m-d H:i:s')
 		);
 
 		$this->db->insert("incidencia",$array);
@@ -428,7 +433,7 @@
 									inner join operador o on  pd.simbolo_detalle=o.idoperador
 									inner join plan p on pd.idplan=p.idplan 
 									inner join certificado c on c.plan_id=p.idplan
-									where c.cert_id=$id order by vp.idvariableplan and estado_pd=1");
+									where c.cert_id=$id and estado_pd=1 order by vp.idvariableplan");
 		return $query->result();
 	}
 
@@ -438,8 +443,22 @@
 									inner join plan_detalle pd on vp.idvariableplan=pd.idvariableplan
 									inner join plan p on pd.idplan=p.idplan 
 									inner join certificado c on c.plan_id=p.idplan
-									where c.cert_id=$id and simbolo_detalle='' and estado_pd=1");
+									where c.cert_id=$id and estado_pd=1 and simbolo_detalle='' order by vp.idvariableplan");
 		return $query->result();
+	}
+
+	function getAtencionCliente(){
+		$query = $this->db->query("select nombres_col, correo_laboral from colaborador c inner join usuario u on c.idusuario=u.idusuario where u.idtipousuario=5 and estado_us=1");
+		return $query->result();
+	}
+
+	function getNomAfiliado($dni){
+		$query = $this->db->query("select concat(coalesce(aseg_nom1,aseg_nom2),' ',coalesce(aseg_ape1,aseg_ape2)) as asegurado, coalesce(aseg_nom1, aseg_nom2) as nombre from asegurado where aseg_numDoc=$dni  limit 1");
+		return $query->row_array();
+	}
+	function getNomAfiliado2($id){
+		$query = $this->db->query("select concat(coalesce(aseg_nom1,aseg_nom2),' ',coalesce(aseg_ape1,aseg_ape2)) as asegurado, coalesce(aseg_nom1, aseg_nom2) as nombre from asegurado where aseg_id=$id");
+		return $query->row_array();
 	}
 }
 ?>

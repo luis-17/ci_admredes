@@ -1,3 +1,16 @@
+<?php
+	$user = $this->session->userdata('user');
+	extract($user);
+	date_default_timezone_set('America/Lima');
+	$hora = date("H");
+	if($hora>0 && $hora<=12){
+		$turno = "buenos días";
+	}elseif($hora>12 && $hora<=18){
+		$turno = "buenas tardes";
+	}elseif($hora>18 && $hora<=24){
+		$turno = "buenas noches";
+	}
+?>
 <!DOCTYPE html>
 <html lang="en">
 	<head>
@@ -93,14 +106,18 @@
 
 						<div class="row">
 							<div class="col-xs-12">
-								<!-- PAGE CONTENT BEGINS -->
-								<div class="well well-sm">
-									Puedes descargar el manual de certificado aquí:
-									<a href="https://www.red-salud.com" target="_blank">
-										https://www.red-salud.com
-										<i class="fa fa-external-link bigger-110"></i>
-									</a>
+								<div class="alert alert-info">
+									RED SALUD <b><?=$turno?></b>, lo / la saluda <b><?=$nombres_col?> <?=$ap_paterno_col?></b> ¿Por favor me brinda su número de DNI? 
+								</div>
+								<div class="alert alert-danger">
+									Respuesta del Afiliado
 								</div>								
+							</div>
+						</div>
+						<br>
+						<div class="row">
+							<div class="col-xs-12">
+								<!-- PAGE CONTENT BEGINS -->								
 								<div align="center">
 								<form method="post" action="<?=base_url()?>index.php/consulta_certificado">
 								<span class="input-icon">

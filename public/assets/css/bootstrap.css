@@ -870,6 +870,9 @@ th {
 .glyphicon-tree-deciduous:before {
   content: "\e200";
 }
+.glyphicon-clinic-medical:before {
+  content: "\e201";
+}
 * {
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
@@ -4666,8 +4669,8 @@ a.thumbnail.active {
   color: #333333;
 }
 .alert {
-  padding: 15px;
-  margin-bottom: 20px;
+  padding: 5px;
+  margin-bottom: 5px;
   border: 1px solid transparent;
   border-radius: 4px;
 }
@@ -5393,7 +5396,7 @@ a.list-group-item-danger.active:focus {
 .well {
   min-height: 20px;
   padding: 19px;
-  margin-bottom: 20px;
+  margin-bottom: 5px;
   background-color: #f5f5f5;
   border: 1px solid #e3e3e3;
   border-radius: 4px;

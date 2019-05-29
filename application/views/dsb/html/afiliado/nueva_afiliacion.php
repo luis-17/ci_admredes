@@ -440,7 +440,7 @@
 																	<div class="hidden-sm hidden-xs btn-group">
 																		<div title="Editar Dependiente" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
 																		&nbsp;<a class="boton fancybox" href="<?=  base_url()?>index.php/aseg_editar/<?=$a->aseg_id;?>/<?=$cert_id;?>" data-fancybox-width="600" data-fancybox-height="690">
-																					<i class="blue ace-icon fa fa-pencil bigger-120"></i>
+																					<i class="blue ace-icon fa fa-pencil bigger-120 blue"></i>
 																				</a>
 																	</div>
 																	</div>
@@ -454,7 +454,7 @@
 																						<li>
 																							<div title="Editar Dependiente" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
 																								<a class="boton fancybox" href="<?=  base_url()?>index.php/aseg_editar/<?=$a->aseg_id;?>/<?=$cert_id;?>" data-fancybox-width="950" data-fancybox-height="690">
-																									<i class="blue ace-icon fa fa-pencil bigger-120"></i>
+																									<i class="blue ace-icon fa fa-pencil bigger-120 blue"></i>
 																								</a>
 																							</div>
 																						</li>				

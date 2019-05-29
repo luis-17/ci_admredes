@@ -70,7 +70,7 @@
 									}
 								}else{
 									$idsiniestro="";
-									$prov="";
+									$prov = $idprov;
 									$esp="";
 									$estado="";									
 									$hoy=date('Y-m-d');
@@ -81,6 +81,26 @@
 						?>
 						<div class="row">
 							<div class="col-xs-12">
+								<?php if($idsiniestro==""){ ?>
+								<div class="alert alert-info">
+									<?php 
+									$cant = count($productos); 
+									$cont = 1;
+									?>
+									Muy bien Sr. / Sra. / Srta. <b><?=$nombre?></b>, su plan de salud le cubre las consultas médicas en <b><?php foreach ($productos as $pr) {
+										if($cant>$cont){											
+											echo $pr->descripcion_prod.', ';
+										}else{
+											echo $pr->descripcion_prod;
+										}
+										$cont++;
+									} ?></b>. Me brinda la especialidad, fecha y hora en que desea la cita médica.
+								</div>
+								<div class="alert alert-danger">
+									Respuesta del Afiliado
+								</div>
+								<br>
+							<?php } ?>
 								<!-- PAGE CONTENT BEGINS -->
 								<form class="form-horizontal" role="form" method="post" action="<?=base_url()?>index.php/save_cita">
 									<input type="hidden" id="aseg_id" name="aseg_id" value="<?=$aseg_id?>" />
@@ -93,7 +113,7 @@
 									<div class="form-group">
 										<label class="col-sm-3 control-label no-padding-right" for="form-field-1"> Proveedor: </label>
 										<div class="col-sm-9">
-											<select name='proveedor' id='proveedor' required>
+											<select name='proveedor' id='proveedor' required <?=$estado_prov2?>>
 										    	<option value=''>Seleccione</option>
 											    <?php foreach ($proveedores as $pr):
 											    	if($pr->idproveedor==$prov){
@@ -108,7 +128,7 @@
 									</div>
 
 									<div class="form-group">
-										<label class="col-sm-3 control-label no-padding-right" for="form-field-1">Servicio: </label>
+										<label class="col-sm-3 control-label no-padding-right" for="form-field-1">Especialidad: </label>
 
 										<div class="col-sm-9">
 											<select name='producto' id='producto' required>

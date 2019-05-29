@@ -230,14 +230,16 @@
 														</thead>
 
 														<tbody>
-														<?php foreach ($pre_liquidaciones as $pl) { ?>
+														<?php foreach ($pre_liquidaciones as $pl) { 
+															$total = $pl->liqdetalle_neto;
+															$total = number_format((float)$total, 2, '.', '');?>
 															<tr>
 																<input type="hidden" name="monto<?=$pl->liqdetalleid?>" value="<?=$pl->liqdetalle_neto?>">
 																<td><?=$pl->num_orden_atencion?></td>
 																<td><?=$pl->nombre_comercial_pr?></td>
 																<td><?=$pl->liqdetalle_numfact?></td>
 																<td><?=$pl->nombre_var?> <?=$pl->concepto?></td>
-																<td width="9%" style="text-align: right;"><?=$pl->liqdetalle_neto?> PEN</td>
+																<td width="9%" style="text-align: right;"><?=$total?> PEN</td>
 																<td><?=$pl->aseg_numDoc?></td>
 																<td><input type="checkbox" name="liq_det[]" id="liq_det[]" value="<?=$pl->liqdetalleid?>"  onclick="calcular(<?=$pl->liqdetalleid?>)" ></td>
 															</tr>

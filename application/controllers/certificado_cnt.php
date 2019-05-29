@@ -45,7 +45,6 @@ class Certificado_cnt extends CI_Controller {
 			$menuLista = $this->menu_mdl->getMenu($idusuario);
 			$data['menu1'] = $menuLista;
 
-
 			$submenuLista = $this->menu_mdl->getSubMenu($idusuario);
 			$data['menu2'] = $submenuLista;	
 			$data['id'] = "";	

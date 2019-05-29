@@ -52,6 +52,8 @@ class Reservas_cnt extends CI_Controller {
 			$mis_reservas = $this->reserva_mdl->getMisReservas($idusuario);
 			$data['mis_reservas'] = $mis_reservas;
 
+			$data['reservas_confirmadas'] = $this->reserva_mdl->getReservasConfirmadas();
+
 			$otras_reservas = $this->reserva_mdl->getOtrasReservas($idusuario);
 			$data['otras_reservas'] = $otras_reservas;
 
@@ -68,5 +70,33 @@ class Reservas_cnt extends CI_Controller {
 		}	
 	}
 
+	public function notificacion_afiliado($idcita){
+		$getCita = $this->reserva_mdl->getCita($idcita);
+		$data['idcita'] = $idcita;
+		$data['afiliado'] = $getCita['afiliado'];
+		$data['nombre'] = $getCita['nombre'];
+		$data['proveedor'] = $getCita['nombre_comercial_pr'];
+		$dia = $getCita['fecha_cita'];
+		$data['dia'] = $dia;
+		$data['hora_inicio'] = $getCita['hora_cita_inicio'];
+		$data['especialidad'] = $getCita['nombre_esp'];
+		$data['idespecialidad'] = $getCita['idespecialidad'];
+		$data['plan_id'] = $getCita['plan_id'];	
+		$data['nombre_plan'] = $getCita['nombre_plan'];	
+		$consulta = $this->reserva_mdl->getConsultaMedica($data);
+		$data['consulta'] = $consulta['consulta'];
+		$data['cobertura_operador'] = $this->reserva_mdl->getCoberturasOperador($data);
+		$this->load->view('dsb/html/reserva/notificacion_afiliado.php',$data);
+	}
+
+	public function notificar($idcita){
+		$this->reserva_mdl->upCitaNotificacion($idcita);
+
+	echo "<script>
+				alert('Se registró la notificación.');
+				parent.location.reload(true);
+				parent.$.fancybox.close();
+				</script>";
+	}
 
 }

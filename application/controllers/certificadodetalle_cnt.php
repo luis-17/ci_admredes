@@ -61,8 +61,10 @@ class Certificadodetalle_cnt extends CI_Controller {
 
 			$data['cobertura_operador'] = $this->certificado_mdl->getCoberturasOperador($id);
 			$data['coberturas'] = $this->certificado_mdl->getCoberturas($id);
-
-			$cobros = $this->certificado_mdl->getCobros($id);	
+			$afiliado =  $this->certificado_mdl->getNomAfiliado($doc);
+			$data['afiliado'] = $afiliado['asegurado'];
+			$data['nombre'] = $afiliado['nombre'];
+ 			$cobros = $this->certificado_mdl->getCobros($id);	
 			$data['cobros'] = $cobros;
 			$data['doc']=$doc;
 			$data['id2'] = $id;
@@ -121,13 +123,28 @@ class Certificadodetalle_cnt extends CI_Controller {
 		redirect ($ruta);
 	}
 
-	public function reservar_cita($id, $idaseg, $cita, $certase_id, $fin)
+	public function seleccionar_proveedor($id, $idaseg, $certase_id, $fin){
+		$data['cert_id'] = $id;
+		$data['aseg_id'] =$idaseg;
+		$data['certase_id'] = $certase_id;
+		$data['max'] = $fin;
+
+		$proveedores = $this->certificado_mdl->getProveedores();
+		$data['proveedores'] = $proveedores;
+		$this->load->view('dsb/html/certificado/seleccionar_proveedor.php',$data);
+	}
+	public function reservar_cita($id, $idaseg, $cita, $certase_id, $fin, $idprov)
 	{
 		$data['cert_id'] = $id;
 		$data['aseg_id'] =$idaseg;
 		$data['cita'] = $cita;
 		$data['certase_id'] = $certase_id;
 		$data['max'] = $fin;
+		$data['idprov'] = $idprov;
+
+		$afiliado =  $this->certificado_mdl->getNomAfiliado2($idaseg);
+		$data['afiliado'] = $afiliado['asegurado'];
+		$data['nombre'] = $afiliado['nombre'];
 
 		$asegurado = $this->certificado_mdl->getAsegurado($id);
 		$data['asegurado'] = $asegurado;
@@ -141,18 +158,26 @@ class Certificadodetalle_cnt extends CI_Controller {
 		$productos = $this->certificado_mdl->getProductos($id);
 		$data['productos'] = $productos;
 
-		if($data['cita']==null){
+		if($cita==0){
 			$data['getcita']="";
+			if($idprov==0){
+				$data['estado_prov2'] = '';
+			}else{
+				$data['estado_prov2'] = 'readonly="readonly"';
+			}
 		}else{
+			$data['estado_prov2'] = '';
 			$getcita=$this->certificado_mdl->getCita($data);
 			$data['getcita']=$getcita; 
 		}
-
 		$this->load->view('dsb/html/certificado/reservar_cita.php',$data);
 	}
 
 	public function save_cita()
 	{
+		$user = $this->session->userdata('user');
+		extract($user);
+		date_default_timezone_set('America/Lima');
 		$aseg_id = $_POST['aseg_id'];		
 		$cert_id = $_POST['cert_id'];
 		$data['aseg_id'] = $_POST['aseg_id'];
@@ -165,8 +190,13 @@ class Certificadodetalle_cnt extends CI_Controller {
 		$data['estado'] = $_POST['estado'];	
 		$data['fecha_cita'] = $_POST['feccita'];
 		$data['obs'] = $_POST['obs'];
-		$data['idusuario'] = $_POST['idusuario'];
+		$data['idusuario'] = $idusuario;
 		$data['idsiniestro'] = $_POST['idsiniestro'];
+		$afiliado =  $this->certificado_mdl->getNomAfiliado2($aseg_id);
+		$data['afiliado'] = $afiliado['asegurado'];
+		$data['nombre'] = $afiliado['nombre'];
+		$data['idusuario_confirma'] = $idusuario;
+		$data['hoy'] = date("Y-m-d H:i:s");
 
 		if($data['idsiniestro']==''){
 			$this->certificado_mdl->saveCalendario($data);
@@ -224,13 +254,15 @@ class Certificadodetalle_cnt extends CI_Controller {
 					<p>Atte. '.$nombres_col.' '.$ap_paterno_col.' '.$ap_materno_col.'</p></div>';
 			}
 			
-			$mail = new PHPMailer;	
-			$mail->Host     = 'relay-hosting.secureserver.net';;
+			$mail = new PHPMailer;
+			$mail->isSMTP();
+	        //$mail->Host     = 'relay-hosting.secureserver.net';
+	       	$mail->Host = 'localhost';
 	        $mail->SMTPAuth = false;
-	        $mail->Username = 'contacto@red-salud.com';
-	        $mail->Password = 'Redperu2017HCA';
-	        $mail->SMTPSecure = 'false';
-	        $mail->Port     = 25;	
+	        $mail->SMTPSecure = false;
+	        $mail->Username = '';
+	        $mail->Password = '';
+	        $mail->Port     = 25;		
 			// Armo el FROM y el TO
 			$mail->setFrom('contacto@red-salud.com', 'Red Salud');
 			$destinatarios = $this->certificado_mdl->destinatarios($data);
@@ -242,7 +274,7 @@ class Certificadodetalle_cnt extends CI_Controller {
 				$texto='<div><p>El proveedor no registra contactos con env&iacute;o a email de reservas de atenciones.</p></div>';
 				$mail->addAddress('contacto@red-salud.com', 'Red Salud');
 			}
-			$mail->AddCC($correo_laboral, $nombres_col);
+			$mail->addAddress($correo_laboral, $nombres_col);
 			// El asunto
 			$mail->Subject = "RESERVA DE CONSULTA MEDICA - ".$plan;
 			// El cuerpo del mail (puede ser HTML)
@@ -303,24 +335,24 @@ class Certificadodetalle_cnt extends CI_Controller {
 					<p><b>Estamos agradecidos por la confianza brindada.</b></p>
 					<p>Atte. '.$nombres_col.' '.$ap_paterno_col.' '.$ap_materno_col.'</p></div>';
 			}
-
 			$mail2 = new PHPMailer;
-			$mail2->Host     = 'relay-hosting.secureserver.net';;
+			$mail->isSMTP();
+	        //$mail->Host     = 'relay-hosting.secureserver.net';
+	       	$mail2->Host = 'localhost';
 	        $mail2->SMTPAuth = false;
+	        $mail2->SMTPSecure = false;
 	        $mail2->Username = '';
 	        $mail2->Password = '';
-	        $mail2->SMTPSecure = 'false';
-	        $mail2->Port     = 25;		
+	        $mail2->Port     = 25;	
 			// Armo el FROM y el TO
-			$mail2->setFrom($correo_laboral, 'Red Salud');
-			
+			$mail2->setFrom($correo_laboral, 'Red Salud');			
 			if($to!==''){			
 				$mail2->addAddress($to, $nom);
 			}else {
 				$texto2='<div><p>El asegurado no cuenta con un correo electrónico registrado.</p></div>';
 				$mail2->addAddress('contacto@red-salud.com', 'Red Salud');
 			}
-			$mail2->AddCC($correo_laboral, $nombres_col);
+			$mail2->addAddress($correo_laboral, $nombres_col);
 			// El asunto
 			$mail2->Subject = "RESERVA DE CONSULTA MEDICA - ".$plan2;
 			// El cuerpo del mail (puede ser HTML)
@@ -351,6 +383,96 @@ class Certificadodetalle_cnt extends CI_Controller {
 			$mail2->send();
 
 
+		}else{
+			if($idtipousuario<>5){
+				$contenido = $this->certificado_mdl->contenido_mail($data);
+			//email para proveedor
+			foreach ($contenido as $c) {
+				$plan=$c->nombre_plan;
+				$tipo="'Century Gothic'";
+				$texto='<div><p>Estimad@, '.$c->nombre_comercial_pr.'</p>
+					<p>Est&aacute; pendiente gestionar la reserva sin confirmar con los siguientes datos:</p>
+					<table align="center" border="1" width="90%">
+						<tr>
+							<th>DNI Afiliado:</th>
+							<td>'.$c->aseg_numDoc.'</td>
+							<th>Nombre del Afiliado:</th>
+							<td>'.$c->afiliado.'</td>
+						</tr>
+						<tr>
+							<th>Fecha de Nacimiento:</th>
+							<td>'.$c->aseg_fechNac.'</td>
+							<th>Especialidad:</th>
+							<td>'.$c->nombre_esp.'</td>
+						</tr>
+						<tr>
+							<th>Fecha y Hora de reserva: </th>
+							<td>'.$c->fecha_cita.' '.$c->hora_cita_inicio.'</td>
+							<th>Observaciones:</th>
+							<td>'.$c->observaciones_cita.'</td>
+						</tr>
+					</table>
+					<p>Saludos Cordiales</p>
+					<p>Atte. '.$nombres_col.' '.$ap_paterno_col.' '.$ap_materno_col.'</p></div>';
+			}
+			
+			$mail = new PHPMailer;
+			$mail->isSMTP();
+	        //$mail->Host     = 'relay-hosting.secureserver.net';
+	       	$mail->Host = 'localhost';
+	        $mail->SMTPAuth = false;
+	        $mail->SMTPSecure = false;
+	        $mail->Username = '';
+	        $mail->Password = '';
+	        $mail->Port     = 25;		
+			// Armo el FROM y el TO
+			$mail->setFrom('contacto@red-salud.com', 'Red Salud');
+			$destinatarios = $this->certificado_mdl->getAtencionCliente($data);
+			if(!empty($destinatarios)){
+				foreach ($destinatarios as $d) {				
+					$mail->addAddress($d->correo_laboral, $d->nombres_col);
+				}
+			}else {
+				$texto='<div><p>El proveedor no registra contactos con env&iacute;o a email de reservas de atenciones.</p></div>';
+				$mail->addAddress('contacto@red-salud.com', 'Red Salud');
+			}
+			$mail->addAddress($correo_laboral, $nombres_col);
+			// El asunto
+			$mail->Subject = "RESERVA SIN CONFIRMAR - ".$plan;
+			// El cuerpo del mail (puede ser HTML)
+			$mail->Body = '<!DOCTYPE html>
+					<head>
+	                <meta charset="UTF-8" />
+	                </head>
+	                <body style="font-size: 1vw; width: 100%; font-family: '.$tipo.', CenturyGothic, AppleGothic, sans-serif;">
+	                <div style="padding-top: 2%; text-align: right; padding-right: 15%;"><img src="https://www.red-salud.com/mail/logo.png" width="17%" style="text-align: right;"></img>
+	                </div>
+	                <div style="padding-right: 15%; padding-left: 8%;"><b><label style="color: #000000;"> </b></div>
+	                <div style="padding-right: 15%; padding-left: 8%; padding-bottom: 1%; color: #12283E;">
+	                '.$texto.'
+	                <div style="background-color: #BF3434; padding-top: 0.5%; padding-bottom: 0.5%">
+	                <div style="text-align: center;"><b><a href="https://www.google.com/maps/place/Red+Salud/@-12.11922,-77.0370327,17z/data=!3m1!4b1!4m5!3m4!1s0x9105c83d49a4312b:0xf0959641cc08826!8m2!3d-12.11922!4d-77.034844" style="text-decoration-color: #FFFFFF; text-decoration: none; color:  #FFFFFF;">Av. Jos&eacute; Pardo Nro 601 Of. 502, Miraflores - Lima.</a></b></div>
+	                <div style="text-align: center;"><b><a href="https://www.red-salud.com" style="text-decoration-color: #FFFFFF; text-decoration: none; color:  #FFFFFF;">www.red-salud.com</a></b></div>
+	                </div>
+	                <div style=""><img src="https://www.red-salud.com/mail/bottom.png" width="50%"></img></div>
+	                </div>
+	            </body>
+				</html>';
+			$mail->IsHTML(true);
+			$mail->CharSet = 'UTF-8';
+			// Los archivos adjuntos
+			//$mail->addAttachment('adjunto/'.$plan.'.pdf', 'Condicionado.pdf');
+			//$mail->addAttachment('adjunto/RED_MEDICA_2018.pdf', 'Red_Medica.pdf');
+			// Enviar
+			 $mail->Send(); 
+			// $estadoEnvio = $mail->Send(); 
+   //              if($estadoEnvio){
+   //                  echo"El correo fue enviado correctamente.";
+   //              } else {
+   //                  echo"Ocurrió un error inesperado. " . $mail->ErrorInfo;
+   //              }
+
+			}
 		}
 
 		$this->load->view('dsb/html/mensaje.php', $data);
@@ -448,16 +570,16 @@ class Certificadodetalle_cnt extends CI_Controller {
 
 					$data['idproveedor'] = $c->idproveedor;
 			}
-			
-			$mail = new PHPMailer;		
+	        $mail = new PHPMailer;
 			$mail->isSMTP();
-	        $mail->Host     = 'relay-hosting.secureserver.net';;
+	        //$mail->Host     = 'relay-hosting.secureserver.net';
+	       	$mail->Host = 'localhost';
 	        $mail->SMTPAuth = false;
+	        $mail->SMTPSecure = false;
 	        $mail->Username = '';
 	        $mail->Password = '';
-	        $mail->SMTPSecure = 'false';
-	        $mail->Port     = 25;
-
+	        $mail->Port     = 25;		
+			
 			// Armo el FROM y el TO
 			$mail->setFrom($correo_laboral, 'Red Salud');
 			$destinatarios = $this->certificado_mdl->destinatarios($data);
@@ -544,14 +666,15 @@ class Certificadodetalle_cnt extends CI_Controller {
 					<p>Atte. '.$nombres_col.' '.$ap_paterno_col.' '.$ap_materno_col.'</p></div>';
 			}
 
-			$mail2 = new PHPMailer;	
+			$mail2 = new PHPMailer;
 			$mail2->isSMTP();
-	        $mail2->Host     = 'relay-hosting.secureserver.net';;
+	        //$mail->Host     = 'relay-hosting.secureserver.net';
+	       	$mail2->Host = 'localhost';
 	        $mail2->SMTPAuth = false;
+	        $mail2->SMTPSecure = false;
 	        $mail2->Username = '';
 	        $mail2->Password = '';
-	        $mail2->SMTPSecure = 'false';
-	        $mail2->Port     = 25;
+	        $mail2->Port     = 25;		
 	
 			// Armo el FROM y el TO
 			$mail2->setFrom($correo_laboral, 'Red Salud');
@@ -603,7 +726,7 @@ class Certificadodetalle_cnt extends CI_Controller {
 		$data['id'] = $id;
 		$data['idaseg'] = $idaseg;
 
-		$this->load->view('dsb/html/certificado/reg_incidencia',$data);
+		$this->load->view('dsb/html/certificado/reg_incidencia.php',$data);
 	}
 
 	public function save_incidencia(){

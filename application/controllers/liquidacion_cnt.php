@@ -550,7 +550,7 @@ class Liquidacion_cnt extends CI_Controller {
 			$gasto_detalle = $this->liquidacion_mdl->pagoDet($idpago);
 
 				$tipo="'Century Gothic'";
-				$texto='<p>Estimado(a) '.$razon_social.' se ha realizo el pago de las siguientes liquidaciones, se adjunta el detalle y constancia de pago de las mismas.</p>
+				$texto='<p>Estimado(a) '.$razon_social.' se ha realizado el pago de las siguientes liquidaciones, se adjunta el detalle y constancia de pago de las mismas.</p>
 				<table class="table table-striped table-bordered table-hover"  style="font-size: 1vw; width: 100%; font-family: '.$tipo.', CenturyGothic, AppleGothic, sans-serif;" border="1">
 							<thead>
 								<tr>
@@ -562,11 +562,20 @@ class Liquidacion_cnt extends CI_Controller {
 							<tbody>';
 
 						foreach ($gasto_detalle as $gd) {
+							$total = $gd->total;
+							$total = number_format((float)$total, 2, '.', '');
+							$detraccion = $gd->detraccion;
+							$detraccion = number_format((float)$detraccion, 2, '.', '');
 						$texto.='<tr>
 									<td>L'.$gd->liq_num.'</td>
-									<td style="text-align: right;">'.$gd->total.' PEN</td>
-									<td style="text-align: right;">'.$gd->detraccion.' PEN</td>
-								</tr>';
+									<td style="text-align: right;"> S/. '.$total.'</td>';
+
+						if($detraccion>0){
+						$texto.='<td style="text-align: right;"> S/.'.$detraccion.'</td>';
+						}else{
+							$texto.='<td style="text-align: right;">No afecto/td>';
+						}
+						$texto.='</tr>';
 						}
 					$texto.='</tbody>
 						</table>';
@@ -1032,7 +1041,7 @@ class Liquidacion_cnt extends CI_Controller {
 			$gasto_detalle = $this->liquidacion_mdl->pagoDet($idpago);
 
 				$tipo="'Century Gothic'";
-				$texto='<p>Estimado(a) '.$razon_social.' se ha realizo el pago de las siguientes liquidaciones, se adjunta el detalle y constancia de pago de las mismas.</p>
+				$texto='<p>Estimado(a) '.$razon_social.' se ha realizado el pago de las siguientes liquidaciones, se adjunta el detalle y constancia de pago de las mismas.</p>
 				<table class="table table-striped table-bordered table-hover"  style="font-size: 1vw; width: 100%; font-family: '.$tipo.', CenturyGothic, AppleGothic, sans-serif;" border="1">
 							<thead>
 								<tr>
@@ -1044,14 +1053,24 @@ class Liquidacion_cnt extends CI_Controller {
 							<tbody>';
 
 						foreach ($gasto_detalle as $gd) {
+							$total = $gd->total;
+							$total = number_format((float)$total, 2, '.', '');
+							$detraccion = $gd->detraccion;
+							$detraccion = number_format((float)$detraccion, 2, '.', '');
 						$texto.='<tr>
 									<td>L'.$gd->liq_num.'</td>
-									<td style="text-align: right;">'.$gd->total.' PEN</td>
-									<td style="text-align: right;">'.$gd->detraccion.' PEN</td>
-								</tr>';
+									<td style="text-align: right;"> S/.'.$total.'</td>';
+
+						if($detraccion>0){
+						$texto.='<td style="text-align: right;"> S/.'.$detraccion.'</td>';
+						}else{
+							$texto.='<td style="text-align: right;">No afecto/td>';
+						}
+						$texto.='</tr>';
 						}
 					$texto.='</tbody>
 						</table>';
+
 
 			
 			$mail = new PHPMailer;	
@@ -1068,6 +1087,7 @@ class Liquidacion_cnt extends CI_Controller {
 			$mail->addAddress($email_notifica, $razon_social);
 			$mail->addAddress("pvigil@red-salud.com", "Pilar Vigil");
 			$mail->addAddress("aluna@red-salud.com", "Angie Luna");
+			$mail->addAddress($correo,$correo);
 			// El asunto
 			$mail->Subject = "NOTIFICACION RED SALUD: LIQUIDACION DE FACTURAS";
 			// El cuerpo del mail (puede ser HTML)

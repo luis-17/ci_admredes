@@ -61,21 +61,42 @@ class plan_cnt extends CI_Controller {
 
 	public function plan_cobertura($id,$nom)
 	{
-		$cobertura = $this->plan_mdl->getCobertura($id);
-		$data['cobertura'] = $cobertura;
+		//load session library
+		$this->load->library('session');
 
-		$items = $this->plan_mdl->getItems();
-		$data['items'] = $items;	
+		//restrict users to go to home if not logged in
+		if($this->session->userdata('user')){
+			//$this->load->view('home');
 
-		$operador=$this->plan_mdl->get_operador();
-		$data['operador'] = $operador;
+			$user = $this->session->userdata('user');
+			extract($user);
 
-		$data['nom'] = $nom;
-		$data['id'] = $id;
-		$data['iddet'] = 0;
-		$data['cadena'] = "";
+			$menuLista = $this->menu_mdl->getMenu($idusuario);
+			$data['menu1'] = $menuLista;
 
-		$this->load->view('dsb/html/plan/plan_cobertura.php',$data);
+			$submenuLista = $this->menu_mdl->getSubMenu($idusuario);
+			$data['menu2'] = $submenuLista;
+
+			$cobertura = $this->plan_mdl->getCobertura($id);
+			$data['cobertura'] = $cobertura;
+
+			$items = $this->plan_mdl->getItems();
+			$data['items'] = $items;	
+
+			$operador=$this->plan_mdl->get_operador();
+			$data['operador'] = $operador;
+
+			$data['nom'] = $nom;
+			$data['id'] = $id;
+			$data['iddet'] = 0;
+			$data['cadena'] = "";
+
+			$this->load->view('dsb/html/plan/plan_cobertura.php',$data);
+		}
+		else{
+			redirect('/');
+		}
+		
 	}
 
 	public function plan_editar($id,$nom)
@@ -278,154 +299,173 @@ class plan_cnt extends CI_Controller {
 
 	function guardar_cobertura()
 	{
-		$data['nom'] = $_POST['nom'];
-		$data['id'] = $_POST['idplan'];
-		$data['iddet'] = $_POST['idplandetalle'];
-		$data['item'] = $_POST['item'];
-		$data['descripcion'] = $_POST['descripcion'];
-		$data['visible'] = $_POST['visible'];
-		$data['flg_liqui'] = $_POST['flg_liqui'];
-		$data['tiempo'] = $_POST['eventos'];
-				
-		if($_POST['eventos']==""){
-			$data['num_eventos'] = "";
-		}else{
-			$data['num_eventos'] = $_POST['num_eventos'];
-		}
-		
-		if($_POST['flg_liqui']=='No'){
-			$data['valor'] = '';
-			$data['operador'] = '';
-			}else{
-				$data['valor'] = $_POST['valor'];
-				$data['operador'] = $_POST['operador'];
-		}
+		//load session library
+		$this->load->library('session');
 
-		if($_POST['idplandetalle']==0){
-			$caso=1;
-			$this->plan_mdl->insert_cobertura($data);
-			$data['iddet'] = $this->db->insert_id();
-			$prod = $_POST['prod'];
-			if(!empty($prod)){
-			$cont = count($prod);
-				for($i=0;$i<$cont;$i++){
-				$data['idprod'] = $prod[$i];
-				$this->plan_mdl->insert_proddet($data);
-				
-				}
-			}
-		}else{
-				$this->plan_mdl->update_cobertura($data);
-				$caso=2;
-		}
+		//restrict users to go to home if not logged in
+		if($this->session->userdata('user')){
+			//$this->load->view('home');
 
-		if($caso==2){
 			$user = $this->session->userdata('user');
 			extract($user);
 
-			$cob = $this->plan_mdl->selecionar_cobertura2($data['iddet']);
+			$menuLista = $this->menu_mdl->getMenu($idusuario);
+			$data['menu1'] = $menuLista;
 
-			/*//email para proveedor
-			foreach ($cob as $c) {
-				
-				switch ($c->tiempo) {
-					case '1 month':
-						$tiempo= "Menual(es)";
-					break;															
-					case '2 month':
-						$tiempo= "Bimestral(es)";
-					break;
-					case '3 month':
-						$tiempo= "Trimestral(es)";
-					break;
-					case '6 month':
-						$tiempo= "Semestral(es)";
-					break;
-					case '1 year':
-						$tiempo= "Anual(es)";
-					break;
-					case 'ilimitados':
-						$tiempo= "Ilimitados";
-					break;
-					default:
-						$tiempo="Sin evento";
-					break;
-				}
-				$plan=$c->nombre_plan;
+			$submenuLista = $this->menu_mdl->getSubMenu($idusuario);
+			$data['menu2'] = $submenuLista;
 
-				$tipo="'Century Gothic'";
-				$texto='<div><p>Estimad@s,</p>
-					<p>Por medio de &eacute;ste correo electr&oacute;nico se informa la actualizaci&oacute;n de una de las coberturas para el plan de salud: '.$plan.' con los siguientes datos:</p>
-					<table align="center" border="1" width="90%" style="font-size: 1vw; width: 100%; font-family: '.$tipo.', CenturyGothic, AppleGothic, sans-serif;">
-						<tr>
-							<th>Cobertura:</th>
-							<td>'.$c->nombre_var.'</td>
-							<th>Descripci&oacute;n:</th>
-							<td>'.$c->texto_web.'</td>							
-						</tr>
-						<tr>
-							<th>Validaci&oacute;n:</th>
-							<td>'.$c->descripcion.' '.$c->valor_detalle.'</td>
-							<th>Eventos:</th>
-							<td>'.$c->num_eventos.' '.$tiempo.'</td>
-						</tr>						
-					</table>
-					<p>Atte. '.$nombres_col.' '.$ap_paterno_col.' '.$ap_materno_col.'</p></div>';
+			$data['nom'] = $_POST['nom'];
+			$data['id'] = $_POST['idplan'];
+			$data['iddet'] = $_POST['idplandetalle'];
+			$data['item'] = $_POST['item'];
+			$data['descripcion'] = $_POST['descripcion'];
+			$data['visible'] = $_POST['visible'];
+			if($_POST['inicio']==1){
+				$num1=$_POST['num'];
+				$tiempo1=$_POST['tiempo'];
+				$data['iniVig'] = $num1.' '.$tiempo1;
+			}else{
+				$data['iniVig'] = 0;
 			}
-			
-			$mail = new PHPMailer;	
-			$mail->isSMTP();
-	        $mail->Host     = 'relay-hosting.secureserver.net';;
-	        $mail->SMTPAuth = false;
-	        $mail->Username = '';
-	        $mail->Password = '';
-	        $mail->SMTPSecure = 'false';
-	        $mail->Port     = 25;	
-			// Armo el FROM y el TO
-			$mail->setFrom($correo_laboral, $nombres_col);
-			$mail->addAddress('ivasquez@red-salud.com', 'Iván Vásquez');
-			$mail->addAddress('aluna@red-salud.com', 'Angie Luna');
-			$mail->addAddress('contacto@red-salud.com', 'Red Salud');
-			$mail->addAddress($correo_laboral, $nombres_col);
-			// El asunto
-			$mail->Subject = "NOTIFICACION: ACTUALIZACION DE COBERTURA - ".$plan;
-			// El cuerpo del mail (puede ser HTML)
-			$mail->Body = '<!DOCTYPE html>
-					<head>
-	                <meta charset="UTF-8" />
-	                </head>
-	                <body style="font-size: 1vw; width: 100%; font-family: '.$tipo.', CenturyGothic, AppleGothic, sans-serif;">
-	                <div style="padding-top: 2%; text-align: right; padding-right: 15%;"><img src="https://www.red-salud.com/mail/logo.png" width="17%" style="text-align: right;"></img>
-	                </div>
-	                <div style="padding-right: 15%; padding-left: 8%;"><b><label style="color: #000000;"> </b></div>
-	                <div style="padding-right: 15%; padding-left: 8%; padding-bottom: 1%; color: #12283E;">
-	                '.$texto.'
-	                <div style="background-color: #BF3434; padding-top: 0.5%; padding-bottom: 0.5%">
-	                <div style="text-align: center;"><b><a href="https://www.google.com/maps/place/Red+Salud/@-12.11922,-77.0370327,17z/data=!3m1!4b1!4m5!3m4!1s0x9105c83d49a4312b:0xf0959641cc08826!8m2!3d-12.11922!4d-77.034844" style="text-decoration-color: #FFFFFF; text-decoration: none; color:  #FFFFFF;">Av. Jos&eacute; Pardo Nro 601 Of. 502, Miraflores - Lima.</a></b></div>
-	                <div style="text-align: center;"><b><a href="https://www.red-salud.com" style="text-decoration-color: #FFFFFF; text-decoration: none; color:  #FFFFFF;">www.red-salud.com</a></b></div>
-	                </div>
-	                <div style=""><img src="https://www.red-salud.com/mail/bottom.png" width="50%"></img></div>
-	                </div>
-	            </body>
-				</html>';
-			$mail->IsHTML(true);
-			$mail->CharSet = 'UTF-8';
-			// Los archivos adjuntos
-			//$mail->addAttachment('adjunto/'.$plan.'.pdf', 'Condicionado.pdf');
-			//$mail->addAttachment('adjunto/RED_MEDICA_2018.pdf', 'Red_Medica.pdf');
-			// Enviar
-			$mail->send();*/
-		}		
 
-		$cobertura = $this->plan_mdl->getCobertura($data['id']);
-		$data['cobertura'] = $cobertura;
-		$items = $this->plan_mdl->getItems();
-		$data['items'] = $items;
-		$data['iddet'] = 0;
-		$data['cadena'] = "";
-		$operador=$this->plan_mdl->get_operador();
-		$data['operador'] = $operador;
-		$this->load->view('dsb/html/plan/plan_cobertura.php',$data);
+			if($_POST['fin']==1){
+				$num2=$_POST['num2'];
+				$tiempo2=$_POST['tiempo2'];
+				$data['finVig'] = $num2.' '.$tiempo2;
+			}else{
+				$data['finVig'] = 0;
+			}
+
+			if($_POST['idplandetalle']==0){
+				$caso=1;
+				$this->plan_mdl->insert_cobertura($data);
+				$data['iddet'] = $this->db->insert_id();
+				$prod = $_POST['prod'];
+				if(!empty($prod)){
+				$cont = count($prod);
+					for($i=0;$i<$cont;$i++){
+					$data['idprod'] = $prod[$i];
+					$this->plan_mdl->insert_proddet($data);
+					
+					}
+				}
+			}else{
+					$this->plan_mdl->update_cobertura($data);
+					$caso=2;
+			}
+
+			if($caso==2){
+				$user = $this->session->userdata('user');
+				extract($user);
+
+				$cob = $this->plan_mdl->selecionar_cobertura2($data['iddet']);
+
+				/*//email para proveedor
+				foreach ($cob as $c) {
+					
+					switch ($c->tiempo) {
+						case '1 month':
+							$tiempo= "Menual(es)";
+						break;															
+						case '2 month':
+							$tiempo= "Bimestral(es)";
+						break;
+						case '3 month':
+							$tiempo= "Trimestral(es)";
+						break;
+						case '6 month':
+							$tiempo= "Semestral(es)";
+						break;
+						case '1 year':
+							$tiempo= "Anual(es)";
+						break;
+						case 'ilimitados':
+							$tiempo= "Ilimitados";
+						break;
+						default:
+							$tiempo="Sin evento";
+						break;
+					}
+					$plan=$c->nombre_plan;
+
+					$tipo="'Century Gothic'";
+					$texto='<div><p>Estimad@s,</p>
+						<p>Por medio de &eacute;ste correo electr&oacute;nico se informa la actualizaci&oacute;n de una de las coberturas para el plan de salud: '.$plan.' con los siguientes datos:</p>
+						<table align="center" border="1" width="90%" style="font-size: 1vw; width: 100%; font-family: '.$tipo.', CenturyGothic, AppleGothic, sans-serif;">
+							<tr>
+								<th>Cobertura:</th>
+								<td>'.$c->nombre_var.'</td>
+								<th>Descripci&oacute;n:</th>
+								<td>'.$c->texto_web.'</td>							
+							</tr>
+							<tr>
+								<th>Validaci&oacute;n:</th>
+								<td>'.$c->descripcion.' '.$c->valor_detalle.'</td>
+								<th>Eventos:</th>
+								<td>'.$c->num_eventos.' '.$tiempo.'</td>
+							</tr>						
+						</table>
+						<p>Atte. '.$nombres_col.' '.$ap_paterno_col.' '.$ap_materno_col.'</p></div>';
+				}
+				
+				$mail = new PHPMailer;	
+				$mail->isSMTP();
+		        $mail->Host     = 'relay-hosting.secureserver.net';;
+		        $mail->SMTPAuth = false;
+		        $mail->Username = '';
+		        $mail->Password = '';
+		        $mail->SMTPSecure = 'false';
+		        $mail->Port     = 25;	
+				// Armo el FROM y el TO
+				$mail->setFrom($correo_laboral, $nombres_col);
+				$mail->addAddress('ivasquez@red-salud.com', 'Iván Vásquez');
+				$mail->addAddress('aluna@red-salud.com', 'Angie Luna');
+				$mail->addAddress('contacto@red-salud.com', 'Red Salud');
+				$mail->addAddress($correo_laboral, $nombres_col);
+				// El asunto
+				$mail->Subject = "NOTIFICACION: ACTUALIZACION DE COBERTURA - ".$plan;
+				// El cuerpo del mail (puede ser HTML)
+				$mail->Body = '<!DOCTYPE html>
+						<head>
+		                <meta charset="UTF-8" />
+		                </head>
+		                <body style="font-size: 1vw; width: 100%; font-family: '.$tipo.', CenturyGothic, AppleGothic, sans-serif;">
+		                <div style="padding-top: 2%; text-align: right; padding-right: 15%;"><img src="https://www.red-salud.com/mail/logo.png" width="17%" style="text-align: right;"></img>
+		                </div>
+		                <div style="padding-right: 15%; padding-left: 8%;"><b><label style="color: #000000;"> </b></div>
+		                <div style="padding-right: 15%; padding-left: 8%; padding-bottom: 1%; color: #12283E;">
+		                '.$texto.'
+		                <div style="background-color: #BF3434; padding-top: 0.5%; padding-bottom: 0.5%">
+		                <div style="text-align: center;"><b><a href="https://www.google.com/maps/place/Red+Salud/@-12.11922,-77.0370327,17z/data=!3m1!4b1!4m5!3m4!1s0x9105c83d49a4312b:0xf0959641cc08826!8m2!3d-12.11922!4d-77.034844" style="text-decoration-color: #FFFFFF; text-decoration: none; color:  #FFFFFF;">Av. Jos&eacute; Pardo Nro 601 Of. 502, Miraflores - Lima.</a></b></div>
+		                <div style="text-align: center;"><b><a href="https://www.red-salud.com" style="text-decoration-color: #FFFFFF; text-decoration: none; color:  #FFFFFF;">www.red-salud.com</a></b></div>
+		                </div>
+		                <div style=""><img src="https://www.red-salud.com/mail/bottom.png" width="50%"></img></div>
+		                </div>
+		            </body>
+					</html>';
+				$mail->IsHTML(true);
+				$mail->CharSet = 'UTF-8';
+				// Los archivos adjuntos
+				//$mail->addAttachment('adjunto/'.$plan.'.pdf', 'Condicionado.pdf');
+				//$mail->addAttachment('adjunto/RED_MEDICA_2018.pdf', 'Red_Medica.pdf');
+				// Enviar
+				$mail->send();*/
+			}		
+
+			$cobertura = $this->plan_mdl->getCobertura($data['id']);
+			$data['cobertura'] = $cobertura;
+			$items = $this->plan_mdl->getItems();
+			$data['items'] = $items;
+			$data['iddet'] = 0;
+			$data['cadena'] = "";
+			$operador=$this->plan_mdl->get_operador();
+			$data['operador'] = $operador;
+			$this->load->view('dsb/html/plan/plan_cobertura.php',$data);
+		}
+		else{
+			redirect('/');
+		}		
  	}
 
  	function plan_anular($id)
@@ -477,43 +517,86 @@ class plan_cnt extends CI_Controller {
 
  	function seleccionar_cobertura($id, $nom, $iddet)
  	{
- 		$data['iddet'] = $iddet;
- 		$data['nom'] = $nom;
-		$data['id'] = $id;
+ 		//load session library
+		$this->load->library('session');
 
- 		$detalle = $this->plan_mdl->selecionar_cobertura($iddet);
-		$data['detalle'] = $detalle;
+		//restrict users to go to home if not logged in
+		if($this->session->userdata('user')){
+			//$this->load->view('home');
 
-		$cobertura = $this->plan_mdl->getCobertura($id);
-		$data['cobertura'] = $cobertura;
+			$user = $this->session->userdata('user');
+			extract($user);
 
-		$items = $this->plan_mdl->getItems();
-		$data['items'] = $items;
+			$menuLista = $this->menu_mdl->getMenu($idusuario);
+			$data['menu1'] = $menuLista;
 
-		$operador=$this->plan_mdl->get_operador();
-		$data['operador'] = $operador;
+			$submenuLista = $this->menu_mdl->getSubMenu($idusuario);
+			$data['menu2'] = $submenuLista;
 
-		$productos = $this->plan_mdl->get_productos2($iddet);
-		if(!empty($productos)){
-		$cadena = '<label class="col-sm-3 control-label no-padding-right" for="form-field-1"> Detalle: </label>
-					<div class="col-sm-9">
-						<table>';
-			foreach ($productos as $pr) {
+			$data['iddet'] = $iddet;
+	 		$data['nom'] = $nom;
+			$data['id'] = $id;
 
-				$link="window.location.href='".base_url()."index.php/".$pr->funcion."/".$pr->idproducto."/".$iddet."/".$id."/".$nom."'";
+	 		$detalle = $this->plan_mdl->selecionar_cobertura($iddet);
+			$data['detalle'] = $detalle;
 
-				$cadena.='<tr>
-							<td><input type="checkbox" onclick="'.$link.'" '.$pr->checked.'></td>
-							<td>'.$pr->descripcion_prod.'</td>
-						</tr>';
+			$cobertura = $this->plan_mdl->getCobertura($id);
+			$data['cobertura'] = $cobertura;
+
+			$items = $this->plan_mdl->getItems();
+			$data['items'] = $items;
+
+			$operador=$this->plan_mdl->get_operador();
+			$data['operador'] = $operador;
+
+			$productos = $this->plan_mdl->get_productos2($iddet);
+			if(!empty($productos)){
+			$cadena = '<label class="col-sm-3 control-label no-padding-right" for="form-field-1"> Detalle: </label>
+						<div class="col-sm-9">
+							<table style="font-size:12px;"  width="100%">							
+								<tr><td colspan="2"><input type="checkbox" id="checkTodos" /><b>Marcar/Desmarcar todos</b></td></tr>';
+				$cont1=2;
+				$cont2=0;
+				foreach ($productos as $pr) {
+
+					$link="window.location.href='".base_url()."index.php/".$pr->funcion."/".$pr->idproducto."/".$iddet."/".$id."/".$nom."'";
+
+					if($cont1==2){
+					$cadena.='<tr>';
+					}
+						$cadena.='<td width="1%"><input type="checkbox" onclick="'.$link.'" '.$pr->checked.'></td>
+								<td width="49%">'.$pr->descripcion_prod.'</td>';
+
+					if($cont2==1){
+						$cont1=2;
+					}else{
+						$cont1=0;
+					}
+					$cont2++;
+					if($cont1==2){
+					$cadena.='</tr>';
+					$cont2=0;	
+					}	
+				}
+				$cadena.='</table></div>';
+				$cadena.="<script>
+						$('document').ready(function(){
+						   $('#checkTodos').change(function () {
+						      $('input:checkbox').prop('checked', $(this).prop('checked'));
+						  });
+						});
+						</script>";
+			}else{
+				$cadena="";
 			}
-			$cadena.='</table></div>';
-		}else{
-			$cadena="";
-		}
-		$data['cadena'] = $cadena;
+			$data['cadena'] = $cadena;
 
-		$this->load->view('dsb/html/plan/plan_cobertura.php',$data);
+			$this->load->view('dsb/html/plan/plan_cobertura.php',$data);
+		}
+		else{
+			redirect('/');
+		}
+ 		
  	}
 
  	function plan_email($id,$nom)
@@ -548,19 +631,40 @@ class plan_cnt extends CI_Controller {
 		if(!empty($productos)){
 		$cadena = '<label class="col-sm-3 control-label no-padding-right" for="form-field-1"> Detalle: </label>
 					<div class="col-sm-9">
-						<table>';
+						<table style="font-size: 12px;" width="100%">
+							<tr><td colspan="2"><input type="checkbox"  id="checkTodos"><b>Marcar/Desmarcar Todos</b></td></tr>';
+			$cont1=2;
+			$cont2=0;
 			foreach ($productos as $pr) {
-				$cadena.="<tr>
-							<td><input type='checkbox' name='prod[]' value='".$pr->idproducto."'></td>
-							<td>".$pr->descripcion_prod."</td>
-						</tr>";
+				if($cont1==2){
+				$cadena.='<tr>';
+				}
+					$cadena.="<td width='1%'><input type='checkbox' name='prod[]' value='".$pr->idproducto."'></td>
+							<td width='49%'>".$pr->descripcion_prod."</td>";
+
+				if($cont2==1){
+					$cont1=2;
+				}else{
+					$cont1=0;
+				}
+				$cont2++;
+				if($cont1==2){
+				$cadena.='</tr>';
+				$cont2=0;	
+				}				
 			}
 
 		$cadena.='</table></div>';
+		$cadena.="<script>
+					$('document').ready(function(){
+					   $('#checkTodos').change(function () {
+					      $('input:checkbox').prop('checked', $(this).prop('checked'));
+					  });
+					});
+					</script>";
 		}else{
 			$cadena="<input type='hidden' id='prod' name='prod' value=''>";
 		}
-
 		echo $cadena;
 	}
 
@@ -577,5 +681,42 @@ class plan_cnt extends CI_Controller {
 
 		$this->plan_mdl->insert_proddet($data);
 		redirect("index.php/seleccionar_cobertura/".$id."/".$nom."/".$iddet);
+	}
+
+	public function eventos($id)
+	{
+		$eventos = $this->plan_mdl->getEventos($id);
+		$data['nom'] = $eventos['nombre_var'];
+		$data['num'] = $eventos['num_eventos'];
+		$data['tiempo'] = $eventos['tiempo'];
+		$data['id'] = $id;
+		$this->load->view('dsb/html/plan/eventos.php',$data);
+	}
+
+	public function reg_evento()
+	{
+		$data['id'] = $_POST['id'];		
+		$accion = $_POST['guardar'];
+
+		if($accion=="guardar"){
+			$data['num_eventos'] = $_POST['numero'];
+			$data['tiempo'] = $_POST['periodo'];	
+			$this->plan_mdl->upEventos($data);
+			echo "<script>
+				alert('Se actualizó el número de eventos con éxito.');
+				parent.location.reload(true);
+				parent.$.fancybox.close();
+				</script>";		
+		}else{
+			$data['num_eventos']=0;
+			$data['tiempo'] ="";
+			$this->plan_mdl->upEventos($data);
+			echo "<script>
+				alert('Se eliminó el número de eventos con éxito.');
+				parent.location.reload(true);
+				parent.$.fancybox.close();
+				</script>";
+		}
+		
 	}
 }

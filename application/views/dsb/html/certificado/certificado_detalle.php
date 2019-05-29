@@ -136,7 +136,34 @@
 						</div><!-- /.page-header -->
 
 						<div class="row">
-							<div class="col-xs-12">
+							<div class="col-xs-3">
+
+								<div class="alert alert-info">
+									Sr. / Sra. / Srta. <b><?=$afiliado?></b>, ¿Es correcto?
+								</div>
+								<div class="alert alert-danger">
+									Respuesta del Afiliado
+								</div>
+								<div class="alert alert-info">
+									Sr. / Sra. / Srta. <b><?=$nombre?></b>, ¿me puede brindar un número telefónico de contacto por si se pierde la llamada?
+								</div>
+								<div class="alert alert-danger">
+									Respuesta del Afiliado
+								</div>
+								<div class="alert alert-info">
+									Muchas gracias Sr. / Sra. / Srta. <b><?=$nombre?></b>. Por favor cuénteme ¿en qué puedo ayudarlo en esta oportunidad?
+								</div>
+								<div class="alert alert-danger">
+									Afiliado menciona que desea una cita médica.
+								</div>
+								<div class="alert alert-info">
+									¿En qué ciudad o distrito desea ser atendido?	
+								</div>
+								<div class="alert alert-danger">
+									Respuesta del Afiliado
+								</div>						
+							</div>
+							<div class="col-xs-9">
 								<!-- PAGE CONTENT BEGINS -->
 								<div class="tabbable">
 									<!-- #section:pages/faq -->
@@ -147,6 +174,8 @@
 													<i class="ace-icon fa fa-chevron-right smaller-80" data-icon-hide="ace-icon fa fa-chevron-down align-top" data-icon-show="ace-icon fa fa-chevron-right"></i>&nbsp;
 														CERTIFICADO
 												</a>
+
+
 											</div>
 
 										<div class="panel-collapse collapse" id="faq-2-1">
@@ -549,7 +578,7 @@
 														<i class="blue ace-icon fa fa-users bigger-110"></i>
 														Listado de Afiliados al Certificado
 													</h4>
-														<table id="simple-table" class="table table-striped table-bordered table-hover">
+														<table id="example2" class="table table-striped table-bordered table-hover">
 															<thead>
 																<tr>
 																	<th>DNI</th>
@@ -568,6 +597,19 @@
 															$hoy2=strtotime($fecha."- ".$num." days");
 															$fec=$aseg->ultima_atencion;
 															$fec2= strtotime($fec);
+															$fin4 = $aseg->cert_finVig;
+															$open_etiqueta="";
+															$end_etiqueta="";
+															$estado_certase = 1;
+															if($aseg->cert_estado==3){
+																$fin4 = strtotime($fin4);
+																$fecha2 = strtotime($fecha);
+																if($fecha2>$fin4){
+																	$open_etiqueta="<strike>";
+																	$end_etiqueta="</strike>";
+																	$estado_certase = 3;
+																}
+															}
 																if($fec==''){
 																	$fec='-';
 																}else{
@@ -576,19 +618,20 @@
 																$certase = $aseg->certase_id;
 															?>
 																<tr>
-																	<td><?=$aseg->aseg_numDoc;?></td>
-																	<td><?=$aseg->asegurado;?></td>
-																	<td><?=$fec;?></td>
-																	<td><?=$aseg->aseg_telf;?></td>
-																	<td><?=$aseg->aseg_email;?></td>
+																	<td><?=$open_etiqueta?><?=$aseg->aseg_numDoc;?><?=$end_etiqueta?></td>
+																	<td><?=$open_etiqueta?><?=$aseg->asegurado;?><?=$end_etiqueta?></td>
+																	<td><?=$open_etiqueta?><?=$fec;?><?=$end_etiqueta?></td>
+																	<td><?=$open_etiqueta?><?=$aseg->aseg_telf;?><?=$end_etiqueta?></td>
+																	<td><?=$open_etiqueta?><?=$aseg->aseg_email;?><?=$end_etiqueta?></td>
 																	<td>
 																		<div class="hidden-sm hidden-xs btn-group">
+																				<?php if($estado_certase==1) { ?>
 																				<div title="Editar Asegurado" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
 																					&nbsp;<a class="boton fancybox" href="<?=  base_url()?>index.php/aseg_editar/<?=$idaseg?>" data-fancybox-width="950" data-fancybox-height="690">
 																						<i class="ace-icon fa fa-pencil bigger-120"></i>
 																					</a>
 																				</div>
-
+																				<?php } ?>
 																				<div title="Ver Atenciones" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
 																					&nbsp;<a class="boton fancybox" href="<?=  base_url()?>index.php/aseg_atenciones/<?=$idaseg?>/<?=$id?>" data-fancybox-width="950" data-fancybox-height="690">
 																						<i class="ace-icon fa fa-eye bigger-120"></i>
@@ -599,9 +642,9 @@
 																					<i class="ace-icon fa fa-comments-o bigger-120"></i>
 																					</a>
 																				</div>																				
-																				<?php if($e==1&&$e2==1&&$hoy2>$fec2) {?>
+																				<?php if($e==1&&$e2==1&&$hoy2>$fec2&&$estado_certase==1) { ?>
 																				<div title="Reservar Atención" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
-																					&nbsp;<a class="boton fancybox" href="<?=  base_url()?>index.php/reservar_cita/<?=$id?>/<?=$idaseg?>/null/<?=$certase?>/<?=$fin3?>" data-fancybox-width="950" data-fancybox-height="690">
+																					&nbsp;<a class="boton fancybox" href="<?=  base_url()?>index.php/seleccionar_proveedor/<?=$id?>/<?=$idaseg?>/<?=$certase?>/<?=$fin3?>" data-fancybox-width="950" data-fancybox-height="690">
 																					<i class="ace-icon fa fa-external-link bigger-120"></i>
 																					</a>
 																				</div>
@@ -615,7 +658,7 @@
 																					<i class="ace-icon fa fa-cog icon-only bigger-110"></i>
 																				</button>
 
-																				<ul class="dropdown-menu dropdown-only-icon dropdown-yellow dropdown-menu-right dropdown-caret dropdown-close">			
+																				<ul class="dropdown-menu dropdown-only-icon dropdown-yellow dropdown-menu-right dropdown-caret dropdown-close">			<?php if($estado_certase==1) { ?>
 																					<li>
 																						<div title="Editar Asegurado" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
 																							&nbsp;<a class="boton fancybox" href="<?=  base_url()?>index.php/aseg_editar/<?=$id?>" data-fancybox-width="950" data-fancybox-height="690">
@@ -623,6 +666,7 @@
 																							</a>
 																						</div>
 																					</li>
+																					<?php } ?>
 																					<li>
 																						<div title="Ver Atenciones" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
 																							&nbsp;<a class="boton fancybox" href="<?=  base_url()?>index.php/aseg_atenciones/<?=$idaseg?>/<?=$id?>" data-fancybox-width="950" data-fancybox-height="690">
@@ -638,10 +682,10 @@
 																							</a>
 																						</div>
 																					</li>
-																					<?php if($e==1) {?>
+																					<?php if($e==1&&$e2==1&&$hoy2>$fec2&&$estado_certase==1) { ?>
 																					<li>
 																						<div title="Reservar Atención" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
-																							&nbsp;<a class="boton fancybox" href="<?=  base_url()?>index.php/reservar_cita/<?=$id?>/<?=$idaseg?>null/<?=$certase?>/<?=$fin3?>" data-fancybox-width="950" data-fancybox-height="690">
+																							&nbsp;<a class="boton fancybox" href="<?=  base_url()?>index.php/seleccionar_proveedor/<?=$id?>/<?=$idaseg?>/<?=$certase?>/<?=$fin3?>" data-fancybox-width="950" data-fancybox-height="690">
 																							<i class="ace-icon fa fa-external-link bigger-120"></i>
 																							</a>
 																						</div>
@@ -656,6 +700,14 @@
 															</tbody>
 														</table>							
 												</div>
+												<script>			
+													//para paginacion
+													$(document).ready(function() {
+													    $('#example2').DataTable( {
+													        "pagingType": "full_numbers"
+													    } );
+													} );
+												</script>		
 											</div>
 										</div>
 										<div class="panel panel-default">
@@ -763,7 +815,8 @@
 
 								<!-- PAGE CONTENT ENDS -->
 							</div><!-- /.col -->
-						</div><!-- /.row -->
+						</div><!-- /.row -->					
+							
 					</div><!-- /.page-content -->
 				</div>
 			</div><!-- /.main-content -->

@@ -55,7 +55,7 @@
 						</div>
 						<div class="row">
 							<div class="col-xs-12">
-													<table id="example" class="table table-striped table-bordered table-hover">
+													<table style="font-size: 12px;" id="example" class="table table-striped table-bordered table-hover">
 														<thead>
 															<tr>
 																<th>Fecha</th>
@@ -88,7 +88,19 @@
 												</script>
 												<!-- end table -->
 
+												
+
 						</div>
+						<?php if($idusuario!=$idusuario_asignado){ ?>
+									<div class="clearfix form-actions">
+										<div class="col-md-offset-3 col-md-9">
+											<a href="<?=base_url()?>index.php/registrar_evento/<?=$idhistorial?>" class="btn btn-info" >
+												<i class="ace-icon glyphicon glyphicon-share bigger-110"></i>
+												Registrar Evento
+											</a>
+										</div>
+									</div>
+						<?php } ?>
 					</div>
 				</div><!-- /.main-content -->			
 			</div><!-- /.main-container -->

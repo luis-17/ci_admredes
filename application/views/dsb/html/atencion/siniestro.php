@@ -347,10 +347,8 @@
 												  	<div class="form-group col-md-6">
 												    	<button type="submit" class="btn btn-info">Guardar</button>
 														<button type="cancel" class="btn btn-info">Cancelar</button>
-													</div>
-																								
+													</div>																								
 												  </div>
-
 												</form>
 											</div>
 										</div>
@@ -789,6 +787,8 @@
 							}					
 						break;
 					}
+
+					monto_neto = Math.round(monto_neto*100)/100;
 				}
 
 				document.getElementById("neto"+id).value=monto_neto;

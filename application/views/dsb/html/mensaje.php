@@ -68,35 +68,61 @@
 							<div class="col-xs-12">
 								<!-- PAGE CONTENT BEGINS -->
 								<div class="widget-main">
-									<p class="alert alert-info">
+									
 									<?php 
 										switch ($mensaje) {
 											case 1:
 												if($tipomen==1){ 
+												echo '<p class="alert alert-info">';
 												echo "Los datos del afiliado <b>".$ape1." ".$ape2." ".$nom1." ".$nom2."</b> han sido actualizados con éxito.";
+												echo '</p>';
 												} else {
+													echo '<p class="alert alert-info">';
 													echo "El afiliado <b>".$ape1." ".$ape2." ".$nom1." ".$nom2."</b> ha sido registrado con éxito.";
+													echo '</p>';
 												}
 												break;
 											
 											case 2:
-												echo "Se ha registrado la reserva de atención con éxito.";
+												echo '<div class="well well-sm">
+														<h4 class="lighter no-margin-bottom">
+															<i class="ace-icon fa fa-hand-o-right icon-animated-hand-pointer blue"></i>
+															Se ha registrado la reserva de atención con éxito.
+														</h4>
+													</div>';
+												echo '<div class="alert alert-info">
+															Sr. / Sra. / Srta. <b>'.$nombre.'</b> voy a coordinar su atención y por favor le devolveré la llamada en unos minutos.
+														</div>
+														<div class="alert alert-danger">
+															Respuesta del Afiliado
+														</div>';
 												break;
 											case 3:
-												echo "Se actualizó la reserva de atención con éxito.";
+												echo '<div class="well well-sm">
+														<h4 class="lighter no-margin-bottom">
+															<i class="ace-icon fa fa-hand-o-right icon-animated-hand-pointer blue"></i>
+															Se actualizó la reserva de atención con éxito.
+														</h4>
+													</div>';
 												break;
-											case 4:
+											case 4:												
+												echo '<p class="alert alert-info">';
 												echo 'Se anuló la reserva de atención con éxito.';
+												echo '</p>';												
 												break;
 											case 5:
+												echo '<p class="alert alert-info">';
 												echo 'Se envió el correo de confirmación al proveedor.';
+												echo '</p>';
 											break;
 											case 6:
+												echo '<p class="alert alert-info">';
 												echo 'Se envió el correo de confirmación al afiliado.';
+												echo '</p>';
 											break;
 										}
 									?>									
-									</p>
+									
 								</div>	
 								<div class="">
 									<div class="col-md-offset-3 col-md-9" style="text-align: right;">

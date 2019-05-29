@@ -149,25 +149,25 @@
 												<td>
 													<div class="hidden-sm hidden-xs btn-group">
 														<div title="Ver Cobertura" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
-														<a class="boton fancybox" href="<?=base_url()?>index.php/plan_cobertura/<?=$p->idplan?>/<?=$p->nombre_plan?>" data-fancybox-width="950" data-fancybox-height="690">
-															<i class="ace-icon fa fa-eye bigger-120"></i>
+														<a href="<?=base_url()?>index.php/plan_cobertura/<?=$p->idplan?>/<?=$p->nombre_plan?>">
+															<i class="ace-icon fa fa-eye bigger-120 blue"></i>
 														</a>
 														</div>
 														<div title="Editar Plan" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
 															&nbsp;<a href="<?=base_url()?>index.php/plan_editar/<?=$p->idplan?>/<?=$p->nombre_plan?>">
-																<i class="ace-icon fa fa-pencil bigger-120"></i>
+																<i class="ace-icon fa fa-pencil bigger-120 blue"></i>
 															</a>
 														</div>
 														<div title="Editar Email" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
 															&nbsp;<a class="boton fancybox" href="<?=base_url()?>index.php/plan_email/<?=$p->idplan?>/<?=$p->nombre_plan?>" data-fancybox-width="950" data-fancybox-height="690">
-															<i class="ace-icon fa fa-envelope bigger-120"></i>
+															<i class="ace-icon fa fa-envelope bigger-120 blue"></i>
 														</a>
 														</div>
 													</div>
 
 														<div class="hidden-md hidden-lg">
 															<div class="inline pos-rel">
-																<button class="btn btn-minier btn-primary dropdown-toggle" data-toggle="dropdown" data-position="auto">
+																<button class="btn btn-minier btn-info dropdown-toggle" data-toggle="dropdown" data-position="auto">
 																	<i class="ace-icon fa fa-cog icon-only bigger-110"></i>
 																</button>
 
@@ -175,21 +175,21 @@
 																		<li>
 																			<div title="Ver Cobertura" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
 																				<a class="boton fancybox" href="<?=base_url()?>index.php/plan_cobertura/<?=$p->idplan?>/<?=$p->nombre_plan?>" data-fancybox-width="950" data-fancybox-height="690">
-																					<i class="ace-icon fa fa-eye bigger-120"></i>
+																					<i class="ace-icon fa fa-eye bigger-120 blue"></i>
 																				</a>
 																			</div>
 																		</li>
 																		<li>
 																			<div title="Editar Plan" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
 																				&nbsp;<a href="<?=base_url()?>index.php/plan_editar/<?=$p->idplan?>/<?=$p->nombre_plan?>">
-																					<i class="ace-icon fa fa-pencil bigger-120"></i>
+																					<i class="ace-icon fa fa-pencil bigger-120 blue"></i>
 																				</a>
 																			</div>
 																		</li>
 																		<li>
 																			<div title="Editar Email" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
 																				&nbsp;<a class="boton fancybox" href="<?=base_url()?>index.php/plan_email/<?=$p->idplan?>/<?=$p->nombre_plan?>" data-fancybox-width="950" data-fancybox-height="690">
-																					<i class="ace-icon fa fa-envelope bigger-120"></i>
+																					<i class="ace-icon fa fa-envelope bigger-120 blue"></i>
 																				</a>
 																			</div>
 																		</li>	
