@@ -123,6 +123,7 @@ class ventas_cnt extends CI_Controller {
 			foreach ($correlativo as $c):
 
 				$html.="<input class='form-control' name='correlativoActual' type='text' value='".$c->correlativo."' id='correlativoActual'>";
+				//print_r($c->correlativo);
 
 			endforeach;	
 		//}
@@ -380,15 +381,17 @@ class ventas_cnt extends CI_Controller {
 				}
 
 				$correlativo = $correlativo+1;
+
+				$this->comprobante_pago_mdl->updateEstadoCobro($b->cob_fechCob, $b->cob_id);
 				
 			}
 
 			//for para recorrer los planes obtenidos de la vista y hacer update del idestadocobro
-			for ($i=0; $i < count(array_unique($idPlan)); $i++) { 
+			/*for ($i=0; $i < count(array_unique($idPlan)); $i++) { 
 
 				$this->comprobante_pago_mdl->updateEstadoCobro($inicio, $fin, $idPlan[$i]);
 
-			}
+			}*/
 		} elseif (substr($numSerieUno, 0, 1) == 'F') {
 
 			$idPlanCheck = $_POST['checkPlan'];
@@ -453,6 +456,7 @@ class ventas_cnt extends CI_Controller {
 		$importeTotal=$_POST['impTotalD'];
 		$sustento=$_POST['descripcionManual'];
 		$idplan = $_POST['idplanManual'];
+		$moneda = $_POST['monedaManual'];
 
 		if (substr($serie, 0, 1) == 'B') {
 		//if ($serie == 'B001' || $serie == 'B002' || $serie == 'B003' || $serie == 'B004' || $serie == 'B005') {
@@ -464,15 +468,19 @@ class ventas_cnt extends CI_Controller {
 			
 			$tipoDoc=3;
 
-			$this->comprobante_pago_mdl->insertDatosComprobanteManualBoleta($fechaEmi, $serie, $correlativo, $tipoDoc, $importeTotal, $idplan, $sustento, $correRC);
+			$this->comprobante_pago_mdl->insertDatosComprobanteManualBoleta($fechaEmi, $serie, $correlativo, $tipoDoc, $importeTotal, $idplan, $moneda, $sustento, $correRC);
 
 		} elseif (substr($serie, 0, 1) == 'F') {
 		//} elseif ($serie == 'F001') {
 			
 			$tipoDoc=2;
-			$clienteempresa=4;
-
-			$this->comprobante_pago_mdl->insertDatosComprobanteManualFactura($fechaEmi, $serie, $correlativo, $tipoDoc, $clienteempresa, $importeTotal, $idplan, $sustento);
+			if ($serie == 'F001') {
+				$clienteempresa=4;
+			} elseif ($serie == 'F002') {
+				$clienteempresa=12;
+			}
+			
+			$this->comprobante_pago_mdl->insertDatosComprobanteManualFactura($fechaEmi, $serie, $correlativo, $tipoDoc, $clienteempresa, $importeTotal, $idplan, $moneda, $sustento);
 		}
 	}
 
@@ -529,14 +537,22 @@ class ventas_cnt extends CI_Controller {
 
 
 		if (substr($serie, 0, 1) == 'B') {
-			//html de tabla dinámica que se va a generar
-			$html .= "<hr>";
-			$boletaSuma = $this->comprobante_pago_mdl->getDatosSumaEmi($inicio, $canales, $serie);
-			foreach ($boletaSuma as $bs):
-				$suma=$bs->suma;
-				$sumaDos=number_format((float)$suma, 2, '.', ',');
-				$html .="<H1><span class='label label-succes label-white middle'><b>Total de cobros Boletas: S/. ".$sumaDos."</b></span></H1>";
-			endforeach;
+
+			$boletaSumaSoles = $this->comprobante_pago_mdl->getDatosSumaEmiSoles($inicio, $canales, $serie);
+			$boletaSumaSolesArray = json_decode(json_encode($boletaSumaSoles), true);
+			$boletaSumaSolesstring = array_values($boletaSumaSolesArray)[0];
+			$sumaS = $boletaSumaSolesstring['sumas'];
+			$sumaDosS=number_format((float)$sumaS, 2, '.', ',');
+
+			$boletaSumaDolares = $this->comprobante_pago_mdl->getDatosSumaEmiDolares($inicio, $canales, $serie);
+			$boletaSumaDolaresArray = json_decode(json_encode($boletaSumaDolares), true);
+			$boletaSumaDolaresstring = array_values($boletaSumaDolaresArray)[0];
+			$sumaD = $boletaSumaDolaresstring['sumad'];
+
+			$sumaDosd=number_format((float)$sumaD, 2, '.', ',');
+
+			$html .="<H1><span class='label label-succes label-white middle'><b>Total de cobros Soles: S/. ".$sumaDosS."</b></span>&nbsp;<span class='label label-succes label-white middle'><b>Total de cobros Dólares: $ ".$sumaDosd."</b></span></H1>";
+
 			//html de tabla dinámica que se va a generar
 			$html .= "<br>";
 			$html .= "<div  align='center' class='col-xs-12'>";
@@ -575,7 +591,11 @@ class ventas_cnt extends CI_Controller {
 							$html .= "<td align='left'>".$b->contratante."<input type='text' class='hidden' id='idcomprobante' name='idcomprobante[]' value='".$b->idcomprobante."'></td>";
 							$html .= "<td align='left'>".$b->cont_numDoc."</td>";
 							$html .= "<td align='left'>".utf8_decode($b->nombre_plan)."</td>";
-							$html .= "<td align='center'>S/. ".$importe2."</td>";
+							if ($b->tipo_moneda == 'PEN') {
+								$html .= "<td align='center'>S/. ".$importe2."</td>";
+							} elseif ($b->tipo_moneda == 'USD') {
+								$html .= "<td align='center'>$ ".$importe2."</td>";
+							}
 							if ($estado == 2) {
 								$html .= "<td align='center' class='danger'>".$b->descripcion."</td>";
 								$html .= "<td align='left'>";
@@ -622,13 +642,21 @@ class ventas_cnt extends CI_Controller {
 
 		} elseif (substr($serie, 0, 1) == 'F') {
 
-			$html .= "<hr>";
-			$boletaSuma = $this->comprobante_pago_mdl->getDatosSumaEmi($inicio, $canales, $serie);
-			foreach ($boletaSuma as $bs):
-				$suma=$bs->suma;
-				$sumaDos=number_format((float)$suma, 2, '.', ',');
-				$html .="<H1><span class='label label-succes label-white middle'><b>Total de cobros Boletas: S/. ".$sumaDos."</b></span></H1>";
-			endforeach;
+
+			$boletaSumaSoles = $this->comprobante_pago_mdl->getDatosSumaEmiSoles($inicio, $canales, $serie);
+			$boletaSumaSolesArray = json_decode(json_encode($boletaSumaSoles), true);
+			$boletaSumaSolesstring = array_values($boletaSumaSolesArray)[0];
+			$sumaS = $boletaSumaSolesstring['sumas'];
+			$sumaDosS=number_format((float)$sumaS, 2, '.', ',');
+
+			$boletaSumaDolares = $this->comprobante_pago_mdl->getDatosSumaEmiDolares($inicio, $canales, $serie);
+			$boletaSumaDolaresArray = json_decode(json_encode($boletaSumaDolares), true);
+			$boletaSumaDolaresstring = array_values($boletaSumaDolaresArray)[0];
+			$sumaD = $boletaSumaDolaresstring['sumad'];
+			$sumaDosd=number_format((float)$sumaD, 2, '.', ',');
+
+			$html .="<H1><span class='label label-succes label-white middle'><b>Total de cobros Soles: S/. ".$sumaDosS."</b></span>&nbsp;<span class='label label-succes label-white middle'><b>Total de cobros Dólares: $ ".$sumaDosd."</b></span></H1>";
+
 
 			$html .="<hr>";
 			$html .= "<div  align='center' class='col-xs-12'>";
@@ -664,7 +692,11 @@ class ventas_cnt extends CI_Controller {
 								$html .= "<td align='left'>".$f->razon_social_cli."<input type='text' class='hidden' id='idcomprobante' name='idcomprobante' value='".$f->idcomprobante."'></td>";
 								$html .= "<td align='left'>".$f->numero_documento_cli."</td>";
 								$html .= "<td align='left'>".$f->nombre_plan."</td>";
-								$html .= "<td align='center'>S/. ".$importe2."</td>";
+								if ($f->tipo_moneda == 'PEN') {
+									$html .= "<td align='center'>S/. ".$importe2."</td>";
+								} elseif ($f->tipo_moneda == 'USD') {
+									$html .= "<td align='center'>$ ".$importe2."</td>";
+								}
 								if ($estado == 2) {
 									$html .= "<td align='center' class='danger'>".$f->descripcion."</td>";
 									$html .= "<td align='left'>";
@@ -732,13 +764,22 @@ class ventas_cnt extends CI_Controller {
 
 		if (substr($serie, 0, 1) == 'B') {
 			//html de tabla dinámica que se va a generar
-			$html .= "<hr>";
-			$boletaSuma = $this->comprobante_pago_mdl->getDatosSumaDec($inicio, $fin, $canales, $serie);
-			foreach ($boletaSuma as $bs):
-				$suma=$bs->suma;
-				$sumaDos=number_format((float)$suma, 2, '.', ',');
-				$html .="<H1><span class='label label-succes label-white middle'><b>Total de cobros Boletas: S/. ".$sumaDos."</b></span></H1>";
-			endforeach;
+
+			$boletaSumaSoles = $this->comprobante_pago_mdl->getDatosSumaDecSoles($inicio, $fin, $canales, $serie);
+			$boletaSumaSolesArray = json_decode(json_encode($boletaSumaSoles), true);
+			$boletaSumaSolesstring = array_values($boletaSumaSolesArray)[0];
+			$sumaS = $boletaSumaSolesstring['sumas'];
+			$sumaDosS=number_format((float)$sumaS, 2, '.', ',');
+
+			$boletaSumaDolares = $this->comprobante_pago_mdl->getDatosSumaDecDolares($inicio, $fin, $canales, $serie);
+			$boletaSumaDolaresArray = json_decode(json_encode($boletaSumaDolares), true);
+			$boletaSumaDolaresstring = array_values($boletaSumaDolaresArray)[0];
+			$sumaD = $boletaSumaDolaresstring['sumad'];
+
+			$sumaDosd=number_format((float)$sumaD, 2, '.', ',');
+
+			$html .="<H1><span class='label label-succes label-white middle'><b>Total de cobros Soles: S/. ".$sumaDosS."</b></span>&nbsp;<span class='label label-succes label-white middle'><b>Total de cobros Dólares: $ ".$sumaDosd."</b></span></H1>";
+
 			//html de tabla dinámica que se va a generar
 			$html .= "<br>";
 			$html .= "<div  align='center' class='col-xs-12'>";
@@ -764,6 +805,12 @@ class ventas_cnt extends CI_Controller {
 
 					foreach ((array) $boleta as $b):
 
+						if ($b->tipo_moneda=='PEN') {
+							$moneda = 'S/. ';
+						} elseif ($b->tipo_moneda=='USD') {
+							$moneda = '$ ';
+						}
+
 						$importe = $b->importe_total;
 						$importe2=number_format((float)$importe, 2, '.', ',');
 
@@ -777,7 +824,7 @@ class ventas_cnt extends CI_Controller {
 							$html .= "<td align='left'>".$b->contratante."<input type='text' class='hidden' id='idcomprobante' name='idcomprobante[]' value='".$b->idcomprobante."'></td>";
 							$html .= "<td align='left'>".$b->cont_numDoc."</td>";
 							$html .= "<td align='left'>".utf8_decode($b->nombre_plan)."</td>";
-							$html .= "<td align='center'>S/. ".$importe2."</td>";
+							$html .= "<td align='center'>".$moneda.$importe2."</td>";
 							if ($estado == 2) {
 								$html .= "<td align='center' class='danger'>".$b->descripcion."</td>";
 								$html .= "<td align='left'></td>";
@@ -809,13 +856,21 @@ class ventas_cnt extends CI_Controller {
 				$html .= "</table>";
 			$html .= "</div>";
 		} elseif (substr($serie, 0, 1) == 'F') {
-			$html .= "<hr>";
-			$boletaSuma = $this->comprobante_pago_mdl->getDatosSumaDec($inicio, $fin, $canales, $serie);
-			foreach ($boletaSuma as $bs):
-				$suma=$bs->suma;
-				$sumaDos=number_format((float)$suma, 2, '.', ',');
-				$html .="<H1><span class='label label-succes label-white middle'><b>Total de cobros Boletas: S/. ".$sumaDos."</b></span></H1>";
-			endforeach;
+
+			$boletaSumaSoles = $this->comprobante_pago_mdl->getDatosSumaDecSoles($inicio, $fin, $canales, $serie);
+			$boletaSumaSolesArray = json_decode(json_encode($boletaSumaSoles), true);
+			$boletaSumaSolesstring = array_values($boletaSumaSolesArray)[0];
+			$sumaS = $boletaSumaSolesstring['sumas'];
+			$sumaDosS=number_format((float)$sumaS, 2, '.', ',');
+
+			$boletaSumaDolares = $this->comprobante_pago_mdl->getDatosSumaDecDolares($inicio, $fin, $canales, $serie);
+			$boletaSumaDolaresArray = json_decode(json_encode($boletaSumaDolares), true);
+			$boletaSumaDolaresstring = array_values($boletaSumaDolaresArray)[0];
+			$sumaD = $boletaSumaDolaresstring['sumad'];
+
+			$sumaDosd=number_format((float)$sumaD, 2, '.', ',');
+
+			$html .="<H1><span class='label label-succes label-white middle'><b>Total de cobros Soles: S/. ".$sumaDosS."</b></span>&nbsp;<span class='label label-succes label-white middle'><b>Total de cobros Dólares: $ ".$sumaDosd."</b></span></H1>";
 
 			$html .="<hr>";
 			$html .= "<div  align='center' class='col-xs-12'>";
@@ -840,6 +895,12 @@ class ventas_cnt extends CI_Controller {
 
 					foreach ((array)$factura as $f):
 
+						if ($f->tipo_moneda=='PEN') {
+							$moneda = 'S/. ';
+						} elseif ($f->tipo_moneda=='USD') {
+							$moneda = '$ ';
+						}
+
 						$importeDos = $f->importe_total;
 						$importe2=number_format((float)$importeDos, 2, '.', ',');
 						$estado = $f->idestadocobro;
@@ -851,7 +912,7 @@ class ventas_cnt extends CI_Controller {
 								$html .= "<td align='left'>".$f->razon_social_cli."<input type='text' class='hidden' id='idcomprobante' name='idcomprobante' value='".$f->idcomprobante."'></td>";
 								$html .= "<td align='left'>".$f->numero_documento_cli."</td>";
 								$html .= "<td align='left'>".$f->nombre_plan."</td>";
-								$html .= "<td align='center'>S/. ".$importe2."</td>";
+								$html .= "<td align='center'>".$moneda.$importe2."</td>";
 								if ($estado == 2) {
 									$html .= "<td align='center' class='danger'>".$f->descripcion."</td>";
 									$html .= "<td align='left'></td>";
@@ -1329,7 +1390,7 @@ class ventas_cnt extends CI_Controller {
 		          	} elseif ($numeroSerie=='B005') {
 		          		$subdiario="08";
 		          	} else{
-		          		$subdiario="09";
+		          		$subdiario="07";
 		          	}
 		          	$this->excel->getActiveSheet()->setCellValue("B{$contador1}",$subdiario);
 					$this->excel->getActiveSheet()->setCellValue("C{$contador1}",$b->mes."".$correConcar);
@@ -1433,11 +1494,12 @@ class ventas_cnt extends CI_Controller {
 
 				dbase_close($db);
 				$mail->isSMTP();
-		        $mail->Host     = 'relay-hosting.secureserver.net';;
+		        //$mail->Host     = 'relay-hosting.secureserver.net';
+		        $mail->Host = 'localhost';
 		        $mail->SMTPAuth = false;
 		        $mail->Username = '';
 		        $mail->Password = '';
-		        $mail->SMTPSecure = 'false';
+			    $mail->SMTPSecure = false;
 		        $mail->Port     = 25;
 		        $mail->SetFrom('aespinoza@red-salud.com', utf8_decode('RED SALUD'));
 		        $mail->AddReplyTo('aespinoza@red-salud.com', utf8_decode('RED SALUD')); 
@@ -1492,7 +1554,7 @@ class ventas_cnt extends CI_Controller {
 						$this->excel->getActiveSheet()->setCellValue("I{$contador1}","S");
 						$this->excel->getActiveSheet()->setCellValue("K{$contador1}","121201");
 						$this->excel->getActiveSheet()->setCellValue("L{$contador1}",$f->numero_documento_cli);
-						$this->excel->getActiveSheet()->setCellValue("M{$contador1}",$f->centro_costo);
+						$this->excel->getActiveSheet()->setCellValue("M{$contador1}",$c->centro_costo);
 						$this->excel->getActiveSheet()->setCellValue("N{$contador1}","D");
 						$this->excel->getActiveSheet()->setCellValue("O{$contador1}",$total);
 						$this->excel->getActiveSheet()->setCellValue("R{$contador1}","FT");
@@ -1509,7 +1571,7 @@ class ventas_cnt extends CI_Controller {
 						$this->excel->getActiveSheet()->setCellValue("I{$contador2}","S");
 						$this->excel->getActiveSheet()->setCellValue("K{$contador2}","401111");
 						$this->excel->getActiveSheet()->setCellValue("L{$contador2}",$f->numero_documento_cli);
-						$this->excel->getActiveSheet()->setCellValue("M{$contador2}",$f->centro_costo);
+						$this->excel->getActiveSheet()->setCellValue("M{$contador2}",$c->centro_costo);
 						$this->excel->getActiveSheet()->setCellValue("N{$contador2}","H");
 						$this->excel->getActiveSheet()->setCellValue("O{$contador2}",$igvfinal);
 						$this->excel->getActiveSheet()->setCellValue("R{$contador2}","FT");
@@ -2056,20 +2118,28 @@ class ventas_cnt extends CI_Controller {
 	    if (substr($serie, 0, 1) == 'B') {
 	    	foreach ($boletas as $b){
 
+	    		if ($b->tipo_moneda == 'PEN') {
+	    			$moneda = 'S/. ';
+	    			$nomMoneda = 'SOLES';
+	    		} elseif ($b->tipo_moneda == 'USD') {
+	    			$moneda = '$ ';
+	    			$nomMoneda = utf8_decode('DÓLARES');
+	    		}
+
 	    		$fechaFormato = date("d/m/Y", strtotime($b->fecha_emision));
 
 	    		$igv = $b->total-$b->neto;
 	    		$tot=$b->total;
 	    		$nt=$b->neto;
-	    		$total = number_format((float)$tot, 2, '.', '');
-	    		$neto = number_format((float)$nt, 2, '.', '');
-	    		$igvfinal=number_format((float)$igv, 2, '.', '');
+	    		$total = number_format((float)$tot, 2, '.', ',');
+	    		$neto = number_format((float)$nt, 2, '.', ',');
+	    		$igvfinal=number_format((float)$igv, 2, '.', ',');
 	    		$totalSinDec = substr ($total, 0, -3);
 	    		$totalDec = substr ($total, -2);
 
 	    		$content = "20600258894 | ".$b->serie."-".$b->correlativo." | ".$b->fecha_emision." | ".$b->total." | ".$igvfinal." | ".$b->cont_numDoc;
 				QRcode::png($content , 'adjunto/qr/'.$b->mes."".$b->serie."".$b->correlativo.".png" , QR_ECLEVEL_L , 10 , 2);
-				//exit();
+				//exit();x
 
 	            $this->pdf->Ln('15');
 	          	$this->pdf->SetFont('Arial','B',10); 
@@ -2077,13 +2147,13 @@ class ventas_cnt extends CI_Controller {
 	            $this->pdf->MultiCell(64,6,utf8_decode('BOLETA DE VENTA ELECTRÓNICA')."\n"."RUC:20600258894"."\n"."Nro: ".$b->serie."-".$b->correlativo,1,'C', false);
 	            $this->pdf->Ln('10');
 	          	$this->pdf->SetFont('Arial','B',12); 
-	            $this->pdf->Cell(0,0,$b->contratante,0,0,'L');
+	            $this->pdf->Cell(0,0,utf8_decode($b->contratante),0,0,'L');
 	            $this->pdf->Ln('5');
 	            $this->pdf->SetFont('Arial','B',11);
 	            $this->pdf->Cell(0,0,"DNI: ".$b->cont_numDoc,0,0,'L');
 	            $this->pdf->Ln('5');
 	            $this->pdf->SetFont('Arial','B',11);
-	            $this->pdf->Cell(0,0,utf8_decode("Dirección: ").$b->cont_direcc,0,0,'L');
+	            $this->pdf->Cell(0,0,utf8_decode("Dirección: ").utf8_decode($b->cont_direcc),0,0,'L');
 	            $this->pdf->Ln('5');
 	            $this->pdf->SetFont('Arial','B',11);
 	            $this->pdf->Cell(0,0,"fecha: ".$fechaFormato,0,0,'L');
@@ -2100,18 +2170,22 @@ class ventas_cnt extends CI_Controller {
 	            $this->pdf->SetFont('Arial','',8);
 	            $this->pdf->SetTextColor(000,000,000);
 	            $this->pdf->Cell(25,10,"1",1,0,'C');
-	            $this->pdf->Cell(80,10,$b->nombre_plan,1,0,'C');
-	            $this->pdf->Cell(30,10,"S/. ".$neto,1,0,'C');
-	            $this->pdf->Cell(25,10,"S/. 0.00",1,0,'C');
-	            $this->pdf->Cell(30,10,"S/. ".$neto,1,0,'C');
+	            if ($b->id_contratante == NULL) {
+	            	$this->pdf->Cell(80,10,utf8_decode($b->nombre_plan).' - '.utf8_decode($b->sustento_nota),1,0,'C');
+	            } else {
+	           		$this->pdf->Cell(80,10,utf8_decode($b->nombre_plan),1,0,'C');
+	            }
+	            $this->pdf->Cell(30,10,$moneda.$total,1,0,'C');
+	            $this->pdf->Cell(25,10,$moneda."0.00",1,0,'C');
+	            $this->pdf->Cell(30,10,$moneda.$total,1,0,'C');
 	            $this->pdf->Ln('15');
 	            //$this->pdf->Cell(80);
 
 	            $this->pdf->SetFont('Arial', '',8);
-	            $this->pdf->Cell(100,10,"  SON ".$numLet->convertir($totalSinDec, 'Y')." ".$totalDec."/100 SOLES",0,0,'L');
+	            $this->pdf->Cell(100,10,"  SON ".$numLet->convertir($totalSinDec, 'CON')." ".$totalDec."/100".$nomMoneda,0,0,'L');
 	            $this->pdf->Image(base_url().'/adjunto/qr/'.$b->mes."".$b->serie."".$b->correlativo.'.png',24,135,30,0);
 	            /*$this->pdf->Cell(60,10,"Operaciones gravadas",1,0,'C');
-	            $this->pdf->Cell(30,10,"S/. ".$neto." ",1,0,'R');
+	            $this->pdf->Cell(30,10,$moneda.$neto." ",1,0,'R');
 	            $this->pdf->Ln('10');
 	            $this->pdf->Cell(100);
 	            $this->pdf->Cell(60,10,"Operaciones inafectas",1,0,'C');
@@ -2131,11 +2205,11 @@ class ventas_cnt extends CI_Controller {
 	            $this->pdf->Ln('10');
 	            $this->pdf->Cell(100);
 	            $this->pdf->Cell(60,10,"IGV",1,0,'C');
-	            $this->pdf->Cell(30,10,"S/. ".$igvfinal." ",1,0,'R');*/
+	            $this->pdf->Cell(30,10,$moneda.$igvfinal." ",1,0,'R');*/
 	            $this->pdf->Ln('5');
 	            $this->pdf->Cell(100);
 	            $this->pdf->Cell(60,10,"Importe total de la venta",1,0,'C');
-	            $this->pdf->Cell(30,10,"S/. ".$total." ",1,0,'R');
+	            $this->pdf->Cell(30,10,$moneda.$total." ",1,0,'R');
 	            $this->pdf->Ln('35');
 	            $this->pdf->Cell(100,10,utf8_decode("Representación de Boleta de venta electrónica."),0,0,'L');
 
@@ -2154,12 +2228,20 @@ class ventas_cnt extends CI_Controller {
 	    } elseif (substr($serie, 0, 1) == 'F') {
 	    	foreach ($facturas as $f){
 
+	    		if ($f->tipo_moneda == 'PEN') {
+	    			$moneda = 'S/. ';
+	    			$nomMoneda = 'SOLES';
+	    		} elseif ($f->tipo_moneda == 'USD') {
+	    			$moneda = '$ ';
+	    			$nomMoneda = utf8_decode('DÓLARES');
+	    		}
+
 	    		$igv = $f->total-$f->neto;
 	    		$tot=$f->total;
 	    		$nt=$f->neto;
-	    		$total = number_format((float)$tot, 2, '.', '');
-	    		$neto = number_format((float)$nt, 2, '.', '');
-	    		$igvfinal=number_format((float)$igv, 2, '.', '');
+	    		$total = number_format((float)$tot, 2, '.', ',');
+	    		$neto = number_format((float)$nt, 2, '.', ',');
+	    		$igvfinal=number_format((float)$igv, 2, '.', ',');
 	    		$totalSinDec = substr ($total, 0, -3);
 	    		$totalDec = substr ($total, -2);
 
@@ -2174,13 +2256,13 @@ class ventas_cnt extends CI_Controller {
 	            $this->pdf->Cell(126);
 	            $this->pdf->MultiCell(64,6,utf8_decode('FACTURA ELECTRÓNICA')."\n"."RUC:20600258894"."\n"."Nro: ".$f->serie."-".$f->correlativo,1,'C', false);
 	            $this->pdf->Ln('10');
-	            $this->pdf->Cell(0,0,$f->razon_social_cli,0,0,'L');
+	            $this->pdf->Cell(0,0,utf8_decode($f->razon_social_cli),0,0,'L');
 	            $this->pdf->Ln('5');
 	            $this->pdf->SetFont('Arial','B',11);
 	            $this->pdf->Cell(0,0,"RUC: ".$f->numero_documento_cli,0,0,'L');
 	            $this->pdf->Ln('5');
 	            $this->pdf->SetFont('Arial','B',11);
-	            $this->pdf->Cell(0,0,utf8_decode("Dirección: ").$f->direccion_legal,0,0,'L');
+	            $this->pdf->Cell(0,0,utf8_decode("Dirección: ").utf8_decode($f->direccion_legal),0,0,'L');
 	            $this->pdf->Ln('5');
 	            $this->pdf->SetFont('Arial','B',11);
 	            $this->pdf->Cell(0,0,"fecha: ".$fechaFormato,0,0,'L');
@@ -2197,45 +2279,51 @@ class ventas_cnt extends CI_Controller {
 	            $this->pdf->SetFont('Arial','',10);
 	            $this->pdf->SetTextColor(000,000,000);
 	            $this->pdf->Cell(25,10,"1",1,0,'C');
-	            $this->pdf->Cell(80,10,$f->sustento_nota,1,0,'C');
-	            $this->pdf->Cell(30,10,"S/. ".$neto,1,0,'C');
-	            $this->pdf->Cell(25,10,"S/. 0.00",1,0,'C');
-	            $this->pdf->Cell(30,10,"S/. ".$neto,1,0,'C');
+	            $this->pdf->Cell(80,10,utf8_decode($f->sustento_nota),1,0,'C');
+	            $this->pdf->Cell(30,10,$moneda.$neto,1,0,'C');
+	            $this->pdf->Cell(25,10,$moneda."0.00",1,0,'C');
+	            $this->pdf->Cell(30,10,$moneda.$neto,1,0,'C');
 	            $this->pdf->Ln('15');
 	            //$this->pdf->Cell(80);
 
 				$this->pdf->SetFont('Arial', '',8);
-	            $this->pdf->Cell(100,10,"  SON ".$numLet->convertir($totalSinDec, 'Y')." ".$totalDec."/100 SOLES",0,0,'L');
-	            $this->pdf->Image(base_url().'/adjunto/qr/'.$f->mes."".$f->serie."".$f->correlativo.'.png',25,140,30,0);
+				if ($f->numero_letras == NULL) {
+					$this->pdf->Cell(120,10,"  SON ".$numLet->convertir($totalSinDec, 'CON')." ".$totalDec."/100 ".$nomMoneda,0,0,'L');
+				} else {
+					$this->pdf->Cell(120,10,"  SON ".$f->numero_letras,0,0,'L');
+				}
+	            
+	            $this->pdf->Image(base_url().'/adjunto/qr/'.$f->mes."".$f->serie."".$f->correlativo.'.png',50,140,30,0);
 
-	            $this->pdf->Cell(60,10,"Operaciones gravadas",1,0,'C');
-	            $this->pdf->Cell(30,10,"S/. ".$neto." ",1,0,'R');
+	            $this->pdf->Cell(40,10,"Operaciones gravadas",1,0,'C');
+	            $this->pdf->Cell(30,10,$moneda.$neto." ",1,0,'R');
 	            $this->pdf->Ln('10');
-	            $this->pdf->Cell(100);
-	            $this->pdf->Cell(60,10,"Operaciones inafectas",1,0,'C');
-	            $this->pdf->Cell(30,10,"S/. 0.00 ",1,0,'R');
+	            $this->pdf->Cell(120);
+	            $this->pdf->Cell(40,10,"Operaciones inafectas",1,0,'C');
+	            $this->pdf->Cell(30,10,$moneda."0.00 ",1,0,'R');
 	            $this->pdf->Ln('10');
-	            $this->pdf->Cell(100);
-	            $this->pdf->Cell(60,10,"Operaciones exoneradas",1,0,'C');
-	            $this->pdf->Cell(30,10,"S/. 0.00 ",1,0,'R');
+	            $this->pdf->Cell(120);
+	            $this->pdf->Cell(40,10,"Operaciones exoneradas",1,0,'C');
+	            $this->pdf->Cell(30,10,$moneda."0.00 ",1,0,'R');
 	            $this->pdf->Ln('10');
-	            $this->pdf->Cell(100);
-	            $this->pdf->Cell(60,10,"Operaciones gratuitas",1,0,'C');
-	            $this->pdf->Cell(30,10,"S/. 0.00 ",1,0,'R');
+	            $this->pdf->Cell(120);
+	            $this->pdf->Cell(40,10,"Operaciones gratuitas",1,0,'C');
+	            $this->pdf->Cell(30,10,$moneda."0.00 ",1,0,'R');
 	            $this->pdf->Ln('10');
-	            $this->pdf->Cell(100);
-	            $this->pdf->Cell(60,10,"Total de Descuentos",1,0,'C');
-	            $this->pdf->Cell(30,10,"S/. 0.00 ",1,0,'R');
+	            $this->pdf->Cell(120);
+	            $this->pdf->Cell(40,10,"Total de Descuentos",1,0,'C');
+	            $this->pdf->Cell(30,10,$moneda."0.00 ",1,0,'R');
 	            $this->pdf->Ln('10');
-	            $this->pdf->Cell(100);
-	            $this->pdf->Cell(60,10,"IGV",1,0,'C');
-	            $this->pdf->Cell(30,10,"S/. ".$igvfinal." ",1,0,'R');
+	            $this->pdf->Cell(120);
+	            $this->pdf->Cell(40,10,"IGV",1,0,'C');
+	            $this->pdf->Cell(30,10,$moneda.$igvfinal." ",1,0,'R');
 	            $this->pdf->Ln('10');
-	            $this->pdf->Cell(100);
-	            $this->pdf->Cell(60,10,"Importe total de la venta",1,0,'C');
-	            $this->pdf->Cell(30,10,"S/. ".$total." ",1,0,'R');
+	            $this->pdf->Cell(120);
+	            $this->pdf->Cell(40,10,"Importe total de la venta",1,0,'C');
+	            $this->pdf->Cell(30,10,$moneda.$total." ",1,0,'R');
 	            $this->pdf->Ln('-20');
-	            $this->pdf->Cell(100,10,utf8_decode("Representación de Factura de venta electrónica."),0,0,'L');
+	            $this->pdf->Cell(25);
+	            $this->pdf->Cell(175,10,utf8_decode("Representación de Factura de venta electrónica."),0,1,'L');
 
 	            $this->pdf->Line(10, 280 , 200, 280); 
 			    $this->pdf->SetTitle("Comprobante de pago");
@@ -2511,11 +2599,11 @@ class ventas_cnt extends CI_Controller {
 				file_put_contents('adjunto/comprobantes/'.$filename.'.xml', $xmlSigned);
 
 				$mail->isSMTP();
-		        $mail->Host     = 'relay-hosting.secureserver.net';;
+		        $mail->Host = 'localhost';
 		        $mail->SMTPAuth = false;
 		        $mail->Username = '';
 		        $mail->Password = '';
-		        $mail->SMTPSecure = 'false';
+			    $mail->SMTPSecure = false;
 		        $mail->Port     = 25;
 		        $mail->SetFrom('dcaceda@red-salud.com', utf8_decode('RED SALUD'));
 		        $mail->AddReplyTo('dcaceda@red-salud.com', utf8_decode('RED SALUD')); 
@@ -2832,11 +2920,15 @@ class ventas_cnt extends CI_Controller {
     	$fecinicio = $this->input->post('fechainicioDos');
     	//$fecfin = $this->input->post('fechafinDos');
     	//$numSerieU = reset($numSerie);
-    	$numSerieUno = reset($numSerie);
-    	$serieInicial=substr($numSerieUno, 0, 1);
-    	if ($serieInicial == 'B') {
+    	//$numSerieUno = reset($numeroSeriePost);
+    	$serieUno = array_values($numSerie)[0];
+    	//$serieInicial=substr($serieUno, 0, 1);
 
-    		$boletasAgr = $this->comprobante_pago_mdl->getDatosXmlBoletasAgrupadas($fecinicio, $numSerieUno);
+    	if (substr($serieUno, 0, 1) == 'B') {
+
+    		$numSerieUno = reset($numeroSeriePost);
+
+    		$boletasAgr = $this->comprobante_pago_mdl->getDatosXmlBoletasAgrupadas($fecinicio, $serieUno);
 
 	    	foreach ($boletasAgr as $ba){
 
@@ -2874,49 +2966,57 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 		</cac:PartyLegalEntity>
 	</cac:Party>
 </cac:AccountingSupplierParty>';
-		$boletas = $this->comprobante_pago_mdl->getDatosXmlBoletas($fecinicio, $ba->nume_corre_res, $numSerieUno);
-		foreach ($boletas as $b) {
-				$datos.='<sac:SummaryDocumentsLine>
-	<cbc:LineID>'.$linea.'</cbc:LineID>
-	<cbc:DocumentTypeCode>03</cbc:DocumentTypeCode>
-	<cbc:ID>'.$numSerieUno.'-'.$b->correlativo.'</cbc:ID>
-	<cac:Status>
-		<cbc:ConditionCode>1</cbc:ConditionCode>
-	</cac:Status>
-	<sac:TotalAmount currencyID="PEN">'.$b->total.'</sac:TotalAmount>
-	<sac:BillingPayment>
-		<cbc:PaidAmount currencyID="PEN">'.$b->neto.'</cbc:PaidAmount>
-		<cbc:InstructionID>01</cbc:InstructionID>
-	</sac:BillingPayment>
-	<cac:TaxTotal>
-		<cbc:TaxAmount currencyID="PEN">'.$b->igv.'</cbc:TaxAmount>
-		<cac:TaxSubtotal>
-			<cbc:TaxAmount currencyID="PEN">'.$b->igv.'</cbc:TaxAmount>
-			<cac:TaxCategory>
-				<cac:TaxScheme>
-					<cbc:ID>1000</cbc:ID>
-					<cbc:Name>IGV</cbc:Name>
-					<cbc:TaxTypeCode>VAT</cbc:TaxTypeCode>
-				</cac:TaxScheme>
-			</cac:TaxCategory>
-		</cac:TaxSubtotal>
-	</cac:TaxTotal>
-	<cac:TaxTotal>
-		<cbc:TaxAmount currencyID="PEN">0.00</cbc:TaxAmount>
-		<cac:TaxSubtotal>
-			<cbc:TaxAmount currencyID="PEN">0.00</cbc:TaxAmount>
-			<cac:TaxCategory>
-				<cac:TaxScheme>
-					<cbc:ID>2000</cbc:ID>
-					<cbc:Name>ISC</cbc:Name>
-					<cbc:TaxTypeCode>EXC</cbc:TaxTypeCode>
-				</cac:TaxScheme>
-			</cac:TaxCategory>
-		</cac:TaxSubtotal>
-	</cac:TaxTotal>
-</sac:SummaryDocumentsLine>';
+			$boletas = $this->comprobante_pago_mdl->getDatosXmlBoletas($fecinicio, $ba->nume_corre_res, $numSerieUno);
+			foreach ($boletas as $b) {
+
+				if ($b->tipo_moneda=='PEN') {
+					$moneda = 'PEN';
+				} elseif ($b->tipo_moneda=='USD') {
+					$moneda = 'USD';
+				}
+
+					$datos.='<sac:SummaryDocumentsLine>
+		<cbc:LineID>'.$linea.'</cbc:LineID>
+		<cbc:DocumentTypeCode>03</cbc:DocumentTypeCode>
+		<cbc:ID>'.$numSerieUno.'-'.$b->correlativo.'</cbc:ID>
+		<cac:Status>
+			<cbc:ConditionCode>1</cbc:ConditionCode>
+		</cac:Status>
+		<sac:TotalAmount currencyID="'.$moneda.'">'.$b->total.'</sac:TotalAmount>
+		<sac:BillingPayment>
+			<cbc:PaidAmount currencyID="'.$moneda.'">'.$b->neto.'</cbc:PaidAmount>
+			<cbc:InstructionID>01</cbc:InstructionID>
+		</sac:BillingPayment>
+		<cac:TaxTotal>
+			<cbc:TaxAmount currencyID="'.$moneda.'">'.$b->igv.'</cbc:TaxAmount>
+			<cac:TaxSubtotal>
+				<cbc:TaxAmount currencyID="'.$moneda.'">'.$b->igv.'</cbc:TaxAmount>
+				<cac:TaxCategory>
+					<cac:TaxScheme>
+						<cbc:ID>1000</cbc:ID>
+						<cbc:Name>IGV</cbc:Name>
+						<cbc:TaxTypeCode>VAT</cbc:TaxTypeCode>
+					</cac:TaxScheme>
+				</cac:TaxCategory>
+			</cac:TaxSubtotal>
+		</cac:TaxTotal>
+		<cac:TaxTotal>
+			<cbc:TaxAmount currencyID="'.$moneda.'">0.00</cbc:TaxAmount>
+			<cac:TaxSubtotal>
+				<cbc:TaxAmount currencyID="'.$moneda.'">0.00</cbc:TaxAmount>
+				<cac:TaxCategory>
+					<cac:TaxScheme>
+						<cbc:ID>2000</cbc:ID>
+						<cbc:Name>ISC</cbc:Name>
+						<cbc:TaxTypeCode>EXC</cbc:TaxTypeCode>
+					</cac:TaxScheme>
+				</cac:TaxCategory>
+			</cac:TaxSubtotal>
+		</cac:TaxTotal>
+	</sac:SummaryDocumentsLine>';
 				$linea=$linea+1;
-		}
+
+			}
 $datos.='</SummaryDocuments>';
 
 				$nameDoc='RC-'.$fechanombre.'-'.$ba->nume_corre_res;
@@ -3006,18 +3106,22 @@ $datos.='</SummaryDocuments>';
 
 				unlink('adjunto/xml/boletas/'.$filecdr.'/'.'C'.$filename.'.xml');
 
-
 				$this->comprobante_pago_mdl->updateEstadoCobroEmitido($ba->fecha_emision, $ba->nume_corre_res, $ba->serie);
-
 				
 			}
 
-    	} elseif ($serieInicial == 'F') {
+    	} elseif (substr($numSerie, 0, 1) == 'F') {
 	    		
 		    	$facturas = $this->comprobante_pago_mdl->getDatosXmlFacturas($fecinicio, $numSerie);
 		    	
 
 		    	foreach ($facturas as $f){
+
+		    		if ($f->tipo_moneda=='PEN') {
+						$moneda = 'PEN';
+					} elseif ($f->tipo_moneda=='USD') {
+						$moneda = 'USD';
+					}
 
 		    		$filename="20600258894-01-".$f->serie."-".$f->correlativo;
 
@@ -3043,7 +3147,7 @@ $datos.='</SummaryDocuments>';
   <cbc:ID>'.$f->serie.'-'.$f->correlativo.'</cbc:ID>
   <cbc:IssueDate>'.$f->fecha_emision.'</cbc:IssueDate>
   <cbc:InvoiceTypeCode listID="0101" listAgencyName="PE:SUNAT" listName="SUNAT:Identificador de Tipo de Documento" listURI="urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo01">01</cbc:InvoiceTypeCode>
-  <cbc:DocumentCurrencyCode listID="ISO 4217 Alpha" listName="Currency" listAgencyName="United Nations Economic Commission for Europe">PEN</cbc:DocumentCurrencyCode>
+  <cbc:DocumentCurrencyCode listID="ISO 4217 Alpha" listName="Currency" listAgencyName="United Nations Economic Commission for Europe">'.$moneda.'</cbc:DocumentCurrencyCode>
   <cbc:LineCountNumeric>1</cbc:LineCountNumeric>
   <cac:Signature>
     <cbc:ID>SignIMM</cbc:ID>
@@ -3094,10 +3198,10 @@ $datos.='</SummaryDocuments>';
     </cac:Party>
   </cac:AccountingCustomerParty>
   <cac:TaxTotal>
-    <cbc:TaxAmount currencyID="PEN">'.$f->igv.'</cbc:TaxAmount>
+    <cbc:TaxAmount currencyID="'.$moneda.'">'.$f->igv.'</cbc:TaxAmount>
     <cac:TaxSubtotal>
-      <cbc:TaxableAmount currencyID="PEN">'.$f->neto.'</cbc:TaxableAmount>
-      <cbc:TaxAmount currencyID="PEN">'.$f->igv.'</cbc:TaxAmount>
+      <cbc:TaxableAmount currencyID="'.$moneda.'">'.$f->neto.'</cbc:TaxableAmount>
+      <cbc:TaxAmount currencyID="'.$moneda.'">'.$f->igv.'</cbc:TaxAmount>
       <cac:TaxCategory>
         <cbc:ID schemeID="UN/ECE 5305" schemeName="Tax Category Identifier" schemeAgencyName="United Nations Economic Commission for Europe">S</cbc:ID>
         <cac:TaxScheme>
@@ -3109,23 +3213,23 @@ $datos.='</SummaryDocuments>';
     </cac:TaxSubtotal>
   </cac:TaxTotal>
   <cac:LegalMonetaryTotal>
-    <cbc:PayableAmount currencyID="PEN">'.$f->total.'</cbc:PayableAmount>
+    <cbc:PayableAmount currencyID="'.$moneda.'">'.$f->total.'</cbc:PayableAmount>
   </cac:LegalMonetaryTotal>
   <cac:InvoiceLine>
     <cbc:ID>1</cbc:ID>
     <cbc:InvoicedQuantity unitCode="ZZ" unitCodeListID="UN/ECE rec 20" unitCodeListAgencyName="United Nations Economic Commission forEurope">1</cbc:InvoicedQuantity>
-    <cbc:LineExtensionAmount currencyID="PEN">'.$f->neto.'</cbc:LineExtensionAmount>
+    <cbc:LineExtensionAmount currencyID="'.$moneda.'">'.$f->neto.'</cbc:LineExtensionAmount>
     <cac:PricingReference>
       <cac:AlternativeConditionPrice>
-        <cbc:PriceAmount currencyID="PEN">'.$f->total.'</cbc:PriceAmount>
+        <cbc:PriceAmount currencyID="'.$moneda.'">'.$f->total.'</cbc:PriceAmount>
         <cbc:PriceTypeCode listName="SUNAT:Indicador de Tipo de Precio" listAgencyName="PE:SUNAT" listURI="urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo16">01</cbc:PriceTypeCode>
       </cac:AlternativeConditionPrice>
     </cac:PricingReference>
     <cac:TaxTotal>
-      <cbc:TaxAmount currencyID="PEN">'.$f->igv.'</cbc:TaxAmount>
+      <cbc:TaxAmount currencyID="'.$moneda.'">'.$f->igv.'</cbc:TaxAmount>
       <cac:TaxSubtotal>
-        <cbc:TaxableAmount currencyID="PEN">'.$f->neto.'</cbc:TaxableAmount>
-        <cbc:TaxAmount currencyID="PEN">'.$f->igv.'</cbc:TaxAmount>
+        <cbc:TaxableAmount currencyID="'.$moneda.'">'.$f->neto.'</cbc:TaxableAmount>
+        <cbc:TaxAmount currencyID="'.$moneda.'">'.$f->igv.'</cbc:TaxAmount>
         <cac:TaxCategory>
           <cbc:ID schemeID="UN/ECE 5305" schemeName="Tax Category Identifier" schemeAgencyName="United Nations Economic Commission for Europe">S</cbc:ID>
           <cbc:Percent>18.00</cbc:Percent>
@@ -3142,7 +3246,7 @@ $datos.='</SummaryDocuments>';
       <cbc:Description>'.$f->nombre_plan.'</cbc:Description>
     </cac:Item>
     <cac:Price>
-      <cbc:PriceAmount currencyID="PEN">'.$f->neto.'</cbc:PriceAmount>
+      <cbc:PriceAmount currencyID="'.$moneda.'">'.$f->neto.'</cbc:PriceAmount>
     </cac:Price>
   </cac:InvoiceLine>
 </Invoice>';
@@ -3234,127 +3338,7 @@ $datos.='</SummaryDocuments>';
 
 					$this->comprobante_pago_mdl->updateEstadoCobroEmitido($f->fecha_emision, $f->corre, $f->serie);
 
-
-					//------------------
-
-					$fechaFormato = date("d/m/Y", strtotime($f->fecha_emision));
-
-		    		$igv = $f->igv;
-		    		$tot=$f->total;
-		    		$nt=$f->neto;
-		    		$total = number_format((float)$tot, 2, '.', '');
-		    		$neto = number_format((float)$nt, 2, '.', '');
-		    		$igvfinal=number_format((float)$igv, 2, '.', '');
-		    		$totalSinDec = substr ($total, 0, -3);
-		    		$totalDec = substr ($total, -2);
-
-		    		$content = "20600258894 | ".$f->serie."-".$f->correlativo." | ".$f->fecha_emision." | ".$f->total." | ".$igvfinal." | ".$f->numero_documento_cli;
-					QRcode::png($content , 'adjunto/qr/'.$f->mes."".$f->serie."".$f->correlativo.".png" , QR_ECLEVEL_L , 10 , 2);
-
-		            $this->pdf->Ln('15');
-		          	$this->pdf->SetFont('Arial','B',10); 
-		            $this->pdf->Cell(126);
-		            $this->pdf->MultiCell(64,6,utf8_decode('FACTURA ELECTRÓNICA')."\n"."RUC:20600258894"."\n"."Nro: ".$f->serie."-".$f->correlativo,1,'C', false);
-		            $this->pdf->Ln('10');
-		            $this->pdf->Cell(0,0,$f->razon_social_cli,0,0,'L');
-		            $this->pdf->Ln('5');
-		            $this->pdf->SetFont('Arial','B',11);
-		            $this->pdf->Cell(0,0,"RUC: ".$f->numero_documento_cli,0,0,'L');
-		            $this->pdf->Ln('5');
-		            $this->pdf->SetFont('Arial','B',11);
-		            $this->pdf->Cell(0,0,utf8_decode("Dirección: ").$f->direccion_legal,0,0,'L');
-		            $this->pdf->Ln('5');
-		            $this->pdf->SetFont('Arial','B',11);
-		            $this->pdf->Cell(0,0,"fecha: ".$fechaFormato,0,0,'L');
-		            $this->pdf->Ln('15');
-		            $this->pdf->SetFont('Arial','B',10);
-		            $this->pdf->SetTextColor(255,255,255);
-		            $this->pdf->SetFillColor(204, 006, 005); 
-		            $this->pdf->Cell(25,10,"Cantidad",1,0,'C', true);
-		            $this->pdf->Cell(80,10,utf8_decode("Descripción"),1,0,'C', true);
-		            $this->pdf->Cell(30,10,"Precio Unitario",1,0,'C', true);
-		            $this->pdf->Cell(25,10,"Descuento",1,0,'C', true);
-		            $this->pdf->Cell(30,10,"Total",1,0,'C', true);
-		            $this->pdf->Ln('10');
-		            $this->pdf->SetFont('Arial','',10);
-		            $this->pdf->SetTextColor(000,000,000);
-		            $this->pdf->Cell(25,10,"1",1,0,'C');
-		            $this->pdf->Cell(80,10,$f->nombre_plan,1,0,'C');
-		            $this->pdf->Cell(30,10,"S/. ".$neto,1,0,'C');
-		            $this->pdf->Cell(25,10,"S/. 0.00",1,0,'C');
-		            $this->pdf->Cell(30,10,"S/. ".$neto,1,0,'C');
-		            $this->pdf->Ln('20');
-		            //$this->pdf->Cell(80);
-		            
-		            $this->pdf->SetFont('Arial', '',8);
-		            $this->pdf->Cell(100,10,"   ".$numLet->convertir($totalSinDec, 'Y')." ".$totalDec."/100",0,0,'L');
-		            $this->pdf->Image(base_url().'/adjunto/qr/'.$f->mes."".$f->serie."".$f->correlativo.'.png',24,135,30,0);
-
-		            $this->pdf->Cell(60,10,"Operaciones gravadas",1,0,'C');
-		            $this->pdf->Cell(30,10,"S/. ".$neto." ",1,0,'R');
-		            $this->pdf->Ln('10');
-		            $this->pdf->Cell(100);
-		            $this->pdf->Cell(60,10,"Operaciones inafectas",1,0,'C');
-		            $this->pdf->Cell(30,10,"S/. 0.00 ",1,0,'R');
-		            $this->pdf->Ln('10');
-		            $this->pdf->Cell(100);
-		            $this->pdf->Cell(60,10,"Operaciones exoneradas",1,0,'C');
-		            $this->pdf->Cell(30,10,"S/. 0.00 ",1,0,'R');
-		            $this->pdf->Ln('10');
-		            $this->pdf->Cell(100);
-		            $this->pdf->Cell(60,10,"Operaciones gratuitas",1,0,'C');
-		            $this->pdf->Cell(30,10,"S/. 0.00 ",1,0,'R');
-		            $this->pdf->Ln('10');
-		            $this->pdf->Cell(100);
-		            $this->pdf->Cell(60,10,"Total de Descuentos",1,0,'C');
-		            $this->pdf->Cell(30,10,"S/. 0.00 ",1,0,'R');
-		            $this->pdf->Ln('10');
-		            $this->pdf->Cell(100);
-		            $this->pdf->Cell(60,10,"IGV",1,0,'C');
-		            $this->pdf->Cell(30,10,"S/. ".$igvfinal." ",1,0,'R');
-		            $this->pdf->Ln('10');
-		            $this->pdf->Cell(100);
-		            $this->pdf->Cell(60,10,"Importe total de la venta",1,0,'C');
-		            $this->pdf->Cell(30,10,"S/. ".$total." ",1,0,'R');
-		            $this->pdf->Ln('-20');
-		            $this->pdf->Cell(100,10,utf8_decode("Representación de Factura de venta electrónica."),0,0,'L');
-
-		            $this->pdf->Line(10, 280 , 200, 280); 
-				    $this->pdf->SetTitle("Comprobante de pago");
-				    $this->pdf->SetLeftMargin(15);
-				    $this->pdf->SetRightMargin(15);
-				    $this->pdf->SetFillColor(200,200,200);
-
-			        $this->pdf->Output("adjunto/comprobantes/".$f->mes."".$f->serie."".$f->correlativo.".pdf", 'F');
-
-			        				$mail->isSMTP();
-			        $mail->Host     = 'relay-hosting.secureserver.net';;
-			        $mail->SMTPAuth = false;
-			        $mail->Username = '';
-			        $mail->Password = '';
-			        $mail->SMTPSecure = 'false';
-			        $mail->Port     = 25;
-			        $mail->SetFrom('dcaceda@red-salud.com', utf8_decode('RED SALUD'));
-			        $mail->AddReplyTo('dcaceda@red-salud.com', utf8_decode('RED SALUD')); 
-			        $mail->Subject    = "Factura Electrónica";
-			        $mail->Body 	  = "Se adjunta factura electrónica. <br>";
-			        $mail->AltBody    = "Se adjunta factura electrónica.";
-			        $mail->AddAddress('dcaceda@red-salud.com', 'RED SALUD');
-
-			       	$mail->AddAttachment("adjunto/comprobantes/".$f->mes."".$f->serie."".$f->correlativo.".pdf", $f->mes."".$f->serie."".$f->correlativo.".pdf", 'base64', 'application/pdf');
-			       	$mail->AddAttachment('adjunto/xml/facturas/'.$fileFactura.'/'.$filename.'.xml', $filename.".xml", 'base64', 'application/xml');
-			       	$mail->IsHTML(true);
-
-			        $estadoEnvio = $mail->Send(); 
-					if($estadoEnvio){
-					    echo"El correo fue enviado correctamente.";
-					} else {
-					    echo"Ocurrió un error inesperado. " . $mail->ErrorInfo;
-					}
-
 				}
-
-		    unlink("adjunto/comprobantes/".$f->mes."".$f->serie."".$f->correlativo.".pdf");
 			unlink('adjunto/xml/facturas/'.$fileFactura.'/'.$filename.'.xml');
     	} 
 					
