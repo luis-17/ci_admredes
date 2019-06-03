@@ -109,14 +109,12 @@
 							<li><a href="<?=base_url()?>index.php/plan">Planes</a></li>
 							<li class="active">Coberturas</li>
 						</ul><!-- /.breadcrumb -->
-
 						<!-- /section:basics/content.searchbox -->
 					</div>
 
 					<!-- /section:basics/content.breadcrumbs -->
 					<div class="page-content">
 						<!-- #section:settings.box -->
-
 						<div class="page-header">
 							<h1>	
 							Plan: <?=str_replace("%20"," ",$nom);?>						
@@ -196,7 +194,6 @@
 
 									<div class="form-group">
 										<label class="col-sm-3 control-label no-padding-right" for="form-field-1">Visible en redes: </label>
-
 										<div class="col-sm-9">
 											<input type="radio" name="visible" value="1" <?php if($visible==1): echo "checked"; endif; ?>><label>Sí</label>&nbsp;&nbsp;&nbsp;
 											<input type="radio" name="visible" value="0" <?php if($visible==0): echo "checked"; endif; ?>><label>No</label>
@@ -205,7 +202,6 @@
 
 									<div class="form-group">
 										<label class="col-sm-3 control-label no-padding-right" for="form-field-1">Inicio de Vigencia: </label>
-
 										<div class="col-sm-9">
 											<input onclick="ocultar_inicio();" type="radio" name="inicio" value="0" <?php if($inicio==0){ echo "checked";}?>><label>Con el Certificado</label>&nbsp;&nbsp;&nbsp;
 											<input onclick="mostrar_inicio();" type="radio" name="inicio" value="1"<?php if($inicio<>0){ echo "checked";}?>><label>Otro</label>
@@ -248,8 +244,12 @@
 										</div>
 									</div>
 										<div class="col-md-offset-3 col-md-7" align="center">
-											<button class="btn btn-info" type="submit">
-												<i class="ace-icon fa fa-check bigger-110"></i>
+											<button class="btn btn-info" type="submit" name="guardar" value="cancelar">
+												<i class="ace-icon glyphicon glyphicon-remove abigger-110"></i>
+												Cancelar
+											</button>
+											<button class="btn btn-success" type="submit" id="guardar" name="guardar" value="guardar">
+												<i class="ce-icon fa fa-check bigger-110"></i>
 												Guardar
 											</button>
 										</div>
@@ -258,7 +258,7 @@
 										<!-- #section:pages/faq -->
 										<div class="col-xs-12">
 											<br>
-														<table id="example" class="table table-striped table-bordered table-hover"  style="font-size: 12px;">
+														<table id="example" class="table table-bordered table-hover"  style="font-size: 12px;">
 															<thead>
 																<tr>
 																	<th>Cobertura</th>
@@ -360,7 +360,7 @@
 																		<td><?=$visible?></td>
 																		<td><?php if($num11==0 && $tiempo11==''){ echo "Con el Certificado";} else { echo $num11.' '.$tiempo11;}?></td>
 																		<td><?php if($num22==0 && $tiempo22==''){ echo "Con el Certificado";} else { echo $num22.' '.$tiempo22;}?></td>
-																		<td><a title="Agregar Coaseguro" href=""><i class="ace-icon glyphicon glyphicon-plus red"></i></a> <?=$c->descripcion;?> <?=$c->valor_detalle;?></td>
+																		<td><a class="boton fancybox"  data-fancybox-width="800" data-fancybox-height="700" href="<?=base_url()?>index.php/coaseguro/<?=$c->idplandetalle;?>" title="Agregar Coaseguro" href=""><i class="ace-icon glyphicon glyphicon-plus red"></i></a> <?=$c->cobertura?></td>
 																		<td><?=$tiempo?></td>
 																		<td><?=$estado;?></td>
 																		<td>
@@ -371,7 +371,7 @@
 																					</a>
 																				</div>
 																				<div title="Bloquear Otras Coberturas" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
-																					&nbsp;<a href="<?=base_url()?>index.php/<?=$funcion?>/<?=$id?>/<?=$nom?>/<?=$c->idplandetalle;?>">
+																					&nbsp;<a class="boton fancybox"  data-fancybox-width="800" data-fancybox-height="700" href="<?=base_url()?>index.php/bloqueo/<?=$c->idplandetalle;?>">
 																						<i class="ace-icon fa fa-ban blue"></i>
 																					</a>
 																				</div>
@@ -397,7 +397,7 @@
 																						</li>
 																						<li>
 																							<div title="Bloquear Otras Coberturas" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
-																								&nbsp;<a href="<?=base_url()?>index.php/<?=$funcion?>/<?=$id?>/<?=$nom?>/<?=$c->idplandetalle;?>">
+																								&nbsp;<a class="boton fancybox"  data-fancybox-width="800" data-fancybox-height="700" href="<?=base_url()?>index.php/bloqueo/<?=$c->idplandetalle;?>">
 																									<i class="ace-icon fa fa-ban blue"></i>
 																								</a>
 																							</div>

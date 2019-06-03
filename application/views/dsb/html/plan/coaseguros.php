@@ -55,23 +55,30 @@
 			<div class="page-content">
 						<div class="page-header">
 							<h1>
-								<?=$nom?>: Bloqueos					
+								<?=$nom?>: Coaseguros					
 							</h1>
 						</div>
 						<div class="row">
 							<div class="col-xs-12">
 								<!-- PAGE CONTENT BEGINS -->
-								<form class="form-horizontal" role="form" method="post" action="<?=base_url()?>index.php/reg_bloqueo">
+								<form class="form-horizontal" role="form" method="post" action="<?=base_url()?>index.php/reg_coaseguro">
 									<div class="form-group">
 										<input type="hidden" name="id" id="id" value="<?=$id?>">
-										<label class="col-sm-3 control-label no-padding-right" for="form-field-1"> Cobertura: </label>
+										<label class="col-sm-3 control-label no-padding-right" for="form-field-1"> Tipo: </label>
 										<div class="col-sm-5">
-											<select name="cob_bloqueada" id="cob_bloqueada" required="true">
+											<select name="operador" id="operador" required="true">
 												<option>Seleccionar</option>
-												<?php foreach ($coberturas as $c) { ?>
-													<option value="<?=$c->idplandetalle?>"><?=$c->nombre_var?></option>
+												<?php foreach ($operador as $o) { ?>
+													<option value="<?=$o->idoperador?>"><?=$o->descripcion?></option>
 												<?php } ?>
 											</select>
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label class="col-sm-3 control-label no-padding-right" for="form-field-1"> Valor: </label>
+										<div class="col-sm-5">
+											<input type="text" name="valor" id="valor" size="14">
 										</div>
 									</div>				
 
@@ -91,18 +98,16 @@
 							<br>
 								<table id="example" class="table table-striped table-bordered table-hover"  style="font-size: 12px;">
 									<thead>
-										<th>Fecha y Hora</th>
-										<th>Cobertura Bloqueada</th>
-										<th>Usuario Bloqueó</th>
+										<th>Tipo</th>
+										<th>Valor</th>
 										<th width="5%"></th>
 									</thead>
 									<tbody>
-										<?php foreach ($bloqueos as $b) { ?>
+										<?php foreach ($coaseguros as $c) { ?>
 											<tr>
-												<td><?=$b->fecha?></td>
-												<td><?=$b->nombre_var?></td>
-												<td><?=$b->username?></td>
-												<td width="5%"><a title="Eliminar BLoqueo" href="<?=base_url()?>index.php/anular_bloqueo/<?=$b->idbloqueo?>/<?=$id?>"><i class="ace-icon glyphicon glyphicon-trash blue"></i></a></td>
+												<td><?=$c->descripcion?></td>
+												<td><?=$c->valor?></td>
+												<td width="5%"><a title="Eliminar Coaseguro" href="<?=base_url()?>index.php/anular_coaseguro/<?=$c->idcoaseguro?>/<?=$id?>"><i class="ace-icon glyphicon glyphicon-trash blue"></i></a></td>
 											</tr>
 										<?php } ?>
 									</tbody>
@@ -114,8 +119,8 @@
 										"pagingType": "full_numbers"
 										} );
 									} );
-								</script>
-								<br>
+									</script>
+							<br>
 								<div class="clearfix form-actions">
 									<div class="col-md-offset-3 col-md-12">
 										<button class="btn btn-info" type="button" onclick="cerrar();">
@@ -125,6 +130,8 @@
 									</div>
 								</div>
 							</div>
+							
+
 						</div>
 					</div>			
 		<!-- basic scripts -->
@@ -139,7 +146,6 @@
   				parent.$.fancybox.close();
   			}
 		</script>
-
 
 		<!-- <![endif]-->
 

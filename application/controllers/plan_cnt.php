@@ -309,6 +309,9 @@ class plan_cnt extends CI_Controller {
 			$user = $this->session->userdata('user');
 			extract($user);
 
+			$accion = $_POST['guardar'];
+			if($accion=='guardar'){
+
 			$menuLista = $this->menu_mdl->getMenu($idusuario);
 			$data['menu1'] = $menuLista;
 
@@ -462,6 +465,12 @@ class plan_cnt extends CI_Controller {
 			$operador=$this->plan_mdl->get_operador();
 			$data['operador'] = $operador;
 			$this->load->view('dsb/html/plan/plan_cobertura.php',$data);
+			}else{				
+			$id = $_POST['idplan'];
+			$nom = $_POST['nom'];
+
+			redirect('index.php/plan_cobertura/'.$id.'/'.$nom);
+			}
 		}
 		else{
 			redirect('/');
@@ -483,36 +492,24 @@ class plan_cnt extends CI_Controller {
  	function cobertura_anular($id, $nom, $iddet)
  	{
  		$data['idplandetalle'] = $iddet;
- 		$this->plan_mdl->cobertura_anular($iddet);
- 		$cobertura = $this->plan_mdl->getCobertura($id);
-		$data['cobertura'] = $cobertura;
-
-		$items = $this->plan_mdl->getItems();
-		$data['items'] = $items;	
-
-		$data['nom'] = $nom;
-		$data['id'] = $id;
-		$data['iddet'] = 0;
-
-		$this->load->view('dsb/html/plan/plan_cobertura.php',$data);
+ 		$siniestro_detalle = $this->plan_mdl->getSiniestroDetalle($iddet);
+ 		$cant = count($siniestro_detalle);
+ 			$this->plan_mdl->cobertura_anular($iddet); 	
+ 		echo "<script>
+				alert('Se anuló la cobertura con éxito.');
+				location.href='".base_url()."index.php/plan_cobertura/".$id."/".$nom."';
+				</script>";
  	}
 
  	function cobertura_activar($id, $nom, $iddet)
  	{
  		$data['idplandetalle'] = $iddet;
  		$this->plan_mdl->cobertura_activar($iddet);
-
- 		$cobertura = $this->plan_mdl->getCobertura($id);
-		$data['cobertura'] = $cobertura;
-
-		$items = $this->plan_mdl->getItems();
-		$data['items'] = $items;	
-
-		$data['nom'] = $nom;
-		$data['id'] = $id;
-		$data['iddet'] = 0;
-
-		$this->load->view('dsb/html/plan/plan_cobertura.php',$data);
+ 		
+ 		echo "<script>
+				alert('Se activó la cobertura con éxito.');
+				location.href='".base_url()."index.php/plan_cobertura/".$id."/".$nom."';
+				</script>";
  	}
 
  	function seleccionar_cobertura($id, $nom, $iddet)
@@ -719,4 +716,79 @@ class plan_cnt extends CI_Controller {
 		}
 		
 	}
+
+	public function bloqueo($id){
+		$eventos = $this->plan_mdl->getEventos($id);
+		$data['nom'] = $eventos['nombre_var'];
+		$data['id'] = $id;
+		$data['coberturas'] = $this->plan_mdl->getCoberturasActivas($id);
+		$data['bloqueos'] = $this->plan_mdl->getBloqueos($id);
+		$this->load->view('dsb/html/plan/bloqueos.php',$data);
+	}
+
+	public function reg_bloqueo(){
+		$user = $this->session->userdata('user');
+		extract($user);
+		$data['idusuario'] = $idusuario;
+		$id = $_POST['id'];
+		$data['id'] = $id;
+		$data['hoy'] = date('Y-m-d H:i:s');
+		$data['cob_bloqueada'] = $_POST['cob_bloqueada'];
+		$this->plan_mdl->reg_bloqueo($data);
+
+		echo "<script>
+				alert('Se bloqueó la cobertura con éxito.');
+				location.href='".base_url()."index.php/bloqueo/".$id."';
+				</script>";
+ 	}
+
+ 	public function anular_bloqueo($idbloqueo,$id){
+ 		$this->plan_mdl->delete_bloqueo($idbloqueo);
+ 		echo "<script>
+				alert('Se eliminó el bloqueo con éxito.');
+				location.href='".base_url()."index.php/bloqueo/".$id."';
+				</script>";
+ 	}
+
+ 	public function coaseguro($id){
+ 		$eventos = $this->plan_mdl->getEventos($id);
+		$data['nom'] = $eventos['nombre_var'];
+		$data['id'] = $id;
+		$data['operador'] = $this->plan_mdl->getOperador();
+		$data['coaseguros'] = $this->plan_mdl->getCoaseguros($id);
+		$this->load->view('dsb/html/plan/coaseguros.php',$data);
+ 	}
+
+ 	public function reg_coaseguro(){
+ 		$user = $this->session->userdata('user');
+		extract($user);
+		$data['idusuario'] = $idusuario;
+		$data['hoy'] = date('Y-m-d H:i:s');
+		$data['idoperador'] = $_POST['operador'];
+		$data['valor'] = $_POST['valor'];
+		$id = $_POST['id'];
+		$data['id'] = $id;
+
+		$this->plan_mdl->inCoaseguro($data);
+		echo "<script>
+				alert('Se registró el coaseguro con éxito.');
+				location.href='".base_url()."index.php/coaseguro/".$id."';
+				</script>";
+ 	}
+
+ 	public function anular_coaseguro($idcoaseguro,$id){
+ 		$user = $this->session->userdata('user');
+		extract($user);
+		$data['idusuario'] = $idusuario;
+		$data['hoy'] = date('Y-m-d H:i:s');
+		$data['idcoaseguro'] = $idcoaseguro;
+
+		$this->plan_mdl->upCoaseguro($data);
+		echo "<script>
+				alert('Se eliminó el coaseguro con éxito.');
+				location.href='".base_url()."index.php/coaseguro/".$id."';
+				</script>";
+ 	}
+
+ 	
 }

@@ -18,12 +18,12 @@
  	}
 
  	function getCobertura($id){
- 		$this->db->select("dp.idplandetalle, dp.idplan,dp.idvariableplan,dp.valor_detalle,dp.simbolo_detalle, dp.texto_web, dp.visible, dp.estado_pd, dp.flg_liquidacion, dp.tiempo, dp.num_eventos, vp.nombre_var, detalle, o.descripcion, case when iniVig =0 then 0 else SUBSTRING_INDEX(iniVig,' ',1)end as num11, case when iniVig=0 then '' else SUBSTRING_INDEX(iniVig,' ',-1)end as tiempo11, case when finVig =0 then 0 else SUBSTRING_INDEX(finVig,' ',1)end as num22, case when finVig=0 then '' else SUBSTRING_INDEX(finVig,' ',-1)end as tiempo22");
+ 		$this->db->select("dp.idplandetalle, dp.idplan,dp.idvariableplan,dp.valor_detalle,dp.simbolo_detalle, dp.texto_web, dp.visible, dp.estado_pd, dp.flg_liquidacion, dp.tiempo, dp.num_eventos, vp.nombre_var, case when iniVig =0 then 0 else SUBSTRING_INDEX(iniVig,' ',1)end as num11, case when iniVig=0 then '' else SUBSTRING_INDEX(iniVig,' ',-1)end as tiempo11, case when finVig =0 then 0 else SUBSTRING_INDEX(finVig,' ',1)end as num22, case when finVig=0 then '' else SUBSTRING_INDEX(finVig,' ',-1)end as tiempo22, cobertura");
  		$this->db->from('plan_detalle dp'); 		
  		$this->db->join('variable_plan vp','dp.idvariableplan=vp.idvariableplan');
- 		$this->db->join('operador o','o.idoperador=dp.simbolo_detalle','left');
- 		$this->db->join("(select idplandetalle, CONCAT('(', left(GROUP_CONCAT(descripcion_prod),40), case when CHAR_LENGTH(GROUP_CONCAT(descripcion_prod))>40 then '...)'else ')' end) as detalle from producto_detalle pd inner join producto p on p.idproducto=pd.idproducto group by pd.idplandetalle)a","a.idplandetalle=dp.idplandetalle","left");
- 		$this->db->where('idplan',$id); 		
+ 		$this->db->join("(select GROUP_CONCAT(concat(' ',descripcion,' ',valor)) as cobertura, idplandetalle from plan_coaseguro pc inner join operador o on pc.idoperador=o.idoperador
+ 			where pc.estado=1 group by idplandetalle)a",'a.idplandetalle=dp.idplandetalle');
+ 		$this->db->where('dp.idplan',$id); 		
  		$this->db->order_by("dp.idplandetalle ");
 
  	$cobertura = $this->db->get();
@@ -137,6 +137,11 @@
 		return $this->db->update('plan', $array);
  	}
 
+ 	function getSiniestroDetalle($id){
+ 		$query = $this->db->query("select * from siniestro_detalle where idplandetalle=$id");
+ 		return $query->result();
+ 	}
+
  	function cobertura_anular($id){
  		$array = array(
 			'estado_pd' => 0
@@ -240,6 +245,72 @@
  		);
  		$this->db->where("idplandetalle",$data['id']);
  		$this->db->update("plan_detalle",$array);
+ 	}
+
+ 	function getCoberturasActivas($id){
+ 		$query = $this->db->query("select idplandetalle, nombre_var 
+ 									from plan_detalle pd 
+ 									inner join variable_plan vp on pd.idvariableplan=vp.idvariableplan 
+ 									where idplan=(select idplan from plan_detalle where idplandetalle=$id) and estado_pd=1");
+ 		return $query->result();
+ 	}
+
+ 	function getBloqueos($id){
+ 		$query = $this->db->query("select idbloqueo, DATE_FORMAT(fecha_hora,'%d/%m/%y %h:%i')as fecha, nombre_var, username 
+ 									from plan_detalle_bloqueo pb
+									inner join plan_detalle pd on pb.idplandetalle_bloqueado=pd.idplandetalle
+									inner join variable_plan vp on pd.idvariableplan=vp.idvariableplan
+									inner join usuario u on u.idusuario=pb.idusuario
+									where idplandetalle_bloquea=$id");
+ 		return $query->result();
+ 	}
+
+ 	function reg_bloqueo($data){
+ 		$array = array(
+ 			'idplandetalle_bloquea' => $data['id'], 
+ 			'idplandetalle_bloqueado' => $data['cob_bloqueada'],
+ 			'idusuario' => $data['idusuario'],
+ 			'fecha_hora' => $data['hoy']
+ 		);
+ 		$this->db->insert("plan_detalle_bloqueo",$array);
+ 	}
+
+ 	function getOperador(){
+ 		$query = $this->db->query("select idoperador, descripcion from operador");
+ 		return $query->result();
+ 	}
+
+ 	function getCoaseguros($id){
+ 		$query = $this->db->query("select pc.idcoaseguro,pc.idoperador, descripcion, valor from plan_coaseguro pc inner join operador o on pc.idoperador=o.idoperador where idplandetalle=$id and estado=1");
+ 		return $query->result();
+ 	}
+
+ 	function inCoaseguro($data){
+ 		$array = array
+ 		(
+ 			'idplandetalle' => $data['id'], 
+ 			'idoperador' => $data['idoperador'],
+ 			'valor' => $data['valor'],
+ 			'fecha_crea' => $data['hoy'],
+ 			'usuario_crea' => $data['idusuario']
+ 		);
+ 		$this->db->insert("plan_coaseguro",$array);
+ 	}
+
+ 	function upCoaseguro($data){
+ 		$array = array
+ 		(
+ 			'usuario_anula' => $data['idusuario'],
+ 			'fecha_anula' => $data['hoy'],
+ 			'estado' => 0 
+ 		);
+ 		$this->db->where("idcoaseguro",$data['idcoaseguro']);
+ 		$this->db->update("plan_coaseguro",$array);
+ 	}
+
+ 	function delete_bloqueo($idbloqueo){
+ 		$this->db->where("idbloqueo",$idbloqueo);
+ 		$this->db->delete("plan_detalle_bloqueo");
  	}
 }
 ?>

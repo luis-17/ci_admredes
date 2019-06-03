@@ -294,6 +294,12 @@ $route['save_calificar'] = 'PostVenta_cnt/save_calificar';
 $route['save_calificar_mail'] = 'PostVenta_cnt/save_calificar_mail';
 $route['eventos/(:any)'] = 'Plan_cnt/eventos/$1';
 $route['reg_evento'] = 'Plan_cnt/reg_evento';
+$route['bloqueo/(:any)'] = 'Plan_cnt/bloqueo/$1';
+$route['reg_bloqueo'] = 'Plan_cnt/reg_bloqueo';
+$route['coaseguro/(:any)'] = 'Plan_cnt/coaseguro/$1';
+$route['reg_coaseguro'] = 'Plan_cnt/reg_coaseguro';
+$route['anular_coaseguro/(:any)/(:any)'] = 'Plan_cnt/anular_coaseguro/$1/$2';
+$route['anular_bloqueo/(:any)/(:any)'] = 'Plan_cnt/anular_bloqueo/$1/$2';
 
 $route['consultar_postVenta'] = 'Reportes_cnt/consultar_postVenta';
 $route['consultar_postVenta_buscar'] = 'Reportes_cnt/consultar_postVenta_buscar';
