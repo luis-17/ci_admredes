@@ -268,7 +268,7 @@
 															</div>
 															<div class="form-group col-md-3">
 																<b class="text-primary">Nombre de Plan</b>
-																<select name="planes"" class="form-control" id="planes" required="Seleccione una opción de la lista">
+																<select name="planes" class="form-control" id="planes" required="Seleccione una opción de la lista">
 																	<option value=0>Seleccione</option>
 																	<?php foreach ($planes as $p):
 																		if($idserie==$p->idplan):
@@ -287,9 +287,17 @@
 														</div>
 														<div class="form-row">
 															<input type='text' class='hidden' id='idplan' name='idplan' value=''>
-														  	<div class="form-group col-md-9">
+														  	<div class="form-group col-md-6">
 														    	<b class="text-primary">Descripción</b>
 														    	<input type="text" class="form-control" name="descripcionManual" id="descripcionManual" value="">
+															</div>
+														  	<div class="form-group col-md-3">
+														    	<b class="text-primary">Tipo de Moneda</b>
+														    	<select name="monedaManual" id="monedaManual" class="form-control" required="Seleccione una opción de la lista">
+														    		<option value="0">Seleccione</option>
+														    		<option value="PEN">SOLES</option>
+														    		<option value="USD">DOLARES</option>
+														    	</select>
 															</div>
 															<div class="form-group col-md-3">
 														    	<b class="text-primary">Importe Total</b>
@@ -888,7 +896,10 @@
 			           			fechafin:fechafin,
 			           			numeroSerie:numeroSerie,
 			           			canales:canales,
-			           			concar:concar}, 
+			           			concar:concar},
+			           	beforeSend: function(){
+				            $('#resp400').html("<br><br><img src='<?=base_url()."public/assets/img/loading2.gif"?>'>");
+				        },  
 			           	success: function(data)             
 			           	{
 
@@ -897,7 +908,7 @@
 			       	return false;
 			    });
 
-				$('#buttonExcelCob').click(function(){
+				/*$('#buttonExcelCob').click(function(){
 
 					var fechainicio = $("#fechainicioDeclarado").val();
 			    	var fechafin = $("#fechafinDeclarado").val();
@@ -915,13 +926,48 @@
 			           			numeroSerie:numeroSerie,
 			           			canales:canales,
 			           			concar:concar,
-			           			fechaConcar:fechaConcar}, 
+			           			fechaConcar:fechaConcar},
+			           	beforeSend: function(){
+				            $('#resp400').html("<br><br><img src='<?=base_url()."public/assets/img/loading2.gif"?>'>");
+				        }, 
 			           	success: function(data)             
 			           	{
-
+			           		$("#resp400").html(null);
+			             	$('#resp400').html(data); 
 			           	}
 			       	});
 			       	return false;
+			    });*/
+
+			    $('#buttonExcelCob').click(function(){
+
+					var fechainicio = $("#fechainicioDeclarado").val();
+			    	var fechafin = $("#fechafinDeclarado").val();
+			    	var numeroSerie = $("#numeroSerieDeclarado").val();
+			    	var canales = $("#canalesDeclarado").val();
+			    	var concar = $("#correlativoConcar").val();
+			    	var fechaConcar = $("#fechaConcar").val();
+
+			        $.ajax({
+					    type:'POST',
+					    url:"<?= BASE_URL()?>index.php/ventas_cnt/generarExcelCob",
+					    dataType:'json',
+					    data: {fechainicio:fechainicio,
+			           			fechafin:fechafin,
+			           			numeroSerie:numeroSerie,
+			           			canales:canales,
+			           			concar:concar,
+			           			fechaConcar:fechaConcar}
+					}).done(function(data){
+					    var $a = $("<a>");
+					    $a.attr("href",data.file);
+					    $("body").append($a);
+
+					    $a.attr("download","COBRANZAS-CONCAR.xls");
+
+					    $a[0].click();
+					    $a.remove();
+					});
 			    });
 
 			    $('#buttonEmitir').click(function(){
@@ -941,7 +987,8 @@
 					    },
 					    success: function(data)
 					    {
-			           		
+			           		$("#resp400").html(null);
+			             	$('#resp400').html(data); 
 					    }
 			       	});
 			    	$('#canales').val() == 0;

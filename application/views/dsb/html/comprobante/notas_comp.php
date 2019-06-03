@@ -287,7 +287,7 @@
 																	    	<input type="text" class="form-control" name="nomClienteManual" id="nomClienteManual" value="">
 																		</div>
 
-																		<div class="form-group col-md-4">
+																		<div class="form-group col-md-3">
 																			<b class="text-primary">Nombre de Plan</b>
 																			<select name="planes" id="planes" required="Seleccione una opción de la lista">
 																				<option value=0>Seleccione</option>
@@ -705,6 +705,10 @@
 																		<div class="profile-user-info profile-user-info-striped">
 																			<div  class="profile-info-row">
 																				<div class="profile-info-name"></div>
+																				<div class="profile-info-name"> Correlativo Concar: </div>
+																				<div class="profile-info-name" id="correConcar" name="correConcar">
+																					<input class='form-control' name='correlativoConcar' type='text' value='' id='correlativoConcar'>
+																				</div>
 																				<div class="profile-info-name">
 																					<button type="button" id="buttonExcel" name="buttonExcel" class="btn btn-white btn-info btn-bold btn-xs"> Generar archivo Excel <i class="ace-icon fa fa-file-excel-o bigger-110 icon-only"></i>
 																					</button>
@@ -1107,6 +1111,7 @@
 					var fechainicio = $("#fechainicio").val();
 			    	var fechafin = $("#fechafin").val();
 			    	var canales = $("#canales").val();
+			    	var concar = $("#correlativoConcar").val();
 
 			        $.ajax({                        
 			           	url: "<?= BASE_URL()?>index.php/notas_cnt/generarExcel",   
@@ -1114,7 +1119,8 @@
 			           	dataType: 'json',                                 
 			           	data:  {fechainicio:fechainicio,
 			           			fechafin:fechafin,
-			           			canales:canales}, 
+			           			canales:canales,
+			           			concar:concar}, 
 			           	success: function(data)             
 			           	{
 
