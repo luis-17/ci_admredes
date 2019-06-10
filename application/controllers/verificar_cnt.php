@@ -278,13 +278,16 @@ class verificar_cnt extends CI_Controller {
 
     	if (substr($numSerieUno, 0, 2) == 'B0') {
     		//$numSerieUno = reset($numSerie);
-    		$boletas = $this->comprobante_pago_mdl->getDatosXmlBoletasAnulacion($fecinicio, $fecfin, $numSerieUno);
+    		$boletas = $this->comprobante_pago_mdl->getDatosXmlBoletasAnulacionAgrupadas($fecinicio, $fecfin, $numSerieUno);
 
-	    	foreach ($boletas as $b){
+	    	foreach ($boletas as $ba){
 
-	    		$numeroConCeros = str_pad($b->corre, 5, "0", STR_PAD_LEFT);
-	    		$fechanombre = str_replace ("-" , "", $b->fecha_emision);
-	    		$filename="20600258894-RC-".$fechanombre."-".$b->nume_corre_res;
+	    		$linea=1;
+
+	    		$numeroConCeros = str_pad($ba->correlativo, 5, "0", STR_PAD_LEFT);
+	    		$fechanombre = str_replace ("-" , "", $ba->fecha_emision);
+
+	    		$filename="20600258894-RC-".$fechanombre."-".$ba->nume_corre_res;
 	    		//agregar -'.$b->nume_corre_res.' en ID en caso no funcione el envío.
 	    		$datos = '<?xml version="1.0" encoding="UTF-8"?>
 <SummaryDocuments xmlns="urn:sunat:names:specification:ubl:peru:schema:xsd:SummaryDocuments-1" 
@@ -303,9 +306,9 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	</ext:UBLExtensions>
 <cbc:UBLVersionID>2.0</cbc:UBLVersionID>
 <cbc:CustomizationID>1.1</cbc:CustomizationID>
-<cbc:ID>RC-'.$fechanombre.'</cbc:ID>
-<cbc:ReferenceDate>'.$b->fecha_emision.'</cbc:ReferenceDate>
-<cbc:IssueDate>'.$b->fecha_emision.'</cbc:IssueDate>
+<cbc:ID>RC-'.$fechanombre.'-'.$ba->nume_corre_res.'</cbc:ID>
+<cbc:ReferenceDate>'.$ba->fecha_emision.'</cbc:ReferenceDate>
+<cbc:IssueDate>'.$ba->fecha_emision.'</cbc:IssueDate>
 <cac:AccountingSupplierParty>
 	<cbc:CustomerAssignedAccountID>20600258894</cbc:CustomerAssignedAccountID>
 	<cbc:AdditionalAccountID>6</cbc:AdditionalAccountID>
@@ -314,53 +317,65 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 			<cbc:RegistrationName>HEALTH CARE ADMINISTRATION RED SALUD S.A.C.</cbc:RegistrationName>
 		</cac:PartyLegalEntity>
 	</cac:Party>
-</cac:AccountingSupplierParty>
-<sac:SummaryDocumentsLine>
-	<cbc:LineID>1</cbc:LineID>
-	<cbc:DocumentTypeCode>03</cbc:DocumentTypeCode>
-	<cbc:ID>'.$numSerieUno.'-'.$b->correlativo.'</cbc:ID>
-	<cac:Status>
-		<cbc:ConditionCode>3</cbc:ConditionCode>
-	</cac:Status>
-	<sac:TotalAmount currencyID="PEN">'.$b->total.'</sac:TotalAmount>
-	<sac:BillingPayment>
-		<cbc:PaidAmount currencyID="PEN">'.$b->neto.'</cbc:PaidAmount>
-		<cbc:InstructionID>01</cbc:InstructionID>
-	</sac:BillingPayment>
-	<cac:TaxTotal>
-		<cbc:TaxAmount currencyID="PEN">'.$b->igv.'</cbc:TaxAmount>
-		<cac:TaxSubtotal>
-			<cbc:TaxAmount currencyID="PEN">'.$b->igv.'</cbc:TaxAmount>
-			<cac:TaxCategory>
-				<cac:TaxScheme>
-					<cbc:ID>1000</cbc:ID>
-					<cbc:Name>IGV</cbc:Name>
-					<cbc:TaxTypeCode>VAT</cbc:TaxTypeCode>
-				</cac:TaxScheme>
-			</cac:TaxCategory>
-		</cac:TaxSubtotal>
-	</cac:TaxTotal>
-	<cac:TaxTotal>
-		<cbc:TaxAmount currencyID="PEN">0.00</cbc:TaxAmount>
-		<cac:TaxSubtotal>
-			<cbc:TaxAmount currencyID="PEN">0.00</cbc:TaxAmount>
-			<cac:TaxCategory>
-				<cac:TaxScheme>
-					<cbc:ID>2000</cbc:ID>
-					<cbc:Name>ISC</cbc:Name>
-					<cbc:TaxTypeCode>EXC</cbc:TaxTypeCode>
-				</cac:TaxScheme>
-			</cac:TaxCategory>
-		</cac:TaxSubtotal>
-	</cac:TaxTotal>
-</sac:SummaryDocumentsLine>
-</SummaryDocuments>';
+</cac:AccountingSupplierParty>';
+			$boletas = $this->comprobante_pago_mdl->getDatosXmlBoletasAnulacion($fecinicio, $fecfin, $ba->nume_corre_res, $numSerieUno);
+			foreach ($boletas as $b) {
 
-				$nameDoc='RC-'.$fechanombre.'-'.$b->corre;
-				$filecdr=$b->mesanio.'-cdranulacionesB'.$b->serie;
-				$fileBoleta=$b->mesanio.'-anulacionesB'.$b->serie;
-				$carpetaCdr = 'adjunto/xml/anulacionesB/'.$filecdr;
-		    	$carpetaBoleta = 'adjunto/xml/anulacionesB/'.$fileBoleta;
+				if ($b->tipo_moneda=='PEN') {
+					$moneda = 'PEN';
+				} elseif ($b->tipo_moneda=='USD') {
+					$moneda = 'USD';
+				}
+
+					$datos.='<sac:SummaryDocumentsLine>
+		<cbc:LineID>'.$linea.'</cbc:LineID>
+		<cbc:DocumentTypeCode>03</cbc:DocumentTypeCode>
+		<cbc:ID>'.$numSerieUno.'-'.$b->correlativo.'</cbc:ID>
+		<cac:Status>
+			<cbc:ConditionCode>3</cbc:ConditionCode>
+		</cac:Status>
+		<sac:TotalAmount currencyID="'.$moneda.'">'.$b->total.'</sac:TotalAmount>
+		<sac:BillingPayment>
+			<cbc:PaidAmount currencyID="'.$moneda.'">'.$b->neto.'</cbc:PaidAmount>
+			<cbc:InstructionID>01</cbc:InstructionID>
+		</sac:BillingPayment>
+		<cac:TaxTotal>
+			<cbc:TaxAmount currencyID="'.$moneda.'">'.$b->igv.'</cbc:TaxAmount>
+			<cac:TaxSubtotal>
+				<cbc:TaxAmount currencyID="'.$moneda.'">'.$b->igv.'</cbc:TaxAmount>
+				<cac:TaxCategory>
+					<cac:TaxScheme>
+						<cbc:ID>1000</cbc:ID>
+						<cbc:Name>IGV</cbc:Name>
+						<cbc:TaxTypeCode>VAT</cbc:TaxTypeCode>
+					</cac:TaxScheme>
+				</cac:TaxCategory>
+			</cac:TaxSubtotal>
+		</cac:TaxTotal>
+		<cac:TaxTotal>
+			<cbc:TaxAmount currencyID="'.$moneda.'">0.00</cbc:TaxAmount>
+			<cac:TaxSubtotal>
+				<cbc:TaxAmount currencyID="'.$moneda.'">0.00</cbc:TaxAmount>
+				<cac:TaxCategory>
+					<cac:TaxScheme>
+						<cbc:ID>2000</cbc:ID>
+						<cbc:Name>ISC</cbc:Name>
+						<cbc:TaxTypeCode>EXC</cbc:TaxTypeCode>
+					</cac:TaxScheme>
+				</cac:TaxCategory>
+			</cac:TaxSubtotal>
+		</cac:TaxTotal>
+	</sac:SummaryDocumentsLine>';
+				$linea=$linea+1;
+
+			}
+$datos.='</SummaryDocuments>';
+
+				$nameDoc='RC-'.$fechanombre.'-'.$ba->correlativo;
+				$filecdr=$ba->mesanio.'-cdranulaciones'.$ba->serie;
+				$fileBoleta=$ba->mesanio.'-anulaciones'.$ba->serie;
+				$carpetaCdr = 'adjunto/xml/anulaciones/'.$filecdr;
+		    	$carpetaBoleta = 'adjunto/xml/anulaciones/'.$fileBoleta;
 				if (!file_exists($carpetaCdr)) {
 				    mkdir($carpetaCdr, 0777, true);
 				}
@@ -370,8 +385,8 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 				}
 				$doc = new DOMDocument();
 				$doc->loadxml($datos);
-				$doc->save('adjunto/xml/anulacionesB/'.$fileBoleta.'/'.$filename.'.xml');
-				$xmlPath = 'adjunto/xml/anulacionesB/'.$fileBoleta.'/'.$filename.'.xml';
+				$doc->save('adjunto/xml/anulaciones/'.$fileBoleta.'/'.$filename.'.xml');
+				$xmlPath = 'adjunto/xml/anulaciones/'.$fileBoleta.'/'.$filename.'.xml';
 				$certPath = 'adjunto/firma/C1811152013.pem'; // Convertir pfx to pem 
 				$signer = new SignedXml();
 				$signer->setCertificateFromFile($certPath);
@@ -382,22 +397,17 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 			    $this->load->library('zip');
 
 			    $this->zip->add_data($filename.'.xml', $xmlSigned);
-				$this->zip->archive('adjunto/xml/anulacionesB/'.$fileBoleta.'/'.$filename.'.zip');
+				$this->zip->archive('adjunto/xml/anulaciones/'.$fileBoleta.'/'.$filename.'.zip');
 				$this->zip->clear_data();
-				/*$zipFile = new ZipFile();
-				//$this->load->library('PhpZip/ZipFile');
-			    $zipFile->addFile($filename.'.xml');
-			    $zipFile->saveAsFile('adjunto/xml/boletas/'.$fileBoleta.'/'.$filename.'.zip');
-			    $zipFile->close();*/
 
 				unlink($filename.".xml");
 				unlink($carpetaBoleta.'/'.$filename.".xml");
 
-				//$service = 'adjunto/wsdl/billService.wsdl'; 
-				$service = 'https://e-beta.sunat.gob.pe/ol-ti-itcpfegem-beta/billService?wsdl';
+				$service = 'adjunto/wsdl/billService.wsdl'; 
+				//$service = 'https://e-beta.sunat.gob.pe/ol-ti-itcpfegem-beta/billService?wsdl';
 				
-		    	$headers = new CustomHeaders('20600258894MODDATOS', 'MODDATOS');
-		    	//$headers = new CustomHeaders('20600258894DCACEDA2', 'DCACE716186'); 
+		    	//$headers = new CustomHeaders('20600258894MODDATOS', 'MODDATOS');
+		    	$headers = new CustomHeaders('20600258894DCACEDA2', 'DCACE716186'); 
 			    	
 		    	$client = new SoapClient($service, array(
 		    		'cache_wsdl' => WSDL_CACHE_NONE,
@@ -410,23 +420,23 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 		    	$zipXml = $filename.'.zip'; 
 		    	$params = array( 
 		    		'fileName' => $zipXml, 
-		    		'contentFile' => file_get_contents('adjunto/xml/anulacionesB/'.$fileBoleta.'/'.$zipXml) 
+		    		'contentFile' => file_get_contents('adjunto/xml/anulaciones/'.$fileBoleta.'/'.$zipXml) 
 		    	); 
 
 		    	$client->sendSummary($params);
 		    	$status = $client->__getLastResponse();
 		    	
-		    	$carpeta = 'adjunto/xml/anulacionesB/'.$filecdr;
+		    	$carpeta = 'adjunto/xml/anulaciones/'.$filecdr;
 				if (!file_exists($carpeta)) {
 				    mkdir($carpeta, 0777, true);
 				}
 
 		    	//Descargamos el Archivo Response
-				$archivo = fopen('adjunto/xml/anulacionesB/'.$filecdr.'/'.'C'.$filename.'.xml','w+');
+				$archivo = fopen('adjunto/xml/anulaciones/'.$filecdr.'/'.'C'.$filename.'.xml','w+');
 				fputs($archivo, $status);
 				fclose($archivo);
 				//LEEMOS EL ARCHIVO XML
-				$responsexml = simplexml_load_file('adjunto/xml/anulacionesB/'.$filecdr.'/'.'C'.$filename.'.xml');
+				$responsexml = simplexml_load_file('adjunto/xml/anulaciones/'.$filecdr.'/'.'C'.$filename.'.xml');
 
 				$xml = file_get_contents($carpetaCdr.'/C'.$filename.'.xml');
 				$DOM = new DOMDocument('1.0', 'utf-8');
@@ -440,48 +450,22 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 				$estadoArray = (array)$estado;
 				$contenido = (array)$estadoArray['status'];
 				//print_r($contenido['content']);
-				$archivo = fopen('adjunto/xml/anulacionesB/'.$filecdr.'/'.'R-'.$filename.'.zip','w+');
+				$archivo = fopen('adjunto/xml/anulaciones/'.$filecdr.'/'.'R-'.$filename.'.zip','w+');
 				fputs($archivo,$contenido['content']);
 				fclose($archivo);
 
-				$archivo2 = chmod('adjunto/xml/anulacionesB/'.$filecdr.'/'.'R-'.$filename.'.zip', 0777);
+				$archivo2 = chmod('adjunto/xml/anulaciones/'.$filecdr.'/'.'R-'.$filename.'.zip', 0777);
 
-				unlink('adjunto/xml/anulacionesB/'.$filecdr.'/'.'C'.$filename.'.xml');
+				unlink('adjunto/xml/anulaciones/'.$filecdr.'/'.'C'.$filename.'.xml');
 
-				/*foreach ($responsexml->xpath('//applicationResponse') as $response){ }
-				//AQUI DESCARGAMOS EL ARCHIVO CDR(CONSTANCIA DE RECEPCIÓN)
-				$cdr=base64_decode($response);
-				$archivo = fopen('adjunto/xml/boletas/'.$filecdr.'/'.'R-'.$filename.'.zip','w+');
-				fputs($archivo,$cdr);
-				fclose($archivo);
+				//$this->comprobante_pago_mdl->updateEstadoCobroAnulacion($ba->fecha_emision, $ba->corre, $ba->serie);
 
-				$archivo2 = chmod('adjunto/xml/boletas/'.$filecdr.'/'.'R-'.$filename.'.zip', 0777);
-
-				unlink('adjunto/xml/boletas/'.$filecdr.'/'.'C'.$filename.'.xml');*/
-
-
-				//verificar respuesta SUNAT
-				/*if (file_exists('adjunto/xml/boletas/'.$filecdr.'/'.'R-'.$filename.'.zip')) {
-					$zipFile->extractTo('adjunto/xml/boletas/'.$filecdr.'/'.'R-'.$filename.'.zip');
-					unlink('adjunto/xml/boletas/'.$filecdr.'/'.'R-'.$filename.'.zip');
-				}
-
-				$xml = file_get_contents($carpetaCdr.'/R-'.$filename.'.xml');
-				$DOM = new DOMDocument('1.0', 'utf-8');
-				$DOM->loadXML($xml);
-				$respuesta = $DOM->getElementsByTagName('Description');
-				foreach ($respuesta as $r) {
-					$descripcion = $r->nodeValue;
-				}*/
-				//if ($descripcion == 'La Boleta numero '.$nameDoc.', ha sido aceptada') {
-					$this->comprobante_pago_mdl->updateEstadoCobroAnulacion($b->fecha_emision, $b->corre, $b->serie);
-				//}
 				
 			}
 
     	} elseif (substr($numSerieUno, 0, 2) == 'BC') {
 
-			$notaCredito = $this->comprobante_pago_mdl->getDatosXmlNotasBoletaAnulacion($fecinicio, $fecfin, $numSerieUno);
+			$notaCredito = $this->comprobante_pago_mdl->getDatosXmlBoletasAnulacionAgrupadas($fecinicio, $numSerieUno);
 
 			foreach ($notaCredito as $nc) {
 
@@ -508,9 +492,9 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	</ext:UBLExtensions>
 <cbc:UBLVersionID>2.0</cbc:UBLVersionID>
 <cbc:CustomizationID>1.1</cbc:CustomizationID>
-<cbc:ID>RC-'.$fechanombre.'-'.$nc->nume_corre_res.'</cbc:ID>
-<cbc:ReferenceDate>'.$nc->fecha_emision.'</cbc:ReferenceDate>
-<cbc:IssueDate>'.$nc->fecha_emision.'</cbc:IssueDate>
+<cbc:ID>RC-'.$fechanombre.'-'.$ba->nume_corre_res.'</cbc:ID>
+<cbc:ReferenceDate>'.$ba->fecha_emision.'</cbc:ReferenceDate>
+<cbc:IssueDate>'.$ba->fecha_emision.'</cbc:IssueDate>
 <cac:AccountingSupplierParty>
 	<cbc:CustomerAssignedAccountID>20600258894</cbc:CustomerAssignedAccountID>
 	<cbc:AdditionalAccountID>6</cbc:AdditionalAccountID>
@@ -519,59 +503,60 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 			<cbc:RegistrationName>HEALTH CARE ADMINISTRATION RED SALUD S.A.C.</cbc:RegistrationName>
 		</cac:PartyLegalEntity>
 	</cac:Party>
-</cac:AccountingSupplierParty>
-<sac:SummaryDocumentsLine>
-	<cbc:LineID>1</cbc:LineID>
-	<cbc:DocumentTypeCode>07</cbc:DocumentTypeCode>
-	<cbc:ID>'.$nc->serie.'-'.$nc->correlativo.'</cbc:ID>
-	<cac:BillingReference>
-		<cac:InvoiceDocumentReference>
-			<cbc:ID>'.$nc->serie_doc.'-'.$nc->correlativo_doc.'</cbc:ID>
-			<cbc:DocumentTypeCode>03</cbc:DocumentTypeCode>
-		</cac:InvoiceDocumentReference> 
-	</cac:BillingReference>
-	<cac:Status>
-		<cbc:ConditionCode>3</cbc:ConditionCode>
-	</cac:Status>
-	<sac:TotalAmount currencyID="PEN">'.$nc->total.'</sac:TotalAmount>
-	<sac:BillingPayment>
-		<cbc:PaidAmount currencyID="PEN">'.$nc->neto.'</cbc:PaidAmount>
-		<cbc:InstructionID>01</cbc:InstructionID>
-	</sac:BillingPayment>
-	<cac:TaxTotal>
-		<cbc:TaxAmount currencyID="PEN">'.$nc->igv.'</cbc:TaxAmount>
-		<cac:TaxSubtotal>
-			<cbc:TaxAmount currencyID="PEN">'.$nc->igv.'</cbc:TaxAmount>
-			<cac:TaxCategory>
-				<cac:TaxScheme>
-					<cbc:ID>1000</cbc:ID>
-					<cbc:Name>IGV</cbc:Name>
-					<cbc:TaxTypeCode>VAT</cbc:TaxTypeCode>
-				</cac:TaxScheme>
-			</cac:TaxCategory>
-		</cac:TaxSubtotal>
-	</cac:TaxTotal>
-	<cac:TaxTotal>
-		<cbc:TaxAmount currencyID="PEN">0.00</cbc:TaxAmount>
-		<cac:TaxSubtotal>
-			<cbc:TaxAmount currencyID="PEN">0.00</cbc:TaxAmount>
-			<cac:TaxCategory>
-				<cac:TaxScheme>
-					<cbc:ID>2000</cbc:ID>
-					<cbc:Name>ISC</cbc:Name>
-					<cbc:TaxTypeCode>EXC</cbc:TaxTypeCode>
-				</cac:TaxScheme>
-			</cac:TaxCategory>
-		</cac:TaxSubtotal>
-	</cac:TaxTotal>
-</sac:SummaryDocumentsLine>
-</SummaryDocuments>';
-	/*<cac:BillingReference>
-		<cac:InvoiceDocumentReference>
-			<cbc:ID>'.$nc->serie.'-'.$nc->correlativo.'</cbc:ID>
-			<cbc:DocumentTypeCode>07</cbc:DocumentTypeCode>
-		</cac:InvoiceDocumentReference>
-	</cac:BillingReference>*/
+</cac:AccountingSupplierParty>';
+			$boletas = $this->comprobante_pago_mdl->getDatosXmlBoletasAnulacion($fecinicio, $ba->nume_corre_res, $numSerieUno);
+			foreach ($boletas as $b) {
+
+				if ($b->tipo_moneda=='PEN') {
+					$moneda = 'PEN';
+				} elseif ($b->tipo_moneda=='USD') {
+					$moneda = 'USD';
+				}
+
+					$datos.='<sac:SummaryDocumentsLine>
+		<cbc:LineID>'.$linea.'</cbc:LineID>
+		<cbc:DocumentTypeCode>03</cbc:DocumentTypeCode>
+		<cbc:ID>'.$numSerieUno.'-'.$b->correlativo.'</cbc:ID>
+		<cac:Status>
+			<cbc:ConditionCode>3</cbc:ConditionCode>
+		</cac:Status>
+		<sac:TotalAmount currencyID="'.$moneda.'">'.$b->total.'</sac:TotalAmount>
+		<sac:BillingPayment>
+			<cbc:PaidAmount currencyID="'.$moneda.'">'.$b->neto.'</cbc:PaidAmount>
+			<cbc:InstructionID>01</cbc:InstructionID>
+		</sac:BillingPayment>
+		<cac:TaxTotal>
+			<cbc:TaxAmount currencyID="'.$moneda.'">'.$b->igv.'</cbc:TaxAmount>
+			<cac:TaxSubtotal>
+				<cbc:TaxAmount currencyID="'.$moneda.'">'.$b->igv.'</cbc:TaxAmount>
+				<cac:TaxCategory>
+					<cac:TaxScheme>
+						<cbc:ID>1000</cbc:ID>
+						<cbc:Name>IGV</cbc:Name>
+						<cbc:TaxTypeCode>VAT</cbc:TaxTypeCode>
+					</cac:TaxScheme>
+				</cac:TaxCategory>
+			</cac:TaxSubtotal>
+		</cac:TaxTotal>
+		<cac:TaxTotal>
+			<cbc:TaxAmount currencyID="'.$moneda.'">0.00</cbc:TaxAmount>
+			<cac:TaxSubtotal>
+				<cbc:TaxAmount currencyID="'.$moneda.'">0.00</cbc:TaxAmount>
+				<cac:TaxCategory>
+					<cac:TaxScheme>
+						<cbc:ID>2000</cbc:ID>
+						<cbc:Name>ISC</cbc:Name>
+						<cbc:TaxTypeCode>EXC</cbc:TaxTypeCode>
+					</cac:TaxScheme>
+				</cac:TaxCategory>
+			</cac:TaxSubtotal>
+		</cac:TaxTotal>
+	</sac:SummaryDocumentsLine>';
+				$linea=$linea+1;
+
+			}
+$datos.='</SummaryDocuments>';
+
 
 				$nameDoc='RC-'.$fechanombre.'-'.$nc->correlativo;
 				$filecdr=$nc->mesanio.'-cdrNotaCreditoBoleta'.$nc->serie;
@@ -608,11 +593,11 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 				unlink($filename.".xml");
 				unlink($carpetaNota.'/'.$filename.".xml");
 
-				//$service = 'adjunto/wsdl/billService.wsdl'; 
-				$service = 'https://e-beta.sunat.gob.pe/ol-ti-itcpfegem-beta/billService?wsdl';
+				$service = 'adjunto/wsdl/billService.wsdl'; 
+				//$service = 'https://e-beta.sunat.gob.pe/ol-ti-itcpfegem-beta/billService?wsdl';
 				
-		    	$headers = new CustomHeaders('20600258894MODDATOS', 'MODDATOS');
-		    	//$headers = new CustomHeaders('20600258894DCACEDA2', 'DCACE716186');
+		    	//$headers = new CustomHeaders('20600258894MODDATOS', 'MODDATOS');
+		    	$headers = new CustomHeaders('20600258894DCACEDA2', 'DCACE716186');
 
 		    	$client = new SoapClient($service, array(
 		    		'cache_wsdl' => WSDL_CACHE_NONE,
@@ -665,29 +650,9 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
 				unlink('adjunto/xml/notasdecredito/'.$filecdr.'/'.'C'.$filename.'.xml');
 				
-				
-				//verificar respuesta SUNAT
-				/*if (file_exists($carpetaCdr.'/R-'.$filename.'.zip')) {
-					if ($this->zip->open($carpetaCdr.'/R-'.$filename.'.zip') === TRUE) {
-					    $this->zip->extractTo($carpetaCdr.'/');
-					    $this->zip->close();
-					}
-					unlink($carpetaCdr.'/R-'.$filename.'.zip');
-				}
 
-				$xml = file_get_contents($carpetaCdr.'/R-'.$filename.'.xml');
-				$DOM = new DOMDocument('1.0', 'utf-8');
-				$DOM->loadXML($xml);
-				$respuesta = $DOM->getElementsByTagName('Description');
-				foreach ($respuesta as $r) {
-					$descripcion = $r->nodeValue;
-				}
-				
-				if ($descripcion == 'La '.$tipodocumento.' numero '.$nameDoc.', ha sido aceptada') {*/
-				if (!file_exists('adjunto/xml/notasdecredito/'.$filecdr.'/'.'R-'.$filename.'.zip')) {
-					$this->comprobante_pago_mdl->updateEstadoCobroAnulacion($nc->fecha_emision, $nc->corre, $nc->serie);
-				}
-				//}
+				$this->comprobante_pago_mdl->updateEstadoCobroAnulacion($nc->fecha_emision, $nc->corre, $nc->serie);
+
 			}
 
     	} /*elseif (substr($numSerieUno, 0, 2) == 'F0') {

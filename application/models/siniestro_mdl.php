@@ -482,7 +482,7 @@
 	
 	function getVariable($id){
 
-		$query = $this->db->query("select dp.idplandetalle, nombre_var, simbolo_detalle, valor_detalle, CONCAT('(',LEFT (GROUP_CONCAT(descripcion_prod),40), CASE WHEN CHAR_LENGTH(GROUP_CONCAT(descripcion_prod)) > 40 THEN '...)' ELSE ')' END ) AS detalle, COALESCE (liqdetalleid, 0) AS liqdetalleid, COALESCE (liqdetalle_aprovpago, 0) AS liqdetalle_aprovpago, COALESCE (liqdetalle_monto, 0.00) AS liqdetalle_monto,	COALESCE (liqdetalle_neto, 0.00) AS liqdetalle_neto,	COALESCE (ld.idproveedor, 0) AS idprov,	COALESCE (liqdetalle_numfact, '') AS liqdetalle_numfact, 	liquidacionTotal,	liquidacionTotal_neto,	COALESCE (l.liquidacionId, 0) AS liq_id 
+		$query = $this->db->query("select dp.idplandetalle, dp.idvariableplan, nombre_var, coalesce(pc1.valor,0) as valor1, coalesce(pc2.valor,0) as valor2, coalesce(pc3.valor,0) as valor3, coalesce(pc1.idoperador,0) as cobertura, coalesce(pc2.idoperador,0) as copago, coalesce(pc3.idoperador,0) as hasta, dp.texto_web AS detalle, COALESCE (liqdetalleid, 0) AS liqdetalleid, COALESCE (liqdetalle_aprovpago, 0) AS liqdetalle_aprovpago, COALESCE (liqdetalle_monto, 0.00) AS liqdetalle_monto,	COALESCE (liqdetalle_neto, 0.00) AS liqdetalle_neto,	COALESCE (ld.idproveedor, 0) AS idprov,	COALESCE (liqdetalle_numfact, '') AS liqdetalle_numfact, 	liquidacionTotal,	liquidacionTotal_neto,	COALESCE (l.liquidacionId, 0) AS liq_id 
 			FROM siniestro s
 			JOIN certificado c ON s.idcertificado = c.cert_id
 			JOIN plan_detalle dp ON dp.idplan = c.plan_id
@@ -490,24 +490,24 @@
 			LEFT JOIN producto_detalle pd ON dp.idplandetalle = pd.idplandetalle
 			LEFT JOIN producto p ON p.idproducto = pd.idproducto
 			LEFT JOIN liquidacion l ON l.idsiniestro = s.idsiniestro
-			LEFT JOIN liquidacion_detalle ld ON l.liquidacionId = ld.liquidacionId
-			AND ld.idplandetalle = dp.idplandetalle
+			LEFT JOIN liquidacion_detalle ld ON l.liquidacionId = ld.liquidacionId AND ld.idplandetalle = dp.idplandetalle
+			LEFT JOIN plan_coaseguro pc1 on pc1.idplandetalle=dp.idplandetalle and pc1.idoperador=1 and pc1.estado=1
+			LEFT JOIN plan_coaseguro pc2 on pc2.idplandetalle=dp.idplandetalle and pc2.idoperador=2 and pc2.estado=1
+			LEFT JOIN plan_coaseguro pc3 on pc3.idplandetalle=dp.idplandetalle and pc3.idoperador=3 and pc3.estado=1
 			WHERE
-			s.idsiniestro = $id
-			AND valor_detalle IS NOT NULL
-			AND simbolo_detalle IS NOT NULL
-			AND flg_liquidacion = 'S'
+			s.idsiniestro = $id and dp.estado_pd=1
 			GROUP BY pd.idplandetalle
 
 			UNION 
 
-			SELECT 0 as idplandetalle,'Gastos Aprobados'as nombre_var, 1 as simbolo_detalle, 100 as valor_detalle, '' AS detalle, COALESCE (liqdetalleid, 0) AS liqdetalleid,	COALESCE (liqdetalle_aprovpago, 0) AS liqdetalle_aprovpago,	COALESCE (liqdetalle_monto, 0.00) AS liqdetalle_monto,	COALESCE (liqdetalle_neto, 0.00) AS liqdetalle_neto,	COALESCE (ld.idproveedor, 0) AS idprov,	COALESCE (liqdetalle_numfact, '') AS liqdetalle_numfact,	liquidacionTotal,	liquidacionTotal_neto,	COALESCE (l.liquidacionId, 0) AS liq_id
+			SELECT 0 as idplandetalle, 1000 as idvariableplan, 'Gastos Aprobados'as nombre_var, 100 as valor1, 0 as valor2, 0 as valor3, 1 as cobertura, 0 as copago, 0 as hasta, '' AS detalle, COALESCE (liqdetalleid, 0) AS liqdetalleid,	COALESCE (liqdetalle_aprovpago, 0) AS liqdetalle_aprovpago,	COALESCE (liqdetalle_monto, 0.00) AS liqdetalle_monto,	COALESCE (liqdetalle_neto, 0.00) AS liqdetalle_neto,	COALESCE (ld.idproveedor, 0) AS idprov,	COALESCE (liqdetalle_numfact, '') AS liqdetalle_numfact,	liquidacionTotal,	liquidacionTotal_neto,	COALESCE (l.liquidacionId, 0) AS liq_id
 			FROM siniestro s
 			JOIN certificado c ON s.idcertificado = c.cert_id
 			LEFT JOIN liquidacion l ON l.idsiniestro = s.idsiniestro
 			LEFT JOIN liquidacion_detalle ld ON l.liquidacionId = ld.liquidacionId
 			WHERE
-			s.idsiniestro = $id  and (case when liqdetalleid is not null then ld.idplandetalle=0 else 1=1 end)"); 
+			s.idsiniestro = $id  and (case when liqdetalleid is not null then ld.idplandetalle=0 else 1=1 end)
+			order by idvariableplan"); 
  		return $query->result();
 	}
 

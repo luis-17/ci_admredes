@@ -185,6 +185,11 @@
 	return $proveedores->result();
 	}
 
+	function getServicios(){
+		$query = $this->db->query("select idproveedor, DATE_FORMAT(hora_ini,'%H:%i') as hora_ini, DATE_FORMAT(hora_fin,'%H:%i') as hora_fin, ps.id_servicio, serv_descripcion from proveedor_servicios ps inner join servicios s on s.id_servicio=ps.id_servicio");
+		return $query->result();
+	}
+
 	function getProductos($id){
 		$productos = $this->db->query("select idespecialidad, descripcion_prod from producto pr 
 										inner join producto_detalle prd on pr.idproducto=prd.idproducto

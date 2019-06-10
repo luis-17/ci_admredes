@@ -131,6 +131,7 @@ class Certificadodetalle_cnt extends CI_Controller {
 
 		$proveedores = $this->certificado_mdl->getProveedores();
 		$data['proveedores'] = $proveedores;
+		$data['servicios'] = $this->certificado_mdl->getServicios();
 		$this->load->view('dsb/html/certificado/seleccionar_proveedor.php',$data);
 	}
 	public function reservar_cita($id, $idaseg, $cita, $certase_id, $fin, $idprov)

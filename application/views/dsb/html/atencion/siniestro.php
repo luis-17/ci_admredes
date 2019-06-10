@@ -624,7 +624,7 @@
 											          </td>
 											          <td><div class="input-group">
 											              <span class="input-group-addon">S/.</span>
-											              <input onkeyup="calcular(<?=$cont?>,<?=$v->simbolo_detalle?>,<?=$v->valor_detalle?>)" type="number" id= "monto<?=$cont?>" name= "monto<?=$cont?>" placeholder="0,00" step="0.01" class="txtCal item1 form-control" value="<?=$v->liqdetalle_monto;?>" <?=$estado?> >
+											              <input onkeyup="calcular(<?=$cont?>,<?=$v->valor1?>,<?=$v->valor2?>,<?=$v->valor3?>,<?=$v->cobertura?>,<?=$v->copago?>,<?=$v->hasta?>)" type="number" id= "monto<?=$cont?>" name= "monto<?=$cont?>" placeholder="0,00" step="0.01" class="txtCal item1 form-control" value="<?=$v->liqdetalle_monto;?>" <?=$estado?> >
 											            </div>
 											          </td>          
 											          <td> 										          	          
@@ -655,10 +655,8 @@
 											        	  $liqTotal=$v->liquidacionTotal;
 											        	  $liqNeto=$v->liquidacionTotal_neto;
 											        	  $liq_id=$v->liq_id;
-											        } 											        	
-
+											        } 	
 											        ?>
-
 											        <tr>
 													    <td align="right"><span><b>TOTAL  :</b></span></td>
 													    <td align="right"><b>S/. <span id="total_sum_value"></span></b></td>
@@ -763,30 +761,32 @@
 
 		<script type="text/javascript">
 			
-			function calcular(id,op,value){
+			function calcular(id,val1,val2,val3,cob,cop,hasta){
 				monto_bruto = document.getElementById("monto"+id).value;
 				if(monto_bruto==''){
 					monto_neto='';
 				}else{
-					switch(op){
-						case 1:
-						monto_neto = monto_bruto*(value/100);
-						break;
-						case 2:
-							if(monto_bruto-value<0){
+					monto_neto=monto_bruto;
+					
+					if(cop>0){
+						if(monto_neto-val2<0){
 								monto_neto=0;
 							}else{
-								monto_neto = monto_bruto-value;
-							}						
-						break;
-						case 3:
-							if(monto_bruto<value){
-								monto_neto=monto_bruto;
-							}else{
-								monto_neto = value;
+								monto_neto = monto_neto-val2;
 							}					
-						break;
+					}		
+
+					if(cob>0){
+						monto_neto = monto_neto*(val1/100);
 					}
+
+					if(hasta>0){
+						if(monto_neto<val3){
+								monto_neto=monto_neto;
+							}else{
+								monto_neto = val3;
+							}	
+					}									
 
 					monto_neto = Math.round(monto_neto*100)/100;
 				}

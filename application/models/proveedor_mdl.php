@@ -237,5 +237,104 @@
 		$query = $this->db->get('forma_pago');
 		return $query->result();
 	}
+
+	function getServicios(){
+		$query = $this->db->get('servicios');
+		return $query->result();
+	}
+
+	function getServicio($id){
+		$query = $this->db->query("select * from servicios where id_servicio=$id");
+		return $query->row_array();
+	}
+
+	function inServicio($data){
+		$array = array('serv_descripcion' => $data['descripcion'] );
+		$this->db->insert('servicios',$array);
+	}
+
+	function upServicio($data){
+		$array = array('serv_descripcion' => $data['descripcion'] );
+		$this->db->where('id_servicio',$data['id_servicio']);
+		$this->db->update('servicios',$array);
+	}
+
+	function getServiciosProveedor($id){
+		$query = $this->db->query("select * from servicios s inner join proveedor_servicios ps on s.id_servicio=ps.id_servicio where ps.idproveedor=$id");
+		return $query->result();
+	}
+
+	function inServicioProveedor($data){
+		$array = array
+		(
+			'idproveedor' => $data['idproveedor'],
+			'id_servicio' => $data['id_servicio'],
+			'hora_ini' => $data['ini'],
+			'hora_fin' => $data['fin']
+ 		);
+ 		$this->db->insert('proveedor_servicios',$array);
+	}
+
+	function eliminar_servicio($id){
+		$this->db->where('idproveedor_servicio',$id);
+		$this->db->delete('proveedor_servicios');
+	}
+
+	function getCapacitaciones($data){
+		$query = $this->db->query("select idcapacitacion, DATE_FORMAT(fecha_programada,'%d/%m/%y') as fecha_programada, DATE_FORMAT(hora_programada,'%H:%m')as hora_programada, nombre_comercial_pr, username, pc.estado
+			from proveedor_capacitacion pc 
+			inner join proveedor p on pc.idproveedor=p.idproveedor
+			inner join usuario u on u.idusuario=pc.idusuario_asignado
+			where fecha_programada>='".$data['fecinicio']."' and fecha_programada<='".$data['fecfin']."'");
+		return $query->result();
+	}
+
+	function getProveedoresActivos(){
+		$query = $this->db->query("select idproveedor, nombre_comercial_pr from proveedor where estado_pr=1");
+		return $query->result();
+	}
+
+	function getUsuarios(){
+		$query = $this->db->query("select u.idusuario, concat(nombres_col,' ',ap_paterno_col) as colaborador from usuario u inner join colaborador c on u.idusuario=c.idusuario where idtipousuario=5 and estado_us=1");
+		return $query->result();
+	}
+
+	function inCapacitacion($data){
+		$array = array
+		(
+			'idproveedor' => $data['idproveedor'],
+			'idusuario_registra' => $data['idusuario_registra'],
+			'fecha_registra' => $data['fecha_registra'],
+			'idusuario_asignado' => $data['idusuario_asignado'],
+			'fecha_programada' => $data['fecha_programada'],
+			'hora_programada' => $data['hora_programada'],
+			'personal_coordino' => $data['coordinado']
+ 		);
+ 		$this->db->insert("proveedor_capacitacion", $array);
+	}
+
+	function upCapacitacion($data){
+		$array = array
+		(
+			'idproveedor' => $data['idproveedor'],
+			'idusuario_asignado' => $data['idusuario_asignado'],
+			'fecha_programada' => $data['fecha_programada'],
+			'hora_programada' => $data['hora_programada'],
+			'personal_coordino' => $data['coordinado']
+ 		);
+ 		$this->db->where("idcapacitacion",$data['idcapacitacion']);
+ 		$this->db->update("proveedor_capacitacion", $array);
+	}
+
+	function getCapacitacion($id){
+		$query = $this->db->query("select pc.*, nombre_comercial_pr, concat(nombres_col,' ',ap_paterno_col) as colaborador, date_format(pc.fecha_programada,'%d/%m/%Y') as fecha from proveedor_capacitacion pc inner join proveedor p on p.idproveedor=pc.idproveedor inner join colaborador c on c.idusuario=pc.idusuario_asignado where idcapacitacion=$id");
+		return $query->row_array();
+	}
+
+	function save_Cap($data){
+		$array = array('comentario' => $data['comentario'], 'estado' => $data['estado']);
+		$this->db->where('idcapacitacion',$data['idcapacitacion']);
+		$this->db->update('proveedor_capacitacion',$array);
+	}
 }
 ?>

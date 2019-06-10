@@ -127,7 +127,31 @@
 								</small>
 							</h1>
 						</div><!-- /.page-header -->
+						<div class="row">
+							<div align="center">								
+								<div class="col-xs-9 col-sm-12">
+										<div class="alert alert-info">
 
+											<form name="form" id="form" method="post" action="<?=base_url()?>index.php/consultar_atenciones_buscar2" class="form-horizontal">
+												<div class="profile-info-name"> Inicio: </div>
+												<div class="profile-info-name">
+													<input class="form-control input-mask-date" type="date" id="fechainicio" name="fechainicio" required="Seleccione una fecha de inicio" value="<?=$fecinicio;?>" >
+												</div>
+												<div class="profile-info-name"> Fin: </div>
+												<div class="profile-info-name">
+													<input class="form-control input-mask-date" type="date" id="fechafin" name="fechafin" required="Seleccione una fecha de fin" value="<?=$fecfin;?>">														
+												</div>
+												<div  class="profile-info-name">
+													<button type="submit" class="btn btn-info btn-xs" name="accion" value="buscar">Buscar 
+														<i class="ace-icon glyphicon glyphicon-search bigger-110 icon-only"></i>
+													</button>
+												</div>
+											</form>	
+										</div>
+								</div>
+							</div>
+						</div>
+						<br>
 						<div class="row">
 							<div class="col-xs-12">
 								<!-- PAGE CONTENT BEGINS -->
@@ -140,12 +164,12 @@
 											</a>
 										</li>
 
-										<li>
+										<!-- <li>
 											<a data-toggle="tab" href="#faq-tab-2">
 												Pre-Órdenes
 											</a>
 										</li>
-
+ -->
 										<li>
 											<a data-toggle="tab" href="#faq-tab-3">
 												Nueva Orden
@@ -201,27 +225,27 @@
 																	<div class="hidden-sm hidden-xs btn-group">
 																		<div title="Ver Detalle" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
 																			&nbsp;
-																			<a href="<?=base_url()?>index.php/siniestro/<?=$o->idsiniestro?>" title="Detalle Siniestro"><i class="ace-icon fa fa-external-link bigger-120"></i></a>
+																			<a href="<?=base_url()?>index.php/siniestro/<?=$o->idsiniestro?>" title="Detalle Siniestro"><i class="ace-icon fa fa-external-link bigger-120 blue"></i></a>
 																		</div>
 																		<?php switch ($o->activacion){
 																			case 'activar': ?>
 																				<div title="Reactivar Atención" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
 																						&nbsp;
-																						<a onclick="activar(<?=$o->idsiniestro?>,'<?=$o->num_orden_atencion?>')" title="Reactivar Atención"><i class="ace-icon fa fa-unlock bigger-120"></i></a>
+																						<a onclick="activar(<?=$o->idsiniestro?>,'<?=$o->num_orden_atencion?>')" title="Reactivar Atención"><i class="ace-icon fa fa-unlock bigger-120 blue"></i></a>
 																					</div>
 																			<?php break;
 
 																			case 'restablecer': ?>
 																			<div title="Restablecer Atención" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
 																						&nbsp;
-																						<a onclick="restablecer(<?=$o->idsiniestro?>,'<?=$o->num_orden_atencion?>')" title="Restablecer Atención"><i class="ace-icon fa fa-lock bigger-120"></i></a>
+																						<a onclick="restablecer(<?=$o->idsiniestro?>,'<?=$o->num_orden_atencion?>')" title="Restablecer Atención"><i class="ace-icon fa fa-lock bigger-120 blue"></i></a>
 																					</div>
 																				<?php break;
 																			} ?>
 																		<?php if($o->estado_siniestro<>0){ ?>
 																		<div title="Anular Siniestro" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
 																			&nbsp;<a onclick="elegir(<?=$o->idsiniestro?>,'<?=$o->num_orden_atencion?>');">
-																				<i class="ace-icon glyphicon glyphicon-trash"></i>
+																				<i class="ace-icon glyphicon glyphicon-trash blue"></i>
 																			</a>
 																		</div>
 																		<?php } ?>																		
@@ -229,7 +253,7 @@
 
 																	<div class="hidden-md hidden-lg">
 																		<div class="inline pos-rel">
-																			<button class="btn btn-info btn-primary dropdown-toggle" data-toggle="dropdown" data-position="auto">
+																			<button class="btn btn-info dropdown-toggle" data-toggle="dropdown" data-position="auto">
 																				<i class="ace-icon fa fa-cog icon-only bigger-110"></i>
 																			</button>
 
@@ -237,7 +261,7 @@
 																				<li>
 																					<div title="Ver Detalle" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
 																						&nbsp;
-																						<a href="<?=base_url()?>index.php/siniestro/<?=$o->idsiniestro?>" title="Detalle Siniestro"><i class="ace-icon fa fa-external-link bigger-120"></i></a>
+																						<a href="<?=base_url()?>index.php/siniestro/<?=$o->idsiniestro?>" title="Detalle Siniestro"><i class="ace-icon fa fa-external-link bigger-120 blue"></i></a>
 																								</div>
 																				</li>
 																				<?php switch ($o->activacion){
@@ -245,7 +269,7 @@
 																					<li>
 																						<div title="Reactivar Atención" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
 																							&nbsp;
-																							<a onclick="activar(<?=$o->idsiniestro?>,'<?=$o->num_orden_atencion?>')" title="Reactivar Atención"><i class="ace-icon fa fa-unlock bigger-120"></i></a>
+																							<a onclick="activar(<?=$o->idsiniestro?>,'<?=$o->num_orden_atencion?>')" title="Reactivar Atención"><i class="ace-icon fa fa-unlock bigger-120 blue"></i></a>
 																						</div>
 																					</li>
 																				<?php break;
@@ -254,7 +278,7 @@
 																				<li>
 																					<div title="Restablecer Atención" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
 																							&nbsp;
-																							<a onclick="restablecer(<?=$o->idsiniestro?>,'<?=$o->num_orden_atencion?>')" title="Restablecer Atención"><i class="ace-icon fa fa-lock bigger-120"></i></a>
+																							<a onclick="restablecer(<?=$o->idsiniestro?>,'<?=$o->num_orden_atencion?>')" title="Restablecer Atención"><i class="ace-icon fa fa-lock bigger-120 blue"></i></a>
 																						</div>
 																				</li>
 																					<?php break;
@@ -263,7 +287,7 @@
 																				<li>
 																					<div title="Anular Siniestro" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
 																						&nbsp;<a href="<?=base_url()?>index.php/anular_siniestro/<?=$o->idsiniestro?>/OA<?=$o->num_orden_atencion?>">
-																							<i class="ace-icon glyphicon glyphicon-trash"></i>
+																							<i class="ace-icon glyphicon glyphicon-trash blue"></i>
 																						</a>
 																					</div>	
 																				</li>
@@ -292,8 +316,7 @@
 
 										</div>
 
-										<div id="faq-tab-2" class="tab-pane fade">
-											<!-- star table -->		
+										<!-- <div id="faq-tab-2" class="tab-pane fade">	
 												<div class="col-xs-12">
 													<table id="simple-table" class="table table-striped table-bordered table-hover">
 														<thead>
@@ -350,8 +373,7 @@
 														</tbody>
 													</table>
 												</div>
-												<!-- end table -->
-										</div>
+										</div> -->
 
 										<div id="faq-tab-3" class="tab-pane fade">
 											<!-- star table -->

@@ -42,6 +42,16 @@ class Atenciones_cnt extends CI_Controller {
 			$user = $this->session->userdata('user');
 			extract($user);
 
+			$month = date('m');
+	      	$year = date('Y');
+	      	$day = date("d", mktime(0,0,0, $month+1, 0, $year));
+	      	$fecha = date('Y-m-d');
+			$nuevafecha = strtotime ( '-3 month' , strtotime ( $fecha ) ) ;
+			$month2 = date ( 'm' , $nuevafecha );
+
+			$data['fecinicio'] = date('Y-m-d', mktime(0,0,0, $month2, 1, $year));
+			$data['fecfin'] = date('Y-m-d', mktime(0,0,0, $month, $day, $year));
+
 			$menuLista = $this->menu_mdl->getMenu($idusuario);
 			$data['menu1'] = $menuLista;
 
@@ -49,7 +59,7 @@ class Atenciones_cnt extends CI_Controller {
 			$submenuLista = $this->menu_mdl->getSubMenu($idusuario);
 			$data['menu2'] = $submenuLista;	
 
-			$ordenes = $this->atencion_mdl->getAtenciones();
+			$ordenes = $this->atencion_mdl->getAtenciones($data);
 			$data['ordenes'] = $ordenes;
 
 			$preorden = $this->atencion_mdl->getPreOrden();
@@ -62,6 +72,7 @@ class Atenciones_cnt extends CI_Controller {
 	        // datos para combo especialidad		
 			$data['proveedor'] = $this->atencion_mdl->getProveedor();
 
+
 			$this->load->view('dsb/html/atencion/atenciones.php',$data);
 		}
 		else{
@@ -69,6 +80,48 @@ class Atenciones_cnt extends CI_Controller {
 		}	
 	}
 
+	public function consultar_atenciones_buscar(){
+
+		//load session library
+		$this->load->library('session');
+
+		//restrict users to go to home if not logged in
+		if($this->session->userdata('user')){
+			//$this->load->view('home');
+
+			$user = $this->session->userdata('user');
+			extract($user);
+
+			$data['fecinicio'] = $_POST['fechainicio'];
+			$data['fecfin'] = $_POST['fechafin'];
+
+			$menuLista = $this->menu_mdl->getMenu($idusuario);
+			$data['menu1'] = $menuLista;
+
+
+			$submenuLista = $this->menu_mdl->getSubMenu($idusuario);
+			$data['menu2'] = $submenuLista;	
+
+			$ordenes = $this->atencion_mdl->getAtenciones($data);
+			$data['ordenes'] = $ordenes;
+
+			$preorden = $this->atencion_mdl->getPreOrden();
+			$data['preorden'] = $preorden;
+
+			// datos para combo especialidad
+			$this->load->model('siniestro_mdl');        
+	        $data['especialidad'] = $this->siniestro_mdl->getEspecialidad();
+
+	        // datos para combo especialidad		
+			$data['proveedor'] = $this->atencion_mdl->getProveedor();
+
+
+			$this->load->view('dsb/html/atencion/atenciones.php',$data);
+		}
+		else{
+			redirect('/');
+		}			
+	}
 
 	public function atenciones($aseg_id)
 	{

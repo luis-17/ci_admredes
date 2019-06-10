@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html lang="en">
 	<head>
 		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
@@ -20,7 +20,13 @@
 
 		<!-- ace styles -->
 		<link rel="stylesheet" href="<?=  base_url()?>public/assets/css/ace.css" class="ace-main-stylesheet" id="main-ace-style" />
-		<!--<script type="text/javascript" src="<?=  base_url()?>public/fancybox/lib/jquery.mousewheel-3.0.6.pack.js"></script>-->
+
+		<!-- jQuery library is required, see https://jquery.com/ -->
+		<script type="text/javascript" src="<?=base_url()?>public/assets/js/jquery/jquery.js"></script>
+	
+		
+
+		<script type="text/javascript" src="<?=  base_url()?>public/fancybox/lib/jquery.mousewheel-3.0.6.pack.js"></script>
 		<!-- FancyBox -->
 		<!-- Add jQuery library -->
 		<script type="text/javascript" src="https://code.jquery.com/jquery-latest.min.js"></script>
@@ -51,12 +57,6 @@
 
 		<!-- HTML5shiv and Respond.js for IE8 to support HTML5 elements and media queries -->
 
-
-			<!-- para paginacion -->
-		<script src="<?=base_url()?>public/pagination/jquery.dataTables.min.css"></script>
-		<script src="<?=base_url()?>public/pagination/jquery-1.12.4.js"></script>
-		<script src="<?=base_url()?>public/pagination/jquery.dataTables.min.js"></script>
-		<script src="<?=base_url()?>public/pagination/dataTables.bootstrap.min.js"></script>
 	</head>
 
 	<body class="no-skin">
@@ -87,153 +87,107 @@
 								<i class="ace-icon fa fa-home home-icon"></i>
 								<a href="<?=base_url()?>">Inicio</a>
 							</li>
-							<li class="active">Proveedores</li>
+							<li><a href="<?=base_url()?>index.php">Proveedor</a></li>
+							<li><a href="<?=base_url()?>index.php/capacitaciones">Capacitaciones</a></li>
+							<li class="active"><?=$accion?></li>
 						</ul><!-- /.breadcrumb -->
 
 						<!-- /section:basics/content.searchbox -->
 					</div>
-
+					
 					<!-- /section:basics/content.breadcrumbs -->
 					<div class="page-content">
-						<!-- /section:settings.box -->
 						<div class="page-header">
 							<h1>
-								Consolidado de Proveedores
-								<small>
-									<i class="ace-icon fa fa-angle-double-right"></i>
-								</small>
+							<?=$accion?>						
 							</h1>
-						</div><!-- /.page-header -->
-
+						</div>
 						<div class="row">
 							<div class="col-xs-12">
-								<div class="widget-toolbar no-border invoice-info">
-									<a href="<?=base_url()?>index.php/nuevo_proveedor"><button class="btn btn-white btn-info">
-										Nuevo Proveedor
-									</button></a>
-								</div>
-								<br/>
-								<br/>
-							 <div>
-							 <?php if(!empty($proveedores)){ ?>
-								<table id="example" class="table table-striped table-bordered table-hover">
-									<thead>
-										<tr>
-											<th>ID</th>
-											<th>DNI/RUC</th>
-											<th>Razón Social</th>
-											<th>Nombre Comercial</th>
-											<th>Dirección</th>
-											<th>Ubigeo</th>
-											<th>Estado</th>
-											<th></th>
-										</tr>
-									</thead>
-										
-									<tbody>
-									<?php foreach($proveedores as $pr){?>
-										<tr>
-											<td><?=$pr->idproveedor;?></td>
-											<td><?=$pr->numero_documento_pr?></td>
-											<td><?=$pr->razon_social_pr?></td>
-											<td><?=$pr->nombre_comercial_pr?></td>
-											<td><?=$pr->direccion_pr?></td>
-											<td><?php echo ''.$pr->dep.'-'.$pr->prov.'-'.$pr->dist; ?></td>
-											<td><?php if($pr->estado_pr==1){
-												echo '<a href="'.base_url().'index.php/inhabilitar_proveedor/'.$pr->idproveedor.'"><span class="label label-info label-white middle">Activo</span></a>';
-														}else{
-															echo '<a href="'.base_url().'index.php/habilitar_proveedor/'.$pr->idproveedor.'"><span class="label label-danger label-white middle">Inactivo</span></a>';
-															}?></td>
-											<td style="width: 5%;">
-												<div class="hidden-sm hidden-xs btn-group">
-													<div title="Agregar Contacto" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
-														<a class="boton fancybox" href="<?=base_url()?>index.php/proveedor_contactos/<?=$pr->idproveedor?>" data-fancybox-width="1050" data-fancybox-height="690">
-															<i class="ace-icon glyphicon glyphicon-user blue"></i>
-														</a>
-													</div>
-													<div title="Agregar Servicios" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
-														&nbsp;<a class="boton fancybox" href="<?=base_url()?>index.php/proveedor_servicios/<?=$pr->idproveedor?>" data-fancybox-width="1050" data-fancybox-height="690">
-															<i class="ace-icon glyphicon glyphicon-list bigger-120 blue"></i>
-														</a>
-													</div>
-													<div title="Editar Proveedor" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
-														&nbsp;<a href="<?=base_url()?>index.php/proveedor_editar/<?=$pr->idproveedor?>">
-															<i class="ace-icon fa fa-pencil bigger-120 blue"></i>
-														</a>
-													</div>
-												</div>
-
-													<div class="hidden-md hidden-lg">
-														<div class="inline pos-rel">
-															<button class="btn btn-minier btn-info dropdown-toggle" data-toggle="dropdown" data-position="auto">
-																<i class="ace-icon fa fa-cog icon-only bigger-110"></i>
-															</button>
-
-															<ul class="dropdown-menu dropdown-only-icon dropdown-yellow dropdown-menu-right dropdown-caret dropdown-close">
-																	<li>
-																		<div title="Agregar Contacto" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
-																			<a class="boton fancybox" href="<?=base_url()?>index.php/proveedor_contactos/<?=$pr->idproveedor?>" data-fancybox-width="1050" data-fancybox-height="690">
-																				<i class="ace-icon glyphicon glyphicon-user blue"></i>
-																			</a>
-																		</div>
-																	</li>
-																	<li>																		
-																		<div title="Agregar Servicios" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
-																			&nbsp;<a class="boton fancybox" href="<?=base_url()?>index.php/proveedor_servicios/<?=$pr->idproveedor?>" data-fancybox-width="1050" data-fancybox-height="690">
-																				<i class="ace-icon glyphicon glyphicon-list bigger-120 blue"></i>
-																			</a>
-																		</div>
-																	</li>
-																	<li>
-																		<div title="Editar Proveedor" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
-																			&nbsp;<a href="<?=base_url()?>index.php/proveedor_editar/<?=$pr->idproveedor?>">
-																				<i class="ace-icon fa fa-pencil bigger-120 blue"></i>
-																			</a>
-																		</div>
-																	</li>
-																</ul>
-															</div>
-														</div>
-													</td>		
-											</tr>	
-											<?php } ?>								
-									</tbody>									
-								</table>
-								<?php } ?>
-							</div>
-									<script>			
-										//para paginacion
-										$(document).ready(function() {
-										$('#example').DataTable( {
-										"pagingType": "full_numbers"
-										} );
-									} );
-									</script>	
+							
 								<!-- PAGE CONTENT BEGINS -->
-								<div class="tabbable" id='tabbable'></div>
-								 <div align="right" id="pagination_link"></div>
-								<!-- PAGE CONTENT ENDS -->
+								<form class="form-horizontal" role="form" method="post" action="<?=base_url()?>index.php/capacitacion_guardar">
+									<input type="hidden" id="idcapacitacion" name="idcapacitacion" value="<?=$idcapacitacion;?>" />
+									<div class="form-group">
+										<label class="col-sm-3 control-label no-padding-right" for="form-field-1">Centro Médico: </label>
+
+										<div class="col-sm-9">
+											<select id="idproveedor" name="idproveedor" value="" class="col-xs-10 col-sm-5" required="Seleccionar una opción de la lista">
+												<option value="">Seleccionar</option>	
+												<?php foreach ($proveedores as $p) { ?>
+													<option value="<?=$p->idproveedor?>" <?php if($idproveedor==$p->idproveedor){ echo "selected"; } ?>><?=$p->nombre_comercial_pr?></option>
+												<?php } ?>
+											</select>
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label class="col-sm-3 control-label no-padding-right" for="form-field-1">Usuario Asignado: </label>
+
+										<div class="col-sm-9">
+											<select id="idusuario_asignado" name="idusuario_asignado" value="<?=$idusuario_asignado?>" class="col-xs-10 col-sm-5" required="Seleccionar una opción de la lista">
+												<option value="">Seleccionar</option>	
+												<?php foreach ($usuarios as $u) { ?>
+													<option value="<?=$u->idusuario?>" <?php if($u->idusuario==$idusuario_asignado){echo "selected";} ?>><?=$u->colaborador?></option>
+												<?php } ?>
+											</select>
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label class="col-sm-3 control-label no-padding-right" for="form-field-1">Fecha: </label>
+
+										<div class="col-sm-9">
+											<input type="date" id="fecha" name="fecha" class="col-xs-10 col-sm-5" value="<?=$fecha?>" required>
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label class="col-sm-3 control-label no-padding-right" for="form-field-1">Hora: </label>
+
+										<div class="col-sm-9">
+											<input type="time" id="hora" name="hora" class="col-xs-10 col-sm-2" value="<?=$hora?>" required>
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label class="col-sm-3 control-label no-padding-right" for="form-field-1">Coordinado con: </label>
+
+										<div class="col-sm-9">
+											<input type="text" id="coordinado" name="coordinado" class="col-xs-10 col-sm-5" value="<?=$coordinado?>" required>
+										</div>
+									</div>
+									
+									<div class="clearfix form-actions">
+										<div class="col-md-offset-3 col-md-9">
+											<button class="btn btn-info" type="submit">
+												<i class="ace-icon fa fa-check bigger-110"></i>
+												Guardar
+											</button>
+										</div>
+									</div>
+								</form>
+							
 							</div><!-- /.col -->
-						</div><!-- /.row -->
-					</div><!-- /.page-content -->
-				</div>
-			</div><!-- /.main-content -->
-
-			<div class="footer">
-				<div class="footer-inner">
-					<!-- #section:basics/footer -->
-					<div class="footer-content">
-						<span class="bigger-120">
-							<span class="blue bolder">Red Salud</span>
-							Application &copy; 2018
-						</span>
-
-						&nbsp; &nbsp;
+						</div>
 					</div>
+				</div><!-- /.main-content -->
+				<br/>
 
-					<!-- /section:basics/footer -->
+				<div class="footer">
+					<div class="footer-inner">
+						<!-- #section:basics/footer -->
+						<div class="footer-content">
+							<span class="bigger-120">
+								<span class="blue bolder">Red Salud</span>
+								Application &copy; 2018
+							</span>                                                              
+							&nbsp; &nbsp;
+						</div>
+
+						<!-- /section:basics/footer -->
+					</div>
 				</div>
-			</div>
 
 			<a href="#" id="btn-scroll-up" class="btn-scroll-up btn btn-sm btn-inverse">
 				<i class="ace-icon fa fa-angle-double-up icon-only bigger-110"></i>
@@ -241,8 +195,6 @@
 		</div><!-- /.main-container -->
 
 		<!-- basic scripts -->
-
-		<!-- fin scripts paginacion -->
 
 		<!--[if !IE]> -->
 		<script type="text/javascript">

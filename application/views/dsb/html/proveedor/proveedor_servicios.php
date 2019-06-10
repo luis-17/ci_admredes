@@ -1,8 +1,3 @@
-<?php
-	$user = $this->session->userdata('user');
-	extract($user);
-	date_default_timezone_set('America/Lima');
-?>
 <html lang="en"><head>
 		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 		<meta charset="utf-8">
@@ -43,9 +38,7 @@
 		<script src="../assets/js/html5shiv.js"></script>
 		<script src="../assets/js/respond.js"></script>
 		<![endif]-->
-
-		<!-- HTML5shiv and Respond.js for IE8 to support HTML5 elements and media queries -->
-		<!-- para paginacion -->
+			<!-- para paginacion -->
 		<script src="<?=base_url()?>public/pagination/jquery.dataTables.min.css"></script>
 		<script src="<?=base_url()?>public/pagination/jquery-1.12.4.js"></script>
 		<script src="<?=base_url()?>public/pagination/jquery.dataTables.min.js"></script>
@@ -54,70 +47,135 @@
 
 	<body style="">	
 			<!-- /section:basics/sidebar -->
-			<div class="page-content">
+			<div class="main-content">
+				<div class="main-content-inner">
+					<!-- #section:basics/content.breadcrumbs -->
+					
+					<!-- /section:basics/content.breadcrumbs -->
+					<div class="page-content">
 						<div class="page-header">
-							<h1>
-							Red Médica
+							<h1>	
+							Servicios por Proveedor					
 							</h1>
 						</div>
+
+						
 						<div class="row">
 							<div class="col-xs-12">
-								<div class="alert alert-info">
-									En el distrito / Ciudad de <b>(Nombre del distrito o ciudad)</b> contamos con las siguientes clínicas: <b>(menciona establecimientos de salud)</b>. ¿En cuál de ellas le gustaría reservar su cita?
-								</div>
-								<div class="alert alert-danger">
-									Respuesta del Afiliado. Si el afiliado menciona que tiene una clínica de su preferencia, validar la red.
-								</div>	
-								<br>
 								<!-- PAGE CONTENT BEGINS -->
-								<table id="example" style="font-size: 12px;" class="table table-striped table-bordered table-hover">
-									<thead>
-										<th>Centro Médico</th>
-										<th>Departamento</th>
-										<th>Provincia</th>
-										<th>Distrito</th>
-										<th>Dirección</th>
-										<th>Servicios</th>
-										<th></th>
-									</thead>
-									<tbody>
-										<?php foreach ($proveedores as $p) {
-											$idproveedor= $p->idproveedor;?>
-										<tr>
-											<td><?=$p->nombre_comercial_pr?></td>
-											<td><?=$p->dep?></td>
-											<td><?=$p->prov?></td>
-											<td><?=$p->dist?></td>
-											<td><?=$p->direccion_pr?></td>
-											<td><?php foreach($servicios as $s){
-												if($idproveedor==$s->idproveedor){
-													echo '<img title="'.$s->serv_descripcion.': '.$s->hora_ini.' - '.$s->hora_fin.'" style="height: 30px;" src="https://www.red-salud.com/rsadmin/iconos/servicios/'.$s->id_servicio.'.png">&nbsp;';
-												}
-											}?></td>
-											<td>
-												<div title="Seleccionar Proveedor" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
-													&nbsp;<a class="boton fancybox" href="<?=  base_url()?>index.php/reservar_cita/<?=$cert_id?>/<?=$aseg_id?>/0/<?=$certase_id?>/<?=$max?>/<?=$p->idproveedor?>" data-fancybox-width="950" data-fancybox-height="690">
-														<i class="ace-icon fa fa-hand-o-right icon-animated-hand-pointer blue bigger-120"></i>
-													</a>
+								<form class="form-horizontal" id="form" name="form" role="form" method="post" action="<?=base_url()?>index.php/guardar_servicio">
+
+									<input type="hidden" name="idproveedor" id="idproveedor" value="<?=$idproveedor?>">
+
+									<div class="form-group">
+										<label class="control-label col-xs-12 col-sm-3 no-padding-right" for="name" for="form-field-1">Servicio: </label>
+
+										<div class="col-xs-12 col-sm-9">
+											<select required="true" name="id_servicio" id="id_servicio">
+												<option value="">Seleccionar</option>
+												<?php foreach($servicios as $s){?>
+													<option value="<?=$s->id_servicio?>"><?=$s->serv_descripcion?></option>
+												<?php } ?>
+											</select>
+										</div>
+									</div>
+									
+									<div class="form-group">
+										<label class="control-label col-xs-12 col-sm-3 no-padding-right" for="name" for="form-field-1">Hora Inicio: </label>
+
+										<div class="col-xs-12 col-sm-9">
+											<input class="col-sm-2 control-label no-padding-right" type="time" name="ini" id="ini" value="08:00:00" required="" >&nbsp;&nbsp;<label style="color: red; font-size: 11;"> *Formato 24 horas</label>
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label class="control-label col-xs-12 col-sm-3 no-padding-right" for="form-field-1">Hora Fin: </label>
+
+										<div class="col-xs-12 col-sm-9">
+											<input  class="col-sm-2 control-label no-padding-right" type="time" name="fin" id="fin" value="08:00:00" required="true">&nbsp;&nbsp;<label style="color: red; font-size: 11;"> *Formato 24 horas</label>
+										</div>
+									</div>		
+
+									<div class="form-group">
+										<div class="col-md-offset-3 col-md-9" align="center">
+											<button class="btn btn-info" type="submit">
+												<i class="ace-icon fa fa-check bigger-110"></i>
+												Guardar
+											</button>
+										</div>
+									</div>
+								</form>
+
+							<div class="tabbable">
+									<!-- #section:pages/faq -->
+									<div class="col-xs-12">
+												<div>
+													<table id="example" class="table table-striped table-bordered table-hover">
+														<thead  style="font-size: 12px;">
+															<tr>
+																<th width="35"></th>
+																<th>Servicio</th>
+																<th>Hora Inicio</th>
+																<th>Hora Fin</th>
+																<th></th>
+															</tr>
+														</thead>
+
+														<?php foreach ($servicios_proveedor as $sp){?>
+														<tbody  style="font-size: 12px;">														
+															<tr>
+																<td width="35"><img style="height: 30px;" src="https://www.red-salud.com/rsadmin/iconos/servicios/<?=$sp->id_servicio?>.png"></td>
+																<td><?=$sp->serv_descripcion?></td>
+																<td><?=$sp->hora_ini?></td>
+																<td><?=$sp->hora_fin?></td>
+																<td>
+
+																<div class="hidden-sm hidden-xs btn-group">
+																	<div title="Eliminar Servicio" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
+																						<a class="boton fancybox" href="<?=base_url()?>index.php/eliminar_servicio/<?=$sp->idproveedor_servicio?>/<?=$sp->idproveedor?>" data-fancybox-width="1000" data-fancybox-height="300">
+																							<i class="ace-icon glyphicon glyphicon-trash blue"></i>
+																						</a>
+																			</div>
+																</div>
+																<div class="hidden-md hidden-lg">
+																	<div class="inline pos-rel">
+																		<button class="btn btn-minier btn-info dropdown-toggle" data-toggle="dropdown" data-position="auto">
+																			<i class="ace-icon fa fa-cog icon-only bigger-110"></i>
+																		</button>
+
+																		<ul class="dropdown-menu dropdown-only-icon dropdown-yellow dropdown-menu-right dropdown-caret dropdown-close">
+																				<li>
+																					<div title="Eliminar Servicio" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
+																						<a class="boton fancybox" href="<?=base_url()?>index.php/eliminar_servicio/<?=$sp->idproveedor_servicio?>" data-fancybox-width="1000" data-fancybox-height="300">
+																							<i class="ace-icon glyphicon glyphicon-trash blue"></i>
+																						</a>
+																					</div>
+																				</li>
+																				
+																			</ul>
+																		</div>
+																	</div>
+																</td>
+															</tr>
+														</tbody>
+														<?php } ?>
+													</table>											
 												</div>
-											</td>
-										</tr>
-										<?php } ?>
-									</tbody>
-								</table>
-								<script>			
-									//para paginacion
-									$(document).ready(function() {
-										$('#example').DataTable( {
-											"pagingType": "full_numbers"
-										} );
-									} );
-								</script>	
+												<script>			
+													//para paginacion
+													$(document).ready(function() {
+													$('#example').DataTable( {
+													"pagingType": "full_numbers"
+													} );
+												} );
+												</script>	
+								<!-- end table -->
 							</div><!-- /.col -->
 						</div>
 					</div>
 				</div><!-- /.main-content -->			
 			</div><!-- /.main-container -->
+		
 		<!-- basic scripts -->
 
 		<!--[if !IE]> -->
@@ -126,13 +184,11 @@
 		</script><script src="<?=  base_url()?>public/assets/js/jquery.js"></script>
 
 		<!-- <![endif]-->
-
 		<!--[if IE]>
 <script type="text/javascript">
  window.jQuery || document.write("<script src='../assets/js/jquery1x.js'>"+"<"+"/script>");
 </script>
 <![endif]-->
-		</script>
 		<script type="text/javascript">
 			if('ontouchstart' in document.documentElement) document.write("<script src='<?=  base_url()?>public/assets/js/jquery.mobile.custom.js'>"+"<"+"/script>");
 		</script>
@@ -166,7 +222,6 @@
 		<script src="<?=  base_url()?>public/assets/js/ace/ace.settings-skin.js"></script>
 		<script src="<?=  base_url()?>public/assets/js/ace/ace.widget-on-reload.js"></script>
 		<script src="<?=  base_url()?>public/assets/js/ace/ace.searchbox-autocomplete.js"></script>
-
 		<!-- the following scripts are used in demo only for onpage help and you don't need them -->
 		<link rel="stylesheet" href="<?=  base_url()?>public/assets/css/ace.onpage-help.css">
 		<link rel="stylesheet" href="<?=  base_url()?>public/docs/assets/js/themes/sunburst.css">

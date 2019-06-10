@@ -6,7 +6,7 @@
  $this->load->database();
  }
 	
-	function getAtenciones(){
+	function getAtenciones($data){
 		$this->db->select("s.idsiniestro,num_orden_atencion, '-' as fecha_reserva, fecha_atencion, nombre_comercial_pr, nombre_esp,estado_siniestro, 's' as procedencia, CONCAT(COALESCE(aseg_nom1,''), ' ', COALESCE(aseg_nom2,''), ' ', COALESCE(aseg_ape1,''), ' ', COALESCE(aseg_ape2,'')) AS asegurado, aseg_numDoc, cert_num, pl.nombre_plan, cl.nombre_comercial_cli, s.idcita, COALESCE(l.liquidacion_estado,0) as liquidacion_estado, estado_siniestro, case when fecha_atencion_act is null then 'activar' else (case when fecha_atencion_act<fecha_atencion then 'restablecer' else 'ninguna' end) end as activacion");
 		$this->db->from("siniestro s");
 		$this->db->join("asegurado a","s.idasegurado=a.aseg_id");
@@ -16,7 +16,7 @@
 		$this->db->join("especialidad e","s.idespecialidad=e.idespecialidad");	
 		$this->db->join("proveedor pr","pr.idproveedor=s.idproveedor");	
 		$this->db->join("liquidacion l","l.idsiniestro=s.idsiniestro","left");
-		$this->db->where("estado_siniestro in(1,2) and estado_atencion='O'");
+		$this->db->where("estado_siniestro in(1,2) and estado_atencion='O' and fecha_atencion>='".$data['fecinicio']."' and fecha_atencion<='".$data['fecfin']."'");
 		$this->db->order_by("idsiniestro", "asc");
 
 	$atenciones = $this->db->get();

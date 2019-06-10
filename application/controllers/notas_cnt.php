@@ -359,7 +359,7 @@ class notas_cnt extends CI_Controller {
 					$this->comprobante_pago_mdl->updateEstadoDevId($dev_id);
 				} else {
 					$import = $cb->importe;
-					$this->comprobante_pago_mdl->insertDatosBoletasNotas($cb->fecha_dev, 'BC01', $correGen, $cb->cont_id, $idTipoDoc, $import, $cb->idplan, $cd->serie, $cd->correlativo, $sustento, $fechaIn, 1);
+					$this->comprobante_pago_mdl->insertDatosBoletasNotas($cb->fecha_dev, 'BC01', $correGen, $cb->cont_id, $idTipoDoc, $import, $cb->idplan, $cd->serie, $cd->correlativo, $sustento, $fechaIn, 2);
 
 					$dev_id_cobro = $cb->dev_id;
 					$this->comprobante_pago_mdl->updateEstadoDevCobro($cb->cob_id);
@@ -714,7 +714,7 @@ class notas_cnt extends CI_Controller {
 			//print_r($sustento);
 			//exit();
 
-			$this->comprobante_pago_mdl->insertDatosBoletasNotas($fechaEmiNota, $numSerie, $correGen, $bm->id_contratante, $idTipoDoc, $impTotal, $bm->idplan, $bm->serie, $bm->correlativo, $sustento, $bm->fecha_emision);
+			$this->comprobante_pago_mdl->insertDatosBoletasNotas($fechaEmiNota, $numSerie, $correGen, $bm->id_contratante, $idTipoDoc, $impTotal, $bm->idplan, $bm->serie, $bm->correlativo, $sustento, $bm->fecha_emision, 2);
 
 		}
 	}
@@ -881,12 +881,12 @@ class notas_cnt extends CI_Controller {
 		$fecemi = $data['fechaEmision'];
 
 		$canales=$_POST['canales'];
-		$datos['canales'] = $canales;
+		//$datos['canales'] = $canales;
 
 		$inicio = $_POST['fechainicio'];
 		//$fin = $_POST['fechafin'];
 
-		if (substr($canales, 0, 1) == 'B') {
+		if ($canales == 'BC01') {
 
 			$html .="<hr>";
 			$html .= "<div  align='center' class='col-xs-12'>";
@@ -915,7 +915,7 @@ class notas_cnt extends CI_Controller {
 						$importe2=number_format((float)$importe, 2, '.', ',');
 
 						$estado = $b->idestadocobro;
-						
+
 						$html .= "<tr>";
 							$html .= "<td align='left'>".$b->fecha_emision."</td>";
 							$html .= "<td align='left'>".$b->seriecorrelativo."<input type='text' class='hidden' id='idcomprobante' name='idcomprobante' value='".$b->idcomprobante."'></td>";
@@ -925,10 +925,19 @@ class notas_cnt extends CI_Controller {
 							$html .= "<td align='left'>".$b->seriecorrelativoDoc."</td>";
 							$html .= "<td align='center'>S/. ".$importe2."</td>";
 							$html .= "<td align='left'>	".$b->sustento_nota."</td>";
+
 							if ($estado == 2) {
 								$html .= "<td align='center' class='danger'>Generado</td>";
-								$html .= "<td align='center'></td>";
-							} elseif ($estado == 3) {
+								$html .= "<td align='left'>";
+									$html .= "<ul class='ico-stack'>";
+										$html .="<div title='ver PDF' id='pdfButton' onclick=''>";
+											$html .="<a class='boton fancybox' href='".base_url()."index.php/notas_cnt/generarPdfNota/".$b->idcomprobante."/".$canales."' data-fancybox-width='950' data-fancybox-height='800' target='_blank'>";
+												$html .= "<i class='ace-icon fa fa-file-pdf-o bigger-120'></i>";
+											$html .="</a>";
+										$html .="</div>";
+									$html .= "</ul>";
+								$html .="</td>";
+							} else {
 								$html .= "<td align='center' class='success'>Emitido</td>";
 								$html .= "<td align='left'>";
 									$html .= "<ul class='ico-stack'>";
@@ -940,6 +949,7 @@ class notas_cnt extends CI_Controller {
 									$html .= "</ul>";
 								$html .="</td>";
 							}
+								
 						$html .= "</tr>";
 
 					}
@@ -969,7 +979,7 @@ class notas_cnt extends CI_Controller {
 					$html .= "</thead>";
 					$html .= "<tbody>";
 
-					$facturas = $this->comprobante_pago_mdl->getDatosNotasFacturas($canales, $inicio, $fin);
+					$facturas = $this->comprobante_pago_mdl->getDatosNotasFacturas($canales, $inicio);
 
 					foreach ((array)$facturas as $f) {
 
@@ -989,8 +999,16 @@ class notas_cnt extends CI_Controller {
 							$html .= "<td align='left'>".$f->sustento_nota."</td>";
 							if ($estado == 2) {
 								$html .= "<td align='center' class='danger'>Generado</td>";
-								$html .= "<td align='center'></td>";
-							} elseif ($estado == 3) {
+								$html .= "<td align='left'>";
+									$html .= "<ul class='ico-stack'>";
+										$html .="<div title='ver PDF' id='pdfButton' onclick=''>";
+											$html .="<a class='boton fancybox' href='".base_url()."index.php/notas_cnt/generarPdfNota/".$f->idcomprobante."/".$canales."' data-fancybox-width='950' data-fancybox-height='800' target='_blank'>";
+												$html .= "<i class='ace-icon fa fa-file-pdf-o bigger-120'></i>";
+											$html .="</a>";
+										$html .="</div>";
+									$html .= "</ul>";
+								$html .="</td>";
+							} else {
 								$html .= "<td align='center' class='success'>Emitido</td>";
 								$html .= "<td align='left'>";
 									$html .= "<ul class='ico-stack'>";
@@ -1025,27 +1043,27 @@ class notas_cnt extends CI_Controller {
 
 		$fecemi = $data['fechaEmision'];
 
-		$canales = $_POST['canales'];
-
+		//$canales = $_POST['canales'];
+		$canales = 'BC01';
+		$canalFac = 'FC01';
 		$fechainicio = $_POST['fechainicio'];
-		$fechafin = $_POST['fechafin'];
+		//$fechafin = $_POST['fechafin'];
 
 		//$numeroSerie = $_POST['numeroSerie'];	
-		$correlativoConcar = 18;
-
+		$correlativoConcar = $_POST['concar'];
 		//print_r($canales);
 		//exit();
 			
-		$boletas = $this->comprobante_pago_mdl->getDatosExcelBoletasNota($fechainicio, $fechafin, $canales);
-		$facturas = $this->comprobante_pago_mdl->getDatosExcelFacturasNota($fechainicio, $fechafin, $canales);
+		$boletas = $this->comprobante_pago_mdl->getDatosExcelBoletasNota($fechainicio, $canales);
+		$facturas = $this->comprobante_pago_mdl->getDatosExcelFacturasNota($fechainicio, $canalFac);
 
-		if ($canales == "BC01" || $canales == "FC01") {
+		//if ($canales == "BC01" || $canales == "FC01") {
 			$tipo = "NA";
 			$nomArchivo = "NOTACREDITO".$canales;
-		} elseif ($canales == "BD01" || $canales == "FD01") {
+		/*} elseif ($canales == "BD01" || $canales == "FD01") {
 			$tipo = "ND";
 			$nomArchivo = "NOTADEBITO".$canales;
-		}
+		}*/
 
 			//Se carga la librería de excel
 			$this->load->library('excel');
@@ -1238,7 +1256,7 @@ class notas_cnt extends CI_Controller {
 						$centCosto = $c->centro_costo;
 
 						$formatoFecha = date("d/m/Y", strtotime($b->fecha_emision));
-						$correlativoConcar = $correlativoConcar+1;
+						//$correlativoConcar = $correlativoConcar+1;
 						$correConcar = str_pad($correlativoConcar, 4, "0", STR_PAD_LEFT);
 
 						$igv = $b->total-$b->neto;
@@ -1507,6 +1525,7 @@ class notas_cnt extends CI_Controller {
 
 	public function generarPdfNota($idcomprobante, $canales){
 
+		include ('./application/libraries/phpqrcode/qrlib.php');
 		//$canales=$_POST['canales'];
 		//$idcomprobante=$_POST['idcomprobante'];
 		$numLet = new NumeroALetras();
@@ -1519,6 +1538,7 @@ class notas_cnt extends CI_Controller {
 			
 		$boletas = $this->comprobante_pago_mdl->getDatosPdfBoletasNota($idcomprobante);
 		$facturas = $this->comprobante_pago_mdl->getDatosPdfFacturasNota($idcomprobante);
+		$facturasDebito = $this->comprobante_pago_mdl->getDatosPdfFacturasNotaDebito($idcomprobante);
 
 		//Carga la librería que agregamos
         $this->load->library('pdf');
@@ -1531,6 +1551,14 @@ class notas_cnt extends CI_Controller {
 	    if (substr($canales, 0, 1) == 'B') {
 	    	foreach ($boletas as $b){
 
+	    		if ($b->tipo_moneda == 'PEN') {
+	    			$moneda = 'S/. ';
+	    			$nomMoneda = 'SOLES';
+	    		} elseif ($b->tipo_moneda == 'USD') {
+	    			$moneda = '$ ';
+	    			$nomMoneda = utf8_decode('DÓLARES');
+	    		}
+
 	    		$fechaFormato = date("d/m/Y", strtotime($b->fecha_emision));
 
 	    		$igv = $b->total-$b->neto;
@@ -1542,10 +1570,13 @@ class notas_cnt extends CI_Controller {
 	    		$totalSinDec = substr ($total, 0, -3);
 	    		$totalDec = substr ($total, -2);
 
+	    		$content = "20600258894 | ".$b->serie."-".$b->correlativo." | ".$b->fecha_emision." | ".$b->total." | ".$igvfinal." | ".$b->cont_numDoc;
+				QRcode::png($content , 'adjunto/qr/'.$b->mes."".$b->serie."".$b->correlativo.".png" , QR_ECLEVEL_L , 10 , 2);
+
 	            $this->pdf->Ln('15');
 	          	$this->pdf->SetFont('Arial','B',10); 
 	            $this->pdf->Cell(126);
-	            $this->pdf->MultiCell(64,6,utf8_decode('NOTA DE CRÉDITO ELECTRÓNICA')."\n"."Nro: ".$b->serie."-".$b->correlativo."\n"."fecha: ".$fechaFormato,1,'C', false);
+	            $this->pdf->MultiCell(64,6,utf8_decode('NOTA DE CRÉDITO ELECTRÓNICA')."\n"."RUC:20600258894"."\n"."Nro: ".$b->serie."-".$b->correlativo,1,'C', false);
 	            $this->pdf->Ln('10');
 	          	$this->pdf->SetFont('Arial','B',12); 
 	            $this->pdf->Cell(0,0,$b->contratante,0,0,'L');
@@ -1555,6 +1586,9 @@ class notas_cnt extends CI_Controller {
 	            $this->pdf->Ln('5');
 	            $this->pdf->SetFont('Arial','B',11);
 	            $this->pdf->Cell(0,0,utf8_decode("Dirección: ").$b->cont_direcc,0,0,'L');
+	            $this->pdf->Ln('5');
+	            $this->pdf->SetFont('Arial','B',11);
+	            $this->pdf->Cell(0,0,utf8_decode("Fecha: ").utf8_decode($fechaFormato),0,0,'L');
 	            $this->pdf->Ln('15');
 	            $this->pdf->SetFont('Arial','B',7);
 	            $this->pdf->SetTextColor(255,255,255);
@@ -1588,6 +1622,7 @@ class notas_cnt extends CI_Controller {
 	            //--
 	            $this->pdf->SetFont('Arial', '',8);
 	            $this->pdf->Cell(100,10,"  SON ".$numLet->convertir($totalSinDec, 'Y')." ".$totalDec."/100 SOLES",0,0,'L');
+	            $this->pdf->Image(base_url().'/adjunto/qr/'.$b->mes."".$b->serie."".$b->correlativo.'.png',24,170,30,0);
 	            //--
 	            $this->pdf->SetFont('Arial', '',7);
 	            $this->pdf->Cell(60,10,"Operaciones gravadas",1,0,'C');
@@ -1626,7 +1661,7 @@ class notas_cnt extends CI_Controller {
 		        $this->pdf->Output($b->mes."".$b->serie."".$b->correlativo.".pdf", 'I');
 
 	    	}
-	    } elseif (substr($canales, 0, 1) == 'F') {
+	    } elseif ($canales == 'FC01') {
 	    	foreach ($facturas as $f){
 
 	    		$igv = $f->total-$f->neto;
@@ -1643,33 +1678,36 @@ class notas_cnt extends CI_Controller {
 	            $this->pdf->Ln('15');
 	          	$this->pdf->SetFont('Arial','B',10); 
 	            $this->pdf->Cell(126);
-	            $this->pdf->MultiCell(64,6,utf8_decode('NOTA DE CRÉDITO')."\n"."Nro: ".$f->serie."-".$f->correlativo."\n"."fecha: ".$fechaFormato,1,'C', false);
+	            $this->pdf->MultiCell(64,6,utf8_decode('NOTA DE CRÉDITO')."\n"."RUC:20600258894"."\n"."Nro: ".$f->serie."-".$f->correlativo,1,'C', false);
 	            $this->pdf->Ln('10');
-	            $this->pdf->Cell(0,0,$f->razon_social_cli,0,0,'L');
+	            $this->pdf->Cell(0,0,utf8_decode($f->razon_social_cli),0,0,'L');
 	            $this->pdf->Ln('5');
 	            $this->pdf->SetFont('Arial','B',11);
 	            $this->pdf->Cell(0,0,"RUC: ".$f->numero_documento_cli,0,0,'L');
 	            $this->pdf->Ln('5');
 	            $this->pdf->SetFont('Arial','B',11);
-	            $this->pdf->Cell(0,0,utf8_decode("Dirección: ").$f->direccion_legal,0,0,'L');
+	            $this->pdf->Cell(0,0,utf8_decode("Dirección: ").utf8_decode($f->direccion_legal),0,0,'L');
+	            $this->pdf->Ln('5');
+	            $this->pdf->SetFont('Arial','B',11);
+	            $this->pdf->Cell(0,0,utf8_decode("Fecha: ").utf8_decode($fechaFormato),0,0,'L');
 	            $this->pdf->Ln('15');
 	            $this->pdf->SetFont('Arial','B',7);
 	            $this->pdf->SetTextColor(255,255,255);
 	            $this->pdf->SetFillColor(204, 006, 005);
 	            $this->pdf->Cell(20,10,"Cantidad",1,0,'C', true);
-	            $this->pdf->Cell(80,10,utf8_decode("Descripción"),1,0,'C', true);
-	            $this->pdf->Cell(35,10,"Tipo Documento",1,0,'C', true);
-	            $this->pdf->Cell(25,10,utf8_decode("Num. Documento"),1,0,'C', true);
-	            $this->pdf->Cell(15,10,"Precio Unitario",1,0,'C', true);
+	            $this->pdf->Cell(70,10,utf8_decode("Descripción"),1,0,'C', true);
+	            $this->pdf->Cell(25,10,"Tipo Documento",1,0,'C', true);
+	            $this->pdf->Cell(30,10,utf8_decode("Documento Modificado"),1,0,'C', true);
+	            $this->pdf->Cell(30,10,utf8_decode("Num. Doc Modificado"),1,0,'C', true);
 	            $this->pdf->Cell(15,10,"Total",1,0,'C', true);
 	            $this->pdf->Ln('10');
 	            $this->pdf->SetFont('Arial','',7);
 	            $this->pdf->SetTextColor(000,000,000);
 	            $this->pdf->Cell(20,10,"1",1,0,'C');
-	            $this->pdf->Cell(80,10,utf8_decode($f->nombre_plan),1,0,'C');
-	            $this->pdf->Cell(35,10,utf8_decode("Devolución por ítem"),1,0,'C');
-	            $this->pdf->Cell(25,10,$f->seriecorrelativo,1,0,'C');
-	            $this->pdf->Cell(15,10,"S/. ".$neto,1,0,'C');
+	            $this->pdf->Cell(70,10,utf8_decode($f->nombre_plan),1,0,'C');
+	            $this->pdf->Cell(25,10,utf8_decode("Devolución por ítem"),1,0,'C');
+	            $this->pdf->Cell(30,10,"Factura",1,0,'C');
+	            $this->pdf->Cell(30,10,$f->seriecorrelativo_doc,1,0,'C');
 	            $this->pdf->Cell(15,10,"S/. ".$neto,1,0,'C');
 
 	            $this->pdf->Ln('15');
@@ -1721,6 +1759,109 @@ class notas_cnt extends CI_Controller {
 
 		        $this->pdf->Output($f->mes."".$f->serie."".$f->correlativo.".pdf", 'I');
 
+	    	} 
+	    } elseif ($canales == 'FD01') {
+	    	foreach ($facturasDebito as $fd){
+
+	    		$igv = $fd->total-$fd->neto;
+	    		$tot=$fd->total;
+	    		$nt=$fd->neto;
+	    		$total = number_format((float)$tot, 2, '.', '');
+	    		$neto = number_format((float)$nt, 2, '.', '');
+	    		$igvfinal=number_format((float)$igv, 2, '.', '');
+	    		$totalSinDec = substr ($total, 0, -3);
+	    		$totalDec = substr ($total, -2);
+
+	    		$fdechaFormato = date("d/m/Y", strtotime($fd->fecha_emision));
+
+	            $this->pdf->Ln('15');
+	          	$this->pdf->SetFont('Arial','B',10); 
+	            $this->pdf->Cell(126);
+	            $this->pdf->MultiCell(64,6,utf8_decode('NOTA DE DÉBITO')."\n"."RUC:20600258894"."\n"."Nro: ".$fd->serie."-".$fd->correlativo,1,'C', false);
+	            $this->pdf->Ln('10');
+	            $this->pdf->Cell(0,0,utf8_decode($fd->razon_social_cli),0,0,'L');
+	            $this->pdf->Ln('5');
+	            $this->pdf->SetFont('Arial','B',11);
+	            $this->pdf->Cell(0,0,"RUC: ".$fd->numero_documento_cli,0,0,'L');
+	            $this->pdf->Ln('5');
+	            $this->pdf->SetFont('Arial','B',11);
+	            $this->pdf->Cell(0,0,utf8_decode("Dirección: ").utf8_decode($fd->direccion_legal),0,0,'L');
+	            $this->pdf->Ln('5');
+	            $this->pdf->SetFont('Arial','B',11);
+	            $this->pdf->Cell(0,0,utf8_decode("Fecha: ").utf8_decode($fdechaFormato),0,0,'L');
+	            $this->pdf->Ln('15');
+	            $this->pdf->SetFont('Arial','B',7);
+	            $this->pdf->SetTextColor(255,255,255);
+	            $this->pdf->SetFillColor(204, 006, 005);
+	            $this->pdf->Cell(20,10,"Cantidad",1,0,'C', true);
+	            $this->pdf->Cell(70,10,utf8_decode("Descripción"),1,0,'C', true);
+	            $this->pdf->Cell(25,10,"Tipo Documento",1,0,'C', true);
+	            $this->pdf->Cell(30,10,utf8_decode("Documento Modificado"),1,0,'C', true);
+	            $this->pdf->Cell(30,10,utf8_decode("Num. Doc Modificado"),1,0,'C', true);
+	            $this->pdf->Cell(15,10,"Total",1,0,'C', true);
+	            $this->pdf->Ln('10');
+	            $this->pdf->SetFont('Arial','',7);
+	            $this->pdf->SetTextColor(000,000,000);
+	            $this->pdf->Cell(20,10,"1",1,0,'C');
+	            $this->pdf->Cell(70,10,utf8_decode($fd->nombre_plan),1,0,'C');
+	            $this->pdf->Cell(25,10,utf8_decode("Incremento por ítem"),1,0,'C');
+	            $this->pdf->Cell(30,10,"Factura",1,0,'C');
+	            $this->pdf->Cell(30,10,$fd->seriecorrelativo_doc,1,0,'C');
+	            $this->pdf->Cell(15,10,"S/. ".$neto,1,0,'C');
+
+	            $this->pdf->Ln('15');
+	            $this->pdf->SetFont('Arial','B',7);
+	            $this->pdf->SetTextColor(255,255,255);
+	            $this->pdf->SetFillColor(204, 006, 005); 
+	            $this->pdf->Cell(190,10,"Motivo de Referencia",1,0,'C', true);
+	            $this->pdf->Ln('10');
+	            $this->pdf->SetFont('Arial','',9);
+	            $this->pdf->SetTextColor(000,000,000);
+	            $this->pdf->MultiCell(190,10, utf8_decode($fd->sustento_nota),1, 'C');
+	            $this->pdf->Ln('5');
+
+	            $this->pdf->SetFont('Arial', '',8);
+	            if ($totalSinDec == 0) {
+	            	$this->pdf->Cell(100,10,"  SON CERO Y ".$totalDec."/100 SOLES",0,0,'L');
+	            } else {
+	            	$this->pdf->Cell(100,10,"  SON ".$numLet->convertir($totalSinDec, 'Y')." ".$totalDec."/100 SOLES",0,0,'L');
+	            }
+
+	            $this->pdf->Cell(60,10,"Operaciones gravadas",1,0,'C');
+	            $this->pdf->Cell(30,10,"S/. ".$neto." ",1,0,'R');
+	            $this->pdf->Ln('10');
+	            $this->pdf->Cell(100);
+	            $this->pdf->Cell(60,10,"Operaciones inafectas",1,0,'C');
+	            $this->pdf->Cell(30,10,"S/. 0.00 ",1,0,'R');
+	            $this->pdf->Ln('10');
+	            $this->pdf->Cell(100);
+	            $this->pdf->Cell(60,10,"Operaciones exoneradas",1,0,'C');
+	            $this->pdf->Cell(30,10,"S/. 0.00 ",1,0,'R');
+	            $this->pdf->Ln('10');
+	            $this->pdf->Cell(100);
+	            $this->pdf->Cell(60,10,"Operaciones gratuitas",1,0,'C');
+	            $this->pdf->Cell(30,10,"S/. 0.00 ",1,0,'R');
+	            $this->pdf->Ln('10');
+	            $this->pdf->Cell(100);
+	            $this->pdf->Cell(60,10,"Total de Descuentos",1,0,'C');
+	            $this->pdf->Cell(30,10,"S/. 0.00 ",1,0,'R');
+	            $this->pdf->Ln('10');
+	            $this->pdf->Cell(100);
+	            $this->pdf->Cell(60,10,"IGV",1,0,'C');
+	            $this->pdf->Cell(30,10,"S/. ".$igvfinal." ",1,0,'R');
+	            $this->pdf->Ln('10');
+	            $this->pdf->Cell(100);
+	            $this->pdf->Cell(60,10,"Importe total de la venta",1,0,'C');
+	            $this->pdf->Cell(30,10,"S/. ".$total." ",1,0,'R');
+
+	            $this->pdf->Line(10, 280 , 200, 280); 
+			    $this->pdf->SetTitle("Comprobante de pago");
+			    $this->pdf->SetLeftMargin(15);
+			    $this->pdf->SetRightMargin(15);
+			    $this->pdf->SetFillColor(200,200,200);
+
+		        $this->pdf->Output($fd->mes."".$fd->serie."".$fd->correlativo.".pdf", 'I');
+
 	    	}
 	    }
 	}
@@ -1731,6 +1872,7 @@ class notas_cnt extends CI_Controller {
     	include ('./application/libraries/xmldsig/src/XMLSecurityKey.php');
     	include ('./application/libraries/xmldsig/src/Sunat/SignedXml.php');
     	include ('./application/libraries/CustomHeaders.php');
+    	include ('./application/libraries/phpqrcode/qrlib.php');
 
     	//$this->zip = new ZipArchive();
 		$numLet = new NumeroALetras();
@@ -1742,21 +1884,22 @@ class notas_cnt extends CI_Controller {
 
     	$this->xml = new XMLWriter();
     	$mail = new PHPMailer();
-    	$numSerie = $this->input->post('numSerie');
+    	$numSerie = $_POST['canales'];
+
     	//$idPlan = $this->input->post('nameCheck');
     	$canales = $this->input->post('canales');
     	$fecinicio = $this->input->post('fechainicio');
     	$fecfin = $this->input->post('fechafin');
-    	$numSerieUno = reset($numSerie);
+    	//$numSerieUno = reset($numSerie);
 
 		if ($canales == 'BC01') {
-			$notaCredito = $this->comprobante_pago_mdl->getDatosXmlBoletasAgrupadas($fecinicio, $numSerieUno);
+			$notaCredito = $this->comprobante_pago_mdl->getDatosXmlBoletasAgrupadas($fecinicio, $numSerie);
 
 			foreach ($notaCredito as $nc) {
 
 				$linea=1;
 
-				$numeroConCeros = str_pad($nc->corre, 5, "0", STR_PAD_LEFT);
+				$numeroConCeros = str_pad($nc->correlativo, 5, "0", STR_PAD_LEFT);
 	    		$fechanombre = str_replace ("-" , "", $nc->fecha_emision);
 				$idestadocobro = $nc->idestadocobro;
 
@@ -1793,7 +1936,7 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 		</cac:PartyLegalEntity>
 	</cac:Party>
 </cac:AccountingSupplierParty>';
-		$boletas = $this->comprobante_pago_mdl->getDatosXmlNotasBoleta($fecinicio, $numSerieUno);
+		$notas = $this->comprobante_pago_mdl->getDatosXmlNotasBoleta($fecinicio, $canales);
 		foreach ($notas as $n) {
 			$datos.='<sac:SummaryDocumentsLine>
 	<cbc:LineID>'.$linea.'</cbc:LineID>
@@ -1843,12 +1986,6 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 			$linea=$linea+1;
 		}
 $datos.='</SummaryDocuments>';
-	/*<cac:BillingReference>
-		<cac:InvoiceDocumentReference>
-			<cbc:ID>'.$nc->serie.'-'.$nc->correlativo.'</cbc:ID>
-			<cbc:DocumentTypeCode>07</cbc:DocumentTypeCode>
-		</cac:InvoiceDocumentReference>
-	</cac:BillingReference>*/
 
 					$nameDoc='RC-'.$fechanombre.'-'.$nc->nume_corre_res;
 					$filecdr=$nc->mesanio.'-cdrNotaCreditoBoleta'.$nc->serie;
@@ -1885,11 +2022,11 @@ $datos.='</SummaryDocuments>';
 					unlink($filename.".xml");
 					unlink($carpetaNota.'/'.$filename.".xml");
 
-					//$service = 'adjunto/wsdl/billService.wsdl'; 
-					$service = 'https://e-beta.sunat.gob.pe/ol-ti-itcpfegem-beta/billService?wsdl';
+					$service = 'adjunto/wsdl/billService.wsdl'; 
+					//$service = 'https://e-beta.sunat.gob.pe/ol-ti-itcpfegem-beta/billService?wsdl';
 					
-			    	$headers = new CustomHeaders('20600258894MODDATOS', 'MODDATOS');
-			    	//$headers = new CustomHeaders('20600258894DCACEDA2', 'DCACE716186'); 
+			    	//$headers = new CustomHeaders('20600258894MODDATOS', 'MODDATOS');
+			    	$headers = new CustomHeaders('20600258894DCACEDA2', 'DCACE716186'); 
 
 			    	$client = new SoapClient($service, array(
 			    		'cache_wsdl' => WSDL_CACHE_NONE,
@@ -1942,7 +2079,7 @@ $datos.='</SummaryDocuments>';
 
 					unlink('adjunto/xml/notasdecredito/'.$filecdr.'/'.'C'.$filename.'.xml');
 					
-					
+					$this->comprobante_pago_mdl->updateEstadoCobroEmitidoManual($nc->fecha_emision, $nc->correlativo, 'BC01');
 					//verificar respuesta SUNAT
 					/*if (file_exists($carpetaCdr.'/R-'.$filename.'.zip')) {
 						if ($this->zip->open($carpetaCdr.'/R-'.$filename.'.zip') === TRUE) {
@@ -1961,22 +2098,105 @@ $datos.='</SummaryDocuments>';
 					}
 					
 					if ($descripcion == 'La '.$tipodocumento.' numero '.$nameDoc.', ha sido aceptada') {*/
-					if (!file_exists('adjunto/xml/notasdecredito/'.$filecdr.'/'.'R-'.$filename.'.zip')) {
-						$this->comprobante_pago_mdl->updateEstadoCobroEmitido($nc->fecha_emision, $nc->corre, $nc->serie);
-					}
+					//if (!file_exists('adjunto/xml/notasdecredito/'.$filecdr.'/'.'R-'.$filename.'.zip')) {
+						//$this->comprobante_pago_mdl->updateEstadoCobroEmitido($nc->fecha_emision, $nc->corre, 'BC01');
+					//}
 					//}
 				}
 			}
 
-		} elseif ($canales == 'F002') {
+		} elseif ($canales == 'FC01') {
 
-			$notaCredito = $this->comprobante_pago_mdl->getDatosXmlNotasFactura($fecinicio, $fecfin, $canales);
+			$notaCredito = $this->comprobante_pago_mdl->getDatosXmlNotasFactura($fecinicio, $canales);
+
 
 			foreach ($notaCredito as $nc) {
 
+				$linea=1;
+
+				$numeroConCeros = str_pad($nc->corre, 5, "0", STR_PAD_LEFT);
+	    		$fechanombre = str_replace ("-" , "", $nc->fecha_emision);
 				$idestadocobro = $nc->idestadocobro;
 
 				if ($idestadocobro == 2) {
+
+					//$filename="20600258894-RC-".$fechanombre."-".$nc->nume_corre_res;
+
+	    		/*$datos = '<?xml version="1.0" encoding="UTF-8"?>
+<SummaryDocuments xmlns="urn:sunat:names:specification:ubl:peru:schema:xsd:SummaryDocuments-1" 
+xmlns:cac="urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2" 
+xmlns:cbc="urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2"
+xmlns:ds="http://www.w3.org/2000/09/xmldsig#"
+xmlns:ext="urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2" 
+xmlns:sac="urn:sunat:names:specification:ubl:peru:schema:xsd:SunatAggregateComponents-1" 
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<ext:UBLExtensions>
+	<ext:UBLExtension>
+      	<ext:ExtensionContent>
+
+      	</ext:ExtensionContent>
+	</ext:UBLExtension>
+	</ext:UBLExtensions>
+<cbc:UBLVersionID>2.0</cbc:UBLVersionID>
+<cbc:CustomizationID>1.1</cbc:CustomizationID>
+<cbc:ID>RC-'.$fechanombre.'-'.$nc->nume_corre_res.'</cbc:ID>
+<cbc:ReferenceDate>'.$nc->fecha_emision.'</cbc:ReferenceDate>
+<cbc:IssueDate>'.$nc->fecha_emision.'</cbc:IssueDate>
+<cac:AccountingSupplierParty>
+	<cbc:CustomerAssignedAccountID>20600258894</cbc:CustomerAssignedAccountID>
+	<cbc:AdditionalAccountID>6</cbc:AdditionalAccountID>
+	<cac:Party>
+		<cac:PartyLegalEntity>
+			<cbc:RegistrationName>HEALTH CARE ADMINISTRATION RED SALUD S.A.C.</cbc:RegistrationName>
+		</cac:PartyLegalEntity>
+	</cac:Party>
+</cac:AccountingSupplierParty>
+<sac:SummaryDocumentsLine>
+	<cbc:LineID>'.$linea.'</cbc:LineID>
+	<cbc:DocumentTypeCode>07</cbc:DocumentTypeCode>
+	<cbc:ID>'.$nc->serie.'-'.$nc->correlativo.'</cbc:ID>
+	<cac:BillingReference>
+		<cac:InvoiceDocumentReference>
+			<cbc:ID>'.$nc->serie_doc.'-'.$nc->correlativo_doc.'</cbc:ID>
+			<cbc:DocumentTypeCode>01</cbc:DocumentTypeCode>
+		</cac:InvoiceDocumentReference> 
+	</cac:BillingReference>
+	<cac:Status>
+		<cbc:ConditionCode>1</cbc:ConditionCode>
+	</cac:Status>
+	<sac:TotalAmount currencyID="PEN">'.$nc->total.'</sac:TotalAmount>
+	<sac:BillingPayment>
+		<cbc:PaidAmount currencyID="PEN">'.$nc->neto.'</cbc:PaidAmount>
+		<cbc:InstructionID>01</cbc:InstructionID>
+	</sac:BillingPayment>
+	<cac:TaxTotal>
+		<cbc:TaxAmount currencyID="PEN">'.$nc->igv.'</cbc:TaxAmount>
+		<cac:TaxSubtotal>
+			<cbc:TaxAmount currencyID="PEN">'.$nc->igv.'</cbc:TaxAmount>
+			<cac:TaxCategory>
+				<cac:TaxScheme>
+					<cbc:ID>1000</cbc:ID>
+					<cbc:Name>IGV</cbc:Name>
+					<cbc:TaxTypeCode>VAT</cbc:TaxTypeCode>
+				</cac:TaxScheme>
+			</cac:TaxCategory>
+		</cac:TaxSubtotal>
+	</cac:TaxTotal>
+	<cac:TaxTotal>
+		<cbc:TaxAmount currencyID="PEN">0.00</cbc:TaxAmount>
+		<cac:TaxSubtotal>
+			<cbc:TaxAmount currencyID="PEN">0.00</cbc:TaxAmount>
+			<cac:TaxCategory>
+				<cac:TaxScheme>
+					<cbc:ID>2000</cbc:ID>
+					<cbc:Name>ISC</cbc:Name>
+					<cbc:TaxTypeCode>EXC</cbc:TaxTypeCode>
+				</cac:TaxScheme>
+			</cac:TaxCategory>
+		</cac:TaxSubtotal>
+	</cac:TaxTotal>
+</sac:SummaryDocumentsLine>
+</SummaryDocuments>';*/
 
 					$filename="20600258894-07-".$nc->serie."-".$nc->correlativo;
 
@@ -2009,7 +2229,7 @@ $datos.='</SummaryDocuments>';
 	  <cac:BillingReference>
 	    <cac:InvoiceDocumentReference>
 	      <cbc:ID>'.$nc->serie_doc.'-'.$nc->correlativo_doc.'</cbc:ID>
-	      <cbc:DocumentTypeCode>03</cbc:DocumentTypeCode>
+	      <cbc:DocumentTypeCode>01</cbc:DocumentTypeCode>
 	    </cac:InvoiceDocumentReference>
 	  </cac:BillingReference>
 	  <cac:Signature>
@@ -2098,7 +2318,7 @@ $datos.='</SummaryDocuments>';
 	      </cac:TaxSubtotal>
 	    </cac:TaxTotal>
 	    <cac:Item>
-	      <cbc:Description>'.$nc->nombre_plan.'</cbc:Description>
+	      <cbc:Description>'.utf8_decode($nc->nombre_plan).'</cbc:Description>
 	    </cac:Item>
 	    <cac:Price>
 	      <cbc:PriceAmount currencyID="PEN">'.$nc->neto.'</cbc:PriceAmount>
@@ -2132,40 +2352,45 @@ $datos.='</SummaryDocuments>';
 					$xmlSigned = $signer->signFromFile($xmlPath);
 					file_put_contents($filename.'.xml', $xmlSigned);
 
-					//echo $xmlSigned;
-					/*if ($this->zip->open($carpetaNota.'/'.$filename.".zip", ZIPARCHIVE::CREATE)===true) {
-						$this->zip->addFile($filename.'.xml');
-						$this->zip->close();
-						unlink($filename.".xml");
-						unlink($carpetaNota.'/'.$filename.".xml");
-					} else {
-						unlink($filename.".xml");
-						unlink($carpetaNota.'/'.$filename.".xml");
-					}*/
+					$this->load->library('zip');
 
-					//$service = 'adjunto/wsdl/billService.wsdl'; 
-					$service = 'https://e-beta.sunat.gob.pe/ol-ti-itcpfegem-beta/billService?wsdl';
+				    $this->zip->add_data($filename.'.xml', $xmlSigned);
+					$this->zip->archive('adjunto/xml/notasdecredito/'.$fileNota.'/'.$filename.'.zip');
+					$this->zip->clear_data();
+
+					unlink($filename.".xml");
+					unlink($carpetaNota.'/'.$filename.".xml");
+
+					$service = 'adjunto/wsdl/billService.wsdl';
+					//$service = 'https://e-factura.sunat.gob.pe/ol-ti-itcpfegem/billService?wsdl';
+					//$service = 'https://e-beta.sunat.gob.pe/ol-ti-itcpfegem-beta/billService?wsdl';
 					
-			    	$headers = new CustomHeaders('20600258894MODDATOS', 'MODDATOS');
-			    	//$headers = new CustomHeaders('20600258894DCACEDA2', 'DCACE716186'); 
+			    	//$headers = new CustomHeaders('20600258894MODDATOS', 'MODDATOS');
+			    	$headers = new CustomHeaders('20600258894DCACEDA2', 'DCACE716186'); 
 
 			    	$client = new SoapClient($service, array(
 			    		'cache_wsdl' => WSDL_CACHE_NONE,
 			    		'trace' => TRUE,
 			    		//'soap_version' => SOAP_1_2
 			    	));
-					//print_r($client);
-			    	//exit();
-			    	$client->__setSoapHeaders([$headers]); 
+
+			    	$client->__setSoapHeaders([$headers]);
 			    	$fcs = $client->__getFunctions();
 			    	$zipXml = $filename.'.zip';
 			    	$params = array(
-			    		'fileName' => $zipXml, 
+			    		'fileName' => $zipXml,
 			    		'contentFile' => file_get_contents($carpetaNota.'/'.$zipXml) 
 			    	); 
-
+			    	
 			    	$client->sendBill($params);
 			    	$status = $client->__getLastResponse();
+
+			    	$carpeta = 'adjunto/xml/notasdecredito/'.$filecdr;
+					if (!file_exists($carpeta)) {
+					    mkdir($carpeta, 0777, true);
+					}
+
+					$this->comprobante_pago_mdl->updateEstadoCobroEmitido($nc->fecha_emision, $nc->corre, $nc->serie);
 
 			    	//Descargamos el Archivo Response
 					$archivo = fopen($carpetaCdr.'/'.'C'.$filename.'.xml','w+');
@@ -2184,16 +2409,7 @@ $datos.='</SummaryDocuments>';
 					$archivo2 = chmod($carpetaCdr.'/'.'R-'.$filename.'.zip', 0777);
 
 					unlink($carpetaCdr.'/'.'C'.$filename.'.xml');
-
-					//verificar respuesta SUNAT
-					/*if (file_exists($carpetaCdr.'/R-'.$filename.'.zip')) {
-						if ($this->zip->open($carpetaCdr.'/R-'.$filename.'.zip') === TRUE) {
-						    $this->zip->extractTo($carpetaCdr.'/');
-						    $this->zip->close();
-						}
-						unlink($carpetaCdr.'/R-'.$filename.'.zip');
-					}*/
-
+					
 					$xml = file_get_contents($carpetaCdr.'/R-'.$filename.'.xml');
 					$DOM = new DOMDocument('1.0', 'utf-8');
 					$DOM->loadXML($xml);
@@ -2201,9 +2417,25 @@ $datos.='</SummaryDocuments>';
 					foreach ($respuesta as $r) {
 						$descripcion = $r->nodeValue;
 					}
-					if ($descripcion == 'La '.$tipodocumento.' numero '.$nameDoc.', ha sido aceptada') {
-						$this->comprobante_pago_mdl->updateEstadoCobroEmitido($nc->fecha_emision, $nc->corre, $nc->serie);
-					}
+
+					//if ($descripcion == 'La '.$tipodocumento.' numero '.$nameDoc.', ha sido aceptada') {
+						
+					//}
+
+					/*$estado = $client->getStatus(array('ticket' => $ticket));
+					$estadoArray = (array)$estado;
+					$contenido = (array)$estadoArray['status'];
+					//print_r($contenido['content']);
+					$archivo = fopen('adjunto/xml/notasdecredito/'.$filecdr.'/'.'R-'.$filename.'.zip','w+');
+					fputs($archivo,$contenido['content']);
+					fclose($archivo);
+
+					$archivo2 = chmod('adjunto/xml/notasdecredito/'.$filecdr.'/'.'R-'.$filename.'.zip', 0777);
+
+					unlink('adjunto/xml/notasdecredito/'.$filecdr.'/'.'C'.$filename.'.xml');
+					
+					$this->comprobante_pago_mdl->updateEstadoCobroEmitidoManual($nc->fecha_emision, $nc->correlativo, 'BC01');*/
+
 				}
 			}
 
@@ -2453,8 +2685,8 @@ $datos.='</SummaryDocuments>';
 				}
 			}
 
-		} elseif ($canales == 'F003') {
-			$notaDebito = $this->comprobante_pago_mdl->getDatosXmlNotasFactura($fecinicio, $fecfin, $canales);
+		}*/ elseif ($canales == 'FD01') {
+			$notaDebito = $this->comprobante_pago_mdl->getDatosXmlNotasFactura($fecinicio, $canales);
 
 			foreach ($notaDebito as $nd) {
 
@@ -2463,6 +2695,8 @@ $datos.='</SummaryDocuments>';
 				if ($idestadocobro == 2) {
 
 					$filename="20600258894-08-".$nd->serie."-".$nd->correlativo;
+
+
 
 					$datos = '<DebitNote xmlns="urn:oasis:names:specification:ubl:schema:xsd:DebitNote-2"
 	           xmlns:cac="urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2"
@@ -2493,7 +2727,7 @@ $datos.='</SummaryDocuments>';
 	  <cac:BillingReference>
 	    <cac:InvoiceDocumentReference>
 	      <cbc:ID>'.$nd->serie_doc.'-'.$nd->correlativo_doc.'</cbc:ID>
-	      <cbc:DocumentTypeCode>03</cbc:DocumentTypeCode>
+	      <cbc:DocumentTypeCode>01</cbc:DocumentTypeCode>
 	    </cac:InvoiceDocumentReference>
 	  </cac:BillingReference>
 
@@ -2590,7 +2824,7 @@ $datos.='</SummaryDocuments>';
 	      </cac:TaxSubtotal>
 	    </cac:TaxTotal>
 	    <cac:Item>
-	      <cbc:Description>'.$nd->nombre_plan.'</cbc:Description>
+	      <cbc:Description>'.utf8_decode($nd->nombre_plan).'</cbc:Description>
 	    </cac:Item>
 	    <cac:Price>
 	      <cbc:PriceAmount currencyID="PEN">'.$nd->neto.'</cbc:PriceAmount>
@@ -2601,8 +2835,8 @@ $datos.='</SummaryDocuments>';
 					$nameDoc=$nd->serie."-".$nd->correlativo;
 					$filecdr=$nd->mesanio.'-cdrNotaDebitoFactura';
 					$fileNota=$nd->mesanio.'-NotaDebitoFactura';
-					$carpetaCdr = 'adjunto/xml/notasdecredito/'.$filecdr;
-			    	$carpetaNota = 'adjunto/xml/notasdecredito/'.$fileNota;
+					$carpetaCdr = 'adjunto/xml/notasdedebito/'.$filecdr;
+			    	$carpetaNota = 'adjunto/xml/notasdedebito/'.$fileNota;
 
 			    	$tipodocumento = 'Nota de Debito';
 
@@ -2624,16 +2858,14 @@ $datos.='</SummaryDocuments>';
 					$xmlSigned = $signer->signFromFile($xmlPath);
 					file_put_contents($filename.'.xml', $xmlSigned);
 
-					//echo $xmlSigned;
-					if ($this->zip->open($carpetaNota.'/'.$filename.".zip", ZIPARCHIVE::CREATE)===true) {
-						$this->zip->addFile($filename.'.xml');
-						$this->zip->close();
-						unlink($filename.".xml");
-						unlink($carpetaNota.'/'.$filename.".xml");
-					} else {
-						unlink($filename.".xml");
-						unlink($carpetaNota.'/'.$filename.".xml");
-					}
+					$this->load->library('zip');
+
+				    $this->zip->add_data($filename.'.xml', $xmlSigned);
+					$this->zip->archive('adjunto/xml/notasdedebito/'.$fileNota.'/'.$filename.'.zip');
+					$this->zip->clear_data();
+
+					unlink($filename.".xml");
+					unlink($carpetaNota.'/'.$filename.".xml");
 
 					$service = 'adjunto/wsdl/billService.wsdl';
 					//$service = 'https://e-beta.sunat.gob.pe/ol-ti-itcpfegem-beta/billService?wsdl';
@@ -2663,6 +2895,8 @@ $datos.='</SummaryDocuments>';
 					fputs($archivo, $status);
 					fclose($archivo);
 
+					$this->comprobante_pago_mdl->updateEstadoCobroEmitido($nd->fecha_emision, $nd->corre, $nd->serie);
+
 					//LEEMOS EL ARCHIVO XML
 					$responsexml = simplexml_load_file($carpetaCdr.'/'.'C'.$filename.'.xml');
 					foreach ($responsexml->xpath('//applicationResponse') as $response){ }
@@ -2676,15 +2910,6 @@ $datos.='</SummaryDocuments>';
 
 					unlink($carpetaCdr.'/'.'C'.$filename.'.xml');
 
-					//verificar respuesta SUNAT
-					if (file_exists($carpetaCdr.'/R-'.$filename.'.zip')) {
-						if ($this->zip->open($carpetaCdr.'/R-'.$filename.'.zip') === TRUE) {
-						    $this->zip->extractTo($carpetaCdr.'/');
-						    $this->zip->close();
-						}
-						unlink($carpetaCdr.'/R-'.$filename.'.zip');
-					}
-
 					$xml = file_get_contents($carpetaCdr.'/R-'.$filename.'.xml');
 					$DOM = new DOMDocument('1.0', 'utf-8');
 					$DOM->loadXML($xml);
@@ -2692,11 +2917,11 @@ $datos.='</SummaryDocuments>';
 					foreach ($respuesta as $r) {
 						$descripcion = $r->nodeValue;
 					}
-					if ($descripcion == 'La '.$tipodocumento.' numero '.$nameDoc.', ha sido aceptada') {
-						$this->comprobante_pago_mdl->updateEstadoCobroEmitido($nd->fecha_emision, $nd->corre, $nd->serie);
-					}
+					//if ($descripcion == 'La '.$tipodocumento.' numero '.$nameDoc.', ha sido aceptada') {
+						
+					//}
 				}
 			}
-		}*/
+		}
 	}
 }

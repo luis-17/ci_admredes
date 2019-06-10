@@ -15,13 +15,12 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 	 $this->db->from('rol');
 	 $this->db->join('submenu', 'submenu.idsubmenu = rol.idsubmenu'); 
 	 $this->db->join('menu', 'menu.idmenu = submenu.idmenu'); 
-	 $this->db->order_by("menu.idmenu");
+	 $this->db->order_by("menu.orden");
 	 $this->db->where('idusuario', $idusuario);
 
 	 $menu = $this->db->get();
 	 return $menu->result();
 	}
-
 
 	function getSubMenu($idusuario) {
 	 $this->db->select("menu.idmenu, submenu.descripcion as submenu, archivo");
@@ -34,6 +33,5 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 	 $submenu = $this->db->get();
 	 return $submenu->result();
 	}
-
 }
 ?>

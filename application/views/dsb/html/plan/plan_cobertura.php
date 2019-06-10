@@ -244,13 +244,13 @@
 										</div>
 									</div>
 										<div class="col-md-offset-3 col-md-7" align="center">
-											<button class="btn btn-info" type="submit" name="guardar" value="cancelar">
-												<i class="ace-icon glyphicon glyphicon-remove abigger-110"></i>
-												Cancelar
-											</button>
 											<button class="btn btn-success" type="submit" id="guardar" name="guardar" value="guardar">
 												<i class="ce-icon fa fa-check bigger-110"></i>
 												Guardar
+											</button>
+											<button class="btn btn-info" type="submit" name="guardar" value="cancelar">
+												<i class="ace-icon glyphicon glyphicon-remove abigger-110"></i>
+												Cancelar
 											</button>
 										</div>
 								</form>

@@ -55,7 +55,7 @@
 					<div class="page-content">
 						<div class="page-header">
 							<h1>	
-							Proveedor					
+							Contactos por Proveedor					
 							</h1>
 						</div>
 
@@ -218,7 +218,7 @@
 																<div class="hidden-sm hidden-xs btn-group">
 																	<div title="Editar Contacto" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
 																						<a class="boton fancybox" href="<?=base_url()?>index.php/seleccionar_contacto/<?=$c->idcontactoproveedor?>/<?=$c->idproveedor?>" data-fancybox-width="1000" data-fancybox-height="300">
-																							<i class="ace-icon fa fa-pencil bigger-120"></i>
+																							<i class="ace-icon fa fa-pencil bigger-120 blue"></i>
 																						</a>
 																			</div>
 																</div>
@@ -232,7 +232,7 @@
 																				<li>
 																					<div title="Editar Contacto" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
 																						<a class="boton fancybox" href="<?=base_url()?>index.php/seleccionar_contacto/<?=$c->idcontactoproveedor?>/<?=$c->idproveedor?>" data-fancybox-width="1000" data-fancybox-height="300">
-																							<i class="ace-icon fa fa-pencil bigger-120"></i>
+																							<i class="ace-icon fa fa-pencil bigger-120 blue"></i>
 																						</a>
 																					</div>
 																				</li>

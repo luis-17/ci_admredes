@@ -22,7 +22,7 @@
  		$this->db->from('plan_detalle dp'); 		
  		$this->db->join('variable_plan vp','dp.idvariableplan=vp.idvariableplan');
  		$this->db->join("(select GROUP_CONCAT(concat(' ',descripcion,' ',valor)) as cobertura, idplandetalle from plan_coaseguro pc inner join operador o on pc.idoperador=o.idoperador
- 			where pc.estado=1 group by idplandetalle)a",'a.idplandetalle=dp.idplandetalle');
+ 			where pc.estado=1 group by idplandetalle)a",'a.idplandetalle=dp.idplandetalle','left');
  		$this->db->where('dp.idplan',$id); 		
  		$this->db->order_by("dp.idplandetalle ");
 

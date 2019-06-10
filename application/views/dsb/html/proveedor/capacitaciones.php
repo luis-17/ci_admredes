@@ -57,6 +57,8 @@
 		<script src="<?=base_url()?>public/pagination/jquery-1.12.4.js"></script>
 		<script src="<?=base_url()?>public/pagination/jquery.dataTables.min.js"></script>
 		<script src="<?=base_url()?>public/pagination/dataTables.bootstrap.min.js"></script>
+
+
 	</head>
 
 	<body class="no-skin">
@@ -88,6 +90,7 @@
 								<a href="<?=base_url()?>">Inicio</a>
 							</li>
 							<li class="active">Proveedores</li>
+							<li class="active">Capacitaciones</li>
 						</ul><!-- /.breadcrumb -->
 
 						<!-- /section:basics/content.searchbox -->
@@ -95,10 +98,12 @@
 
 					<!-- /section:basics/content.breadcrumbs -->
 					<div class="page-content">
+						<!-- #section:settings.box -->
+
 						<!-- /section:settings.box -->
 						<div class="page-header">
 							<h1>
-								Consolidado de Proveedores
+								Capacitaciones a Proveedores
 								<small>
 									<i class="ace-icon fa fa-angle-double-right"></i>
 								</small>
@@ -106,102 +111,168 @@
 						</div><!-- /.page-header -->
 
 						<div class="row">
-							<div class="col-xs-12">
+							<div align="center">			
+							
 								<div class="widget-toolbar no-border invoice-info">
-									<a href="<?=base_url()?>index.php/nuevo_proveedor"><button class="btn btn-white btn-info">
-										Nuevo Proveedor
+									<a href="<?=base_url()?>index.php/nueva_capacitacion"><button class="btn btn-white btn-info">
+										Nueva Capacitación
 									</button></a>
 								</div>
 								<br/>
-								<br/>
-							 <div>
-							 <?php if(!empty($proveedores)){ ?>
-								<table id="example" class="table table-striped table-bordered table-hover">
-									<thead>
-										<tr>
-											<th>ID</th>
-											<th>DNI/RUC</th>
-											<th>Razón Social</th>
-											<th>Nombre Comercial</th>
-											<th>Dirección</th>
-											<th>Ubigeo</th>
-											<th>Estado</th>
-											<th></th>
-										</tr>
-									</thead>
-										
-									<tbody>
-									<?php foreach($proveedores as $pr){?>
-										<tr>
-											<td><?=$pr->idproveedor;?></td>
-											<td><?=$pr->numero_documento_pr?></td>
-											<td><?=$pr->razon_social_pr?></td>
-											<td><?=$pr->nombre_comercial_pr?></td>
-											<td><?=$pr->direccion_pr?></td>
-											<td><?php echo ''.$pr->dep.'-'.$pr->prov.'-'.$pr->dist; ?></td>
-											<td><?php if($pr->estado_pr==1){
-												echo '<a href="'.base_url().'index.php/inhabilitar_proveedor/'.$pr->idproveedor.'"><span class="label label-info label-white middle">Activo</span></a>';
-														}else{
-															echo '<a href="'.base_url().'index.php/habilitar_proveedor/'.$pr->idproveedor.'"><span class="label label-danger label-white middle">Inactivo</span></a>';
-															}?></td>
-											<td style="width: 5%;">
-												<div class="hidden-sm hidden-xs btn-group">
-													<div title="Agregar Contacto" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
-														<a class="boton fancybox" href="<?=base_url()?>index.php/proveedor_contactos/<?=$pr->idproveedor?>" data-fancybox-width="1050" data-fancybox-height="690">
-															<i class="ace-icon glyphicon glyphicon-user blue"></i>
-														</a>
-													</div>
-													<div title="Agregar Servicios" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
-														&nbsp;<a class="boton fancybox" href="<?=base_url()?>index.php/proveedor_servicios/<?=$pr->idproveedor?>" data-fancybox-width="1050" data-fancybox-height="690">
-															<i class="ace-icon glyphicon glyphicon-list bigger-120 blue"></i>
-														</a>
-													</div>
-													<div title="Editar Proveedor" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
-														&nbsp;<a href="<?=base_url()?>index.php/proveedor_editar/<?=$pr->idproveedor?>">
-															<i class="ace-icon fa fa-pencil bigger-120 blue"></i>
-														</a>
-													</div>
+								<br/>					
+								<div class="col-xs-9 col-sm-12">
+											
+								<br/>	
+										<div class="alert alert-info">
+											<form name="form" id="form" method="post" action="<?=base_url()?>index.php/capacitaciones2" class="form-horizontal">
+												<div class="profile-info-name"> Inicio: </div>
+												<div class="profile-info-name">
+													<input class="form-control input-mask-date" type="date" id="fechainicio" name="fechainicio" required="Seleccione una fecha de inicio" value="<?=$fecinicio;?>" >
 												</div>
-
-													<div class="hidden-md hidden-lg">
-														<div class="inline pos-rel">
-															<button class="btn btn-minier btn-info dropdown-toggle" data-toggle="dropdown" data-position="auto">
-																<i class="ace-icon fa fa-cog icon-only bigger-110"></i>
-															</button>
-
-															<ul class="dropdown-menu dropdown-only-icon dropdown-yellow dropdown-menu-right dropdown-caret dropdown-close">
-																	<li>
-																		<div title="Agregar Contacto" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
-																			<a class="boton fancybox" href="<?=base_url()?>index.php/proveedor_contactos/<?=$pr->idproveedor?>" data-fancybox-width="1050" data-fancybox-height="690">
-																				<i class="ace-icon glyphicon glyphicon-user blue"></i>
-																			</a>
-																		</div>
-																	</li>
-																	<li>																		
-																		<div title="Agregar Servicios" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
-																			&nbsp;<a class="boton fancybox" href="<?=base_url()?>index.php/proveedor_servicios/<?=$pr->idproveedor?>" data-fancybox-width="1050" data-fancybox-height="690">
-																				<i class="ace-icon glyphicon glyphicon-list bigger-120 blue"></i>
-																			</a>
-																		</div>
-																	</li>
-																	<li>
-																		<div title="Editar Proveedor" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
-																			&nbsp;<a href="<?=base_url()?>index.php/proveedor_editar/<?=$pr->idproveedor?>">
-																				<i class="ace-icon fa fa-pencil bigger-120 blue"></i>
-																			</a>
-																		</div>
-																	</li>
-																</ul>
-															</div>
-														</div>
-													</td>		
-											</tr>	
-											<?php } ?>								
-									</tbody>									
-								</table>
-								<?php } ?>
+												<div class="profile-info-name"> Fin: </div>
+												<div class="profile-info-name">
+													<input class="form-control input-mask-date" type="date" id="fechafin" name="fechafin" required="Seleccione una fecha de fin" value="<?=$fecfin;?>">														
+												</div>
+												<div  class="profile-info-name">
+													<button type="submit" class="btn btn-info btn-xs" name="accion" value="buscar">Buscar 
+														<i class="ace-icon glyphicon glyphicon-search bigger-110 icon-only"></i>
+													</button>
+												</div>
+											</form>	
+										</div>
+								</div>
 							</div>
-									<script>			
+						</div>
+
+						<div class="row">
+							<div class="col-xs-12">
+								<!-- PAGE CONTENT BEGINS -->
+								
+								<div class="col-xs-12">
+									<div>
+										<br>
+									<table id="example" class="table table-striped table-bordered table-hover">
+										<thead>
+											<tr>
+												<th>Fecha</th>
+												<th>Hora</th>
+												<th>Proveedor</th>
+												<th>Capacitador</th>
+												<th>Estado</th>
+												<th></th>
+											</tr>
+										</thead>
+										<tbody>
+										
+										<?php foreach($capacitaciones as $c){
+											$estado = '';
+											$titulo = '';
+											switch($c->estado){
+												case 1:
+													$titulo = "Cerrar Capacitación";
+													$estado = '<span class="label label-warning label-white middle">Programada</span>';
+													$estado2=2;
+												break;
+												case 2:
+													$titulo = "Ver Detalle";
+													$estado = '<span class="label label-info label-white middle">Realizada</span>';
+													$estado2=0;
+												break;
+												case 3:
+													$titulo = "Ver Detalle";
+													$estado = '<span class="label label-danger label-white middle">No Realizada</span>';
+													$estado2=0;
+												break;
+											}?>
+											<tr>
+												<td><?=$c->fecha_programada?></td>
+												<td><?=$c->hora_programada?></td>
+												<td><?=$c->nombre_comercial_pr?></td>
+												<td><?=$c->username?></td>
+												<td><?=$estado?></td>
+												<td>
+													<div class="hidden-sm hidden-xs btn-group">													
+													<?php if($c->estado==1){?>
+														<div title="Editar Capacitación" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
+															&nbsp;<a href="<?=base_url()?>index.php/editar_capacitacion/<?=$c->idcapacitacion?>">
+																<i class="ace-icon fa fa-pencil bigger-120 blue"></i>
+															</a>
+														</div>
+													<?php } ?>
+														<div title="<?=$titulo?>" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
+															&nbsp;<a class="boton fancybox" href="<?=base_url()?>index.php/cerrar_capacitacion/<?=$c->idcapacitacion?>/<?=$estado2?>" data-fancybox-width="950" data-fancybox-height="690">
+																<i class="ace-icon fa fa-check-square-o bigger-120 blue"></i>
+															</a>
+														</div>
+													<?php if($c->estado==1){?>
+														<div title="Eliminar Capacitación" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
+															&nbsp;<a class="boton fancybox" href="<?=base_url()?>index.php/cerrar_capacitacion/<?=$c->idcapacitacion?>/3" data-fancybox-width="950" data-fancybox-height="690">
+																<i class="ace-icon glyphicon glyphicon-trash bigger-120 blue"></i>
+															</a>
+														</div>
+													<?php } ?>
+														<?php if($c->estado==2){?>
+															<div title="Acta de Capacitación" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
+																&nbsp;<a class="boton fancybox" href="<?=base_url()?>uploads/capacitaciones/<?=$c->idcapacitacion?>.pdf" data-fancybox-width="950" data-fancybox-height="690">
+																	<i class="ace-icon glyphicon glyphicon-file bigger-110 blue"></i>
+																</a>
+															</div>
+														<?php } ?>
+													</div>
+
+														<div class="hidden-md hidden-lg">
+															<div class="inline pos-rel">
+																<button class="btn btn-minier btn-info dropdown-toggle" data-toggle="dropdown" data-position="auto">
+																	<i class="ace-icon fa fa-cog icon-only bigger-110"></i>
+																</button>
+
+																<ul class="dropdown-menu dropdown-only-icon dropdown-yellow dropdown-menu-right dropdown-caret dropdown-close">
+																	<?php if($c->estado==1){?>
+																		<li>
+																			<div title="Editar Capacitación" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
+																				&nbsp;<a href="<?=base_url()?>index.php/editar_capacitacion/<?=$c->idcapacitacion?>">
+																					<i class="ace-icon fa fa-pencil bigger-120 blue"></i>
+																				</a>
+																			</div>
+																		</li>
+
+																	<?php } ?>
+																		<li>
+																			<div title="<?=$titulo?>" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
+																				&nbsp;<a class="boton fancybox" href="<?=base_url()?>index.php/cerrar_capacitacion/<?=$c->idcapacitacion?>/<?=$estado2?>" data-fancybox-width="950" data-fancybox-height="690">
+																					<i class="ace-icon fa fa-check-square-o bigger-120 blue"></i>
+																				</a>
+																			</div>
+																		</li>
+
+																	<?php if($c->estado==1){?>
+																		<li>
+																			<div title="Eliminar Capacitación" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
+																				&nbsp;<a class="boton fancybox" href="<?=base_url()?>index.php/cerrar_capacitacion/<?=$c->idcapacitacion?>/3" data-fancybox-width="950" data-fancybox-height="690">
+																					<i class="ace-icon glyphicon glyphicon-trash bigger-120 blue"></i>
+																				</a>
+																			</div>
+																		</li>
+																	<?php } ?>
+																	<?php if($c->estado==2){?>
+																		<li>
+																			<div title="Acta de Capacitación" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
+																				&nbsp;<a class="boton fancybox" href="<?=base_url()?>uploads/capacitaciones/<?=$c->idcapacitacion?>.pdf" data-fancybox-width="950" data-fancybox-height="690">
+																					<i class="ace-icon glyphicon glyphicon-file bigger-110 blue"></i>
+																				</a>
+																			</div>
+																		</li>
+																	<?php } ?>	
+																	</ul>
+																</div>
+															</div>
+														</td>
+													</tr>
+												<?php } ?>
+										</tbody>
+									</table>								
+								</div><!-- PAGE CONTENT ENDS -->	
+								<script>			
 										//para paginacion
 										$(document).ready(function() {
 										$('#example').DataTable( {
@@ -209,10 +280,7 @@
 										} );
 									} );
 									</script>	
-								<!-- PAGE CONTENT BEGINS -->
-								<div class="tabbable" id='tabbable'></div>
-								 <div align="right" id="pagination_link"></div>
-								<!-- PAGE CONTENT ENDS -->
+								</div>						
 							</div><!-- /.col -->
 						</div><!-- /.row -->
 					</div><!-- /.page-content -->
