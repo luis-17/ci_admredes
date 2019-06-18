@@ -315,6 +315,10 @@ $route['editar_capacitacion/(:any)'] = 'Proveedor_cnt/editar_capacitacion/$1';
 $route['cerrar_capacitacion/(:any)/(:any)'] = 'Proveedor_cnt/cerrar_capacitacion/$1/$2';
 $route['save_finCapacitacion'] = 'Proveedor_cnt/save_finCapacitacion';
 $route['capacitaciones2'] = 'Proveedor_cnt/capacitaciones2';
+$route['centro_costos'] = 'Plan_cnt/centro_costos';
+$route['add_cc/(:any)'] = 'Plan_cnt/add_cc/$1';
+$route['reg_cc'] = 'Plan_cnt/reg_cc';
+$route['red_medica'] = 'Proveedor_cnt/red_medica';
 
 $route['consultar_postVenta'] = 'Reportes_cnt/consultar_postVenta';
 $route['consultar_postVenta_buscar'] = 'Reportes_cnt/consultar_postVenta_buscar';

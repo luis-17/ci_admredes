@@ -407,7 +407,6 @@ class Liquidacion_cnt extends CI_Controller {
 		$data['idpago'] = $idpago;
 		$data['nro_operacion'] = $_POST['nro_operacion'];
 		$data['fecha'] = $_POST['fecha'];
-		$data['correo'] = $_POST['correo'];
 		$data['idusuario'] = $idusuario;
 
 		$this->liquidacion_mdl->save_Pago($data);
@@ -425,6 +424,7 @@ class Liquidacion_cnt extends CI_Controller {
 		    $detracciones=0;
 
 		    foreach ($liquidacion as $l){
+		    	$idproveedor = $l->idproveedor;
 		    	$razon_social = $l->razon_social_pr;
 		    	$ruc = $l->numero_documento_pr;
 		    	$banco = $l->descripcion;
@@ -437,7 +437,6 @@ class Liquidacion_cnt extends CI_Controller {
 		    	$cta_detracciones = $l->cta_detracciones;
 		    	$colaborador = $l->colaborador;
 		    	$detracciones = $l->detraccion;
-		    	$email_notifica = $l->email_notifica;
 		    	$fecha = $l->fecha_pago;
 		    	$fecha = date('d/m/Y',strtotime($fecha));
 
@@ -471,18 +470,20 @@ class Liquidacion_cnt extends CI_Controller {
 	            $this->pdf->SetFont('Arial','B',10);
 	            $this->pdf->Cell(50,6,utf8_decode("N° Documentos:"),0,0,'L',false);
 	            $this->pdf->Ln();
-	            $this->pdf->SetFont('Arial','BI',10);
-	            $this->pdf->Cell(35,6,utf8_decode("N° Factura"),1,0,'C',false);
-	            $this->pdf->Cell(35,6,utf8_decode("N° Orden Atención"),1,0,'C',false);
-	            $this->pdf->Cell(90,6,utf8_decode("Paciente"),1,0,'C',false);
+	           	$this->pdf->SetFont('Arial','BI',9);
+	            $this->pdf->Cell(20,6,utf8_decode("CC"),1,0,'C',false);
+	            $this->pdf->Cell(30,6,utf8_decode("N° Factura"),1,0,'C',false);
+	            $this->pdf->Cell(30,6,utf8_decode("N° Orden Atención"),1,0,'C',false);
+	            $this->pdf->Cell(80,6,utf8_decode("Paciente"),1,0,'C',false);
 	            $this->pdf->Cell(30,6,utf8_decode("Importe"),1,0,'C',false);
 	            $this->pdf->Ln();
-	            $this->pdf->SetFont('Arial','',10);
+	            $this->pdf->SetFont('Arial','',9);
 	            foreach ($liquidacion_det as $ld) {            
-	            $this->pdf->Cell(35,6,utf8_decode($ld->liqdetalle_numfact),1,0,'L',false);
-	            $this->pdf->Cell(35,6,utf8_decode("OA".$ld->num_orden_atencion),1,0,'L',false);
-	            $this->pdf->Cell(90,6,utf8_decode($ld->afiliado),1,0,'L',false);
-	            $this->pdf->Cell(30,6,number_format((float)$ld->neto, 2, '.', ''),1,0,'R',false);
+	            $this->pdf->Cell(30,6,utf8_decode($ld->centro_costo),1,0,'C',false);
+	            $this->pdf->Cell(30,6,utf8_decode($ld->liqdetalle_numfact),1,0,'L',false);
+	            $this->pdf->Cell(30,6,utf8_decode("OA".$ld->num_orden_atencion),1,0,'L',false);
+	            $this->pdf->Cell(80,6,utf8_decode($ld->afiliado),1,0,'L',false);
+	            $this->pdf->Cell(20,6,number_format((float)$ld->neto, 2, '.', ''),1,0,'R',false);
 	            $this->pdf->Ln();
 	            }
 	            $detracciones = number_format((float)$detracciones, 2, '.', '');
@@ -502,7 +503,7 @@ class Liquidacion_cnt extends CI_Controller {
 	            $this->pdf->Cell(45,6,utf8_decode("IGV"),1,0,'R',false);
 	            $this->pdf->Cell(45,6,$igv,1,0,'R',false);	
 	            $this->pdf->Cell(5,6,"",0,0,'L',false);            
-	            $this->pdf->Cell(45,6,utf8_decode("N° CTA DETARCCIONES"),1,0,'R',false);
+	            $this->pdf->Cell(45,6,utf8_decode("N° CTA DETRACCIONES"),1,0,'R',false);
 	            $this->pdf->Cell(0,6,utf8_decode($cta_detracciones),1,0,'R',false);
 	            $this->pdf->Ln();
 	            $this->pdf->Cell(45,6,utf8_decode("TOTAL"),1,0,'R',false);
@@ -583,18 +584,25 @@ class Liquidacion_cnt extends CI_Controller {
 			
 			$mail = new PHPMailer;	
 			$mail->isSMTP();
-	        $mail->Host     = 'relay-hosting.secureserver.net';
+	        //$mail->Host     = 'relay-hosting.secureserver.net';
+	       	$mail->Host = 'localhost';
 	        $mail->SMTPAuth = false;
 	        $mail->Username = '';
 	        $mail->Password = '';
 	        $mail->SMTPSecure = 'false';
 	        $mail->Port     = 25;	
 			// Armo el FROM y el TO
+
+			$destinatarios = $this->liquidacion_mdl->getDestinatarios($idproveedor);
 			$mail->setFrom($correo_laboral, 'Red Salud');
 			$mail->addAddress($correo_laboral, $nombres_col);
-			$mail->addAddress($email_notifica, $razon_social);
 			$mail->addAddress("pvigil@red-salud.com", "Pilar Vigil");			
 			$mail->addAddress("aluna@red-salud.com", "Angie Luna");
+			if(!empty($destinatarios)){
+				foreach ($destinatarios as $d) {
+					$mail->addAddress($d->email_cp, $d->nombres_cp);
+				}
+			}
 			// El asunto
 			$mail->Subject = "NOTIFICACION RED SALUD: LIQUIDACION DE FACTURAS";
 			// El cuerpo del mail (puede ser HTML)
@@ -649,6 +657,7 @@ class Liquidacion_cnt extends CI_Controller {
 		    $detracciones=0;
 
 		    foreach ($liquidacion as $l){
+		    	$idproveedor = $l->idproveedor;
 		    	$razon_social = $l->razon_social_pr;
 		    	$ruc = $l->numero_documento_pr;
 		    	$banco = $l->descripcion;
@@ -694,17 +703,19 @@ class Liquidacion_cnt extends CI_Controller {
 	            $this->pdf->SetFont('Arial','B',10);
 	            $this->pdf->Cell(50,6,utf8_decode("N° Documentos:"),0,0,'L',false);
 	            $this->pdf->Ln();
-	            $this->pdf->SetFont('Arial','BI',10);
-	            $this->pdf->Cell(35,6,utf8_decode("N° Factura"),1,0,'C',false);
-	            $this->pdf->Cell(35,6,utf8_decode("N° Orden Atención"),1,0,'C',false);
-	            $this->pdf->Cell(90,6,utf8_decode("Paciente"),1,0,'C',false);
+	            $this->pdf->SetFont('Arial','BI',9);
+	            $this->pdf->Cell(20,6,utf8_decode("CC"),1,0,'C',false);
+	            $this->pdf->Cell(30,6,utf8_decode("N° Factura"),1,0,'C',false);
+	            $this->pdf->Cell(30,6,utf8_decode("N° Orden Atención"),1,0,'C',false);
+	            $this->pdf->Cell(80,6,utf8_decode("Paciente"),1,0,'C',false);
 	            $this->pdf->Cell(30,6,utf8_decode("Importe"),1,0,'C',false);
 	            $this->pdf->Ln();
-	            $this->pdf->SetFont('Arial','',10);
+	            $this->pdf->SetFont('Arial','',9);
 	            foreach ($liquidacion_det as $ld) {            
-	            $this->pdf->Cell(35,6,utf8_decode($ld->liqdetalle_numfact),1,0,'L',false);
-	            $this->pdf->Cell(35,6,utf8_decode("OA".$ld->num_orden_atencion),1,0,'L',false);
-	            $this->pdf->Cell(90,6,utf8_decode($ld->afiliado),1,0,'L',false);
+	            $this->pdf->Cell(20,6,utf8_decode($ld->centro_costo),1,0,'C',false);
+	            $this->pdf->Cell(30,6,utf8_decode($ld->liqdetalle_numfact),1,0,'L',false);
+	            $this->pdf->Cell(30,6,utf8_decode("OA".$ld->num_orden_atencion),1,0,'L',false);
+	            $this->pdf->Cell(80,6,utf8_decode($ld->afiliado),1,0,'L',false);
 	            $this->pdf->Cell(30,6,number_format((float)$ld->neto, 2, '.', ''),1,0,'R',false);
 	            $this->pdf->Ln();
 	            }
@@ -725,7 +736,7 @@ class Liquidacion_cnt extends CI_Controller {
 	            $this->pdf->Cell(45,6,utf8_decode("IGV"),1,0,'R',false);
 	            $this->pdf->Cell(45,6,$igv,1,0,'R',false);	
 	            $this->pdf->Cell(5,6,"",0,0,'L',false);            
-	            $this->pdf->Cell(45,6,utf8_decode("N° CTA DETARCCIONES"),1,0,'R',false);
+	            $this->pdf->Cell(45,6,utf8_decode("N° CTA DETRACCIONES"),1,0,'R',false);
 	            $this->pdf->Cell(0,6,utf8_decode($cta_detracciones),1,0,'R',false);
 	            $this->pdf->Ln();
 	            $this->pdf->Cell(45,6,utf8_decode("TOTAL"),1,0,'R',false);
@@ -817,17 +828,19 @@ class Liquidacion_cnt extends CI_Controller {
 	            $this->pdf->SetFont('Arial','B',10);
 	            $this->pdf->Cell(50,6,utf8_decode("N° Documentos:"),0,0,'L',false);
 	            $this->pdf->Ln();
-	            $this->pdf->SetFont('Arial','BI',10);
-	            $this->pdf->Cell(35,6,utf8_decode("N° Factura"),1,0,'C',false);
-	            $this->pdf->Cell(35,6,utf8_decode("N° Orden Atención"),1,0,'C',false);
-	            $this->pdf->Cell(90,6,utf8_decode("Paciente"),1,0,'C',false);
+	            $this->pdf->SetFont('Arial','BI',9);
+	            $this->pdf->Cell(20,6,utf8_decode("CC"),1,0,'C',false);
+	            $this->pdf->Cell(30,6,utf8_decode("N° Factura"),1,0,'C',false);
+	            $this->pdf->Cell(30,6,utf8_decode("N° Orden Atención"),1,0,'C',false);
+	            $this->pdf->Cell(80,6,utf8_decode("Paciente"),1,0,'C',false);
 	            $this->pdf->Cell(30,6,utf8_decode("Importe"),1,0,'C',false);
 	            $this->pdf->Ln();
-	            $this->pdf->SetFont('Arial','',10);
+	            $this->pdf->SetFont('Arial','',9);
 	            foreach ($liquidacion_det as $ld) {            
-	            $this->pdf->Cell(35,6,utf8_decode($ld->liqdetalle_numfact),1,0,'L',false);
-	            $this->pdf->Cell(35,6,utf8_decode("OA".$ld->num_orden_atencion),1,0,'L',false);
-	            $this->pdf->Cell(90,6,utf8_decode($ld->afiliado),1,0,'L',false);
+	            $this->pdf->Cell(20,6,utf8_decode($ld->centro_costo),1,0,'C',false);
+	            $this->pdf->Cell(30,6,utf8_decode($ld->liqdetalle_numfact),1,0,'L',false);
+	            $this->pdf->Cell(30,6,utf8_decode("OA".$ld->num_orden_atencion),1,0,'L',false);
+	            $this->pdf->Cell(80,6,utf8_decode($ld->afiliado),1,0,'L',false);
 	            $this->pdf->Cell(30,6,number_format((float)$ld->neto, 2, '.', ''),1,0,'R',false);
 	            $this->pdf->Ln();
 	            }
@@ -848,7 +861,7 @@ class Liquidacion_cnt extends CI_Controller {
 	            $this->pdf->Cell(45,6,utf8_decode("IGV"),1,0,'R',false);
 	            $this->pdf->Cell(45,6,$igv,1,0,'R',false);	
 	            $this->pdf->Cell(5,6,"",0,0,'L',false);            
-	            $this->pdf->Cell(45,6,utf8_decode("N° CTA DETARCCIONES"),1,0,'R',false);
+	            $this->pdf->Cell(45,6,utf8_decode("N° CTA DETRACCIONES"),1,0,'R',false);
 	            $this->pdf->Cell(0,6,utf8_decode($cta_detracciones),1,0,'R',false);
 	            $this->pdf->Ln();
 	            $this->pdf->Cell(45,6,utf8_decode("TOTAL"),1,0,'R',false);
@@ -896,7 +909,6 @@ class Liquidacion_cnt extends CI_Controller {
 	function reenviar_liquidacion(){
 		$id = $_POST['id'];
 		$idpago = $id;
-		$correo = $_POST['correo'];
 		//Crear formato de liquidación
         $user = $this->session->userdata('user');
 		extract($user);
@@ -916,6 +928,7 @@ class Liquidacion_cnt extends CI_Controller {
 		    $detracciones=0;
 
 		    foreach ($liquidacion as $l){
+		    	$idproveedor = $l->idproveedor;
 		    	$razon_social = $l->razon_social_pr;
 		    	$ruc = $l->numero_documento_pr;
 		    	$banco = $l->descripcion;
@@ -928,7 +941,6 @@ class Liquidacion_cnt extends CI_Controller {
 		    	$cta_detracciones = $l->cta_detracciones;
 		    	$colaborador = $l->colaborador;
 		    	$detracciones = $l->detraccion;
-		    	$email_notifica = $l->email_notifica;
 		    	$fecha = $l->fecha_pago;
 		    	$fecha = date('d/m/Y',strtotime($fecha));
 
@@ -962,17 +974,19 @@ class Liquidacion_cnt extends CI_Controller {
 	            $this->pdf->SetFont('Arial','B',10);
 	            $this->pdf->Cell(50,6,utf8_decode("N° Documentos:"),0,0,'L',false);
 	            $this->pdf->Ln();
-	            $this->pdf->SetFont('Arial','BI',10);
-	            $this->pdf->Cell(35,6,utf8_decode("N° Factura"),1,0,'C',false);
-	            $this->pdf->Cell(35,6,utf8_decode("N° Orden Atención"),1,0,'C',false);
-	            $this->pdf->Cell(90,6,utf8_decode("Paciente"),1,0,'C',false);
+	            $this->pdf->SetFont('Arial','BI',9);
+	            $this->pdf->Cell(20,6,utf8_decode("CC"),1,0,'C',false);
+	            $this->pdf->Cell(30,6,utf8_decode("N° Factura"),1,0,'C',false);
+	            $this->pdf->Cell(30,6,utf8_decode("N° Orden Atención"),1,0,'C',false);
+	            $this->pdf->Cell(80,6,utf8_decode("Paciente"),1,0,'C',false);
 	            $this->pdf->Cell(30,6,utf8_decode("Importe"),1,0,'C',false);
 	            $this->pdf->Ln();
-	            $this->pdf->SetFont('Arial','',10);
+	            $this->pdf->SetFont('Arial','',9);
 	            foreach ($liquidacion_det as $ld) {            
-	            $this->pdf->Cell(35,6,utf8_decode($ld->liqdetalle_numfact),1,0,'L',false);
-	            $this->pdf->Cell(35,6,utf8_decode("OA".$ld->num_orden_atencion),1,0,'L',false);
-	            $this->pdf->Cell(90,6,utf8_decode($ld->afiliado),1,0,'L',false);
+	            $this->pdf->Cell(20,6,utf8_decode($ld->centro_costo),1,0,'C',false);
+	            $this->pdf->Cell(30,6,utf8_decode($ld->liqdetalle_numfact),1,0,'L',false);
+	            $this->pdf->Cell(30,6,utf8_decode("OA".$ld->num_orden_atencion),1,0,'L',false);
+	            $this->pdf->Cell(80,6,utf8_decode($ld->afiliado),1,0,'L',false);
 	            $this->pdf->Cell(30,6,number_format((float)$ld->neto, 2, '.', ''),1,0,'R',false);
 	            $this->pdf->Ln();
 	            }
@@ -993,7 +1007,7 @@ class Liquidacion_cnt extends CI_Controller {
 	            $this->pdf->Cell(45,6,utf8_decode("IGV"),1,0,'R',false);
 	            $this->pdf->Cell(45,6,$igv,1,0,'R',false);	
 	            $this->pdf->Cell(5,6,"",0,0,'L',false);            
-	            $this->pdf->Cell(45,6,utf8_decode("N° CTA DETARCCIONES"),1,0,'R',false);
+	            $this->pdf->Cell(45,6,utf8_decode("N° CTA DETRACCIONES"),1,0,'R',false);
 	            $this->pdf->Cell(0,6,utf8_decode($cta_detracciones),1,0,'R',false);
 	            $this->pdf->Ln();
 	            $this->pdf->Cell(45,6,utf8_decode("TOTAL"),1,0,'R',false);
@@ -1075,19 +1089,24 @@ class Liquidacion_cnt extends CI_Controller {
 			
 			$mail = new PHPMailer;	
 			$mail->isSMTP();
-	        $mail->Host     = 'relay-hosting.secureserver.net';
+	        //$mail->Host     = 'relay-hosting.secureserver.net';
+	        $mail->Host = 'localhost';
 	        $mail->SMTPAuth = false;
 	        $mail->Username = '';
 	        $mail->Password = '';
 	        $mail->SMTPSecure = 'false';
 	        $mail->Port     = 25;	
 			// Armo el FROM y el TO
+			$destinatarios = $this->liquidacion_mdl->getDestinatarios($idproveedor);
 			$mail->setFrom($correo_laboral, 'Red Salud');
 			$mail->addAddress($correo_laboral, $nombres_col);
-			$mail->addAddress($email_notifica, $razon_social);
 			$mail->addAddress("pvigil@red-salud.com", "Pilar Vigil");
 			$mail->addAddress("aluna@red-salud.com", "Angie Luna");
-			$mail->addAddress($correo,$correo);
+			if(!empty($destinatarios)){
+				foreach ($destinatarios as $d) {
+					$mail->addAddress($d->email_cp, $d->nombres_cp);
+				}
+			}
 			// El asunto
 			$mail->Subject = "NOTIFICACION RED SALUD: LIQUIDACION DE FACTURAS";
 			// El cuerpo del mail (puede ser HTML)
@@ -1127,6 +1146,5 @@ class Liquidacion_cnt extends CI_Controller {
 				parent.location.reload(true);
 				parent.$.fancybox.close();
 				</script>";
-
 	}
 }

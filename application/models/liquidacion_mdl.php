@@ -150,8 +150,7 @@
 		(
 			'numero_operacion' => $data['nro_operacion'],
 			'fecha_pago' => $data['fecha'],
-			'usuario_paga' => $data['idusuario'],
-			'email_notifica' => $data['correo']
+			'usuario_paga' => $data['idusuario']
 		);
 
 		$this->db->where('idpago', $data['idpago']);
@@ -159,7 +158,7 @@
 	}
 
 	function liquidacionpdf($id){
-		$this->db->select("pr.razon_social_pr, pr.numero_documento_pr, sum(liqdetalle_neto) as total, b.descripcion,fp.descripcion_fp, p.numero_operacion, coalesce(pr.cta_corriente,'-') as cta_corriente, coalesce(pr.cta_detracciones,'-') as cta_detracciones, concat(ap_paterno_col,' ',ap_materno_col,' ',nombres_col) as colaborador, p.fecha_pago,lg.detraccion, p.email_notifica");
+		$this->db->select("pr.idproveedor, pr.razon_social_pr, pr.numero_documento_pr, sum(liqdetalle_neto) as total, b.descripcion,fp.descripcion_fp, p.numero_operacion, coalesce(pr.cta_corriente,'-') as cta_corriente, coalesce(pr.cta_detracciones,'-') as cta_detracciones, concat(ap_paterno_col,' ',ap_materno_col,' ',nombres_col) as colaborador, p.fecha_pago,lg.detraccion, p.email_notifica");
 		$this->db->from("liquidacion l");
 		$this->db->join("liquidacion_detalle ld","l.liquidacionId=ld.liquidacionId");
 		$this->db->join("liquidacion_grupodetalle lgd","ld.liqdetalleid=lgd.liqdetalleid","left");
@@ -195,17 +194,18 @@
 	}
 
 	function liquidacionpdf_detalle($id){
-		$this->db->select("ld.liqdetalle_numfact, sum(liqdetalle_neto) as neto, detraccion, GROUP_CONCAT(distinct s.num_orden_atencion) as num_orden_atencion, GROUP_CONCAT(distinct CONCAT(aseg_ape1,' ',aseg_ape2,' ',aseg_nom1,' ',coalesce(aseg_nom2)))as afiliado");
-		$this->db->from("liquidacion_detalle ld");
-		$this->db->join("liquidacion l","l.liquidacionId=ld.liquidacionId");
-		$this->db->join("siniestro s","s.idsiniestro = l.idsiniestro");
-		$this->db->join("asegurado a","a.aseg_id=s.idasegurado");
-		$this->db->join("liquidacion_grupodetalle lgd","ld.liqdetalleid = lgd.liqdetalleid");
-		$this->db->join("liquidacion_grupo lg","lg.liqgrupo_id=lgd.liqgrupo_id");
-		$this->db->where("lg.liqgrupo_id",$id);
-		$this->db->group_by("liqdetalle_numfact");
-
-		$query = $this->db->get();
+		$query = $this->db->query("select ld.liqdetalle_numfact, sum(liqdetalle_neto) as neto, detraccion, GROUP_CONCAT(distinct s.num_orden_atencion) as num_orden_atencion, 
+						GROUP_CONCAT(distinct CONCAT(aseg_ape1,' ',aseg_ape2,' ',aseg_nom1,' ',coalesce(aseg_nom2)))as afiliado, plan_id, centro_costo
+						from liquidacion_detalle ld
+						join liquidacion l on l.liquidacionId=ld.liquidacionId
+						join siniestro s on s.idsiniestro = l.idsiniestro
+						join certificado c on c.cert_id=s.idcertificado
+						join plan pl on pl.idplan=c.plan_id
+						join asegurado a on a.aseg_id=s.idasegurado
+						join liquidacion_grupodetalle lgd on ld.liqdetalleid = lgd.liqdetalleid
+						join liquidacion_grupo lg on lg.liqgrupo_id=lgd.liqgrupo_id
+						where lg.liqgrupo_id = $id
+						group by liqdetalle_numfact ;");
 		return $query->result();
 	}
 
@@ -375,6 +375,11 @@
 		$this->db->join("usuario u","u.idusuario=lg.usuario_genera");
 		$this->db->where("p.idpago",$id);
 		$query = $this->db->get();
+		return $query->result();
+	}
+
+	function getDestinatarios($idproveedor){
+		$query = $this->db->query("select email_cp, nombres_cp from contacto_proveedor where idcargocontacto=12 and idproveedor=$idproveedor");
 		return $query->result();
 	}
 

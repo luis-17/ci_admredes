@@ -80,15 +80,22 @@
 								<!-- PAGE CONTENT BEGINS -->
 								<div class="widget-main">
 									<div class="col-xs-12"></br>
+										<div style="text-align: right;" class="col-xs-12">											 
+			  								<div class="">
+												<h4 class="">
+													 <a class="" title="Descargar Red Médica" href="<?=base_url()?>index.php/red_medica"><img style="width: 35px;" src="<?=base_url()?>public/assets/images/aqui.gif"/> <b>Descargar Red Médica<b></a>													
+												</h4>
+											</div>											
+										</div>
 										<div class="col-xs-3"> <img style="width: 90%;" src="<?=base_url()?>public/assets/images/3.png"/></div>							
 			  							<div class="col-xs-9"><p><h2 style="font-family: 'Montserrat', sans-serif; font-size:36px; color: #161b52;">Hola <?php $user = strtoupper($nombres_col.' '.$ap_paterno_col);
 			  							echo $user; ?>!!</h2></p>
 			  							<p><h2 style="color: #B61414;">¡Te damos la bienvenida al sistema Red Salud Admin!</h2></p></div>
 			  							<div class="col-xs-3"><br><br><br></div>
-			  							<div class="col-xs-9"> 
+			  							<div class="col-xs-9">
 			  								<div class="well well-sm">
 												<h4 class="lighter no-margin-bottom">
-													 <img style="width: 2%;" src="<?=base_url()?>public/assets/images/call_center.png"/>
+													 <img style="width: 25px;" src="<?=base_url()?>public/assets/images/call_center.png"/>
 													<b>Brinda soporte al afiliado</b>
 												</h4>
 											</div>

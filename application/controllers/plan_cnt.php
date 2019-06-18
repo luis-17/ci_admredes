@@ -253,7 +253,7 @@ class plan_cnt extends CI_Controller {
 			
 			$mail = new PHPMailer;	
 			$mail->isSMTP();
-	        $mail->Host     = 'relay-hosting.secureserver.net';;
+	        $mail->Host     = 'localhost';;
 	        $mail->SMTPAuth = false;
 	        $mail->Username = '';
 	        $mail->Password = '';
@@ -793,5 +793,53 @@ class plan_cnt extends CI_Controller {
 				</script>";
  	}
 
+ 	public function centro_costos(){
+ 		//load session library
+		$this->load->library('session');
+
+		//restrict users to go to home if not logged in
+		if($this->session->userdata('user')){
+			//$this->load->view('home');
+
+			$user = $this->session->userdata('user');
+			extract($user);
+
+			$menuLista = $this->menu_mdl->getMenu($idusuario);
+			$data['menu1'] = $menuLista;
+
+			$submenuLista = $this->menu_mdl->getSubMenu($idusuario);
+			$data['menu2'] = $submenuLista;
+
+			$planes = $this->plan_mdl->getPlanes();
+			$data['planes'] = $planes;
+
+			$this->load->view('dsb/html/tablas_maestras/centro_costos.php',$data);
+		}
+		else{
+			redirect('/');
+		}
+ 	}
+
+ 	public function add_cc($id){
+ 		$plan = $this->plan_mdl->getPlan($id);
+ 		foreach ($plan as $p) {
+ 			$data['centro_costo'] = $p->centro_costo;
+ 			$data['cliente'] = $p->nombre_comercial_cli;
+ 			$data['nombre_plan'] = $p->nombre_plan;
+ 		}
+ 		$data['idplan'] = $id;
+ 		$this->load->view('dsb/html/tablas_maestras/add_cc.php',$data);
+ 	}
+
+ 	public function reg_cc(){
+ 		$data['idplan'] = $_POST['idplan'];
+ 		$data['cc'] = $_POST['numero'];
+ 		$this->plan_mdl->up_cc($data);
+		echo "<script>
+				alert('Se actualizó el centro de costo con éxito.');
+				parent.location.reload(true);
+				parent.$.fancybox.close();
+				</script>";
+ 	}
  	
 }

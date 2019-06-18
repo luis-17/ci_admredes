@@ -10,11 +10,11 @@
         }
         // El encabezado del PDF
         public function Header(){
-            $this->Image(base_url().'/public/assets/avatars/red-salud.jpg',6,4,70);
+            $this->Image(base_url().'public/assets/avatars/logo.jpg',10,8,80);
             $this->Ln('5');
-            $this->SetFont('Arial','B',13);            
+            $this->SetFont('Arial','B',11);            
             $this->Cell(30);
-            $this->Cell(160,10,'RUC: 20600258894',120,0,'R');
+            $this->Cell(160,10,'HEALTH CARE ADMINISTRATION RED SALUD S.A.C.',120,0,'R');
             $this->Ln('5');
             $this->SetFont('Arial','B',8);
             $this->Cell(30);

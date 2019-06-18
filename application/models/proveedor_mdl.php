@@ -331,10 +331,28 @@
 		return $query->row_array();
 	}
 
-	function save_Cap($data){
-		$array = array('comentario' => $data['comentario'], 'estado' => $data['estado']);
-		$this->db->where('idcapacitacion',$data['idcapacitacion']);
-		$this->db->update('proveedor_capacitacion',$array);
+	function getProveedores2(){
+		$this->db->select('UPPER(nombre_comercial_pr) as nombre_comercial_pr, UPPER(direccion_pr) as direccion_pr, ud.descripcion_ubig as dep, up.descripcion_ubig as prov, udi.descripcion_ubig as dist');
+	 	$this->db->from('proveedor p');
+		$this->db->join("ubigeo ud","cod_departamento_pr=ud.iddepartamento and idprovincia='00' and ud.iddistrito='00'",'left');
+	 	$this->db->join("ubigeo up","cod_provincia_pr=up.idprovincia and up.iddistrito='00' and up.iddepartamento=ud.iddepartamento",'left');
+	 	$this->db->join("ubigeo udi","cod_distrito_pr=udi.iddistrito and up.iddepartamento=udi.iddepartamento and udi.idprovincia=up.idprovincia",'left');
+	 	$this->db->where("estado_pr",1);
+	 	$this->db->where("idproveedor not in (182, 138)");
+	 	$this->db->order_by("dep,prov,dist");
+	$proveedores = $this->db->get();
+	return $proveedores->result();
 	}
+
+	function getPersonal(){
+		$query = $this->db->query("select correo_laboral, nombres_col from colaborador c inner join usuario u on c.idusuario=u.idusuario where u.estado_us=1");
+		return $query->result();
+	}
+
+	function getProveedor($id){
+		$query = $this->db->query("select * from proveedor where idproveedor=$id");
+		return $query->row_array();
+	}
+ 
 }
 ?>

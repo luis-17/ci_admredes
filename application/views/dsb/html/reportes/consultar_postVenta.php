@@ -191,7 +191,7 @@
 																<th rowspan="2">Item</th>
 																<th colspan="2" align="center">Teléfono</th>														
 																<th colspan="2" align="center">Correo Electrónico</th>
-																<th colspan="2" align="center">Total</th>
+																<th colspan="2" align="center">Total Post Venta</th>
 															</tr>
 															<tr>														
 																<td width="10%" align="center">Cantidad</td>
@@ -211,10 +211,12 @@
 																	$porc_telf = round((($contestaron_telf*100)/$total_telf),2);
 																	$porc_nocontestaron = round((($no_contestaron*100)/$total_telf),2);
 																	$porc_noopinan = round((($no_opinan*100)/$total_telf),2);
+																	$totporctelf = round((($total_telf*100)/$atenciones),2);
 																}else{
 																	$porc_telf = 0;
 																	$porc_nocontestaron = 0;
 																	$porc_noopinan = 0;
+																	$totporctelf = 0;
 																}
 																if($total_encuestas>0){
 																	$porc_contestaron = round((($total_contestaron*100)/$total_encuestas),2);
@@ -231,8 +233,10 @@
 																}
 																if($contestaron_correo>0){
 																	$porc_correo = round((($contestaron_correo*100)/$contestaron_correo),2);
+																	$totporcorreo = round((($contestaron_correo*100)/$atenciones),2);
 																}else{
 																	$porc_correo = 0;
+																	$totporcorreo = 0;
 																}	
 															?>
 															
@@ -264,15 +268,20 @@
 																<td align="right"><?=$porc_noop?>%</td>
 															</tr>
 															<tr>
-																<th rowspan="2">TOTAL</th>
+																<td rowspan="2">TOTAL POST VENTA</td>
 																<td align="right" colspan="2"><?=$total_telf?></td>														
 																<td align="right" colspan="2"><?=$contestaron_correo?></td>
-																<td align="right" colspan="2"><?=$total_encuestas?></td>
+																<td style="vertical-align: middle;" rowspan="2" align="right" colspan="2"><?=$total_encuestas?></td>
 															</tr>
 															<tr>																
 																<td align="right" colspan="2"><?=$porc_telf2?>%</td>														
 																<td align="right" colspan="2"><?=$porc_correo2?>%</td>
-																<td align="right" colspan="2">100%</td>
+															</tr>
+															<tr>
+																<th>TOTAL ATENCIONES</th>
+																<td align="right" colspan="2"><b><?=$totporctelf?>%<b></td>														
+																<td align="right" colspan="2"><b><?=$totporcorreo?>%<b></td>
+																<td align="right" colspan="2"><b><?=$atenciones?><b></td>
 															</tr>
 														</tbody>												
 													</table>

@@ -229,7 +229,7 @@
 										<label class="control-label col-xs-12 col-sm-3 no-padding-right" for="url">Dirección:</label>
 										<div class="col-xs-12 col-sm-9">
 											<div class="clearfix">
-												<input  required="true" type="text" id="direccion" name="direccion" class="col-xs-12 col-sm-8" value="<?php echo $direcc;?>">
+												<input maxlength="100"  required="true" type="text" id="direccion" name="direccion" class="col-xs-12 col-sm-8" value="<?php echo $direcc;?>">
 											</div>
 										</div>
 									</div>

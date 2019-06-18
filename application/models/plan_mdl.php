@@ -312,5 +312,12 @@
  		$this->db->where("idbloqueo",$idbloqueo);
  		$this->db->delete("plan_detalle_bloqueo");
  	}
+
+ 	function up_cc($data){
+ 		$array = array(
+ 			'centro_costo' => $data['cc'] );
+ 		$this->db->where('idplan',$data['idplan']);
+ 		$this->db->update('plan',$array7);
+ 	}
 }
 ?>

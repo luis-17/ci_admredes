@@ -75,10 +75,11 @@
  	}
 
  	function cons_atenciones($data){
- 		$this->db->select("case when s.idcita is null then concat('OA',num_orden_atencion) else concat('PO',num_orden_atencion) end as tipo_atencion, fecha_atencion, aseg_numDoc, concat(COALESCE(a.aseg_ape1,''),' ',COALESCE(aseg_ape2,''),' ',COALESCE(aseg_nom1,''),' ',COALESCE(aseg_nom2,'')) as asegurado, case when aseg_numDoc=cont_numDoc then 'Titular' else 'Dependiente' end as tipo_afiliado, aseg_telf, p.nombre_comercial_pr, e.nombre_esp, estado_cita, fase_atencion, estado_atencion, estado_siniestro, username");
+ 		$this->db->select("case when s.idcita is null then concat('OA',num_orden_atencion) else concat('PO',num_orden_atencion) end as tipo_atencion, fecha_atencion, aseg_numDoc, concat(COALESCE(a.aseg_ape1,''),' ',COALESCE(aseg_ape2,''),' ',COALESCE(aseg_nom1,''),' ',COALESCE(aseg_nom2,'')) as asegurado, case when aseg_numDoc=cont_numDoc then 'Titular' else 'Dependiente' end as tipo_afiliado, aseg_telf, p.nombre_comercial_pr, e.nombre_esp, estado_cita, fase_atencion, estado_atencion, estado_siniestro, coalesce(u.username,concat('D: ',u2.username)) as username");
  		$this->db->from("siniestro s");
  		$this->db->join("cita ci","ci.idcita=s.idcita","left");
- 		$this->db->join("usuario u ","u.idusuario=ci.idusuario","left");
+ 		$this->db->join("usuario u ","u.idusuario=ci.idusuario","left"); 		
+ 		$this->db->join("usuario u2 ","u2.idusuario=s.usuario_crea","left");
  		$this->db->join("asegurado a","s.idasegurado=a.aseg_id");
  		$this->db->join("certificado_asegurado ca","ca.aseg_id=a.aseg_id");
  		$this->db->join("certificado c","s.idcertificado=c.cert_id and ca.cert_id=c.cert_id");
@@ -122,6 +123,17 @@
 		return $query->result();
  	}
 
+ 	function resumen_clinica_usuario2($data){
+		$query = $this->db->query("select username, nombre_comercial_pr, count(idcita) as atenciones, case when AVG(TIMESTAMPDIFF(minute,c.createdat,c.updatedat))>59 then concat(ROUND(AVG(TIMESTAMPDIFF(hour,c.createdat,c.updatedat))),' hora(s)') else concat(ROUND(AVG(TIMESTAMPDIFF(minute,c.createdat,c.updatedat))),' minuto(s)') end as promedio 
+		 			from cita c
+					inner join proveedor p on c.idproveedor=p.idproveedor
+					inner join usuario u on u.idusuario=c.idusuario
+					where estado_cita=2 and c.createdat>='".$data['fecinicio']."' and c.createdat<='".$data['fecfin']."'
+					group by c.idusuario, c.idproveedor
+					order by c.idusuario, c.idproveedor;");
+		return $query->result();
+ 	}
+
  	function getUsuario($id){
  		$query = $this->db->query("select username from usuario where idusuario=$id");
  		return $query->row_array();
@@ -140,8 +152,27 @@
  		return $query->result();
  	}
 
+ 	function resumen_operador2($data){
+ 		$query = $this->db->query("select u2.username as usuario_reserva, c.createdat, u.username, c.updatedat, nombre_comercial_pr, estado_atencion, num_orden_atencion,
+				case when TIMESTAMPDIFF(minute,c.createdat,c.updatedat)>59 then concat((TIMESTAMPDIFF(hour,c.createdat,c.updatedat)),' hora(s)') else concat((TIMESTAMPDIFF(minute,c.createdat,c.updatedat)),' minuto(s)') end as promedio 
+				from cita c
+				inner join siniestro s on c.idcita=s.idcita
+				inner join proveedor p on c.idproveedor=p.idproveedor
+				inner join usuario u on u.idusuario=c.idusuario
+				inner join usuario u2 on u2.idusuario=c.idusuario_reserva
+				where estado_cita=2 and c.createdat>='".$data['fecinicio']."' and c.createdat<='".$data['fecfin']."'
+				order by c.idusuario, c.idproveedor;");
+ 		return $query->result();
+ 	}
+
  	function incidencia_canal($data){
- 		$query = $this->db->query("select nombre_comercial_cli, nombre_plan, tipoincidencia, count(idincidencia) as cant, case when AVG(TIMESTAMPDIFF(minute,i.fech_reg,case when fecha_solucion is null then DATE_FORMAT(now(),'%Y-%m-%d %H:%i:%s') else fecha_solucion end))<60 then concat(round(AVG(TIMESTAMPDIFF(minute,i.fech_reg,case when fecha_solucion is null then DATE_FORMAT(now(),'%Y-%m-%d %H:%i:%s') else fecha_solucion end))),' minuto(s)') else concat(round(AVG(TIMESTAMPDIFF(hour,i.fech_reg,case when fecha_solucion is null then DATE_FORMAT(now(),'%Y-%m-%d %H:%i:%s') else fecha_solucion end))),' hora(s)') end as promedio
+ 		$query = $this->db->query("select nombre_comercial_cli, nombre_plan, tipoincidencia, count(idincidencia) as cant,
+							case when AVG(TIMESTAMPDIFF(minute,i.fech_reg,case when fecha_solucion is null then DATE_FORMAT(now(),'%Y-%m-%d %H:%i:%s') else fecha_solucion end))<60 
+							then concat(round(AVG(TIMESTAMPDIFF(minute,i.fech_reg,case when fecha_solucion is null then DATE_FORMAT(now(),'%Y-%m-%d %H:%i:%s') else fecha_solucion end))),' minuto(s)') 
+							else case when AVG(TIMESTAMPDIFF(hour,i.fech_reg,case when fecha_solucion is null then DATE_FORMAT(now(),'%Y-%m-%d %H:%i:%s') else fecha_solucion end))<24 
+							then concat(round(AVG(TIMESTAMPDIFF(hour,i.fech_reg,case when fecha_solucion is null then DATE_FORMAT(now(),'%Y-%m-%d %H:%i:%s') else fecha_solucion end))),' hora(s)') 
+							else concat(round(AVG(TIMESTAMPDIFF(day,i.fech_reg,case when fecha_solucion is null then DATE_FORMAT(now(),'%Y-%m-%d %H:%i:%s') else fecha_solucion end))),' día(s)') end
+							end as promedio
 							from incidencia i 
 							inner join certificado c on i.cert_id=c.cert_id
 							inner join plan pl on pl.idplan=c.plan_id
@@ -153,9 +184,12 @@
 
  	function incidencia_usuario($data){
  		$query = $this->db->query("select count(i.idincidencia) as total,  (select count(i2.idincidencia) from incidencia i2 where i2.idusuario_soluciona= idusuario_asignado) as solucionado, idusuario_asignado, username, 
-								case when AVG(TIMESTAMPDIFF(minute,i.fech_reg,case when fecha_solucion is null then DATE_FORMAT(now(),'%Y-%m-%d %H:%i:%s') else fecha_solucion end))<60 
-								then concat(round(AVG(TIMESTAMPDIFF(minute,i.fech_reg,case when fecha_solucion is null then DATE_FORMAT(now(),'%Y-%m-%d %H:%i:%s') else fecha_solucion end))),' minuto(s)') 
-								else concat(round(AVG(TIMESTAMPDIFF(hour,i.fech_reg,case when fecha_solucion is null then DATE_FORMAT(now(),'%Y-%m-%d %H:%i:%s') else fecha_solucion end))),' hora(s)') end as promedio
+							case when AVG(TIMESTAMPDIFF(minute,i.fech_reg,case when fecha_solucion is null then DATE_FORMAT(now(),'%Y-%m-%d %H:%i:%s') else fecha_solucion end))<60 
+							then concat(round(AVG(TIMESTAMPDIFF(minute,i.fech_reg,case when fecha_solucion is null then DATE_FORMAT(now(),'%Y-%m-%d %H:%i:%s') else fecha_solucion end))),' minuto(s)') 
+							else case when AVG(TIMESTAMPDIFF(hour,i.fech_reg,case when fecha_solucion is null then DATE_FORMAT(now(),'%Y-%m-%d %H:%i:%s') else fecha_solucion end))<24 
+							then concat(round(AVG(TIMESTAMPDIFF(hour,i.fech_reg,case when fecha_solucion is null then DATE_FORMAT(now(),'%Y-%m-%d %H:%i:%s') else fecha_solucion end))),' hora(s)') 
+							else concat(round(AVG(TIMESTAMPDIFF(day,i.fech_reg,case when fecha_solucion is null then DATE_FORMAT(now(),'%Y-%m-%d %H:%i:%s') else fecha_solucion end))),' día(s)') end
+							end as promedio
 								from 
 								(select case when idusuario_soluciona is null then (case when i.estado_deriva=0 then idusuario_registra else 
 								(select idusuario_recepciona from incidencia_deriva id where id.idincidencia=i.idincidencia and estado=0) end ) else idusuario_soluciona end as idusuario_asignado, idincidencia
@@ -188,7 +222,8 @@
 						(select count(idsiniestro)  from siniestro_encuesta where idusuario is not null and estado=1 and DATE_FORMAT(fecha_hora,'%Y-%m-%d')>='".$data['fecinicio']."' and DATE_FORMAT(fecha_hora,'%Y-%m-%d')<='".$data['fecfin']."') as contestaron_telefono,
 						(select count(idsiniestro)  from siniestro_encuesta where idusuario is null and estado=1 and DATE_FORMAT(fecha_hora,'%Y-%m-%d')>='".$data['fecinicio']."' and DATE_FORMAT(fecha_hora,'%Y-%m-%d')<='".$data['fecfin']."') as contestaron_correo,
 						(select count(idsiniestro) from siniestro_encuesta where estado=2 and DATE_FORMAT(fecha_hora,'%Y-%m-%d')>='".$data['fecinicio']."' and DATE_FORMAT(fecha_hora,'%Y-%m-%d')<='".$data['fecfin']."') as no_contestaron,
-						(select count(idsiniestro) from siniestro_encuesta where estado=0 and DATE_FORMAT(fecha_hora,'%Y-%m-%d')>='".$data['fecinicio']."' and DATE_FORMAT(fecha_hora,'%Y-%m-%d')<='".$data['fecfin']."') as no_opinan");
+						(select count(idsiniestro) from siniestro_encuesta where estado=0 and DATE_FORMAT(fecha_hora,'%Y-%m-%d')>='".$data['fecinicio']."' and DATE_FORMAT(fecha_hora,'%Y-%m-%d')<='".$data['fecfin']."') as no_opinan,
+						(select count(idsiniestro) from siniestro where estado_siniestro=1 and estado_atencion='O' and fecha_atencion>='".$data['fecinicio']."' and fecha_atencion<='".$data['fecfin']."') as atenciones");
 		return $query->row_array();
 	}
 
