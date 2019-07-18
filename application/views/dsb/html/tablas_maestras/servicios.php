@@ -62,8 +62,6 @@
 	<body class="no-skin">
 		<!-- #section:basics/navbar.layout -->
 		<?php 
-
-		echo dirname(__FILE__);
 		include (APPPATH."views/dsb/html/headBar.php");?>
 
 		<!-- /section:basics/navbar.layout -->

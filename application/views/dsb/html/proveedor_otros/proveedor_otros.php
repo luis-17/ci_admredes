@@ -57,12 +57,11 @@
 		<script src="<?=base_url()?>public/pagination/jquery-1.12.4.js"></script>
 		<script src="<?=base_url()?>public/pagination/jquery.dataTables.min.js"></script>
 		<script src="<?=base_url()?>public/pagination/dataTables.bootstrap.min.js"></script>
-
+	</head>
 
 	<body class="no-skin">
 		<!-- #section:basics/navbar.layout -->
-		<?php 
-		include (APPPATH."views/dsb/html/headBar.php");?>
+		<?php include (APPPATH."views/dsb/html/headBar.php");?>
 
 		<!-- /section:basics/navbar.layout -->
 		<div class="main-container" id="main-container">
@@ -88,8 +87,8 @@
 								<i class="ace-icon fa fa-home home-icon"></i>
 								<a href="<?=base_url()?>">Inicio</a>
 							</li>
-							<li>Tablas Maestras</li>
-							<li class="active">Centro de Costos</li>
+							<li><a href="#">Proveedores</a></li>
+							<li class="active">Otros</li>
 						</ul><!-- /.breadcrumb -->
 
 						<!-- /section:basics/content.searchbox -->
@@ -97,12 +96,10 @@
 
 					<!-- /section:basics/content.breadcrumbs -->
 					<div class="page-content">
-						<!-- #section:settings.box -->
-
 						<!-- /section:settings.box -->
 						<div class="page-header">
 							<h1>
-								Centro de Costos por Plan de Salud
+								Otros Proveedores
 								<small>
 									<i class="ace-icon fa fa-angle-double-right"></i>
 								</small>
@@ -111,47 +108,69 @@
 
 						<div class="row">
 							<div class="col-xs-12">
-								
-								<!-- PAGE CONTENT BEGINS -->
-								
-								<div class="col-xs-12">
-									<div id="serviciosT">
-										<br>
-									<table id="example" class="table table-striped table-bordered table-hover">
-										<thead>
-											<tr>
-												<th>ID</th>
-												<th>Cliente</th>
-												<th>Plan</th>
-												<th>Responsable de Cuenta</th>
-												<th>Estado</th>
-												<th>Centro de Costo (CC)</th>
-											</tr>
-										</thead>
-										<tbody>
+								<div class="widget-toolbar no-border invoice-info">
+									<a href="<?=base_url()?>index.php/nuevo_proveedor_int"><button class="btn btn-white btn-info">
+										Nuevo Proveedor
+									</button></a>
+								</div>
+								<br/>
+								<br/>
+							 <div>
+								<table id="example" class="table table-striped table-bordered table-hover">
+									<thead>
+										<tr>
+											<th>ID</th>
+											<th>DNI/RUC</th>
+											<th>Razón Social</th>
+											<th>Nombre Comercial</th>
+											<th>Dirección</th>
+											<th>Ubigeo</th>
+											<th></th>
+										</tr>
+									</thead>
 										
-										<?php foreach($planes as $p){?>
-											<tr>
-												<td><?=$p->idplan?></td>
-												<td><?=$p->nombre_comercial_cli?></td>
-												<td><?=$p->nombre_plan?></td>
-												<td><?=$p->responsable?></td>	
-												<td><?php if($p->estado_plan==1){
-													echo '<span class="label label-info label-white middle">Activo</span>';
-													}else{
-														echo '<span class="label label-danger label-white middle">Inactivo</span>';
-														}?></td>											
-												<td><?php if($p->centro_costo==''){
-													echo '<a class="boton fancybox"  data-fancybox-width="600" data-fancybox-height="400" title="Agregar CC" href="'.base_url().'index.php/add_cc/'.$p->idplan.'"><i class="ace-icon glyphicon glyphicon-plus red"></i></a>';
-												}else{
-													echo '<a class="boton fancybox"  data-fancybox-width="600" data-fancybox-height="400" title="Editar CC" href="'.base_url().'index.php/add_cc/'.$p->idplan.'">'.$p->centro_costo.'</a>';
-												} ?></td>
-											</tr>
-										<?php } ?>
-										</tbody>
-									</table>								
-								</div><!-- PAGE CONTENT ENDS -->	
-								<script>			
+									<tbody>
+									<?php foreach($proveedores as $pr){?>
+										<tr>
+											<td><?=$pr->idproveedor_int;?></td>
+											<td><?=$pr->numero_documento_pr?></td>
+											<td><?=$pr->razon_social_pr?></td>
+											<td><?=$pr->nombre_comercial_pr?></td>
+											<td><?=$pr->direccion_pr?></td>
+											<td><?php echo ''.$pr->dep.'-'.$pr->prov.'-'.$pr->dist; ?></td>											
+											<td style="width: 5%;">
+												<div class="hidden-sm hidden-xs btn-group">
+													<div title="Editar Proveedor" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
+														&nbsp;<a href="<?=base_url()?>index.php/proveedor_otros_editar/<?=$pr->idproveedor_int?>">
+															<i class="ace-icon fa fa-pencil bigger-120 blue"></i>
+														</a>
+													</div>
+												</div>
+
+													<div class="hidden-md hidden-lg">
+														<div class="inline pos-rel">
+															<button class="btn btn-minier btn-info dropdown-toggle" data-toggle="dropdown" data-position="auto">
+																<i class="ace-icon fa fa-cog icon-only bigger-110"></i>
+															</button>
+
+															<ul class="dropdown-menu dropdown-only-icon dropdown-yellow dropdown-menu-right dropdown-caret dropdown-close">	
+																	<li>
+																		<div title="Editar Proveedor" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
+																			&nbsp;<a href="<?=base_url()?>index.php/proveedor_otros_editar/<?=$pr->idproveedor_int?>">
+																				<i class="ace-icon fa fa-pencil bigger-120 blue"></i>
+																			</a>
+																		</div>
+																	</li>
+																</ul>
+															</div>
+														</div>
+													</td>		
+											</tr>	
+											<?php } ?>								
+									</tbody>									
+								</table>
+							</div>
+									<script>			
 										//para paginacion
 										$(document).ready(function() {
 										$('#example').DataTable( {
@@ -159,7 +178,10 @@
 										} );
 									} );
 									</script>	
-								</div>						
+								<!-- PAGE CONTENT BEGINS -->
+								<div class="tabbable" id='tabbable'></div>
+								 <div align="right" id="pagination_link"></div>
+								<!-- PAGE CONTENT ENDS -->
 							</div><!-- /.col -->
 						</div><!-- /.row -->
 					</div><!-- /.page-content -->

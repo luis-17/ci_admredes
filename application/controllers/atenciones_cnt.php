@@ -168,6 +168,7 @@ class Atenciones_cnt extends CI_Controller {
 
 	public function getPlanesDni(){
 		$dni = $_POST['dni'];
+		$hoy = date('Y-m-d');
 
 		$datos = $this->atencion_mdl->getDatosDni($dni);
 
@@ -233,7 +234,7 @@ class Atenciones_cnt extends CI_Controller {
 						<div class="col-sm-3">
 							<div class="form-group">
 								<b class="text-primary">Fecha:</b>
-								<input class="form-control" type="date" name="fecha" id="fecha" value="" required/>            
+								<input class="form-control" type="date" name="fecha" id="fecha" value="" max="'.$hoy.'" required/>            
 							</div>	
 						</div>
 					</div>
@@ -315,7 +316,16 @@ class Atenciones_cnt extends CI_Controller {
 		$user = $this->session->userdata('user');
 		extract($user);
 
+		$eventos = $this->atencion_mdl->getEventos($id);
+
 		$this->atencion_mdl->anular_siniestro($id,$idusuario);
+
+		foreach ($eventos as $e) {
+			$vez_actual = $e->vez_actual;
+			$data['vez_actual'] = $vez_actual-1;
+			$data['idperiodo'] = $e->idperiodo;
+			$this->atencion_mdl->upPeriodo($data);
+		}
 		echo "<script>
 				alert('Se anuló la atención OA".$num." con éxito');
 				location.href='".base_url()."index.php/atenciones';
@@ -351,6 +361,69 @@ class Atenciones_cnt extends CI_Controller {
 		echo "<script>
 				alert('Se restableció la atención OA".$num." con éxito');
 				location.href='".base_url()."index.php/atenciones';
+				</script>";
+	}
+
+	public function nueva_orden(){
+		//load session library
+		$this->load->library('session');
+
+		//restrict users to go to home if not logged in
+		if($this->session->userdata('user')){
+			//$this->load->view('home');
+
+			$user = $this->session->userdata('user');
+			extract($user);
+
+			$menuLista = $this->menu_mdl->getMenu($idusuario);
+			$data['menu1'] = $menuLista;
+
+			$submenuLista = $this->menu_mdl->getSubMenu($idusuario);
+			$data['menu2'] = $submenuLista;	
+
+			$this->load->view('dsb/html/atencion/crear_atencion.php',$data);
+		}
+		else{
+			redirect('/');
+		}			
+	}
+
+	public function reg_siniestro2(){
+		$user = $this->session->userdata('user');
+		extract($user);
+		$data['idusuario'] = $idusuario;
+		$certase_id = $_POST['plan'];
+		$datos =  $this->atencion_mdl->certase_id($certase_id);
+			foreach ($datos as $d) {
+				$aseg_id = $d->aseg_id;
+				$cert_id = $d->cert_id;
+			}
+
+		$data['aseg_id'] = $aseg_id;
+		$data['cert_id'] = $cert_id;
+		$historia = $this->atencion_mdl->historia($aseg_id);
+		if(empty($historia)){
+			$this->atencion_mdl->inHistoria($aseg_id);
+			$data['historia'] = $this->db->insert_id();
+		}else{
+			foreach ($historia as $h) {
+			$data['historia'] = $h->idhistoria;
+			}
+		}
+		
+		$data['idproveedor'] = $_POST['proveedor'];
+		$data['fecha'] = $_POST['fecha'];
+		$data['idespecialidad'] = $_POST['especialidad'];
+		$num = $this->atencion_mdl->num_orden_atencion();
+			foreach ($num as $n) {
+				$numero=$n->num_orden_atencion;
+				$data['num'] = $numero;
+			}
+
+		$this->atencion_mdl->reg_siniestro($data);
+		echo "<script>
+				alert('Se registró la atención con éxito');							
+				location.href='".base_url()."index.php/mesa_partes2/".$numero."';	
 				</script>";
 	}
 }

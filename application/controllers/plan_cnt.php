@@ -51,6 +51,7 @@ class plan_cnt extends CI_Controller {
 
 			$planes = $this->plan_mdl->getPlanes();
 			$data['planes'] = $planes;
+			$data['planes2'] = $this->plan_mdl->getPlanes2();
 
 			$this->load->view('dsb/html/plan/plan.php',$data);
 		}
@@ -172,6 +173,10 @@ class plan_cnt extends CI_Controller {
 
 	public function plan_guardar()
 	{
+		$user = $this->session->userdata('user');
+		extract($user);
+		$data['idusuario'] = $idusuario;
+		$data['tiporesponsable'] = 'P';
 		$data['idplan'] = $_POST['idplan'];
 		$data['cliente'] = $_POST['cliente'];
 		$data['nombre_plan'] = $_POST['nombre_plan'];
@@ -188,7 +193,8 @@ class plan_cnt extends CI_Controller {
 
 		if($_POST['idplan']==0):
 			$this->plan_mdl->insert_plan($data);
-			$data['idplan'] = $this->db->insert_Id();
+			$data['idplan'] = $this->db->insert_Id();			
+			$this->plan_mdl->inPlanUsuario($data);
 			$asunto="NOTIFICACION: CREACION DE UN PLAN DE SALUD";
 			$accion="creaci&oacute;n";
 			else:
@@ -810,7 +816,7 @@ class plan_cnt extends CI_Controller {
 			$submenuLista = $this->menu_mdl->getSubMenu($idusuario);
 			$data['menu2'] = $submenuLista;
 
-			$planes = $this->plan_mdl->getPlanes();
+			$planes = $this->plan_mdl->getPlanes2();
 			$data['planes'] = $planes;
 
 			$this->load->view('dsb/html/tablas_maestras/centro_costos.php',$data);
@@ -839,6 +845,38 @@ class plan_cnt extends CI_Controller {
 				alert('Se actualizó el centro de costo con éxito.');
 				parent.location.reload(true);
 				parent.$.fancybox.close();
+				</script>";
+ 	}
+
+ 	public function addresponsable($id, $nom){
+ 		$data['idplan'] = $id;
+ 		$data['nom'] = $nom;
+
+ 		$data['usuarios'] = $this->plan_mdl->getPersonalResponsable($id);
+ 		$data['personal_asignado'] = $this->plan_mdl->getPersonalAsignado($id);
+ 		$this->load->view('dsb/html/plan/add_responsable.php',$data);
+
+ 	}
+
+ 	public function reg_plan_usuario(){
+ 		$data['idusuario'] = $_POST['idusuario'];
+ 		$nom = $_POST['nom'];
+ 		$id = $_POST['idplan'];
+		$data['tiporesponsable'] = 'A';
+		$data['idplan'] = $id;
+		$this->plan_mdl->inPlanUsuario($data);
+
+		echo "<script>
+				alert('Se registró con éxito el usuario de apoyo a la cuenta.');
+				location.href='".base_url()."index.php/addresponsable/".$id."/".$nom."';
+				</script>";
+ 	}
+
+ 	public function eliminar_responsable($idplanusuario,$id,$nom){
+ 		$this->plan_mdl->eliminar_responsable($idplanusuario);
+ 		echo "<script>
+				alert('Se eliminó con éxito el usuario de apoyo a la cuenta.');
+				location.href='".base_url()."index.php/addresponsable/".$id."/".$nom."';
 				</script>";
  	}
  	

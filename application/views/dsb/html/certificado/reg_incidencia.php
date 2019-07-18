@@ -46,65 +46,67 @@
 	</head>
 
 	<body style="">	
-			<!-- /section:basics/sidebar -->
-			<div class="page-content">
-						<div class="page-header">
-							<div class="col-xs-9">
-								<h1>
-								Registrar Incidencia					
-							</h1></div>
-							<div class="col-xs-3">
-								<a href="<?=base_url()?>index.php/historial_incidencias/<?=$id?>/<?=$idaseg?>"  class="btn btn-info">Historial de Incidencias</a>
-							</div><br><br>
+		<!-- /section:basics/sidebar -->
+		<div class="page-content">
+			<div class="page-header">
+				<div class="col-xs-9">
+					<h1>
+						Registrar Incidencia					
+					</h1>
+				</div>
+				<div class="col-xs-3">
+					<a href="<?=base_url()?>index.php/historial_incidencias/<?=$id?>/<?=$idaseg?>"  class="btn btn-info">Historial de Incidencias</a>
+				</div><br><br>
+
+			</div>
+
+			<div class="row">
+				<div class="col-xs-12">
+					<!-- PAGE CONTENT BEGINS -->
+					<form class="form-horizontal" role="form" method="post" action="<?=base_url()?>index.php/save_incidencia">
+						<input type="hidden" id="aseg_id" name="aseg_id" value="<?=$idaseg?>" />
+						<input type="hidden" name="cert_id" id="cert_id" value="<?=$id?>" />
+
+						<div class="form-group">
+							<div class="col-sm-12">
+								<p><input type="radio" name="tipo" value="El plan de salud no le cubre una especialidad y cuando le vendieron el plan le mencionaron que sí cubría." id="1"> El plan de salud no le cubre una especialidad y cuando le vendieron el plan le mencionaron que sí cubría.</p>
+								<p><input type="radio" name="tipo" value="El plan de salud no le cubre los análisis clínicos del segundo diagnóstico y cuando le vendieron el plan le mencionaron que sí cubría." id="2"> El plan de salud no le cubre los análisis clínicos del segundo diagnóstico y cuando le vendieron el plan le mencionaron que sí cubría.</p>
+								<p><input type="radio" name="tipo" value="Le han negado la atención en el establecimiento de salud y le han dicho que no cuenta con plan activo en red salud." id="3"> Le han negado la atención en el establecimiento de salud y le han dicho que no cuenta con plan activo en red salud.</p>
+								<p><input type="radio" name="tipo" value="Inconvenientes en la entrega de sus medicamentos en el establecimiento de salud." id="4"> 	Inconvenientes en la entrega de sus medicamentos en el establecimiento de salud.</p>
+								<p><input type="radio" name="tipo" value="Insatisfacción con el establecimiento de salud." id="5"> Insatisfacción con el establecimiento de salud.</p>
+								<p><input type="radio" name="tipo" value="Insatisfacción con la coordinación de la cita." id="6"> Insatisfacción con la coordinación de la cita.</p>
+								<p><input type="radio" name="tipo" value="No le ha llegado la póliza de manera física o virtual." id="7"> No le ha llegado la póliza de manera física o virtual.</p>
+								<p><input type="radio" name="tipo" value="El afiliado desea retirarse del plan de salud porque no usa el plan de salud.." id="8"> El afiliado desea retirarse del plan de salud porque no usa el plan de salud..</p>
+								<p><input type="radio" name="tipo" value="El afiliado desea retirarse del plan de salud por una mala venta del canal donde se le prometió algo que no cubre el plan." id="9"> El afiliado desea retirarse del plan de salud por una mala venta del canal donde se le prometió algo que no cubre el plan.</p>
+								<p><input type="radio" name="tipo" value="El afiliado desea retirarse del plan de salud porque no sabía lo que había adquirido." id="10"> El afiliado desea retirarse del plan de salud porque no sabía lo que había adquirido.</p>
+								<p><input type="radio" name="tipo" value="Otros." id="10"> Otros.</p>
+							</div>
 						</div>
-						<div class="row">
-							<div class="col-xs-12">
-								<!-- PAGE CONTENT BEGINS -->
-								<form class="form-horizontal" role="form" method="post" action="<?=base_url()?>index.php/save_incidencia">
-									<input type="hidden" id="aseg_id" name="aseg_id" value="<?=$idaseg?>" />
-									<input type="hidden" name="cert_id" id="cert_id" value="<?=$id?>" />
 
-									<div class="form-group">
-										<div class="col-sm-12">
-											<p><input type="radio" name="tipo" value="El plan de salud no le cubre una especialidad y cuando le vendieron el plan le mencionaron que sí cubría." id="1"> El plan de salud no le cubre una especialidad y cuando le vendieron el plan le mencionaron que sí cubría.</p>
-											<p><input type="radio" name="tipo" value="El plan de salud no le cubre los análisis clínicos del segundo diagnóstico y cuando le vendieron el plan le mencionaron que sí cubría." id="2"> El plan de salud no le cubre los análisis clínicos del segundo diagnóstico y cuando le vendieron el plan le mencionaron que sí cubría.</p>
-											<p><input type="radio" name="tipo" value="Le han negado la atención en el establecimiento de salud y le han dicho que no cuenta con plan activo en red salud." id="3"> Le han negado la atención en el establecimiento de salud y le han dicho que no cuenta con plan activo en red salud.</p>
-											<p><input type="radio" name="tipo" value="Inconvenientes en la entrega de sus medicamentos en el establecimiento de salud." id="4"> 	Inconvenientes en la entrega de sus medicamentos en el establecimiento de salud.</p>
-											<p><input type="radio" name="tipo" value="Insatisfacción con el establecimiento de salud." id="5"> Insatisfacción con el establecimiento de salud.</p>
-											<p><input type="radio" name="tipo" value="Insatisfacción con la coordinación de la cita." id="6"> Insatisfacción con la coordinación de la cita.</p>
-											<p><input type="radio" name="tipo" value="No le ha llegado la póliza de manera física o virtual." id="7"> No le ha llegado la póliza de manera física o virtual.</p>
-											<p><input type="radio" name="tipo" value="El afiliado desea retirarse del plan de salud porque no usa el plan de salud.." id="8"> El afiliado desea retirarse del plan de salud porque no usa el plan de salud..</p>
-											<p><input type="radio" name="tipo" value="El afiliado desea retirarse del plan de salud por una mala venta del canal donde se le prometió algo que no cubre el plan." id="9"> El afiliado desea retirarse del plan de salud por una mala venta del canal donde se le prometió algo que no cubre el plan.</p>
-											<p><input type="radio" name="tipo" value="El afiliado desea retirarse del plan de salud porque no sabía lo que había adquirido." id="10"> El afiliado desea retirarse del plan de salud porque no sabía lo que había adquirido.</p>
-											<p><input type="radio" name="tipo" value="Otros." id="10"> Otros.</p>
-										</div>
-									</div>
-
-									<div class="form-group">
-										<label class="col-sm-3 control-label no-padding-right" for="form-field-1">Comentario: </label>
-
-										<div class="col-sm-9">
-											<textarea cols="71" rows="5" placeholder="Escriba un comentario" id="desc" name="desc"></textarea>
-										</div>
-									</div>
-									<div class="clearfix form-actions">
-										<div class="col-md-offset-3 col-md-9">
-											<button class="btn btn-info" type="submit" id="derivar" name="derivar">
-												<i class="ace-icon glyphicon glyphicon-share bigger-110"></i>
-												Derivar
-											</button>
-											<button class="btn btn-info" type="submit" id="guardar" name="guardar">
-												<i class="ace-icon fa fa-check bigger-110"></i>
-												Guardar
-											</button>
-										</div>
-									</div>
-								</form>
-							</div><!-- /.col -->
+						<div class="form-group">
+							<label class="col-sm-3 control-label no-padding-right" for="form-field-1">Comentario: </label>
+							<div class="col-sm-9">
+								<textarea cols="71" rows="5" placeholder="Escriba un comentario" id="desc" name="desc"></textarea>
+							</div>
 						</div>
-					</div>
-				</div><!-- /.main-content -->			
-			</div><!-- /.main-container -->
+
+						<div class="clearfix form-actions">
+							<div class="col-md-offset-3 col-md-9">
+								<button class="btn btn-info" type="submit" id="derivar" name="derivar">
+									<i class="ace-icon glyphicon glyphicon-share bigger-110"></i>
+										Derivar
+								</button>
+								<button class="btn btn-info" type="submit" id="guardar" name="guardar">
+									<i class="ace-icon fa fa-check bigger-110"></i>
+										Guardar
+								</button>
+							</div>
+						</div>
+					</form>
+				</div><!-- /.col -->
+			</div>
+		</div>
+		
 		<!-- basic scripts -->
 
 		<!--[if !IE]> -->

@@ -162,7 +162,7 @@
 						</div><!-- /.page-header -->
 
 						<div class="row">
-								<form role="form" name="form_bus" id="form_bus" method="post" action="<?=base_url()?>index.php/buscar">	
+							<form role="form" name="form_bus" id="form_bus" method="post" action="<?=base_url()?>index.php/buscar">	
 								<input type="hidden" name="id" id="id" value="">
 									<div class="form-row"> 
 										<div class="form-group col-md-3">
@@ -210,8 +210,8 @@
 											</button>
 										</div>								
 								 </div>
-								</form>
-							</div><!-- /.col -->
+							</form>
+						</div><!-- /.col -->
 							
 							<br>
 							<div style="display: <?=$estilo;?>;">	

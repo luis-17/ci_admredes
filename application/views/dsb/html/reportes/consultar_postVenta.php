@@ -109,29 +109,32 @@
 						<div class="row">
 							<div align="center">								
 								<div class="col-xs-9 col-sm-12">
-										<div class="alert alert-info">
+									<div class="alert alert-info">
 
-											<form name="form" id="form" method="post" action="<?=base_url()?>index.php/consultar_postVenta_buscar" class="form-horizontal">
-												<div class="profile-info-name"> Inicio: </div>
-												<div class="profile-info-name">
-													<input class="form-control input-mask-date" type="date" id="fechainicio" name="fechainicio" required="Seleccione una fecha de inicio" value="<?=$fecinicio;?>" >
-												</div>
-												<div class="profile-info-name"> Fin: </div>
-												<div class="profile-info-name">
-													<input class="form-control input-mask-date" type="date" id="fechafin" name="fechafin" required="Seleccione una fecha de fin" value="<?=$fecfin;?>">														
-												</div>
-												<div  class="profile-info-name">
-													<button type="submit" class="btn btn-info btn-xs" name="accion" value="buscar">Buscar 
-														<i class="ace-icon glyphicon glyphicon-search bigger-110 icon-only"></i>
-													</button>
-												</div>
-												<div  class="profile-info-name">
-													<button class="btn btn-info btn-xs" type="submit" name="accion" value="exportar">Exportar
-														<i class="ace-icon fa fa-download bigger-110 icon-only"></i>
-													</button>
-												</div>
-											</form>	
-										</div>
+										<form name="form" id="form" method="post" action="<?=base_url()?>index.php/consultar_postVenta_buscar" class="form-horizontal">
+											<div class="profile-info-name"> Inicio: </div>
+											<div class="profile-info-name">
+												<input class="form-control input-mask-date" type="date" id="fechainicio" name="fechainicio" required="Seleccione una fecha de inicio" value="<?=$fecinicio;?>" >
+											</div>
+
+											<div class="profile-info-name"> Fin: </div>
+											<div class="profile-info-name">
+												<input class="form-control input-mask-date" type="date" id="fechafin" name="fechafin" required="Seleccione una fecha de fin" value="<?=$fecfin;?>">		
+											</div>
+
+											<div  class="profile-info-name">
+												<button type="submit" class="btn btn-info btn-xs" name="accion" value="buscar">Buscar 
+													<i class="ace-icon glyphicon glyphicon-search bigger-110 icon-only"></i>
+												</button>
+											</div>
+
+											<div  class="profile-info-name">
+												<button class="btn btn-info btn-xs" type="submit" name="accion" value="exportar">Exportar
+													<i class="ace-icon fa fa-download bigger-110 icon-only"></i>
+												</button>
+											</div>
+										</form>	
+									</div>
 								</div>
 							</div>
 						</div>
@@ -176,8 +179,7 @@
 											<a data-toggle="tab" href="#faq-tab-6">
 												Detalle
 											</a>
-										</li>
-							
+										</li>							
 									</ul>
 
 									<!-- /section:pages/faq -->
@@ -568,7 +570,7 @@
 															</tr>
 														</thead>
 														<tbody>		
-																<?php foreach ($encuesta_detalle as $ed) {
+															<?php foreach ($encuesta_detalle as $ed) {
 																$num=$ed->num_respuestas;
 																if($num>0){
 																	$suma = $ed->suma;
@@ -620,7 +622,7 @@
 																<td style="color: <?=$color?>"><?=$calificacion?></td>
 																<td style="color: <?=$color?>"><?=$ed->comentario?></td>
 															</tr>
-														<?php } ?>
+															<?php } ?>
 														</tbody>												
 													</table>
 													<script>			
@@ -658,11 +660,6 @@
 					<!-- /section:basics/footer -->
 				</div>
 			</div>
-
-			<a href="#" id="btn-scroll-up" class="btn-scroll-up btn btn-sm btn-inverse">
-				<i class="ace-icon fa fa-angle-double-up icon-only bigger-110"></i>
-			</a>
-		</div><!-- /.main-container -->
 
 		<!-- basic scripts -->
 

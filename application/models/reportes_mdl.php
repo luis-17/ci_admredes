@@ -86,7 +86,7 @@
  		$this->db->join("contratante co","c.cont_id=co.cont_id");
  		$this->db->join("especialidad e","e.idespecialidad=s.idespecialidad");
  		$this->db->join("proveedor p","s.idproveedor=p.idproveedor");
- 		$this->db->where("fecha_atencion>='".$data['inicio']."' and fecha_atencion<='".$data['fin']."' and plan_id=".$data['plan']." and c.cert_num not like 'PR%'");
+ 		$this->db->where("fecha_atencion>='".$data['inicio']."' and fecha_atencion<='".$data['fin']."' and plan_id=".$data['plan']);
  		$this->db->order_by("fecha_atencion, aseg_numDoc");
  	$query = $this->db->get();
  	return $query->result();

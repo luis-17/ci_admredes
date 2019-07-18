@@ -55,7 +55,7 @@
 					<div class="page-content">
 						<div class="page-header">
 							<h1>	
-							Servicios por Proveedor					
+							Servicios del Centro Médico				
 							</h1>
 						</div>
 

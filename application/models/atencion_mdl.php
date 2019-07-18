@@ -20,7 +20,7 @@
 		$this->db->order_by("idsiniestro", "asc");
 
 	$atenciones = $this->db->get();
-	 return $atenciones->result();
+	return $atenciones->result();
 	}
 
 	function getPreOrden(){
@@ -38,7 +38,6 @@
 	$preorden = $this->db->get();
 	 return $preorden->result();
 	}
-
 
 
 	function getAtenciones_asegurado($aseg_id){
@@ -116,13 +115,13 @@
 	}
 
 	function getPlanes($dni){
-		$this->db->select("nombre_plan, certase_id");
+		$this->db->select("concat(nombre_plan, case when c.cert_estado=1 then ' (Vigente)' else ' (Cancelado)' end) as nombre_plan, certase_id");
 		$this->db->from("plan p");
 		$this->db->join("certificado c","p.idplan=c.plan_id");
 		$this->db->join("certificado_asegurado ca","ca.cert_id=c.cert_id");
 		$this->db->join("asegurado a","a.aseg_id=ca.aseg_id");
 		$this->db->where("aseg_numDoc",$dni);
-		$this->db->group_by("nombre_plan");
+		//$this->db->group_by("nombre_plan");
 
 		$query = $this->db->get();
 		return $query->result();
@@ -214,6 +213,21 @@
 		$array = array('fecha_atencion' => $data['fecha_act'], 'fecha_atencion_act' => $data['fecha'] );
 		$this->db->where("idsiniestro",$data['id']);
 		$this->db->update("siniestro",$array);
+	}
+
+	function getEventos($id){
+		$query = $this->db->query("select idperiodo, vez_actual from siniestro s 
+				inner join siniestro_detalle sd on s.idsiniestro=sd.idsiniestro
+				inner join certificado_asegurado ca on ca.aseg_id=s.idasegurado and ca.cert_id=s.idcertificado
+				inner join periodo_evento pe on pe.certase_id=ca.certase_id and sd.idplandetalle=pe.idplandetalle
+				where s.idsiniestro=$id");
+		return $query->result();
+	}
+
+	function upPeriodo($data){
+		$array = array('vez_actual' => $data['vez_actual'] );
+		$this->db->where('idperiodo', $data['idperiodo']);
+		$this->db->update('periodo_evento', $array);
 	}
 }
 ?>

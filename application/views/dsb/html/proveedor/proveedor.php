@@ -87,7 +87,8 @@
 								<i class="ace-icon fa fa-home home-icon"></i>
 								<a href="<?=base_url()?>">Inicio</a>
 							</li>
-							<li class="active">Proveedores</li>
+							<li><a href="#">Proveedores</a></li>
+							<li class="active">Red Médica</li>
 						</ul><!-- /.breadcrumb -->
 
 						<!-- /section:basics/content.searchbox -->
@@ -98,7 +99,7 @@
 						<!-- /section:settings.box -->
 						<div class="page-header">
 							<h1>
-								Consolidado de Proveedores
+								Nuestra Red Médica
 								<small>
 									<i class="ace-icon fa fa-angle-double-right"></i>
 								</small>
@@ -109,7 +110,7 @@
 							<div class="col-xs-12">
 								<div class="widget-toolbar no-border invoice-info">
 									<a href="<?=base_url()?>index.php/nuevo_proveedor"><button class="btn btn-white btn-info">
-										Nuevo Proveedor
+										Nuevo Centro Médico
 									</button></a>
 								</div>
 								<br/>

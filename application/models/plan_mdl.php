@@ -11,6 +11,21 @@
  		$this->db->select('*');
  		$this->db->from('plan pl');
  		$this->db->join('cliente_empresa ce','ce.idclienteempresa=pl.idclienteempresa');
+ 		$this->db->join('plan_usuario pu','pu.idplan=pl.idplan','left');
+ 		$this->db->order_by("nombre_comercial_cli, nombre_plan");
+
+	 $planes = $this->db->get();
+	 return $planes->result();
+ 	}
+ 	function getPlanes2(){
+ 		$output = '';
+ 		$this->db->select('*');
+ 		$this->db->select("(select GROUP_CONCAT(concat(case when tipo_responsable='P' then 'Principal: ' else 'Apoyo: ' end, nombres_col)) from plan p
+						inner join plan_usuario pu on p.idplan=pu.idplan
+						inner join usuario u on u.idusuario=pu.idusuario
+						inner join colaborador c on c.idusuario=u.idusuario where p.idplan=pl.idplan) as responsable");
+ 		$this->db->from('plan pl');
+ 		$this->db->join('cliente_empresa ce','ce.idclienteempresa=pl.idclienteempresa');
  		$this->db->order_by("nombre_comercial_cli, nombre_plan");
 
 	 $planes = $this->db->get();
@@ -317,7 +332,28 @@
  		$array = array(
  			'centro_costo' => $data['cc'] );
  		$this->db->where('idplan',$data['idplan']);
- 		$this->db->update('plan',$array7);
+ 		$this->db->update('plan',$array);
  	}
+
+ 	function inPlanUsuario($data){
+ 		$array = array('idusuario' => $data['idusuario'], 'tipo_responsable' => $data['tiporesponsable'], 'idplan' => $data['idplan']);
+ 		$this->db->insert('plan_usuario',$array);
+ 	}
+
+ 	function getPersonalResponsable($id){
+ 		$query = $this->db->query("select u.idusuario, concat(nombres_col,' ',ap_paterno_col) as colaborador from usuario u inner join colaborador c on u.idusuario=c.idusuario and u.idtipousuario=3 and u.idusuario not in (select idusuario from plan_usuario where idplan=$id) and u.estado_us=1");
+ 		return $query->result();
+ 	}
+
+ 	function getPersonalAsignado($id){
+ 		$query = $this->db->query("select pu.idplanusuario, pu.idusuario, concat(nombres_col,' ',ap_paterno_col) as colaborador, tipo_responsable from plan_usuario pu inner join colaborador c on pu.idusuario=c.idusuario where pu.idplan=$id");
+ 		return $query->result();
+ 	}
+
+ 	function eliminar_responsable($id){
+ 		$this->db->where('idplanusuario',$id);
+ 		$this->db->delete('plan_usuario');
+ 	}
+
 }
 ?>

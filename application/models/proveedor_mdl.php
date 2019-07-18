@@ -331,6 +331,12 @@
 		return $query->row_array();
 	}
 
+	function save_Cap($data){
+		$array = array('comentario' => $data['comentario'], 'estado' => $data['estado']);
+		$this->db->where('idcapacitacion',$data['idcapacitacion']);
+		$this->db->update('proveedor_capacitacion',$array);
+	}
+
 	function getProveedores2(){
 		$this->db->select('UPPER(nombre_comercial_pr) as nombre_comercial_pr, UPPER(direccion_pr) as direccion_pr, ud.descripcion_ubig as dep, up.descripcion_ubig as prov, udi.descripcion_ubig as dist');
 	 	$this->db->from('proveedor p');

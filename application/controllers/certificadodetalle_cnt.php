@@ -382,8 +382,7 @@ class Certificadodetalle_cnt extends CI_Controller {
 			//$mail->addAttachment('adjunto/RED_MEDICA_2018.pdf', 'Red_Medica.pdf');
 			// Enviar
 			$mail2->send();
-
-
+			
 		}else{
 			if($idtipousuario<>5){
 				$contenido = $this->certificado_mdl->contenido_mail($data);

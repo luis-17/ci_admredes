@@ -145,7 +145,7 @@
 																endif;?>
 																<option value="<?=$c->idclienteempresa;?>" <?=$estc?> ><?=$c->nombre_comercial_cli?> </option>
 															<?php endforeach; ?>
-													</select>
+														</select>
 													</div>
 													<div class="profile-info-name"> Plan: </div>
 													<div class="profile-info-name">

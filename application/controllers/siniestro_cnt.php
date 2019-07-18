@@ -1,4 +1,4 @@
-<?php
+<?php0
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Siniestro_cnt extends CI_Controller {
@@ -1099,5 +1099,141 @@ class Siniestro_cnt extends CI_Controller {
 					location.href='".base_url()."index.php/siniestro/".$ids."';
 					</script>";
 		}
+	}
+
+	public function registrar_siniestro(){
+
+		//load session library
+		$this->load->library('session');
+
+		//restrict users to go to home if not logged in
+		if($this->session->userdata('user')){
+			//$this->load->view('home');
+
+			$user = $this->session->userdata('user');
+			extract($user);
+
+			$menuLista = $this->menu_mdl->getMenu($idusuario);
+			$data['menu1'] = $menuLista;
+
+			$submenuLista = $this->menu_mdl->getSubMenu($idusuario);
+			$data['menu2'] = $submenuLista;		
+
+			$data['mesa_partes'] = $this->siniestro_mdl->getMesaPartes();
+			$this->load->view('dsb/html/siniestro/siniestro.php',$data);
+		}
+		else{
+			redirect('/');
+		}
+	}
+
+	public function buscar_orden(){
+		//load session library
+		$this->load->library('session');
+
+		//restrict users to go to home if not logged in
+		if($this->session->userdata('user')){
+			//$this->load->view('home');
+
+			$user = $this->session->userdata('user');
+			extract($user);
+
+			$menuLista = $this->menu_mdl->getMenu($idusuario);
+			$data['menu1'] = $menuLista;
+
+			$submenuLista = $this->menu_mdl->getSubMenu($idusuario);
+			$data['menu2'] = $submenuLista;		
+
+			$nro_orden = $_POST['nro_orden'];
+			$data['nro_orden'] = $nro_orden;
+
+			$siniestro = $this->siniestro_mdl->getSiniestro($nro_orden);
+
+			$data['opciones'] = '<div class="row">
+									<div align="center">								
+										<div class="col-xs-12 col-sm-12">
+											<form class="form-horizontal" role="form">
+												<input type="hidden" name="nro_orden" value="$nro_orden">
+												<input type="hidden" name="idsiniestro" value="'.$siniestro['idsiniestro'].'">
+												<div class="form-group">
+													<label class="control-label col-xs-12 col-sm-4 no-padding-right" for="name">Cliente:</label>
+													<div class="col-xs-12 col-sm-8">
+														<div class="clearfix">
+															<input  type="text" class="col-xs-12 col-sm-5" value="'.$siniestro['nombre_comercial_cli'].'" disabled>
+														</div>
+													</div>																
+												</div>
+												<div class="form-group">
+													<label class="control-label col-xs-12 col-sm-4 no-padding-right" for="name">Plan:</label>
+													<div class="col-xs-12 col-sm-8">
+														<div class="clearfix">
+															<input  type="text" class="col-xs-12 col-sm-5" value="'.$siniestro['nombre_plan'].'" disabled>
+														</div>
+													</div>																
+												</div>
+												<div class="form-group">
+													<label class="control-label col-xs-12 col-sm-4 no-padding-right" for="name">N° Certificado:</label>
+													<div class="col-xs-12 col-sm-8">
+														<div class="clearfix">
+															<input  type="text" class="col-xs-12 col-sm-5" value="'.$siniestro['cert_num'].'" disabled>
+														</div>
+													</div>																
+												</div>
+												<div class="form-group">
+													<label class="control-label col-xs-12 col-sm-4 no-padding-right" for="name">DNI:</label>
+													<div class="col-xs-12 col-sm-8">
+														<div class="clearfix">
+															<input  type="text" class="col-xs-12 col-sm-5" value="'.$siniestro['aseg_numDoc'].'" disabled>
+														</div>
+													</div>																
+												</div>
+												<div class="form-group">
+													<label class="control-label col-xs-12 col-sm-4 no-padding-right" for="name">Afiliado:</label>
+													<div class="col-xs-12 col-sm-8">
+														<div class="clearfix">
+															<input  type="text" class="col-xs-12 col-sm-5" value="'.$siniestro['aseg_ape1'].' '.$siniestro['aseg_ape2'].' '.$siniestro['aseg_nom1'].' '.$siniestro['aseg_nom2'].'" disabled>
+														</div>
+													</div>																
+												</div>
+												<div class="form-group">
+													<label class="control-label col-xs-12 col-sm-4 no-padding-right" for="name">Centro Médico:</label>
+													<div class="col-xs-12 col-sm-8">
+														<div class="clearfix">
+															<input  type="text" class="col-xs-12 col-sm-5" value="'.$siniestro['nombre_comercial_pr'].'" disabled>
+														</div>
+													</div>																
+												</div>
+												<div class="form-group">
+													<label class="control-label col-xs-12 col-sm-4 no-padding-right" for="name">Fecha de Atención:</label>
+													<div class="col-xs-12 col-sm-8">
+														<div class="clearfix">
+															<input  type="text" class="col-xs-12 col-sm-5" value="'.$siniestro['fecha_atencion'].'" disabled>
+														</div>
+													</div>																
+												</div>
+												<div class="clearfix form-actions">
+													<div class="col-md-offset-3 col-md-9">
+														<button class="btn btn-info" type="submit" name="accion" value="atencion">
+															Datos de Atención
+														</button>
+														<button class="btn btn-info" type="submit" name="accion" value="gasto">
+															Facturas Pendientes
+														</button>
+													</div>
+												</div>
+											</form>
+										</div>
+									</div>
+								</div>';
+
+			$this->load->view('dsb/html/siniestro/siniestro.php',$data);
+		}
+		else{
+			redirect('/');
+		}
+	}
+
+	public function seleccionar_factura($idrecepcion,$idsiniestro){
+		
 	}
 }

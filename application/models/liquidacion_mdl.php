@@ -44,7 +44,7 @@
 	}
 
 	function getLiquidacionDet($id){
-		$this->db->select("lgd.liqdetallegrupo_id, lgd.liqgrupo_id, lgd.liqdetalleid, nombre_comercial_pr, liqdetalle_numfact, liqdetalle_monto, liqdetalle_neto,coalesce(nombre_var,'Gastos Aprobados') as nombre_var, num_orden_atencion, concat(a.aseg_ape1,' ',a.aseg_ape2,' ',a.aseg_nom1,' ',coalesce(a.aseg_nom2))as afiliado, CONCAT('(', left(GROUP_CONCAT(descripcion_prod),40), case when CHAR_LENGTH(GROUP_CONCAT(descripcion_prod))>40 then '...)'else ')' end) as detalle");
+		$this->db->select("lgd.liqdetallegrupo_id, lgd.liqgrupo_id, lgd.liqdetalleid, nombre_comercial_pr, liqdetalle_numfact, liqdetalle_monto, liqdetalle_neto,coalesce(nombre_var,'Gastos Aprobados') as nombre_var, num_orden_atencion, concat(coalesce(a.aseg_ape1,''),' ',coalesce(a.aseg_ape2,''),' ',coalesce(a.aseg_nom1,''),' ',coalesce(a.aseg_nom2,''))as afiliado, CONCAT('(', left(GROUP_CONCAT(descripcion_prod),40), case when CHAR_LENGTH(GROUP_CONCAT(descripcion_prod))>40 then '...)'else ')' end) as detalle");
 		$this->db->from("liquidacion_grupodetalle lgd");
 		$this->db->join("liquidacion_detalle ld","ld.liqdetalleid=lgd.liqdetalleid");
 		$this->db->join("liquidacion l","l.liquidacionId=ld.liquidacionId");
@@ -195,7 +195,7 @@
 
 	function liquidacionpdf_detalle($id){
 		$query = $this->db->query("select ld.liqdetalle_numfact, sum(liqdetalle_neto) as neto, detraccion, GROUP_CONCAT(distinct s.num_orden_atencion) as num_orden_atencion, 
-						GROUP_CONCAT(distinct CONCAT(aseg_ape1,' ',aseg_ape2,' ',aseg_nom1,' ',coalesce(aseg_nom2)))as afiliado, plan_id, centro_costo
+						GROUP_CONCAT(distinct CONCAT(coalesce(aseg_ape1,''),' ',coalesce(aseg_ape2,''),' ',coalesce(aseg_nom1,''),' ',coalesce(aseg_nom2,'')))as afiliado, plan_id, centro_costo
 						from liquidacion_detalle ld
 						join liquidacion l on l.liquidacionId=ld.liquidacionId
 						join siniestro s on s.idsiniestro = l.idsiniestro
@@ -382,6 +382,5 @@
 		$query = $this->db->query("select email_cp, nombres_cp from contacto_proveedor where idcargocontacto=12 and idproveedor=$idproveedor");
 		return $query->result();
 	}
-
 }
 ?>

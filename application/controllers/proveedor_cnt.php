@@ -452,7 +452,7 @@ class Proveedor_cnt extends CI_Controller {
 			$data['forma'] =$this->proveedor_mdl->getFormaPago();
 			$distrito['distrito'] = $distrito;
 			$data['nom'] = "Nuevo Proveedor";
-			$data['accion'] = "Registrar Proveedor";
+			$data['accion'] = "Registrar Centro Médico";
 			$data['mensaje'] = "";
 			$this->load->view('dsb/html/proveedor/form_proveedor.php',$data);
 		}
@@ -491,7 +491,7 @@ class Proveedor_cnt extends CI_Controller {
 			$data['distrito'] = $distrito;
 			$data['banco'] = $this->proveedor_mdl->getBancos();
 			$data['forma'] =$this->proveedor_mdl->getFormaPago();
-			$data['accion'] = "Actualizar Proveedor";
+			$data['accion'] = "Actualizar Centro Médico";
 			$this->load->view('dsb/html/proveedor/form_proveedor.php',$data);
 		}
 		else{

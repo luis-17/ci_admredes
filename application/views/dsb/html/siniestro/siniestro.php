@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="en">
 	<head>
 		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
@@ -33,36 +33,33 @@
 		<script type="text/javascript" src="<?=  base_url()?>public/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
 
 		<script>
-			$(".fancybox")
-	    .attr('rel', 'gallery')
-	    .fancybox({
-	        type: 'iframe',
-	        autoSize : false,
-	        beforeLoad : function() {         
-	            this.width  = parseInt(this.element.data('fancybox-width'));  
-	            this.height = parseInt(this.element.data('fancybox-height'));
-	        }
-	    });
-	</script>
+				$(".fancybox")
+		    .attr('rel', 'gallery')
+		    .fancybox({
+		        type: 'iframe',
+		        autoSize : false,
+		        beforeLoad : function() {         
+		            this.width  = parseInt(this.element.data('fancybox-width'));  
+		            this.height = parseInt(this.element.data('fancybox-height'));
+		        }
+		    });
+		</script>
 		<!-- inline styles related to this page -->
 
 		<!-- ace settings handler -->
 		<script src="<?=  base_url()?>public/assets/js/ace-extra.js"></script>
 
 		<!-- HTML5shiv and Respond.js for IE8 to support HTML5 elements and media queries -->
-
-
-			<!-- para paginacion -->
+		<!-- para paginacion -->
 		<script src="<?=base_url()?>public/pagination/jquery.dataTables.min.css"></script>
 		<script src="<?=base_url()?>public/pagination/jquery-1.12.4.js"></script>
 		<script src="<?=base_url()?>public/pagination/jquery.dataTables.min.js"></script>
 		<script src="<?=base_url()?>public/pagination/dataTables.bootstrap.min.js"></script>
-
+	</head>
 
 	<body class="no-skin">
 		<!-- #section:basics/navbar.layout -->
-		<?php 
-		include (APPPATH."views/dsb/html/headBar.php");?>
+		<?php include (APPPATH."views/dsb/html/headBar.php");?>
 
 		<!-- /section:basics/navbar.layout -->
 		<div class="main-container" id="main-container">
@@ -73,7 +70,7 @@
 			<!-- #section:basics/sidebar -->
 			<?php include (APPPATH."views/dsb/html/sideBar.php");?>
 			<!-- end nav. -->
-
+			
 			<!-- /section:basics/sidebar -->
 			<div class="main-content">
 				<div class="main-content-inner">
@@ -88,8 +85,10 @@
 								<i class="ace-icon fa fa-home home-icon"></i>
 								<a href="<?=base_url()?>">Inicio</a>
 							</li>
-							<li>Tablas Maestras</li>
-							<li class="active">Centro de Costos</li>
+
+							<li class="active">
+								Siniestro
+							</li>
 						</ul><!-- /.breadcrumb -->
 
 						<!-- /section:basics/content.searchbox -->
@@ -97,12 +96,10 @@
 
 					<!-- /section:basics/content.breadcrumbs -->
 					<div class="page-content">
-						<!-- #section:settings.box -->
-
 						<!-- /section:settings.box -->
 						<div class="page-header">
 							<h1>
-								Centro de Costos por Plan de Salud
+								Siniestros
 								<small>
 									<i class="ace-icon fa fa-angle-double-right"></i>
 								</small>
@@ -111,87 +108,117 @@
 
 						<div class="row">
 							<div class="col-xs-12">
-								
 								<!-- PAGE CONTENT BEGINS -->
-								
-								<div class="col-xs-12">
-									<div id="serviciosT">
-										<br>
-									<table id="example" class="table table-striped table-bordered table-hover">
-										<thead>
-											<tr>
-												<th>ID</th>
-												<th>Cliente</th>
-												<th>Plan</th>
-												<th>Responsable de Cuenta</th>
-												<th>Estado</th>
-												<th>Centro de Costo (CC)</th>
-											</tr>
-										</thead>
-										<tbody>
-										
-										<?php foreach($planes as $p){?>
-											<tr>
-												<td><?=$p->idplan?></td>
-												<td><?=$p->nombre_comercial_cli?></td>
-												<td><?=$p->nombre_plan?></td>
-												<td><?=$p->responsable?></td>	
-												<td><?php if($p->estado_plan==1){
-													echo '<span class="label label-info label-white middle">Activo</span>';
-													}else{
-														echo '<span class="label label-danger label-white middle">Inactivo</span>';
-														}?></td>											
-												<td><?php if($p->centro_costo==''){
-													echo '<a class="boton fancybox"  data-fancybox-width="600" data-fancybox-height="400" title="Agregar CC" href="'.base_url().'index.php/add_cc/'.$p->idplan.'"><i class="ace-icon glyphicon glyphicon-plus red"></i></a>';
-												}else{
-													echo '<a class="boton fancybox"  data-fancybox-width="600" data-fancybox-height="400" title="Editar CC" href="'.base_url().'index.php/add_cc/'.$p->idplan.'">'.$p->centro_costo.'</a>';
-												} ?></td>
-											</tr>
-										<?php } ?>
-										</tbody>
-									</table>								
-								</div><!-- PAGE CONTENT ENDS -->	
-								<script>			
-										//para paginacion
-										$(document).ready(function() {
-										$('#example').DataTable( {
-										"pagingType": "full_numbers"
-										} );
-									} );
-									</script>	
-								</div>						
-							</div><!-- /.col -->
-						</div><!-- /.row -->
-					</div><!-- /.page-content -->
-				</div>
-			</div><!-- /.main-content -->
+								<div class="tabbable">
+									<!-- #section:pages/faq -->
+									<ul class="nav nav-tabs padding-18 tab-size-bigger" id="myTab">
+										<li class="active">
+											<a data-toggle="tab" href="#faq-tab-1">
+												Registrar Atención
+											</a>
+										</li>
 
-			<div class="footer">
-				<div class="footer-inner">
-					<!-- #section:basics/footer -->
-					<div class="footer-content">
-						<span class="bigger-120">
-							<span class="blue bolder">Red Salud</span>
-							Application &copy; 2018
-						</span>
+										<li>
+											<a data-toggle="tab" href="#faq-tab-2">
+												Registrar Gasto
+											</a>
+										</li>							
+									</ul>
 
-						&nbsp; &nbsp;
+									<!-- /section:pages/faq -->
+									<div class="tab-content no-border padding-24">
+										<div id="faq-tab-1" class="tab-pane fade in active">	
+											<!-- star table -->	
+												<div class="col-xs-12">
+													
+												</div>
+											<!-- end table -->
+										</div>
+
+										<div id="faq-tab-2" class="tab-pane fade">
+											<!-- star table -->		
+												<div class="col-xs-12">
+													<table id="example1" class="table table-striped table-bordered table-hover">
+														<thead>
+															<tr>
+																<th>Fecha Recepción</th>
+																<th>usuario</th>
+																<th>RUC</th>
+																<th>Raz. Social</th>
+																<th>N° Orden</th>
+																<th>Documento</th>
+																<th>Importe</th>
+																<th></th>
+															</tr>
+														</thead>														
+														<tbody>
+															<?php foreach ($mesa_partes as $mp) { 
+																$importe = $mp->importe;
+																$importe = number_format((float)$importe, 2, '.', '');
+															?>
+															<tr>
+																<td><?=$mp->fecha_recepcion?></td>
+																<td><?=$mp->username?></td>
+																<td><?=$mp->numero_documento_pr?></td>
+																<td><?=$mp->razon_social_pr?></td>
+																<td><?=$mp->num_orden_atencion?></td>
+																<td><?=$mp->tipo_documento?>-<?=$mp->serie?>-<?=$mp->numero?></td>
+																<td style="text-align: right;"><?=$importe?></td>
+																<td>
+																	<div title="Seleccionar Proveedor" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
+																		&nbsp;<a class="boton fancybox" href="<?=base_url()?>index.php/seleccionar_factura/<?=$mp->idrecepcion?>/<?=$mp->idsiniestro?>" data-fancybox-width="1150" data-fancybox-height="690">
+																			<i class="ace-icon fa fa-hand-o-right icon-animated-hand-pointer blue bigger-120"></i>
+																		</a>
+																	</div>
+																</td>
+															</tr>
+															<?php } ?>
+														</tbody>
+													</table>
+												</div>
+												<script>			
+													//para paginacion
+													$(document).ready(function() {
+													    $('#example1').DataTable( {
+													        "pagingType": "full_numbers"
+													    } );
+													} );
+												</script>
+												<!-- end table -->
+										</div>										
+									</div>
+
+								<!-- PAGE CONTENT ENDS -->
+								</div><!-- /.col -->
+							</div><!-- /.row -->
+						</div><!-- /.page-content -->
 					</div>
+				</div><!-- /.main-content -->
 
-					<!-- /section:basics/footer -->
+				<div class="footer">
+					<div class="footer-inner">
+						<!-- #section:basics/footer -->
+						<div class="footer-content">
+							<span class="bigger-120">
+								<span class="blue bolder">Red Salud Admin</span>
+								Application &copy; 2018
+							</span>
+
+							&nbsp; &nbsp;
+						</div>
+
+						<!-- /section:basics/footer -->
+					</div>
 				</div>
-			</div>
 
-			<a href="#" id="btn-scroll-up" class="btn-scroll-up btn btn-sm btn-inverse">
-				<i class="ace-icon fa fa-angle-double-up icon-only bigger-110"></i>
-			</a>
-		</div><!-- /.main-container -->
+				<a href="#" id="btn-scroll-up" class="btn-scroll-up btn btn-sm btn-inverse">
+					<i class="ace-icon fa fa-angle-double-up icon-only bigger-110"></i>
+				</a>
+			</div><!-- /.main-container -->
 
 		<!-- basic scripts -->
 
-		<!-- fin scripts paginacion -->
-
-		<!--[if !IE]> -->
+			<!--[if !IE]> -->
 		<script type="text/javascript">
 			window.jQuery || document.write("<script src='<?=  base_url()?>public/assets/js/jquery.js'>"+"<"+"/script>");
 		</script>
@@ -235,7 +262,6 @@
 
 		<!-- inline scripts related to this page -->
 
-		
 		<!-- the following scripts are used in demo only for onpage help and you don't need them -->
 		<link rel="stylesheet" href="<?=  base_url()?>public/assets/css/ace.onpage-help.css" />
 		<link rel="stylesheet" href="<?=  base_url()?>public/docs/assets/js/themes/sunburst.css" />

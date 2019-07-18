@@ -1,3 +1,7 @@
+<?php 
+$user = $this->session->userdata('user');
+extract($user);
+?>
 <!DOCTYPE html>
 <html lang="en">
 	<head>
@@ -122,7 +126,6 @@
 								
 								<div class="col-xs-12">
 									<div>
-									<?php if(!empty($planes)){ ?>
 									<table id="example" class="table table-striped table-bordered table-hover">
 										<thead>
 											<tr>
@@ -135,7 +138,10 @@
 										</thead>
 										<tbody>
 										
-										<?php foreach($planes as $p){?>
+										<?php 
+											if($idtipousuario==3){
+											foreach($planes as $p){
+												if($p->idusuario==$idusuario){?>
 											<tr>
 												<td><?=$p->nombre_comercial_cli?></td>
 												<td><?=$p->nombre_plan?></td>
@@ -156,6 +162,92 @@
 														<div title="Editar Plan" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
 															&nbsp;<a href="<?=base_url()?>index.php/plan_editar/<?=$p->idplan?>/<?=$p->nombre_plan?>">
 																<i class="ace-icon fa fa-pencil bigger-120 blue"></i>
+															</a>
+														</div>
+														<?php if($p->tipo_responsable=='P'){ ?>
+														<div title="Asignar Responsable" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
+															&nbsp;<a class="boton fancybox" href="<?=base_url()?>index.php/addresponsable/<?=$p->idplan?>/<?=$p->nombre_plan?>" data-fancybox-width="950" data-fancybox-height="690">
+															<i class="ace-icon glyphicon glyphicon-user bigger-120 blue"></i>
+															</a>
+
+														</div>
+														<?php } ?>
+														<div title="Editar Email" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
+															&nbsp;<a class="boton fancybox" href="<?=base_url()?>index.php/plan_email/<?=$p->idplan?>/<?=$p->nombre_plan?>" data-fancybox-width="950" data-fancybox-height="690">
+															<i class="ace-icon fa fa-envelope bigger-120 blue"></i>
+														</a>
+														</div>
+													</div>
+
+														<div class="hidden-md hidden-lg">
+															<div class="inline pos-rel">
+																<button class="btn btn-minier btn-info dropdown-toggle" data-toggle="dropdown" data-position="auto">
+																	<i class="ace-icon fa fa-cog icon-only bigger-110"></i>
+																</button>
+
+																<ul class="dropdown-menu dropdown-only-icon dropdown-yellow dropdown-menu-right dropdown-caret dropdown-close">
+																		<li>
+																			<div title="Ver Cobertura" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
+																				<a class="boton fancybox" href="<?=base_url()?>index.php/plan_cobertura/<?=$p->idplan?>/<?=$p->nombre_plan?>" data-fancybox-width="950" data-fancybox-height="690">
+																					<i class="ace-icon fa fa-eye bigger-120 blue"></i>
+																				</a>
+																			</div>
+																		</li>
+																		<li>
+																			<div title="Editar Plan" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
+																				&nbsp;<a href="<?=base_url()?>index.php/plan_editar/<?=$p->idplan?>/<?=$p->nombre_plan?>">
+																					<i class="ace-icon fa fa-pencil bigger-120 blue"></i>
+																				</a>
+																			</div>
+																		</li>
+																		<?php if($p->tipo_responsable=='P'){ ?>
+																		<li>
+																			<div title="Asignar Responsable" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
+																				&nbsp;<a class="boton fancybox" href="<?=base_url()?>index.php/addresponsable/<?=$p->idplan?>/<?=$p->nombre_plan?>" data-fancybox-width="950" data-fancybox-height="690">
+																				<i class="ace-icon glyphicon glyphicon-user bigger-120 blue"></i>
+																				</a>
+																			</div>
+																		</li>
+																		<?php } ?>
+																		<li>
+																			<div title="Editar Email" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
+																				&nbsp;<a class="boton fancybox" href="<?=base_url()?>index.php/plan_email/<?=$p->idplan?>/<?=$p->nombre_plan?>" data-fancybox-width="950" data-fancybox-height="690">
+																					<i class="ace-icon fa fa-envelope bigger-120 blue"></i>
+																				</a>
+																			</div>
+																		</li>	
+																	</ul>
+																</div>
+															</div>
+														</td>
+													</tr>
+												<?php } }}else{
+													foreach($planes2 as $p){?>
+												<tr>
+												<td><?=$p->nombre_comercial_cli?></td>
+												<td><?=$p->nombre_plan?></td>
+												<td>S/. <?=$p->prima_monto?></td>
+												<td><?php if($p->estado_plan==1){
+													echo '<a href="'.base_url().'index.php/plan_anular/'.$p->idplan.'"><span class="label label-info label-white middle">Activo</span></a>';
+													}else{
+														echo '<a href="'.base_url().'index.php/plan_activar/'.$p->idplan.'"><span class="label label-danger label-white middle">Inactivo</span></a>';
+														}?>
+												</td>
+												<td>
+													<div class="hidden-sm hidden-xs btn-group">
+														<div title="Ver Cobertura" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
+														<a href="<?=base_url()?>index.php/plan_cobertura/<?=$p->idplan?>/<?=$p->nombre_plan?>">
+															<i class="ace-icon fa fa-eye bigger-120 blue"></i>
+														</a>
+														</div>
+														<div title="Editar Plan" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
+															&nbsp;<a href="<?=base_url()?>index.php/plan_editar/<?=$p->idplan?>/<?=$p->nombre_plan?>">
+																<i class="ace-icon fa fa-pencil bigger-120 blue"></i>
+															</a>
+														</div>
+														<div title="Asignar Responsable" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
+															&nbsp;<a class="boton fancybox" href="<?=base_url()?>index.php/addresponsable/<?=$p->idplan?>/<?=$p->nombre_plan?>" data-fancybox-width="950" data-fancybox-height="690">
+															<i class="ace-icon glyphicon glyphicon-user bigger-120 blue"></i>
 															</a>
 														</div>
 														<div title="Editar Email" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
@@ -187,6 +279,13 @@
 																			</div>
 																		</li>
 																		<li>
+																			<div title="Asignar Responsable" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
+																				&nbsp;<a class="boton fancybox" href="<?=base_url()?>index.php/addresponsable/<?=$p->idplan?>/<?=$p->nombre_plan?>" data-fancybox-width="950" data-fancybox-height="690">
+																				<i class="ace-icon glyphicon glyphicon-user bigger-120 blue"></i>
+																				</a>
+																			</div>
+																		</li>
+																		<li>
 																			<div title="Editar Email" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
 																				&nbsp;<a class="boton fancybox" href="<?=base_url()?>index.php/plan_email/<?=$p->idplan?>/<?=$p->nombre_plan?>" data-fancybox-width="950" data-fancybox-height="690">
 																					<i class="ace-icon fa fa-envelope bigger-120 blue"></i>
@@ -198,10 +297,9 @@
 															</div>
 														</td>
 													</tr>
-												<?php } ?>
+												<?php }} ?>
 										</tbody>
-									</table>
-									<?php } ?>									
+									</table>							
 								</div><!-- PAGE CONTENT ENDS -->	
 								<script>			
 										//para paginacion

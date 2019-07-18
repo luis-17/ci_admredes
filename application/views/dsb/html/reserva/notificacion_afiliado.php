@@ -100,7 +100,7 @@
 										<li><?=$consulta?>.</li>
 										<li>Al acercarse a <b><?=$proveedor?></b> se debe identificar como AFILIADO RED SALUD y debe de llevar consigo su DNI físico.</li>
 										<li>Recuerde que el horario que le estoy brindando es referencial y usted debe de acudir media hora antes a su cita médica a fin de no tener inconvenientes.</li>
-										<li>Si Usted no encontrase la totalidad de la receta en la farmacia del establecimiento de salud, Usted también puede acercarse con su receta a cualquier Botica Inkafarma a reclamar sus medicamentos, para lo cual deberá comunicarse con nosotros al 445 3019 anexo xxx para coordinar su entrega.</li>
+										<li>Si Usted no encontrase la totalidad de la receta en la farmacia del establecimiento de salud, Usted también puede acercarse con su receta a cualquier Botica Inkafarma a reclamar sus medicamentos, para lo cual se debe identificar como AFILIADO RED SALUD y debe de llevar consigo su DNI físico.</li>
 									</ul>
 									<p>Además, permítame recordarle los BENEFICIOS con los que cuenta su plan <b><?=$nombre_plan?></b>.</p>
 									<ul>

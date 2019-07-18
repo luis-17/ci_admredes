@@ -479,11 +479,11 @@ class Liquidacion_cnt extends CI_Controller {
 	            $this->pdf->Ln();
 	            $this->pdf->SetFont('Arial','',9);
 	            foreach ($liquidacion_det as $ld) {            
-	            $this->pdf->Cell(30,6,utf8_decode($ld->centro_costo),1,0,'C',false);
+	            $this->pdf->Cell(20,6,utf8_decode($ld->centro_costo),1,0,'C',false);
 	            $this->pdf->Cell(30,6,utf8_decode($ld->liqdetalle_numfact),1,0,'L',false);
 	            $this->pdf->Cell(30,6,utf8_decode("OA".$ld->num_orden_atencion),1,0,'L',false);
 	            $this->pdf->Cell(80,6,utf8_decode($ld->afiliado),1,0,'L',false);
-	            $this->pdf->Cell(20,6,number_format((float)$ld->neto, 2, '.', ''),1,0,'R',false);
+	            $this->pdf->Cell(30,6,number_format((float)$ld->neto, 2, '.', ''),1,0,'R',false);
 	            $this->pdf->Ln();
 	            }
 	            $detracciones = number_format((float)$detracciones, 2, '.', '');

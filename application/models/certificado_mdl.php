@@ -433,9 +433,10 @@
 	}
 
 	function getCoberturasOperador($id){
-		$query = $this->db->query("select nombre_var, texto_web, num_eventos, tiempo, concat(o.descripcion,' ',valor_detalle, case when idoperador=1 then '%' else '' end)as coaseguro FROM variable_plan vp 
+		$query = $this->db->query("select nombre_var, texto_web, num_eventos, tiempo, cobertura as coaseguro FROM variable_plan vp 
 									inner join plan_detalle pd on vp.idvariableplan=pd.idvariableplan
-									inner join operador o on  pd.simbolo_detalle=o.idoperador
+									inner join (select GROUP_CONCAT(concat(' ',descripcion,' ',valor)) as cobertura, idplandetalle from plan_coaseguro pc inner join operador o on pc.idoperador=o.idoperador
+								where pc.estado=1 group by idplandetalle)a on a.idplandetalle=pd.idplandetalle
 									inner join plan p on pd.idplan=p.idplan 
 									inner join certificado c on c.plan_id=p.idplan
 									where c.cert_id=$id and estado_pd=1 order by vp.idvariableplan");

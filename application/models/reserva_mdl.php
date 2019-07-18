@@ -40,7 +40,7 @@
 	}
 
 	function getOtrasReservas($id){
-		$this->db->select("c.idcita, pl.nombre_plan, s.idcertificado, c.idasegurado, c.idcertificadoasegurado, num_orden_atencion, concat(DATE_FORMAT(c.fecha_cita,'%d/%m/%Y'),' ', date_format(hora_cita_inicio,'%H:%m'),' - ', date_format(hora_cita_fin,'%H:%m')) as fecha, nombre_comercial_pr, a.aseg_numDoc, concat(aseg_ape1,' ',aseg_ape2,' ',aseg_nom1,' ',coalesce(aseg_nom2,'')) as afiliado, estado_cita, username, case when idtipousuario<>5 then 'ace-icon fa fa-exclamation-triangle red' else '' end as tipo, case when TIMESTAMPDIFF(minute,c.createdat,now())>59 then  concat(TIMESTAMPDIFF(hour,c.createdat,now()),' hora(s)') else concat(TIMESTAMPDIFF(minute,c.createdat,now()),' minuto(s)') end as tiempo, case when idtipousuario<>5 then '1' else '2' end as tipo2");
+		$this->db->select("c.idcita, pl.nombre_plan, s.idcertificado, c.idasegurado, c.idcertificadoasegurado, num_orden_atencion, concat(DATE_FORMAT(c.fecha_cita,'%d/%m/%Y'),' ', date_format(hora_cita_inicio,'%H:%m'),' - ', date_format(hora_cita_fin,'%H:%m')) as fecha, nombre_comercial_pr, a.aseg_numDoc, concat(aseg_ape1,' ',aseg_ape2,' ',aseg_nom1,' ',coalesce(aseg_nom2,'')) as afiliado, estado_cita, username, case when idtipousuario<>5 then 'ace-icon fa fa-exclamation-triangle red' else '' end as tipo, case when TIMESTAMPDIFF(minute,c.createdat,now())>59 then  concat(TIMESTAMPDIFF(hour,c.createdat,now()),' hora(s)') else concat(TIMESTAMPDIFF(minute,c.createdat,now()),' minuto(s)') end as tiempo, case when idtipousuario<>5 then '1' else '2' end as tipo2, c.createdat");
 		$this->db->from("cita c");
 		$this->db->join("siniestro s","s.idcita=c.idcita");
 		$this->db->join("certificado ce","ce.cert_id=s.idcertificado");
@@ -102,18 +102,20 @@
 	}
 
 	function getConsultaMedica($data){
-		$query = $this->db->query("select concat('La consulta médica en ',descripcion_prod,' tiene ',case when idoperador=1 then concat(op.descripcion,' ',pd.valor_detalle,'%') else concat(op.descripcion,' ',pd.valor_detalle)end) as consulta from plan_detalle pd 
+		$query = $this->db->query("select pr.idproducto, concat('La consulta médica en ',descripcion_prod,' tiene ',cobertura) as consulta from plan_detalle pd 
 								inner join producto_detalle prd on pd.idplandetalle=prd.idplandetalle
 								inner join producto pr on pr.idproducto=prd.idproducto
-								inner join operador op on pd.simbolo_detalle=op.idoperador
+								inner join (select GROUP_CONCAT(concat(' ',descripcion,' ',valor)) as cobertura, idplandetalle from plan_coaseguro pc inner join operador o on pc.idoperador=o.idoperador
+									where pc.estado=1 group by idplandetalle)a on a.idplandetalle=pd.idplandetalle
 								where pd.idvariableplan=1 and idplan=".$data['plan_id']." and visible=1 and estado_pd=1 and pr.idespecialidad=".$data['idespecialidad']);
 		return $query->row_array();
 	}
 
 	function getCoberturasOperador($data){
-		$query = $this->db->query("select nombre_var, texto_web, num_eventos, tiempo, concat(o.descripcion,' ',valor_detalle, case when idoperador=1 then '%' else '' end)as coaseguro FROM variable_plan vp 
+		$query = $this->db->query("select nombre_var, texto_web, num_eventos, tiempo, cobertura as coaseguro FROM variable_plan vp 
 									inner join plan_detalle pd on vp.idvariableplan=pd.idvariableplan
-									inner join operador o on  pd.simbolo_detalle=o.idoperador
+									inner join (select GROUP_CONCAT(concat(' ',descripcion,' ',valor)) as cobertura, idplandetalle from plan_coaseguro pc inner join operador o on pc.idoperador=o.idoperador
+									where pc.estado=1 group by idplandetalle)a on a.idplandetalle=pd.idplandetalle
 									inner join plan p on pd.idplan=p.idplan 
 									where pd.idvariableplan in (2,3,4) and p.idplan=".$data['plan_id']);
 		return $query->result();

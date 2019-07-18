@@ -79,248 +79,238 @@
 
 	<body style="">	
 			<!-- /section:basics/sidebar -->
-			<div class="main-content">
-				<div class="main-content-inner">
-					<!-- #section:basics/content.breadcrumbs -->
-					<?php 
-									$mensaje="";
-									$est_boton="";
-									if (!empty($aseg_ver)) {
-											$caso=2;
-											$tit="NUEVO DEPENDIENTE";
-											if(!empty($cert_ver)){
-												$mensaje="El documento ya se encuentra afiliado al plan.";
-												$est_boton='disabled = "true"';
-											}
-											foreach($aseg_ver as $av):
-											$tipodoc=$av->tipoDoc_id;
-											$doc=$av->aseg_numDoc;
-											$ape1=$av->aseg_ape1;
-											$ape2=$av->aseg_ape2;
-											$nom1=$av->aseg_nom1;
-											$nom2=$av->aseg_nom2;
-											$fecnac=$av->aseg_fechNac;
-											$direc=$av->aseg_direcc;
-											$telf=$av->aseg_telf;
-											$ec=$av->aseg_estCiv;
-											$sexo=$av->aseg_sexo;
-											$correo=$av->aseg_email;
-											$dep=$av->dep;
-											$prov=$av->prov;
-											$dist=$av->dist;
-											$asegurado=$av->aseg_id;
-											endforeach; 
-											}else{
-												$tit="NUEVO DEPENDIENTE";
-												$caso=3;
-												$tipodoc=$tipdoc;
-												$doc=$doc;
-												$ape1="";
-												$ape2="";
-												$nom1="";
-												$nom2="";
-												$fecnac="";
-												$direc="";
-												$telf="";
-												$ec="";
-												$sexo="";
-												$correo="";											
-												$dep="";
-												$prov="";
-												$dist="";
-												$asegurado="";	
-									} ?>
+		<div class="main-content">
+			<div class="main-content-inner">
+			<!-- #section:basics/content.breadcrumbs -->
+			<?php 
+				$mensaje="";
+				$est_boton="";
+				if (!empty($aseg_ver)) {
+					$caso=2;
+					$tit="NUEVO DEPENDIENTE";
+					if(!empty($cert_ver)){
+						$mensaje="El documento ya se encuentra afiliado al plan.";
+						$est_boton='disabled = "true"';
+					}
+					foreach($aseg_ver as $av):
+						$tipodoc=$av->tipoDoc_id;
+						$doc=$av->aseg_numDoc;
+						$ape1=$av->aseg_ape1;
+						$ape2=$av->aseg_ape2;
+						$nom1=$av->aseg_nom1;
+						$nom2=$av->aseg_nom2;
+						$fecnac=$av->aseg_fechNac;
+						$direc=$av->aseg_direcc;
+						$telf=$av->aseg_telf;
+						$ec=$av->aseg_estCiv;
+						$sexo=$av->aseg_sexo;
+						$correo=$av->aseg_email;
+						$dep=$av->dep;
+						$prov=$av->prov;
+						$dist=$av->dist;
+						$asegurado=$av->aseg_id;
+					endforeach; 
+				}else{
+					$tit="NUEVO DEPENDIENTE";
+					$caso=3;
+					$tipodoc=$tipdoc;
+					$doc=$doc;
+					$ape1="";
+					$ape2="";
+					$nom1="";
+					$nom2="";
+					$fecnac="";
+					$direc="";
+					$telf="";
+					$ec="";
+					$sexo="";
+					$correo="";											
+					$dep="";
+					$prov="";
+					$dist="";
+					$asegurado="";	
+				} ?>
 					
-					<!-- /section:basics/content.breadcrumbs -->
-					<div class="page-content">
-						<div class="page-header">
-							<h1>
-								<?=$tit;?>								
-							</h1>
-						</div>
-						<div class="row">
-							<div class="col-xs-12">
-								<!-- PAGE CONTENT BEGINS -->
-								<form class="form-horizontal" name="aseg" id="aseg" role="form" method="post" action="<?=base_url()?>index.php/aseg_save">					
-									
-									<input type="hidden" id="aseg_id" name="aseg_id" value="<?=$asegurado;?>" />
-									<input type="hidden" name="cert_id" id="cert_id" value="<?=$cert_id;?>">
-									<input type="hidden" name="tipoop" id="tipoop" value="<?=$caso?>">
-									<div class="form-group">
-										<label class="col-sm-3 control-label no-padding-right" for="form-field-1"> Tipo de Documento: </label>
-
-										<div class="col-sm-4">
-											<select name="tipodoc" id="tipodoc" required="Seleccione una opción de la lista" class="form-control" value="<?=$d->cont_tipoDoc;?>">
-												<option value="">Seleccione</option>
-												<option value="1" <?php if($tipodoc==1): echo "selected"; endif;?> >DNI</option>
-                                                <option value="2" <?php if($tipodoc==2): echo "selected"; endif;?> >Pasaporte</option>
-                                                <option value="4" <?php if($tipodoc==4): echo "selected"; endif;?> >Carné de extranjería</option>
-                                            </select>
-										</div>
+				<!-- /section:basics/content.breadcrumbs -->
+				<div class="page-content">
+					<div class="page-header">
+						<h1>
+							<?=$tit;?>								
+						</h1>
+					</div>
+					<div class="row">
+						<div class="col-xs-12">
+							<!-- PAGE CONTENT BEGINS -->
+							<form class="form-horizontal" name="aseg" id="aseg" role="form" method="post" action="<?=base_url()?>index.php/aseg_save">					
+								<input type="hidden" id="aseg_id" name="aseg_id" value="<?=$asegurado;?>" />
+								<input type="hidden" name="cert_id" id="cert_id" value="<?=$cert_id;?>">
+								<input type="hidden" name="tipoop" id="tipoop" value="<?=$caso?>">
+								
+								<div class="form-group">
+									<label class="col-sm-3 control-label no-padding-right" for="form-field-1"> Tipo de Documento: </label>
+									<div class="col-sm-4">
+										<select name="tipodoc" id="tipodoc" required="Seleccione una opción de la lista" class="form-control" value="<?=$d->cont_tipoDoc;?>">
+											<option value="">Seleccione</option>
+											<option value="1" <?php if($tipodoc==1): echo "selected"; endif;?> >DNI</option>
+                                            <option value="2" <?php if($tipodoc==2): echo "selected"; endif;?> >Pasaporte</option>
+                                            <option value="4" <?php if($tipodoc==4): echo "selected"; endif;?> >Carné de extranjería</option>
+                                        </select>
 									</div>
-									<div class="form-group">
-										<label class="col-sm-3 control-label no-padding-right" for="form-field-1"> Documento: </label>
+								</div>
 
-										<div class="col-sm-4">
-											<input onkeyup="buscardni()" class="form-control input-mask-date" type="text" id="doc" name="doc" placeholder="" value="<?=$doc;?>"  required>
-										</div><label style="color: #E41919;"><?=$mensaje?></label>
+								<div class="form-group">
+									<label class="col-sm-3 control-label no-padding-right" for="form-field-1"> Documento: </label>
+									<div class="col-sm-4">
+										<input onkeyup="buscardni()" class="form-control input-mask-date" type="text" id="doc" name="doc" placeholder="" value="<?=$doc;?>"  required>
+									</div><label style="color: #E41919;"><?=$mensaje?></label>
+								</div>
+
+								<div class="form-group">
+									<label class="col-sm-3 control-label no-padding-right" for="form-field-1"> Apellido Paterno: </label>
+									<div class="col-sm-4">
+										<input class="form-control input-mask-date" type="text" id="ape1" name="ape1" placeholder="" value="<?=$ape1;?>" required>
 									</div>
-									<div class="form-group">
-										<label class="col-sm-3 control-label no-padding-right" for="form-field-1"> Apellido Paterno: </label>
+								</div>
 
-										<div class="col-sm-4">
-											<input class="form-control input-mask-date" type="text" id="ape1" name="ape1" placeholder="" value="<?=$ape1;?>" required>
-										</div>
+								<div class="form-group">
+									<label class="col-sm-3 control-label no-padding-right" for="form-field-1"> Apellido Materno: </label>
+									<div class="col-sm-4">
+										<input class="form-control input-mask-date" type="text" id="ape2" name="ape2" placeholder="" value="<?=$ape2;?>" required>
 									</div>
-									<div class="form-group">
-										<label class="col-sm-3 control-label no-padding-right" for="form-field-1"> Apellido Materno: </label>
-
-										<div class="col-sm-4">
-											<input class="form-control input-mask-date" type="text" id="ape2" name="ape2" placeholder="" value="<?=$ape2;?>" required>
-										</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-sm-3 control-label no-padding-right" for="form-field-1"> Nombre 1: </label>
+									<div class="col-sm-4">
+										<input class="form-control input-mask-date" type="text" id="nom1" name="nom1" placeholder="" value="<?=$nom1;?>" required>
 									</div>
-									<div class="form-group">
-										<label class="col-sm-3 control-label no-padding-right" for="form-field-1"> Nombre 1: </label>
+								</div>
 
-										<div class="col-sm-4">
-											<input class="form-control input-mask-date" type="text" id="nom1" name="nom1" placeholder="" value="<?=$nom1;?>" required>
-										</div>
+								<div class="form-group">
+									<label class="col-sm-3 control-label no-padding-right" for="form-field-1"> Nombre 2: </label>
+									<div class="col-sm-4">
+										<input class="form-control input-mask-date" type="text" id="nom2" name="nom2" placeholder="" value="<?=$nom2?>">
 									</div>
-									<div class="form-group">
-										<label class="col-sm-3 control-label no-padding-right" for="form-field-1"> Nombre 2: </label>
+								</div>
 
-										<div class="col-sm-4">
-											<input class="form-control input-mask-date" type="text" id="nom2" name="nom2" placeholder="" value="<?=$nom2?>">
-										</div>
+								<div class="form-group">
+									<label class="col-sm-3 control-label no-padding-right" for="form-field-1"> Fecha de Nacimiento: </label>
+									<div class="col-sm-4">
+										<input class="form-control input-mask-date" type="date" id="fec_nac" name="fec_nac" placeholder="" value="<?=$fecnac?>" required>
 									</div>
+								</div>
 
-									<div class="form-group">
-										<label class="col-sm-3 control-label no-padding-right" for="form-field-1"> Fecha de Nacimiento: </label>
-
-										<div class="col-sm-4">
-											<input class="form-control input-mask-date" type="date" id="fec_nac" name="fec_nac" placeholder="" value="<?=$fecnac?>" required>
-										</div>
-									</div>
-									<div class="form-group">
-										<label class="col-sm-3 control-label no-padding-right" for="form-field-1">Género: </label>
-
-										<div class="col-sm-9">
-											<select id="genero" name="genero" value="" class="col-xs-10 col-sm-5">
-												<option value="">Seleccionar</option>
-												<option value="F" <?php if($sexo=='F'): echo "selected"; endif;?> >Femenino</option>
-												<option value="M" <?php if($sexo=='M'): echo "selected"; endif;?> >Masculino</option>
-											</select>
-										</div>
-									</div>
-
-									<div class="form-group">
-										<label class="col-sm-3 control-label no-padding-right" for="form-field-1">Estado Civil: </label>
-
-										<div class="col-sm-9">
-											<select id="ec" name="ec" value="" class="col-xs-10 col-sm-5">
-												<option value="">Seleccionar</option>
-												<option value="S" <?php if($ec=='S'): echo "selected"; endif;?> >Soltero</option>
-												<option value="C">Casado</option>
-												<option value="CO">Conviviente</option>
-												<option value="D">Divorciado</option>
-												<option value="V">Viudo</option>
-											</select>
-										</div>
-									</div>
-
-									<div class="form-group">
-										<label class="col-sm-3 control-label no-padding-right" for="form-field-1">Departamento: </label>
-
-										<div class="col-sm-9">
-											<select name="dep" id="dep"  class="col-xs-10 col-sm-5">
-                                            <option>Seleccionar</option>
-                                            <?php foreach ($ubigeo as $u): 
-                                            	if($dep==$u->iddepartamento):
-                                            		$estdep='selected';
-												else:
-													$estdep='';
-												endif;
-                                            		?>
-                                                <option value="<?=$u->iddepartamento;?>" <?=$estdep?> ><?=$u->descripcion_ubig;?></option>
-                                                <?php endforeach; ?>                                                            
-                                         	</select>
-										</div>
-									</div>
-
-									<div class="form-group">
-										<label class="col-sm-3 control-label no-padding-right" for="form-field-1">Provincia: </label>
-
-										<div class="col-sm-9">
-											<select id="prov" name="prov" class="col-xs-10 col-sm-5">
+								<div class="form-group">
+									<label class="col-sm-3 control-label no-padding-right" for="form-field-1">Género: </label>
+									<div class="col-sm-9">
+										<select id="genero" name="genero" value="" class="col-xs-10 col-sm-5">
 											<option value="">Seleccionar</option>
-											 <?php foreach ($provincia3 as $p3): 
-                                            	if($prov==$p3->idprovincia):
-                                            		$estprov='selected';
-												else:
-													$estprov='';
-												endif;
-                                            		?>
-                                                <option value="<?=$p3->idprovincia;?>" <?=$estprov?> ><?=$p3->descripcion_ubig;?></option>
-                                                <?php endforeach; ?>                                                            
-                                         	</select>
-										</div>
+											<option value="F" <?php if($sexo=='F'): echo "selected"; endif;?> >Femenino</option>
+											<option value="M" <?php if($sexo=='M'): echo "selected"; endif;?> >Masculino</option>
+										</select>
 									</div>
-									
-									<div class="form-group">
-										<label class="col-sm-3 control-label no-padding-right" for="form-field-1">Distrito: </label>
-										<div class="col-sm-9">
-											<select name="dis" id="dis" class="col-xs-10 col-sm-5">
+								</div>
+
+								<div class="form-group">
+									<label class="col-sm-3 control-label no-padding-right" for="form-field-1">Estado Civil: </label>
+									<div class="col-sm-9">
+										<select id="ec" name="ec" value="" class="col-xs-10 col-sm-5">
 											<option value="">Seleccionar</option>
-                                                <?php foreach ($distrito3 as $d3): 
+											<option value="S" <?php if($ec=='S'): echo "selected"; endif;?> >Soltero</option>
+											<option value="C">Casado</option>
+											<option value="CO">Conviviente</option>
+											<option value="D">Divorciado</option>
+											<option value="V">Viudo</option>
+										</select>
+									</div>
+								</div>
+
+								<div class="form-group">
+									<label class="col-sm-3 control-label no-padding-right" for="form-field-1">Departamento: </label>
+									<div class="col-sm-9">
+										<select name="dep" id="dep"  class="col-xs-10 col-sm-5">
+                                           <option>Seleccionar</option>
+                                        <?php foreach ($ubigeo as $u): 
+                                           	if($dep==$u->iddepartamento):
+                                           		$estdep='selected';
+											else:
+												$estdep='';
+											endif;?>
+                                            <option value="<?=$u->iddepartamento;?>" <?=$estdep?> ><?=$u->descripcion_ubig;?></option>
+                                         <?php endforeach; ?>                                                            
+                                        </select>
+									</div>
+								</div>
+
+								<div class="form-group">
+									<label class="col-sm-3 control-label no-padding-right" for="form-field-1">Provincia: </label>
+									<div class="col-sm-9">
+										<select id="prov" name="prov" class="col-xs-10 col-sm-5">
+											<option value="">Seleccionar</option>
+										 <?php foreach ($provincia3 as $p3): 
+                                            if($prov==$p3->idprovincia):
+                                            	$estprov='selected';
+											else:
+												$estprov='';
+											endif;?>
+                                            <option value="<?=$p3->idprovincia;?>" <?=$estprov?> ><?=$p3->descripcion_ubig;?></option>
+                                        <?php endforeach; ?>                                                            
+                                        </select>
+									</div>
+								</div>
+									
+								<div class="form-group">
+									<label class="col-sm-3 control-label no-padding-right" for="form-field-1">Distrito: </label>
+									<div class="col-sm-9">
+										<select name="dis" id="dis" class="col-xs-10 col-sm-5">
+											<option value="">Seleccionar</option>
+                                            <?php foreach ($distrito3 as $d3): 
                                             	if($dist==$d3->iddistrito):
                                             		$estdist='selected';
 												else:
 													$estdist='';
-												endif;
-                                            		?>
-                                                <option value="<?=$d3->iddistrito;?>" <?=$estdist?> ><?=$d3->descripcion_ubig;?></option>
-                                                <?php endforeach; ?> 
-                                            </select>
-										</div>
+												endif;?>
+                                            <option value="<?=$d3->iddistrito;?>" <?=$estdist?> ><?=$d3->descripcion_ubig;?></option>
+                                            <?php endforeach; ?> 
+                                        </select>
 									</div>
+								</div>
 
-									<div class="form-group">
-										<label class="col-sm-3 control-label no-padding-right" for="form-field-1"> Dirección: </label>
-
-										<div class="col-sm-9">
-											<input type="text" id="direccion" name="direccion" class="col-xs-10 col-sm-10" value="<?=$direc;?>">
-										</div>
+								<div class="form-group">
+									<label class="col-sm-3 control-label no-padding-right" for="form-field-1"> Dirección: </label>
+									<div class="col-sm-9">
+										<input type="text" id="direccion" name="direccion" class="col-xs-10 col-sm-10" value="<?=$direc;?>">
 									</div>
+								</div>
 
-									<div class="form-group">
-										<label class="col-sm-3 control-label no-padding-right" for="form-field-1"> Correo electrónico: </label>
-
-										<div class="col-sm-9">
-											<input type="text" id="correo" name="correo" class="col-xs-10 col-sm-10" value="<?=$correo;?>">
-										</div>
+								<div class="form-group">
+									<label class="col-sm-3 control-label no-padding-right" for="form-field-1"> Correo electrónico: </label>
+									<div class="col-sm-9">
+										<input type="text" id="correo" name="correo" class="col-xs-10 col-sm-10" value="<?=$correo;?>">
 									</div>
+								</div>
 
-									<div class="form-group">
-										<label class="col-sm-3 control-label no-padding-right" for="form-field-1"> Teléfono: </label>
+								<div class="form-group">
+									<label class="col-sm-3 control-label no-padding-right" for="form-field-1"> Teléfono: </label>
+									<div class="col-sm-9">
+										<input type="text" id="telf" name="telf" placeholder="" class="col-xs-10 col-sm-5" value="<?=$telf;?>">
+									</div>
+								</div>
 
-										<div class="col-sm-9">
-											<input type="text" id="telf" name="telf" placeholder="" class="col-xs-10 col-sm-5" value="<?=$telf;?>">
-										</div>
+								<div class="clearfix form-actions">
+									<div class="col-md-offset-3 col-md-9" style="text-align: right;">
+										<button class="btn btn-info" type="submit" <?=$est_boton;?> >
+											<i class="ace-icon fa fa-check bigger-110"></i>
+											Guardar
+										</button>
 									</div>
-									<div class="clearfix form-actions">
-										<div class="col-md-offset-3 col-md-9" style="text-align: right;">
-											<button class="btn btn-info" type="submit" <?=$est_boton;?> >
-												<i class="ace-icon fa fa-check bigger-110"></i>
-												Guardar
-											</button>
-										</div>
-									</div>
-								</form>
-							</div><!-- /.col -->
-						</div>	
-					</div>
-				</div><!-- /.main-content -->			
-			</div><!-- /.main-container -->
+								</div>
+							</form>
+						</div><!-- /.col -->
+					</div>	
+				</div>
+			</div><!-- /.main-content -->			
+		</div><!-- /.main-container -->
 		
 		<!-- basic scripts -->
 		<form id="buscar" name="buscar" method="post" action="<?=base_url();?>index.php/verifica_dni_in">

@@ -254,13 +254,15 @@ class usuario_cnt extends CI_Controller {
 			$mail = new PHPMailer;
 			$mail->isSMTP();
 	        //$mail->Host     = 'relay-hosting.secureserver.net';
+	       	$mail = new PHPMailer;
+			$mail->isSMTP();
+	        //$mail->Host     = 'relay-hosting.secureserver.net';
 	       	$mail->Host = 'localhost';
 	        $mail->SMTPAuth = false;
 	        $mail->SMTPSecure = false;
-	        $mail->Username = 'contacto@red-salud.com';
-	        $mail->Password = 'Redperu2017HCA';
-	        $mail->Port     = 25;
-	        $mail->SMTPDebug = 3;		
+	        $mail->Username = '';
+	        $mail->Password = '';
+	        $mail->Port     = 25;				
 			// Armo el FROM y el TO
 			$mail->setFrom($correo_laboral, $nombres_col);
 			$destinatario = $this->usuario_mdl->destinatario($id);

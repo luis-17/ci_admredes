@@ -55,21 +55,18 @@
 				$estilodivaseg='block';
 				$estilodiv="none";
 		endif;
-		?>
+	?>
 	<body class="no-skin">
-		<!-- #section:basics/navbar.layout -->
-		<?php include (APPPATH."views/dsb/html/headBar.php");?>
-
+	<!-- #section:basics/navbar.layout -->
+	<?php include (APPPATH."views/dsb/html/headBar.php");?>
 		<!-- /section:basics/navbar.layout -->
 		<div class="main-container" id="main-container">
 			<script type="text/javascript">
 				try{ace.settings.check('main-container' , 'fixed')}catch(e){}
 			</script>
-
 			<!-- #section:basics/sidebar -->
 			<?php include (APPPATH."views/dsb/html/sideBar.php");?>
 			<!-- end nav. -->
-
 			<!-- /section:basics/sidebar -->
 			<div class="main-content">
 				<div class="main-content-inner">
@@ -89,17 +86,14 @@
 
 						<!-- /section:basics/content.searchbox -->
 					</div>
-
 					<!-- /section:basics/content.breadcrumbs -->
 					<div class="page-content">	
-
 						<!-- /section:settings.box -->
 						<div class="page-header">
 							<h1>
 								Búsqueda de Certificado
 								<small>
-									<i class="ace-icon fa fa-angle-double-right"></i>
-									
+									<i class="ace-icon fa fa-angle-double-right"></i>									
 								</small>
 							</h1>
 						</div><!-- /.page-header -->
@@ -119,155 +113,150 @@
 							<div class="col-xs-12">
 								<!-- PAGE CONTENT BEGINS -->								
 								<div align="center">
-								<form method="post" action="<?=base_url()?>index.php/consulta_certificado">
-								<span class="input-icon">
-									<input type="text" id="nom" name="nom" placeholder="Apellidos ..." class="nav-search-input" id="nav-search-input" size="30" value="<?=$nom;?>">									
-								</span>	
-								<span class="input-icon">
-									<input type="text" id="doc" name="doc" placeholder="DNI contratante ó asegurado ..." class="nav-search-input" id="nav-search-input" size="30" value="<?=$id; ?>">
-									<button type="submit" class="btn btn-info btn-xs">
-										<i class="ace-icon glyphicon glyphicon-search bigger-110 icon-only"></i>
-									</button>
-								</span>		
-								</form>						
+									<form method="post" action="<?=base_url()?>index.php/consulta_certificado">
+										<span class="input-icon">
+											<input type="text" id="nom" name="nom" placeholder="Apellidos ..." class="nav-search-input" id="nav-search-input" size="30" value="<?=$nom;?>">									
+										</span>	
+										<span class="input-icon">
+											<input type="text" id="doc" name="doc" placeholder="DNI contratante ó asegurado ..." class="nav-search-input" id="nav-search-input" size="30" value="<?=$id; ?>">
+											<button type="submit" class="btn btn-info btn-xs">
+												<i class="ace-icon glyphicon glyphicon-search bigger-110 icon-only"></i>
+											</button>
+										</span>		
+									</form>						
 								</div><!-- PAGE CONTENT ENDS -->
 								<br />
 								<div style="display: <?=$estilodiv?>">
 									<!-- star table -->		
-												<div class="col-xs-12">
-													<table id="simple-table" class="table table-striped table-bordered table-hover">
-														<thead>
-															<tr>
-																<th>Num. Certificado</th>
-																<th>Plan</th>
-																<th>Cliente</th>
-																<th>Estado Certificado</th>
-																<th>Estado Atención</th>
-																<th></th>
-															</tr>
-														</thead>
-
-														<tbody>
-														<?php foreach ($certificados as $c):
-															$hoy= time();
-															$inicio=$c->cert_iniVig;										
-															$inicio2= strtotime($inicio);
-															$fin=$c->cert_finVig;
-															$finvig=$c->cert_finVig;
-															$fin2= strtotime($fin); 
-															$cert=$c->cert_id;
-															$act_man=$c->cert_upProv;
+									<div class="col-xs-12">
+										<table id="simple-table" class="table table-striped table-bordered table-hover">
+											<thead>
+												<tr>
+													<th>Num. Certificado</th>
+													<th>Plan</th>
+													<th>Cliente</th>
+													<th>Estado Certificado</th>
+													<th>Estado Atención</th>
+													<th></th>
+												</tr>
+											</thead>
+											<tbody>
+											<?php foreach ($certificados as $c):
+												$hoy= time();
+												$inicio=$c->cert_iniVig;										
+												$inicio2= strtotime($inicio);
+												$fin=$c->cert_finVig;
+												$finvig=$c->cert_finVig;
+												$fin2= strtotime($fin); 
+												$cert=$c->cert_id;
+												$act_man=$c->cert_upProv;
 															
-															if($c->cert_estado==1){
-																$e=1;
-																$estado="Vigente";	
-																}elseif($hoy<=$finvig){
-																	$estado="Vigente";
-																	$e=1;
-																	}else{
-																		$estado="Cancelado";
-																		$e=3;	
-																	}	
+												if($c->cert_estado==1){
+													$e=1;
+													$estado="Vigente";	
+												}elseif($hoy<=$finvig){
+													$estado="Vigente";
+													$e=1;
+												}else{
+													$estado="Cancelado";
+													$e=3;	
+												}	
 
-															if($e==1){
-																if($hoy>$inicio2 && $fin2>=$hoy){
-																	$estado2="Activo";
-																}else{
-																	if($act_man==1){
-																		$estado2="Activo Manualmente";		
-																	}else{
-																		$estado2="Inactivo";
-																	}
-																}
-															}else{
-																$estado2="Inactivo";
-															}
-															?>
+												if($e==1){
+													if($hoy>$inicio2 && $fin2>=$hoy){
+														$estado2="Activo";
+													}else{
+														if($act_man==1){
+															$estado2="Activo Manualmente";		
+														}else{
+															$estado2="Inactivo";
+														}
+													}
+												}else{
+													$estado2="Inactivo";
+												}
+											?>
 
-															<tr>
-															<?php if($cert==$id2){?>
-																<td><b><?=$c->cert_num;?></b></td>
-																<td><b><?=$c->nombre_plan;?></b></td>
-																<td><b><?=$c->nombre_comercial_cli;?></b></td>
-																<td><b><?=$estado;?></b></td>
-																<td><b><?=$estado2;?></b></td>
-															<?php } else { ?>
-																<td><?=$c->cert_num;?></td>
-																<td><?=$c->nombre_plan;?></td>
-																<td><?=$c->nombre_comercial_cli;?></td>
-																<td><?=$estado;?></td>
-																<td><?=$estado2;?></td>
-															<?php } ?>
-																<td>
-																	<div class="hidden-sm hidden-xs btn-group">
-																			<a href="<?=  base_url()?>index.php/certificado_detalle/<?=$cert?>/<?=$id;?>" title="Detalle Certificado"><i class="ace-icon fa fa-external-link bigger-120"></i></a>
-																	</div>
+												<tr>
+												<?php if($cert==$id2){?>
+													<td><b><?=$c->cert_num;?></b></td>
+													<td><b><?=$c->nombre_plan;?></b></td>
+													<td><b><?=$c->nombre_comercial_cli;?></b></td>
+													<td><b><?=$estado;?></b></td>
+													<td><b><?=$estado2;?></b></td>
+												<?php } else { ?>
+													<td><?=$c->cert_num;?></td>
+													<td><?=$c->nombre_plan;?></td>
+													<td><?=$c->nombre_comercial_cli;?></td>
+													<td><?=$estado;?></td>
+													<td><?=$estado2;?></td>
+												<?php } ?>
+													<td>
+														<div class="hidden-sm hidden-xs btn-group">
+															<a href="<?=  base_url()?>index.php/certificado_detalle/<?=$cert?>/<?=$id;?>" title="Detalle Certificado"><i class="ace-icon fa fa-external-link bigger-120"></i></a>
+														</div>
 
-																	<div class="hidden-md hidden-lg">
-																		<div class="inline pos-rel">
-																			<button class="btn btn-minier btn-primary dropdown-toggle" data-toggle="dropdown" data-position="auto">
-																				<i class="ace-icon fa fa-cog icon-only bigger-110"></i>
-																			</button>
-
-																			<ul class="dropdown-menu dropdown-only-icon dropdown-yellow dropdown-menu-right dropdown-caret dropdown-close">
-																				
-																				<li>
-																					<a href="<?=  base_url()?>index.php/certificado_detalle/<?=$cert?>/<?=$id;?>" title="Detalle Certificado">
-																						<span class="red">
-																							<i class="ace-icon fa fa-external-link bigger-120"></i>
-																						</span>
-																					</a>
-																				</li>
-																			</ul>
-																		</div>
-																	</div>
-																</td>
-															</tr>
-														<?php endforeach;?>
-														</tbody>
-													</table>
-												</div>
-												<!-- end table -->
+														<div class="hidden-md hidden-lg">
+															<div class="inline pos-rel">
+																<button class="btn btn-minier btn-primary dropdown-toggle" data-toggle="dropdown" data-position="auto">
+																	<i class="ace-icon fa fa-cog icon-only bigger-110"></i>
+																</button>
+																<ul class="dropdown-menu dropdown-only-icon dropdown-yellow dropdown-menu-right dropdown-caret dropdown-close">	
+																	<li>
+																		<a href="<?=  base_url()?>index.php/certificado_detalle/<?=$cert?>/<?=$id;?>" title="Detalle Certificado">
+																			<span class="red">
+																				<i class="ace-icon fa fa-external-link bigger-120"></i>
+																			</span>
+																		</a>
+																	</li>
+																</ul>
+															</div>
+														</div>
+													</td>
+												</tr>
+											<?php endforeach;?>
+											</tbody>
+										</table>
 									</div>
-									<div style="display: <?=$estilodivaseg?>">
-									<!-- star table -->		
-												<div class="col-xs-12">
-													<table id="simple-table" class="table table-striped table-bordered table-hover">
-														<thead>
-															<tr>
-																<th>Nro Certificado</th>
-																<th>Empresa</th>
-																<th>Plan</th>
-																<th>DNI Contratante</th>
-																<th>Contratante</th>
-																<th>DNI Asegurado</th>
-																<th>Asegurado</th>																
-																<th></th>
-															</tr>
-														</thead>
-
-														<tbody>
-														<?php foreach ($certificadoap as $a):?>
-															<tr>
-																<td><?=$a->cert_num;?></td>
-																<td><?=$a->nombre_comercial_cli;?></td>
-																<td><?=$a->nombre_plan;?></td>
-																<td><?=$a->cont_numDoc;?></td>
-																<td><?=$a->contratante;?></td>
-																<td><?=$a->aseg_numDoc;?></td>
-																<td><?=$a->asegurado;?></td>
-																<td>
-																	<div class="hidden-sm hidden-xs btn-group">
-																			<a href="<?=  base_url()?>index.php/certificado2/<?=$a->aseg_numDoc?>/<?=$a->cert_id?>" title="Detalle Certificado"><i class="ace-icon fa fa-external-link bigger-120"></i></a>
-																	</div>
-																</td>
-															</tr>
-														<?php endforeach; ?>
-														</tbody>
-													</table>
-												</div>
 												<!-- end table -->
+								</div>
+								<div style="display: <?=$estilodivaseg?>">
+								<!-- star table -->		
+									<div class="col-xs-12">
+										<table id="simple-table" class="table table-striped table-bordered table-hover">
+											<thead>
+												<tr>
+													<th>Nro Certificado</th>
+													<th>Empresa</th>
+													<th>Plan</th>
+													<th>DNI Contratante</th>
+													<th>Contratante</th>
+													<th>DNI Asegurado</th>
+													<th>Asegurado</th>																
+													<th></th>
+												</tr>
+											</thead>
+											<tbody>
+											<?php foreach ($certificadoap as $a):?>
+												<tr>
+													<td><?=$a->cert_num;?></td>
+													<td><?=$a->nombre_comercial_cli;?></td>
+													<td><?=$a->nombre_plan;?></td>
+													<td><?=$a->cont_numDoc;?></td>
+													<td><?=$a->contratante;?></td>
+													<td><?=$a->aseg_numDoc;?></td>
+													<td><?=$a->asegurado;?></td>
+													<td>
+														<div class="hidden-sm hidden-xs btn-group">
+															<a href="<?=  base_url()?>index.php/certificado2/<?=$a->aseg_numDoc?>/<?=$a->cert_id?>" title="Detalle Certificado"><i class="ace-icon fa fa-external-link bigger-120"></i></a>
+														</div>
+													</td>
+												</tr>
+											<?php endforeach; ?>
+											</tbody>
+										</table>
 									</div>
+								</div>
 							</div><!-- /.col -->
 						</div><!-- /.row -->
 					</div><!-- /.page-content -->

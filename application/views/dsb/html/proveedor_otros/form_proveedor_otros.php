@@ -107,7 +107,7 @@
 								<a href="<?=base_url()?>">Inicio</a>
 							</li>
 							<li><a href="#">Proveedores</a></li>
-							<li><a href="<?=base_url()?>index.php/proveedor">Red Medica</a></li>
+							<li><a href="<?=base_url()?>index.php/otros_proveedores">Otros</a></li>
 							<li class="active"><?=$accion?></li>
 						</ul><!-- /.breadcrumb -->
 
@@ -117,11 +117,9 @@
 					<!-- /section:basics/content.breadcrumbs -->
 					<?php
 								if(!empty($data_general)):	
-									foreach ($data_general as $dg):				
-										$idt1=$dg->idtipoproveedor;
-										$id= $dg->idproveedor;
+									foreach ($data_general as $dg):	
+										$id= $dg->idproveedor_int;
 										$ruc=$dg->numero_documento_pr;
-										$codsunasa= $dg->cod_sunasa_pr;
 										$raz_social=$dg->razon_social_pr;
 										$nomb=$dg->nombre_comercial_pr;
 										$direcc=$dg->direccion_pr;
@@ -129,19 +127,10 @@
 										$dep=$dg->cod_departamento_pr;
 										$prov=$dg->cod_provincia_pr;
 										$dist=$dg->cod_distrito_pr;
-										$user=$dg->username;
-										$pass=$dg->password_view;
-										$user_id=$dg->idusuario;
-										$forma_pago=$dg->forma_pago;
-										$medio_pago=$dg->medio_pago;
-										$cta_corriente=$dg->cta_corriente;
-										$cta_detracciones=$dg->cta_detracciones;
 									endforeach;
 								else:
-									$idt1="";
 									$id=0;
 									$ruc="";
-									$codsunasa="";
 									$raz_social="";
 									$nomb="";
 									$direcc="";
@@ -149,22 +138,15 @@
 									$dep="";
 									$prov="";
 									$dist="";
-									$user="";
-									$pass="";
-									$user_id="";
-									$forma_pago="";
-									$medio_pago="";
-									$cta_corriente="";
-									$cta_detracciones="";
 								endif;
 							?>
 					<div class="page-content">
 						<div class="page-header">
 							<h1>	
 							<?php if($id==0){
-								echo "Registrar Centro Médico";
+								echo "Registrar Proveedor";
 								}else{
-									echo "Actualizar Centro Médico";
+									echo "Actualizar Proveedor";
 									}?>						
 							</h1>
 						</div>
@@ -172,28 +154,9 @@
 							<div class="col-xs-12">
 							
 								<!-- PAGE CONTENT BEGINS -->
-								<form class="form-horizontal" role="form" method="post" action="<?=base_url()?>index.php/proveedor_guardar">
+								<form class="form-horizontal" role="form" method="post" action="<?=base_url()?>index.php/proveedor_otros_guardar2">
 									<input type="hidden" id="idproveedor" name="idproveedor" value="<?=$id;?>" >
-									<input type="hidden" id="user_id" name="user_id" value="<?=$user_id;?>">
-									<input type="hidden" name="idusuario" name="idusuario" value="<?=$idusuario?>">
-
-									<div class="form-group">
-										<label class="control-label col-xs-12 col-sm-3 no-padding-right" for="name">Tipo</label>	
-										<div class="col-xs-12 col-sm-9">
-											<select class="input-medium valid" id="tipoproveedor" name="tipoproveedor" aria-required="true" aria-invalid="false" aria-describedby="platform-error">
-												<?php foreach ($data_tipoproveedor as $tpr):
-													$idt2=$tpr->idtipoproveedor;
-													if($idt1==$idt2):
-														$est="selected";
-													else:
-														$est="";
-													endif;
-												?>
-												<option value="<?php echo $idt2;?>" <?php echo $est;?> ><?php echo $tpr->descripcion_tpr;?></option>
-												<?php endforeach; ?>
-											</select>
-										</div>
-									</div>
+									
 									<div class="form-group">
 										<label class="control-label col-xs-12 col-sm-3 no-padding-right" for="name">Ruc:</label>
 										<div class="col-xs-12 col-sm-9">
@@ -201,15 +164,7 @@
 												<input required="true" type="text" name="ruc" id="ruc" class="col-xs-12 col-sm-4" value="<?=$ruc;?>">
 											</div>
 										</div>
-									</div>
-									<div class="form-group">
-										<label class="control-label col-xs-12 col-sm-3 no-padding-right" for="name">Cod. SUNASA:</label>
-										<div class="col-xs-12 col-sm-9">
-											<div class="clearfix">
-												<input type="text" name="codigosunasa" id="codigosunasa" class="col-xs-12 col-sm-4" value="<?=$codsunasa;?>">
-											</div>
-										</div>
-									</div>
+									</div>									
 									<div class="form-group">
 										<label class="control-label col-xs-12 col-sm-3 no-padding-right" for="name">Razón Social:</label>
 										<div class="col-xs-12 col-sm-9">
@@ -303,88 +258,7 @@
 												?>
 											</select>
 										</div>
-									</div>
-
-									<div class="form-group">
-										<label class="control-label col-xs-12 col-sm-3 no-padding-right" for="name">Banco:</label>	
-										<div class="col-xs-12 col-sm-9">
-										<?php ?>
-											<select class="input-medium valid" id="banco"  name="banco" aria-required="true" aria-invalid="false" aria-describedby="platform-error">
-												<option value="">Seleccione</option>
-												<?php
-														foreach ($banco as $b) {
-															if($medio_pago==$b->idbanco){
-																$estb="selected";
-															}else{
-																$estb="";
-															} 
-												?>
-												<option value="<?=$b->idbanco?>" <?=$estb?> ><?=$b->descripcion?> </option>
-												<?php 
-														}
-												?>
-											</select>
-										</div>
-									</div>
-
-									<div class="form-group">
-										<label class="control-label col-xs-12 col-sm-3 no-padding-right" for="name">Forma de Pago:</label>	
-										<div class="col-xs-12 col-sm-9">
-										<?php ?>
-											<select class="input-medium valid" id="forma_pago"  name="forma_pago" aria-required="true" aria-invalid="false" aria-describedby="platform-error">
-												<option value="">Seleccione</option>
-												<?php
-														foreach ($forma as $fp) {
-															if($forma_pago==$fp->idformapago){
-																$estfp="selected";
-															}else{
-																$estfp="";
-															} 
-												?>
-												<option value="<?=$fp->idformapago?>" <?=$estfp?> ><?=$fp->descripcion_fp?> </option>
-												<?php 
-														}
-												?>
-											</select>
-										</div>
-									</div>
-
-									<div class="form-group">
-										<label class="control-label col-xs-12 col-sm-3 no-padding-right" for="name">Cta. Corriente:</label>
-										<div class="col-xs-12 col-sm-9">
-											<div class="clearfix">
-												<input  type="text" id="cta_corriente" name="cta_corriente" class="col-xs-12 col-sm-5" value="<?=$cta_corriente?>">
-											</div>
-										</div>																
-									</div>
-
-									<div class="form-group">
-										<label class="control-label col-xs-12 col-sm-3 no-padding-right" for="name">Cta. Detracciones:</label>
-										<div class="col-xs-12 col-sm-9">
-											<div class="clearfix">
-												<input  type="text" id="cta_detracciones" name="cta_detracciones" class="col-xs-12 col-sm-5" value="<?=$cta_detracciones?>">
-											</div>
-										</div>																
-									</div>
-
-									<div class="form-group">
-										<label class="control-label col-xs-12 col-sm-3 no-padding-right" for="name">Usuario:</label>
-										<div class="col-xs-12 col-sm-9">
-											<div class="clearfix">
-												<input  required="true" type="text" id="usuario" name="usuario" class="col-xs-12 col-sm-5" value="<?=$user?>">
-											</div>
-										</div>																
-									</div>
-									<div class="form-group">
-										<label class="control-label col-xs-12 col-sm-3 no-padding-right" for="name">Contraseña:</label>
-										<div class="col-xs-12 col-sm-9">
-											<div class="clearfix">
-												<input  required="true" type="text" id="contrasena" name="contrasena" class="col-xs-12 col-sm-5" value="<?=$pass?>">
-											</div>
-										</div>																
-									</div>
-
-
+									</div>		
 									<div class="clearfix form-actions">
 										<div class="col-md-offset-3 col-md-9">
 											<button class="btn btn-info" type="submit">

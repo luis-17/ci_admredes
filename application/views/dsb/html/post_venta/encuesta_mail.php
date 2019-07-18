@@ -152,7 +152,7 @@
 									<div class="form-group">
 									<label class="col-sm-7 control-label no-padding-left" for="form-field-1"> ¿Tiene algún comentario y/o sugerencia que le gustaría compartir? </label>
 									<div class="col-sm-5">
-										<textarea name="comentario" id="comentario" style="width: 100%" placeholder="Escribir comentario y/o sugerencia aquí"></textarea>
+										<textarea maxlength="1000" name="comentario" id="comentario" style="width: 100%" placeholder="Escribir comentario y/o sugerencia aquí"></textarea>
 									</div>
 									</div>
 								</div>																			
