@@ -108,89 +108,52 @@
 
 						<div class="row">
 							<div class="col-xs-12">
-								<!-- PAGE CONTENT BEGINS -->
-								<div class="tabbable">
-									<!-- #section:pages/faq -->
-									<ul class="nav nav-tabs padding-18 tab-size-bigger" id="myTab">
-										<li class="active">
-											<a data-toggle="tab" href="#faq-tab-1">
-												Registrar Atención
-											</a>
-										</li>
-
-										<li>
-											<a data-toggle="tab" href="#faq-tab-2">
-												Registrar Gasto
-											</a>
-										</li>							
-									</ul>
-
-									<!-- /section:pages/faq -->
-									<div class="tab-content no-border padding-24">
-										<div id="faq-tab-1" class="tab-pane fade in active">	
-											<!-- star table -->	
-												<div class="col-xs-12">
-													
+								<table id="example" class="table table-striped table-bordered table-hover">
+									<thead>
+										<tr>
+											<th>Fecha Recepción</th>
+											<th>usuario</th>
+											<th>RUC</th>
+											<th>Raz. Social</th>
+											<th>N° Orden</th>
+											<th>Documento</th>
+											<th>Importe</th>
+											<th></th>
+										</tr>
+									</thead>														
+									<tbody>
+										<?php foreach ($mesa_partes as $mp) { 
+											$importe = $mp->importe;
+											$importe = number_format((float)$importe, 2, '.', '');
+										?>
+										<tr>
+											<td><?=$mp->fecha_recepcion?></td>
+											<td><?=$mp->username?></td>
+											<td><?=$mp->numero_documento_pr?></td>
+											<td><?=$mp->razon_social_pr?></td>
+											<td><?=$mp->num_orden_atencion?></td>
+											<td><?=$mp->tipo_documento?>-<?=$mp->serie?>-<?=$mp->numero?></td>
+											<td style="text-align: right;"><?=$importe?></td>
+											<td>
+												<div title="Seleccionar Proveedor" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
+													&nbsp;<a href="<?=base_url()?>index.php/seleccionar_factura/<?=$mp->idrecepcion?>/<?=$mp->idsiniestro?>" >
+														<i class="ace-icon fa fa-hand-o-right icon-animated-hand-pointer blue bigger-120"></i>
+													</a>
 												</div>
-											<!-- end table -->
-										</div>
-
-										<div id="faq-tab-2" class="tab-pane fade">
-											<!-- star table -->		
-												<div class="col-xs-12">
-													<table id="example1" class="table table-striped table-bordered table-hover">
-														<thead>
-															<tr>
-																<th>Fecha Recepción</th>
-																<th>usuario</th>
-																<th>RUC</th>
-																<th>Raz. Social</th>
-																<th>N° Orden</th>
-																<th>Documento</th>
-																<th>Importe</th>
-																<th></th>
-															</tr>
-														</thead>														
-														<tbody>
-															<?php foreach ($mesa_partes as $mp) { 
-																$importe = $mp->importe;
-																$importe = number_format((float)$importe, 2, '.', '');
-															?>
-															<tr>
-																<td><?=$mp->fecha_recepcion?></td>
-																<td><?=$mp->username?></td>
-																<td><?=$mp->numero_documento_pr?></td>
-																<td><?=$mp->razon_social_pr?></td>
-																<td><?=$mp->num_orden_atencion?></td>
-																<td><?=$mp->tipo_documento?>-<?=$mp->serie?>-<?=$mp->numero?></td>
-																<td style="text-align: right;"><?=$importe?></td>
-																<td>
-																	<div title="Seleccionar Proveedor" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
-																		&nbsp;<a class="boton fancybox" href="<?=base_url()?>index.php/seleccionar_factura/<?=$mp->idrecepcion?>/<?=$mp->idsiniestro?>" data-fancybox-width="1150" data-fancybox-height="690">
-																			<i class="ace-icon fa fa-hand-o-right icon-animated-hand-pointer blue bigger-120"></i>
-																		</a>
-																	</div>
-																</td>
-															</tr>
-															<?php } ?>
-														</tbody>
-													</table>
-												</div>
-												<script>			
-													//para paginacion
-													$(document).ready(function() {
-													    $('#example1').DataTable( {
-													        "pagingType": "full_numbers"
-													    } );
-													} );
-												</script>
-												<!-- end table -->
-										</div>										
-									</div>
-
-								<!-- PAGE CONTENT ENDS -->
-								</div><!-- /.col -->
-							</div><!-- /.row -->
+											</td>
+										</tr>
+										<?php } ?>
+									</tbody>
+								</table>
+								<script>			
+									//para paginacion
+									$(document).ready(function() {
+									    $('#example').DataTable( {
+									        "pagingType": "full_numbers"
+									    } );
+									} );
+								</script>
+							</div>
 						</div><!-- /.page-content -->
 					</div>
 				</div><!-- /.main-content -->

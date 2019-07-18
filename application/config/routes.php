@@ -366,6 +366,8 @@ $route['editar_recepcion/(:any)'] = 'Mesa_partes_cnt/editar_recepcion/$1';
 $route['reg_recepcion'] = 'Mesa_partes_cnt/reg_recepcion';
 $route['guardar_recepcion3'] = 'Mesa_partes_cnt/guardar_recepcion3';
 $route['reg_recepcion3'] = 'Mesa_partes_cnt/reg_recepcion3';
+$route['siniestros'] = 'Siniestro_cnt/registrar_siniestro';
+$route['seleccionar_factura/(:any)/(:any)'] = 'Siniestro_cnt/seleccionar_factura/$1/$2';
 
 $route['consultar_postVenta'] = 'Reportes_cnt/consultar_postVenta';
 $route['consultar_postVenta_buscar'] = 'Reportes_cnt/consultar_postVenta_buscar';

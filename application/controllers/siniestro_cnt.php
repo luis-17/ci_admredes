@@ -1,4 +1,4 @@
-<?php0
+<?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Siniestro_cnt extends CI_Controller {
@@ -1127,7 +1127,7 @@ class Siniestro_cnt extends CI_Controller {
 		}
 	}
 
-	public function buscar_orden(){
+	public function seleccionar_factura($idrecepcion,$idsiniestro){
 		//load session library
 		$this->load->library('session');
 
@@ -1142,98 +1142,28 @@ class Siniestro_cnt extends CI_Controller {
 			$data['menu1'] = $menuLista;
 
 			$submenuLista = $this->menu_mdl->getSubMenu($idusuario);
-			$data['menu2'] = $submenuLista;		
+			$data['menu2'] = $submenuLista;	
 
-			$nro_orden = $_POST['nro_orden'];
-			$data['nro_orden'] = $nro_orden;
+			$factura = $this->siniestro_mdl->getFactura($idrecepcion);	
+			$data['tipo_documento'] = $factura['tipo_documento'];
+			$data['serie'] = $factura['serie'];
+			$data['numero'] = $factura['numero'];
+			$data['importe'] = $factura['importe'];
+			$data['usuario'] = $factura['username'];
+			$data['dni'] = $factura['aseg_numDoc'];
+			$data['afiliado'] = $factura['aseg_ape1'].' '.$factura['aseg_ape2'].' '.$factura['aseg_nom1'].' '.$factura['aseg_nom2'];
+			$data['ruc'] = $factura['numero_documento_pr'];
+			$data['razon_social'] = $factura['razon_social_pr'];
+			$data['nombre_comercial'] = $factura['nombre_comercial_pr'];
+			$data['fecha_atencion'] = $factura['fecha_atencion'];
+			$data['nombre_plan'] = $factura['nombre_plan'];
+			$data['nro_orden'] = $factura['num_orden_atencion'];
+			$data['coberturas'] = $this->siniestro_mdl->getCoberturasFactura($idsiniestro);
 
-			$siniestro = $this->siniestro_mdl->getSiniestro($nro_orden);
-
-			$data['opciones'] = '<div class="row">
-									<div align="center">								
-										<div class="col-xs-12 col-sm-12">
-											<form class="form-horizontal" role="form">
-												<input type="hidden" name="nro_orden" value="$nro_orden">
-												<input type="hidden" name="idsiniestro" value="'.$siniestro['idsiniestro'].'">
-												<div class="form-group">
-													<label class="control-label col-xs-12 col-sm-4 no-padding-right" for="name">Cliente:</label>
-													<div class="col-xs-12 col-sm-8">
-														<div class="clearfix">
-															<input  type="text" class="col-xs-12 col-sm-5" value="'.$siniestro['nombre_comercial_cli'].'" disabled>
-														</div>
-													</div>																
-												</div>
-												<div class="form-group">
-													<label class="control-label col-xs-12 col-sm-4 no-padding-right" for="name">Plan:</label>
-													<div class="col-xs-12 col-sm-8">
-														<div class="clearfix">
-															<input  type="text" class="col-xs-12 col-sm-5" value="'.$siniestro['nombre_plan'].'" disabled>
-														</div>
-													</div>																
-												</div>
-												<div class="form-group">
-													<label class="control-label col-xs-12 col-sm-4 no-padding-right" for="name">N° Certificado:</label>
-													<div class="col-xs-12 col-sm-8">
-														<div class="clearfix">
-															<input  type="text" class="col-xs-12 col-sm-5" value="'.$siniestro['cert_num'].'" disabled>
-														</div>
-													</div>																
-												</div>
-												<div class="form-group">
-													<label class="control-label col-xs-12 col-sm-4 no-padding-right" for="name">DNI:</label>
-													<div class="col-xs-12 col-sm-8">
-														<div class="clearfix">
-															<input  type="text" class="col-xs-12 col-sm-5" value="'.$siniestro['aseg_numDoc'].'" disabled>
-														</div>
-													</div>																
-												</div>
-												<div class="form-group">
-													<label class="control-label col-xs-12 col-sm-4 no-padding-right" for="name">Afiliado:</label>
-													<div class="col-xs-12 col-sm-8">
-														<div class="clearfix">
-															<input  type="text" class="col-xs-12 col-sm-5" value="'.$siniestro['aseg_ape1'].' '.$siniestro['aseg_ape2'].' '.$siniestro['aseg_nom1'].' '.$siniestro['aseg_nom2'].'" disabled>
-														</div>
-													</div>																
-												</div>
-												<div class="form-group">
-													<label class="control-label col-xs-12 col-sm-4 no-padding-right" for="name">Centro Médico:</label>
-													<div class="col-xs-12 col-sm-8">
-														<div class="clearfix">
-															<input  type="text" class="col-xs-12 col-sm-5" value="'.$siniestro['nombre_comercial_pr'].'" disabled>
-														</div>
-													</div>																
-												</div>
-												<div class="form-group">
-													<label class="control-label col-xs-12 col-sm-4 no-padding-right" for="name">Fecha de Atención:</label>
-													<div class="col-xs-12 col-sm-8">
-														<div class="clearfix">
-															<input  type="text" class="col-xs-12 col-sm-5" value="'.$siniestro['fecha_atencion'].'" disabled>
-														</div>
-													</div>																
-												</div>
-												<div class="clearfix form-actions">
-													<div class="col-md-offset-3 col-md-9">
-														<button class="btn btn-info" type="submit" name="accion" value="atencion">
-															Datos de Atención
-														</button>
-														<button class="btn btn-info" type="submit" name="accion" value="gasto">
-															Facturas Pendientes
-														</button>
-													</div>
-												</div>
-											</form>
-										</div>
-									</div>
-								</div>';
-
-			$this->load->view('dsb/html/siniestro/siniestro.php',$data);
+			$this->load->view('dsb/html/siniestro/siniestro_factura.php',$data);
 		}
 		else{
 			redirect('/');
 		}
-	}
-
-	public function seleccionar_factura($idrecepcion,$idsiniestro){
-		
 	}
 }
