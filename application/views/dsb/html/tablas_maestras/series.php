@@ -89,7 +89,7 @@
 								<a href="<?=base_url()?>">Inicio</a>
 							</li>
 							<li>Tablas Maestras</li>
-							<li class="active">Centro de Costos</li>
+							<li class="active">Series</li>
 						</ul><!-- /.breadcrumb -->
 
 						<!-- /section:basics/content.searchbox -->
@@ -102,7 +102,7 @@
 						<!-- /section:settings.box -->
 						<div class="page-header">
 							<h1>
-								Centro de Costos por Plan de Salud
+								Series por Canal
 								<small>
 									<i class="ace-icon fa fa-angle-double-right"></i>
 								</small>
@@ -121,35 +121,35 @@
 										<thead>
 											<tr>
 												<th>ID</th>
-												<th>Cliente</th>
-												<th>Plan</th>
-												<th>Responsable de Cuenta</th>
+												<th>Nombre Comercial</th>
+												<th>Razón Social</th>
+												<th>RUC</th>
 												<th>Estado</th>
-												<th>Centro de Costo (CC)</th>
+												<th>Serie</th>
 											</tr>
 										</thead>
 										<tbody>
 										
-										<?php foreach($planes as $p){?>
+										<?php foreach($canales as $c){?>
 											<tr>
-												<td><?=$p->idplan?></td>
-												<td><?=$p->nombre_comercial_cli?></td>
-												<td><?=$p->nombre_plan?></td>
-												<td><?=$p->responsable?></td>	
-												<td><?php if($p->estado_plan==1){
+												<td><?=$c->idclienteempresa?></td>
+												<td><?=$c->nombre_comercial_cli?></td>
+												<td><?=$c->razon_social_cli?></td>
+												<td><?=$c->numero_documento_cli?></td>	
+												<td><?php if($c->estado_cli==1){
 													echo '<span class="label label-info label-white middle">Activo</span>';
 													}else{
 														echo '<span class="label label-danger label-white middle">Inactivo</span>';
 														}?></td>											
-												<td><?php if($p->centro_costo==''){
-													echo '<a class="boton fancybox"  data-fancybox-width="600" data-fancybox-height="400" title="Agregar CC" href="'.base_url().'index.php/add_cc/'.$p->idplan.'"><i class="ace-icon glyphicon glyphicon-plus red"></i></a>';
+												<td><?php if($c->numero_serie==''){
+													echo '<a class="boton fancybox"  data-fancybox-width="600" data-fancybox-height="400" title="Agregar Serie" href="'.base_url().'index.php/add_serie/'.$c->idclienteempresa.'"><i class="ace-icon glyphicon glyphicon-plus red"></i></a>';
 												}else{
-													echo '<a class="boton fancybox"  data-fancybox-width="600" data-fancybox-height="400" title="Editar CC" href="'.base_url().'index.php/add_cc/'.$p->idplan.'">'.$p->centro_costo.'</a>';
+													echo '<a class="boton fancybox"  data-fancybox-width="600" data-fancybox-height="400" title="Eliminar Serie" href="'.base_url().'index.php/del_serie/'.$c->idclienteempresa.'">'.$c->numero_serie.'</a>';
 												} ?></td>
 											</tr>
 										<?php } ?>
 										</tbody>
-									</table>								
+									</table>
 								</div><!-- PAGE CONTENT ENDS -->	
 								<script>			
 										//para paginacion

@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html lang="en">
 	<head>
 		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
@@ -20,7 +20,13 @@
 
 		<!-- ace styles -->
 		<link rel="stylesheet" href="<?=  base_url()?>public/assets/css/ace.css" class="ace-main-stylesheet" id="main-ace-style" />
-		<!--<script type="text/javascript" src="<?=  base_url()?>public/fancybox/lib/jquery.mousewheel-3.0.6.pack.js"></script>-->
+
+		<!-- jQuery library is required, see https://jquery.com/ -->
+		<script type="text/javascript" src="<?=base_url()?>public/assets/js/jquery/jquery.js"></script>
+	
+		
+
+		<script type="text/javascript" src="<?=  base_url()?>public/fancybox/lib/jquery.mousewheel-3.0.6.pack.js"></script>
 		<!-- FancyBox -->
 		<!-- Add jQuery library -->
 		<script type="text/javascript" src="https://code.jquery.com/jquery-latest.min.js"></script>
@@ -51,18 +57,12 @@
 
 		<!-- HTML5shiv and Respond.js for IE8 to support HTML5 elements and media queries -->
 
-
-			<!-- para paginacion -->
-		<script src="<?=base_url()?>public/pagination/jquery.dataTables.min.css"></script>
-		<script src="<?=base_url()?>public/pagination/jquery-1.12.4.js"></script>
-		<script src="<?=base_url()?>public/pagination/jquery.dataTables.min.js"></script>
-		<script src="<?=base_url()?>public/pagination/dataTables.bootstrap.min.js"></script>
-
+	</head>
 
 	<body class="no-skin">
 		<!-- #section:basics/navbar.layout -->
-		<?php 
-		include (APPPATH."views/dsb/html/headBar.php");?>
+		<?php include (APPPATH."views/dsb/html/headBar.php");?>
+
 
 		<!-- /section:basics/navbar.layout -->
 		<div class="main-container" id="main-container">
@@ -88,99 +88,74 @@
 								<i class="ace-icon fa fa-home home-icon"></i>
 								<a href="<?=base_url()?>">Inicio</a>
 							</li>
-							<li>Tablas Maestras</li>
-							<li class="active">Centro de Costos</li>
+							<li><a href="#">Tablas Maestras</a></li>
+							<li><a href="<?=base_url()?>index.php/medicamentos">Medicamentos</a></li>
+							<li class="active">Guardar medicamentos</li>
 						</ul><!-- /.breadcrumb -->
 
 						<!-- /section:basics/content.searchbox -->
 					</div>
-
+					
 					<!-- /section:basics/content.breadcrumbs -->
 					<div class="page-content">
-						<!-- #section:settings.box -->
-
-						<!-- /section:settings.box -->
 						<div class="page-header">
-							<h1>
-								Centro de Costos por Plan de Salud
-								<small>
-									<i class="ace-icon fa fa-angle-double-right"></i>
-								</small>
+							<h1>	
+							Nuevo Medicamento					
 							</h1>
-						</div><!-- /.page-header -->
-
+						</div>
 						<div class="row">
 							<div class="col-xs-12">
-								
+									
 								<!-- PAGE CONTENT BEGINS -->
-								
-								<div class="col-xs-12">
-									<div id="serviciosT">
-										<br>
-									<table id="example" class="table table-striped table-bordered table-hover">
-										<thead>
-											<tr>
-												<th>ID</th>
-												<th>Cliente</th>
-												<th>Plan</th>
-												<th>Responsable de Cuenta</th>
-												<th>Estado</th>
-												<th>Centro de Costo (CC)</th>
-											</tr>
-										</thead>
-										<tbody>
-										
-										<?php foreach($planes as $p){?>
-											<tr>
-												<td><?=$p->idplan?></td>
-												<td><?=$p->nombre_comercial_cli?></td>
-												<td><?=$p->nombre_plan?></td>
-												<td><?=$p->responsable?></td>	
-												<td><?php if($p->estado_plan==1){
-													echo '<span class="label label-info label-white middle">Activo</span>';
-													}else{
-														echo '<span class="label label-danger label-white middle">Inactivo</span>';
-														}?></td>											
-												<td><?php if($p->centro_costo==''){
-													echo '<a class="boton fancybox"  data-fancybox-width="600" data-fancybox-height="400" title="Agregar CC" href="'.base_url().'index.php/add_cc/'.$p->idplan.'"><i class="ace-icon glyphicon glyphicon-plus red"></i></a>';
-												}else{
-													echo '<a class="boton fancybox"  data-fancybox-width="600" data-fancybox-height="400" title="Editar CC" href="'.base_url().'index.php/add_cc/'.$p->idplan.'">'.$p->centro_costo.'</a>';
-												} ?></td>
-											</tr>
-										<?php } ?>
-										</tbody>
-									</table>								
-								</div><!-- PAGE CONTENT ENDS -->	
-								<script>			
-										//para paginacion
-										$(document).ready(function() {
-										$('#example').DataTable( {
-										"pagingType": "full_numbers"
-										} );
-									} );
-									</script>	
-								</div>						
+								<form class="form-horizontal" id="formAct" name="formAct" role="form" method="post">
+									<!--<input type="hidden" name="idmedicamento" id="idmedicamento" value="<?=$idmedicamento?>">-->
+
+									<div class="form-group">
+										<label class="col-sm-3 control-label no-padding-right" for="form-field-1"> Nombre: </label>
+
+										<div class="col-sm-9">
+											<input type="text" id="nombre_med" name="nombre_med" class="col-xs-10 col-sm-5" value="" required><label style="color: #FF0101;">&nbsp;*</label>
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label class="col-sm-3 control-label no-padding-right" for="form-field-1"> Presentación: </label>
+
+										<div class="col-sm-9">
+											<input type="text" id="presentacion_med" name="presentacion_med" class="col-xs-10 col-sm-5" value="" required><label style="color: #FF0101;">&nbsp;*</label>
+										</div>
+									</div>
+
+									<div class="clearfix form-actions">
+										<div class="col-md-offset-3 col-md-9">
+											<button class="btn btn-info" type="submit">
+												<i class="ace-icon fa fa-check bigger-110"></i>
+												Guardar
+											</button>
+										</div>
+									</div>
+								</form>
+							
 							</div><!-- /.col -->
-						</div><!-- /.row -->
-					</div><!-- /.page-content -->
-				</div>
-			</div><!-- /.main-content -->
-
-			<div class="footer">
-				<div class="footer-inner">
-					<!-- #section:basics/footer -->
-					<div class="footer-content">
-						<span class="bigger-120">
-							<span class="blue bolder">Red Salud</span>
-							Application &copy; 2018
-						</span>
-
-						&nbsp; &nbsp;
+						</div>
 					</div>
+				</div><!-- /.main-content -->
+				<br/>
 
-					<!-- /section:basics/footer -->
+				<div class="footer">
+					<div class="footer-inner">
+						<!-- #section:basics/footer -->
+						<div class="footer-content">
+							<span class="bigger-120">
+								<span class="blue bolder">Red Salud</span>
+								Application &copy; 2018
+							</span>                                                              
+							&nbsp; &nbsp;
+						</div>
+
+						<!-- /section:basics/footer -->
+					</div>
 				</div>
-			</div>
 
 			<a href="#" id="btn-scroll-up" class="btn-scroll-up btn btn-sm btn-inverse">
 				<i class="ace-icon fa fa-angle-double-up icon-only bigger-110"></i>
@@ -188,8 +163,6 @@
 		</div><!-- /.main-container -->
 
 		<!-- basic scripts -->
-
-		<!-- fin scripts paginacion -->
 
 		<!--[if !IE]> -->
 		<script type="text/javascript">
@@ -248,5 +221,29 @@
 		<script src="<?=  base_url()?>public/docs/assets/js/language/html.js"></script>
 		<script src="<?=  base_url()?>public/docs/assets/js/language/css.js"></script>
 		<script src="<?=  base_url()?>public/docs/assets/js/language/javascript.js"></script>
+		
+		<script>
+			$(document).ready(function() {
+   				$("#formAct").submit(function(e) {
+    				e.preventDefault();
+		            $.ajax({
+		                url: "<?= BASE_URL()?>index.php/Medicamentos_cnt/save_medicamentos",
+		                type: 'POST',
+		                dataType: 'json',
+		                data: $("#formAct").serialize(),
+		                complete:function(){
+		                    alert('Se guardó el medicamento');
+							window.location.href = ("<?= BASE_URL()?>index.php/medicamentos");
+		                },
+		                success: function(data)
+		                {   
+
+		                }
+		            });
+		            return false;
+   				});
+   			});
+		</script>
+
 	</body>
 </html>

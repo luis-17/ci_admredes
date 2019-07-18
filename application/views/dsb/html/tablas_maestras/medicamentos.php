@@ -89,7 +89,7 @@
 								<a href="<?=base_url()?>">Inicio</a>
 							</li>
 							<li>Tablas Maestras</li>
-							<li class="active">Centro de Costos</li>
+							<li class="active">Medicamentos</li>
 						</ul><!-- /.breadcrumb -->
 
 						<!-- /section:basics/content.searchbox -->
@@ -102,7 +102,7 @@
 						<!-- /section:settings.box -->
 						<div class="page-header">
 							<h1>
-								Centro de Costos por Plan de Salud
+								Medicamentos
 								<small>
 									<i class="ace-icon fa fa-angle-double-right"></i>
 								</small>
@@ -111,6 +111,13 @@
 
 						<div class="row">
 							<div class="col-xs-12">
+								<div class="widget-toolbar no-border invoice-info">
+									<a href="<?=base_url()?>index.php/medicamentos_guardar"><button class="btn btn-white btn-info">
+										Nuevo Medicamento
+									</button></a>
+								</div>
+								<br/>
+								<br/>
 								
 								<!-- PAGE CONTENT BEGINS -->
 								
@@ -121,35 +128,35 @@
 										<thead>
 											<tr>
 												<th>ID</th>
-												<th>Cliente</th>
-												<th>Plan</th>
-												<th>Responsable de Cuenta</th>
+												<th>Nombre</th>
+												<th>Presentación</th>
 												<th>Estado</th>
-												<th>Centro de Costo (CC)</th>
+												<th>Opciones</th>
 											</tr>
 										</thead>
 										<tbody>
 										
-										<?php foreach($planes as $p){?>
+										<?php foreach($medicamentos as $m){?>
 											<tr>
-												<td><?=$p->idplan?></td>
-												<td><?=$p->nombre_comercial_cli?></td>
-												<td><?=$p->nombre_plan?></td>
-												<td><?=$p->responsable?></td>	
-												<td><?php if($p->estado_plan==1){
-													echo '<span class="label label-info label-white middle">Activo</span>';
-													}else{
-														echo '<span class="label label-danger label-white middle">Inactivo</span>';
-														}?></td>											
-												<td><?php if($p->centro_costo==''){
-													echo '<a class="boton fancybox"  data-fancybox-width="600" data-fancybox-height="400" title="Agregar CC" href="'.base_url().'index.php/add_cc/'.$p->idplan.'"><i class="ace-icon glyphicon glyphicon-plus red"></i></a>';
-												}else{
-													echo '<a class="boton fancybox"  data-fancybox-width="600" data-fancybox-height="400" title="Editar CC" href="'.base_url().'index.php/add_cc/'.$p->idplan.'">'.$p->centro_costo.'</a>';
-												} ?></td>
+												<td><?=$m->idmedicamento?></td>
+												<td><?=$m->nombre_med?></td>
+												<td><?=$m->presentacion_med?></td>
+												<td><?php if($m->estado_med==1){ ?>
+													<a href="<?=base_url()?>index.php/medicamentos_anular/<?=$m->idmedicamento?>"><span class="label label-info label-white middle">Activo</span></a>
+													<?php }else{ ?>
+														<a href="<?=base_url()?>index.php/medicamentos_activar/<?=$m->idmedicamento?>"><span class="label label-danger label-white middle">Inactivo</span></a>
+														<?php }?></td>											
+												<td>
+													<div title="Editar Usuario" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
+														&nbsp;<a href="<?=base_url()?>index.php/medicamentos_editar/<?=$m->idmedicamento?>">
+															<i class="ace-icon fa fa-pencil bigger-120"></i>
+														</a>
+													</div>
+												</td>
 											</tr>
 										<?php } ?>
 										</tbody>
-									</table>								
+									</table>
 								</div><!-- PAGE CONTENT ENDS -->	
 								<script>			
 										//para paginacion

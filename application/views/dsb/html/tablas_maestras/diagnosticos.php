@@ -89,7 +89,7 @@
 								<a href="<?=base_url()?>">Inicio</a>
 							</li>
 							<li>Tablas Maestras</li>
-							<li class="active">Centro de Costos</li>
+							<li class="active">Diagnósticos</li>
 						</ul><!-- /.breadcrumb -->
 
 						<!-- /section:basics/content.searchbox -->
@@ -102,7 +102,7 @@
 						<!-- /section:settings.box -->
 						<div class="page-header">
 							<h1>
-								Centro de Costos por Plan de Salud
+								Diagnósticos CIE10
 								<small>
 									<i class="ace-icon fa fa-angle-double-right"></i>
 								</small>
@@ -111,6 +111,13 @@
 
 						<div class="row">
 							<div class="col-xs-12">
+								<div class="widget-toolbar no-border invoice-info">
+									<a href="<?=base_url()?>index.php/diagnosticos_guardar"><button class="btn btn-white btn-info">
+										Nuevo Diagnóstico
+									</button></a>
+								</div>
+								<br/>
+								<br/>
 								
 								<!-- PAGE CONTENT BEGINS -->
 								
@@ -121,35 +128,53 @@
 										<thead>
 											<tr>
 												<th>ID</th>
-												<th>Cliente</th>
-												<th>Plan</th>
-												<th>Responsable de Cuenta</th>
+												<th>Código CIE</th>
+												<th>Descripción</th>
+												<th>Tipo</th>
+												<th>Cubierto</th>
 												<th>Estado</th>
-												<th>Centro de Costo (CC)</th>
+												<th>Opciones</th>
 											</tr>
 										</thead>
 										<tbody>
 										
-										<?php foreach($planes as $p){?>
+										<?php foreach($diagnosticos as $d){?>
 											<tr>
-												<td><?=$p->idplan?></td>
-												<td><?=$p->nombre_comercial_cli?></td>
-												<td><?=$p->nombre_plan?></td>
-												<td><?=$p->responsable?></td>	
-												<td><?php if($p->estado_plan==1){
-													echo '<span class="label label-info label-white middle">Activo</span>';
+												<td><?=$d->iddiagnostico?></td>
+												<td><?=$d->codigo_cie?></td>
+												<td><?=$d->descripcion_cie?></td>
+												<td><?php if($d->tipo==1){
+													echo 'Capa simple';
 													}else{
-														echo '<span class="label label-danger label-white middle">Inactivo</span>';
-														}?></td>											
-												<td><?php if($p->centro_costo==''){
-													echo '<a class="boton fancybox"  data-fancybox-width="600" data-fancybox-height="400" title="Agregar CC" href="'.base_url().'index.php/add_cc/'.$p->idplan.'"><i class="ace-icon glyphicon glyphicon-plus red"></i></a>';
-												}else{
-													echo '<a class="boton fancybox"  data-fancybox-width="600" data-fancybox-height="400" title="Editar CC" href="'.base_url().'index.php/add_cc/'.$p->idplan.'">'.$p->centro_costo.'</a>';
-												} ?></td>
+														echo 'Preexistente';
+														}?></td>
+												<td><?=$d->cubierto?></td>
+												<td><?php if($d->estado_cie==1){ ?>
+													<a href="<?=base_url()?>index.php/diagnosticos_anular/<?=$d->iddiagnostico?>"><span class="label label-info label-white middle">Activo</span></a>
+													<?php }else{ ?>
+														<a href="<?=base_url()?>index.php/diagnosticos_activar/<?=$d->iddiagnostico?>"><span class="label label-danger label-white middle">Inactivo</span></a>
+														<?php }?></td>											
+												<td>
+													<div title="Editar Medicamentos" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
+														&nbsp;<a href="<?=base_url()?>index.php/diagnosticos_editar/<?=$d->iddiagnostico?>">
+															<i class="ace-icon fa fa-pencil bigger-120"></i>
+														</a>
+													</div>
+													<!--<div title="Editar Productos" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
+														&nbsp;<a href="<?=base_url()?>index.php/diagnosticos_editarp/<?=$d->iddiagnostico?>">
+															<i class="ace-icon fa fa-pencil bigger-120"></i>
+														</a>
+													</div>-->
+													<div title="Ver Diagnóstico" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
+														&nbsp;<a href="<?=base_url()?>index.php/diagnosticos_detalle/<?=$d->iddiagnostico?>">
+															<i class="ace-icon fa fa-eye bigger-120"></i>
+														</a>
+													</div>
+												</td>
 											</tr>
 										<?php } ?>
 										</tbody>
-									</table>								
+									</table>
 								</div><!-- PAGE CONTENT ENDS -->	
 								<script>			
 										//para paginacion
