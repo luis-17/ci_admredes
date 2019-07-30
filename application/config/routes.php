@@ -368,6 +368,13 @@ $route['guardar_recepcion3'] = 'Mesa_partes_cnt/guardar_recepcion3';
 $route['reg_recepcion3'] = 'Mesa_partes_cnt/reg_recepcion3';
 $route['siniestros'] = 'Siniestro_cnt/registrar_siniestro';
 $route['seleccionar_factura/(:any)/(:any)'] = 'Siniestro_cnt/seleccionar_factura/$1/$2';
+$route['cotizador'] = 'Cotizador_cnt/cotizador';
+$route['cotizador_registrar'] = 'Cotizador_cnt/cotizador_registrar';
+$route['cotizador_calcular'] = 'Cotizador_cnt/cotizador_calcular';
+$route['cotizador_cobertura'] = 'Cotizador_cnt/cotizador_cobertura';
+$route['cotizador_guardar'] = 'Cotizador_cnt/cotizador_guardar';
+$route['cot_coaseguro/(:any)'] = 'Cotizador_cnt/cot_coaseguro/$1';
+$route['reg_cotcoaseguro'] = 'Cotizador_cnt/reg_cotcoaseguro';
 
 $route['consultar_postVenta'] = 'Reportes_cnt/consultar_postVenta';
 $route['consultar_postVenta_buscar'] = 'Reportes_cnt/consultar_postVenta_buscar';
