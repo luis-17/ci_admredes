@@ -265,14 +265,16 @@ class Cotizador_cnt extends CI_Controller {
 						$html .= "<td align='right' colspan='5'><b>Total anual:</b></td>";
 						$html .= "<td>S/. 0.00</td>";
 						$html .= "<td>S/. 0.00</td>";
-						$html .= "<td>S/. 0.00</td>";
+						$html .= "<td></td>";
+						$html .= "<td></td>";
 					$html .= "</tr>";
 				} else {
 					$html .= "<tr>";
 						$html .= "<td align='right' colspan='5'><b>Total anual:</b></td>";
 						$html .= "<td>S/. ".$sumaanual."</td>";
 						$html .= "<td>S/. ".$sumaanualadicional."</td>";
-						$html .= "<td>S/. 0.00</td>";
+						$html .= "<td></td>";
+						$html .= "<td></td>";
 					$html .= "</tr>";
 				}
 
@@ -287,6 +289,12 @@ class Cotizador_cnt extends CI_Controller {
 						$html .= "<td align='right' colspan='2'><b>Prima:</b></td>";
 						$html .= "<td colspan='2'>S/. 0.00</td>";
 						$html .= "<td align='right' colspan='3'><b>Prima Adicional:</b></td>";
+						$html .= "<td colspan='2'>S/. 0.00</td>";
+					$html .= "</tr>";
+					$html .= "<tr>";
+						$html .= "<td align='right' colspan='2'><b>Copago:</b></td>";
+						$html .= "<td colspan='2'>S/. 0.00</td>";
+						$html .= "<td align='right' colspan='3'><b>Copago Adicional:</b></td>";
 						$html .= "<td colspan='2'>S/. 0.00</td>";
 					$html .= "</tr>";
 				} else {
@@ -334,6 +342,12 @@ class Cotizador_cnt extends CI_Controller {
 						$html .= "<td colspan='2'>S/. ".$primaDec."</td>";
 						$html .= "<td align='right' colspan='3'><b>Prima Adicional:</b></td>";
 						$html .= "<td colspan='2'>S/. ".$primaDecAd."</td>";
+					$html .= "</tr>";
+					$html .= "<tr>";
+						$html .= "<td align='right' colspan='2'><b>Copago:</b></td>";
+						$html .= "<td colspan='2'>S/. </td>";
+						$html .= "<td align='right' colspan='3'><b>Copago Adicional:</b></td>";
+						$html .= "<td colspan='2'>S/. </td>";
 					$html .= "</tr>";
 				}
 				$html .= "</tbody>";
@@ -420,14 +434,16 @@ class Cotizador_cnt extends CI_Controller {
 						$html .= "<td align='right' colspan='5'><b>Total anual:</b></td>";
 						$html .= "<td>S/. 0.00</td>";
 						$html .= "<td>S/. 0.00</td>";
-						$html .= "<td>S/. 0.00</td>";
+						$html .= "<td></td>";
+						$html .= "<td></td>";
 					$html .= "</tr>";
 				} else {
 					$html .= "<tr>";
 						$html .= "<td align='right' colspan='5'><b>Total anual:</b></td>";
 						$html .= "<td>S/. ".$sumaanual."</td>";
 						$html .= "<td>S/. ".$sumaanualadicional."</td>";
-						$html .= "<td>S/. 0.00</td>";
+						$html .= "<td></td>";
+						$html .= "<td></td>";
 					$html .= "</tr>";
 				}
 
@@ -442,6 +458,12 @@ class Cotizador_cnt extends CI_Controller {
 						$html .= "<td align='right' colspan='2'><b>Prima:</b></td>";
 						$html .= "<td colspan='2'>S/. 0.00</td>";
 						$html .= "<td align='right' colspan='3'><b>Prima Adicional:</b></td>";
+						$html .= "<td colspan='2'>S/. 0.00</td>";
+					$html .= "</tr>";
+					$html .= "<tr>";
+						$html .= "<td align='right' colspan='2'><b>Copago:</b></td>";
+						$html .= "<td colspan='2'>S/. 0.00</td>";
+						$html .= "<td align='right' colspan='3'><b>Copago Adicional:</b></td>";
 						$html .= "<td colspan='2'>S/. 0.00</td>";
 					$html .= "</tr>";
 				} else {
@@ -489,6 +511,12 @@ class Cotizador_cnt extends CI_Controller {
 						$html .= "<td colspan='2'>S/. ".$primaDec."</td>";
 						$html .= "<td align='right' colspan='3'><b>Prima Adicional:</b></td>";
 						$html .= "<td colspan='2'>S/. ".$primaDecAd."</td>";
+					$html .= "</tr>";
+					$html .= "<tr>";
+						$html .= "<td align='right' colspan='2'><b>Copago:</b></td>";
+						$html .= "<td colspan='2'>S/. </td>";
+						$html .= "<td align='right' colspan='3'><b>Copago Adicional:</b></td>";
+						$html .= "<td colspan='2'>S/. </td>";
 					$html .= "</tr>";
 				}
 				$html .= "</tbody>";
@@ -613,7 +641,8 @@ class Cotizador_cnt extends CI_Controller {
 						$html .= "<td align='right' colspan='5'><b>Total anual:</b></td>";
 						$html .= "<td>S/. ".$sumaanual."</td>";
 						$html .= "<td>S/. ".$sumaanualadicional."</td>";
-						$html .= "<td>S/. 0.00</td>";
+						$html .= "<td></td>";
+						$html .= "<td></td>";
 					$html .= "</tr>";
 					$html .= "<tr>";
 						$html .= "<td align='right' colspan='2'><b>Población personas:</b></td>";
@@ -626,6 +655,12 @@ class Cotizador_cnt extends CI_Controller {
 						$html .= "<td colspan='2'>S/. ".$primaDec."</td>";
 						$html .= "<td align='right' colspan='3'><b>Prima Adicional:</b></td>";
 						$html .= "<td colspan='2'>S/. ".$primaDecAd."</td>";
+					$html .= "</tr>";
+					$html .= "<tr>";
+						$html .= "<td align='right' colspan='2'><b>Copago:</b></td>";
+						$html .= "<td colspan='2'>S/. </td>";
+						$html .= "<td align='right' colspan='3'><b>Copago Adicional:</b></td>";
+						$html .= "<td colspan='2'>S/. </td>";
 					$html .= "</tr>";
 				$html .= "</tbody>";
 			$html .= "</table>";
@@ -701,7 +736,8 @@ class Cotizador_cnt extends CI_Controller {
 						$html .= "<td align='right' colspan='5'><b>Total anual:</b></td>";
 						$html .= "<td>S/. 0.00</td>";
 						$html .= "<td>S/. 0.00</td>";
-						$html .= "<td>S/. 0.00</td>";
+						$html .= "<td></td>";
+						$html .= "<td></td>";
 					$html .= "</tr>";
 					$html .= "<tr>";
 						$html .= "<td align='right' colspan='2'><b>Población personas:</b></td>";
@@ -713,6 +749,12 @@ class Cotizador_cnt extends CI_Controller {
 						$html .= "<td align='right' colspan='2'><b>Prima:</b></td>";
 						$html .= "<td colspan='2'>S/. 0.00</td>";
 						$html .= "<td align='right' colspan='3'><b>Prima Adicional:</b></td>";
+						$html .= "<td colspan='2'>S/. 0.00</td>";
+					$html .= "</tr>";
+					$html .= "<tr>";
+						$html .= "<td align='right' colspan='2'><b>Copago:</b></td>";
+						$html .= "<td colspan='2'>S/. 0.00</td>";
+						$html .= "<td align='right' colspan='3'><b>Copago Adicional:</b></td>";
 						$html .= "<td colspan='2'>S/. 0.00</td>";
 					$html .= "</tr>";
 				$html .= "</tbody>";
