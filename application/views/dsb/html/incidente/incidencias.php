@@ -164,56 +164,56 @@
 																<td style="color: <?=$color?>"><?=$p->descripcion?></td>
 																<td>
 																	<div class="hidden-sm hidden-xs btn-group">
-																		<div title="Ver Historial" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
-																			&nbsp;<a class="boton fancybox" href="<?=base_url()?>index.php/historial/<?=$p->idincidencia?>" data-fancybox-width="950" data-fancybox-height="690">
-																				<i class="ace-icon fa fa-eye bigger-120"></i>
-																			</a>
+																				<div title="Ver Historial" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
+																					&nbsp;<a class="boton fancybox" href="<?=base_url()?>index.php/historial/<?=$p->idincidencia?>" data-fancybox-width="950" data-fancybox-height="690">
+																						<i class="ace-icon fa fa-eye bigger-120"></i>
+																					</a>
+																				</div>
+
+																				<div title="Derivar Incidencia" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
+																					&nbsp;<a class="boton fancybox" href="<?=base_url()?>index.php/derivar_incidencia/<?=$p->idincidencia?>" data-fancybox-width="950" data-fancybox-height="690">
+																						<i class="ace-icon glyphicon glyphicon-share bigger-120"></i>
+																					</a>
+																				</div>	
+																				<div title="Resolver Incidencia" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
+																					&nbsp;<a class="boton fancybox" href="<?=base_url()?>index.php/solucion_incidencia/<?=$p->idincidencia?>" data-fancybox-width="950" data-fancybox-height="690">
+																						<i class="ace-icon glyphicon glyphicon-ok bigger-120"></i>
+																					</a>
+																				</div>			
 																		</div>
 
-																		<div title="Derivar Incidencia" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
-																			&nbsp;<a class="boton fancybox" href="<?=base_url()?>index.php/derivar_incidencia/<?=$p->idincidencia?>" data-fancybox-width="950" data-fancybox-height="690">
-																				<i class="ace-icon glyphicon glyphicon-share bigger-120"></i>
-																			</a>
-																		</div>	
-																		<div title="Resolver Incidencia" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
-																			&nbsp;<a class="boton fancybox" href="<?=base_url()?>index.php/solucion_incidencia/<?=$p->idincidencia?>" data-fancybox-width="950" data-fancybox-height="690">
-																				<i class="ace-icon glyphicon glyphicon-ok bigger-120"></i>
-																			</a>
-																		</div>			
-																	</div>
+																		<div class="hidden-md hidden-lg">
+																			<div class="inline pos-rel">
+																				<button class="btn btn-minier btn-info dropdown-toggle" data-toggle="dropdown" data-position="auto">
+																					<i class="ace-icon fa fa-cog icon-only bigger-110"></i>
+																				</button>
 
-																	<div class="hidden-md hidden-lg">
-																		<div class="inline pos-rel">
-																			<button class="btn btn-minier btn-info dropdown-toggle" data-toggle="dropdown" data-position="auto">
-																				<i class="ace-icon fa fa-cog icon-only bigger-110"></i>
-																			</button>
+																				<ul class="dropdown-menu dropdown-only-icon dropdown-yellow dropdown-menu-right dropdown-caret dropdown-close">			
+																					<li>
+																						<div title="Ver Historial" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
+																							&nbsp;<a class="boton fancybox" href="<?=base_url()?>index.php/historial/<?=$p->idincidencia?>" data-fancybox-width="950" data-fancybox-height="690">
+																								<i class="ace-icon fa fa-eye bigger-120"></i>
+																							</a>
+																						</div>
+																					</li>
+																					<li>
+																						<div title="Derivar Incidencia" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
+																							&nbsp;<a class="boton fancybox" href="<?=base_url()?>index.php/derivar_incidencia/<?=$p->idincidencia?>" data-fancybox-width="950" data-fancybox-height="690">
+																								<i class="ace-icon glyphicon glyphicon-share bigger-120"></i>
+																							</a>
+																						</div>	
 
-																			<ul class="dropdown-menu dropdown-only-icon dropdown-yellow dropdown-menu-right dropdown-caret dropdown-close">			
-																				<li>
-																					<div title="Ver Historial" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
-																						&nbsp;<a class="boton fancybox" href="<?=base_url()?>index.php/historial/<?=$p->idincidencia?>" data-fancybox-width="950" data-fancybox-height="690">
-																							<i class="ace-icon fa fa-eye bigger-120"></i>
-																						</a>
-																					</div>
-																				</li>
-																				<li>
-																					<div title="Derivar Incidencia" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
-																						&nbsp;<a class="boton fancybox" href="<?=base_url()?>index.php/derivar_incidencia/<?=$p->idincidencia?>" data-fancybox-width="950" data-fancybox-height="690">
-																							<i class="ace-icon glyphicon glyphicon-share bigger-120"></i>
-																						</a>
-																					</div>	
-
-																				</li>
-																				<li>
-																					<div title="Resolver Incidencia" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
-																						&nbsp;<a class="boton fancybox" href="<?=base_url()?>index.php/solucion_incidencia/<?=$p->idincidencia?>" data-fancybox-width="950" data-fancybox-height="690">
-																							<i class="ace-icon glyphicon glyphicon-ok bigger-120"></i>
-																						</a>
-																					</div>	
-																				</li>			
-																			</ul>
+																					</li>
+																					<li>
+																						<div title="Resolver Incidencia" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
+																							&nbsp;<a class="boton fancybox" href="<?=base_url()?>index.php/solucion_incidencia/<?=$p->idincidencia?>" data-fancybox-width="950" data-fancybox-height="690">
+																								<i class="ace-icon glyphicon glyphicon-ok bigger-120"></i>
+																							</a>
+																						</div>	
+																					</li>			
+																				</ul>
+																			</div>
 																		</div>
-																	</div>
 																</td>
 															</tr>
 															<?php } ?>
@@ -271,30 +271,30 @@
 																<td><?=$o->username?></td>
 																<td>
 																	<div class="hidden-sm hidden-xs btn-group">
-																		<div title="Ver Historial" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
-																			&nbsp;<a class="boton fancybox" href="<?=base_url()?>index.php/historial/<?=$o->idincidencia?>" data-fancybox-width="950" data-fancybox-height="690">
-																				<i class="ace-icon fa fa-eye bigger-120"></i>
-																			</a>
+																				<div title="Ver Historial" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
+																					&nbsp;<a class="boton fancybox" href="<?=base_url()?>index.php/historial/<?=$o->idincidencia?>" data-fancybox-width="950" data-fancybox-height="690">
+																						<i class="ace-icon fa fa-eye bigger-120"></i>
+																					</a>
+																				</div>
 																		</div>
-																	</div>
 
-																	<div class="hidden-md hidden-lg">
-																		<div class="inline pos-rel">
-																			<button class="btn btn-minier btn-info dropdown-toggle" data-toggle="dropdown" data-position="auto">
-																				<i class="ace-icon fa fa-cog icon-only bigger-110"></i>
-																			</button>
+																		<div class="hidden-md hidden-lg">
+																			<div class="inline pos-rel">
+																				<button class="btn btn-minier btn-info dropdown-toggle" data-toggle="dropdown" data-position="auto">
+																					<i class="ace-icon fa fa-cog icon-only bigger-110"></i>
+																				</button>
 
-																			<ul class="dropdown-menu dropdown-only-icon dropdown-yellow dropdown-menu-right dropdown-caret dropdown-close">			
-																				<li>
-																					<div title="Ver Historial" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
-																						&nbsp;<a class="boton fancybox" href="<?=base_url()?>index.php/historial/<?=$o->idincidencia?>" data-fancybox-width="950" data-fancybox-height="690">
-																							<i class="ace-icon fa fa-eye bigger-120"></i>
-																						</a>
-																					</div>
-																				</li>
-																			</ul>
+																				<ul class="dropdown-menu dropdown-only-icon dropdown-yellow dropdown-menu-right dropdown-caret dropdown-close">			
+																					<li>
+																						<div title="Ver Historial" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
+																							&nbsp;<a class="boton fancybox" href="<?=base_url()?>index.php/historial/<?=$o->idincidencia?>" data-fancybox-width="950" data-fancybox-height="690">
+																								<i class="ace-icon fa fa-eye bigger-120"></i>
+																							</a>
+																						</div>
+																					</li>
+																				</ul>
+																			</div>
 																		</div>
-																	</div>
 																</td>
 															</tr>
 															<?php } ?>

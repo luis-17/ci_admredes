@@ -1,3 +1,4 @@
 RewriteCond %{HTTP_HOST} red-salud\.com [NC]
 RewriteCond %{SERVER_PORT} 80
-RewriteRule ^(.*)$ https://www.red-salud.com/$1 [R,L]
+RewriteRule ^(.*)$ https://www.red-salud.com/rsadmin$1 [R,L]
+Allow from All

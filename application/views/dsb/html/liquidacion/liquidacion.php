@@ -37,16 +37,16 @@
 
 		<script>
 			$(".fancybox")
-		    .attr('rel', 'gallery')
-		    .fancybox({
-		        type: 'iframe',
-		        autoSize : false,
-		        beforeLoad : function() {         
-		            this.width  = parseInt(this.element.data('fancybox-width'));  
-		            this.height = parseInt(this.element.data('fancybox-height'));
-		        }
-	    	});
-		</script>
+	    .attr('rel', 'gallery')
+	    .fancybox({
+	        type: 'iframe',
+	        autoSize : false,
+	        beforeLoad : function() {         
+	            this.width  = parseInt(this.element.data('fancybox-width'));  
+	            this.height = parseInt(this.element.data('fancybox-height'));
+	        }
+	    });
+	</script>
 		<!-- HTML5shiv and Respond.js for IE8 to support HTML5 elements and media queries -->
 
 		<!--[if lte IE 8]>
@@ -69,14 +69,16 @@
 		<script type="text/javascript">
 			
 			$(document).on("click", ".open-registerPay", function () {
-		    	var liqdetalleid = $(this).data('id');
-		    	$(".modal-body #liqdetalleid").val( liqdetalleid );
+		     var liqdetalleid = $(this).data('id');
+		     $(".modal-body #liqdetalleid").val( liqdetalleid );
 		     // As pointed out in comments, 
 		     // it is superfluous to have to manually call the modal.
 		     // $('#addBookDialog').modal('show');
-			});
+		});
 
 		</script>
+
+
 
 		<script>		
 			$(document).ready(function(){

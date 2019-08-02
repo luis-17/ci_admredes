@@ -13,7 +13,7 @@
 			inner join plan p on p.idplan=c.plan_id 
 			inner join cliente_empresa ce on ce.idclienteempresa=p.idclienteempresa
 			where (TIMESTAMPDIFF(day,fecha_atencion,DATE_FORMAT(now(),'%Y-%m-%d')))>2 and fecha_atencion>'2019-05-12' 
-			and idsiniestro not in (select idsiniestro from siniestro_encuesta) and estado_siniestro=1 and estado_atencion='O' and c.cert_num not like 'PR%'");
+			and idsiniestro not in (select idsiniestro from siniestro_encuesta) and estado_siniestro=1 and estado_atencion='O'");
 
  	return $query->result();
  }
@@ -71,6 +71,7 @@
  function save_encuesta_detalle($data){
  	$array = array('idencuesta' => $data['idencuesta'], 'idrespuesta' => $data['idrespuesta'] );
  	$this->db->insert("encuesta_detalle", $array);
- }	 
+ }
+	 
 }
 ?>

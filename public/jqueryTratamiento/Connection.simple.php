@@ -20,10 +20,10 @@ function dbConnect (){
  	$pwd = 	'doc$%&54321';*/
 
  	$conn =	null;
- 	$host = '50.62.209.11:3306';
- 	$db = 	'db_devrs';
- 	$user = 'dev_user_rs';
- 	$pwd = 	'redsaludRS@2018';
+ 	$host = 'rdsinstancemysql.czvvckkesgis.us-east-2.rds.amazonaws.com';
+ 	$db = 	'new_redes_peru';
+ 	$user = 'rsaws2019';
+ 	$pwd = 	'hcarsAcces2019$';
  	
 
 	try {

@@ -297,7 +297,7 @@ class usuario_cnt extends CI_Controller {
 							<li>Usuario: '.$usu.'</li>
 							<li>Contraseña: '.$pass.'</li>
 						</ul>
-					<p>Para acceder a nuestra plataforma ingresar al siguiente enlace <a href="https://red-salud.com/rsadmin">www.red-salud.com/rsadmin</a></p>
+					<p>Para acceder a nuestra plataforma ingresar al siguiente enlace <a href="https://www.red-salud.com/rsadmin">www.red-salud.com/rsadmin</a></p>
 					<p>Para dudas &oacute; consultas comun&iacute;quese al anexo 109.
 					<p>Saludos Cordiales</p>
 					<p>Atte. '.$nombres_col.' '.$ap_paterno_col.' '.$ap_materno_col.'</p></div>

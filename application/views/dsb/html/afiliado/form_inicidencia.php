@@ -34,43 +34,44 @@
 	</head>
 
 	<body style="">	
-		<!-- /section:basics/sidebar -->
-		<div class="main-content">
-			<div class="main-content-inner">
-			<!-- #section:basics/content.breadcrumbs -->
+			<!-- /section:basics/sidebar -->
+			<div class="main-content">
+				<div class="main-content-inner">
+					<!-- #section:basics/content.breadcrumbs -->
 					
-			<!-- /section:basics/content.breadcrumbs -->
-				<div class="page-content">
-					<div class="page-header">
-						<h1>
-							REGISTRAR INCIDENCIA						
-						</h1>
-					</div>
-					<div class="row">
-						<div class="col-xs-12">
-						<!-- PAGE CONTENT BEGINS -->
-							<form class="form-horizontal" name="aseg" id="aseg" role="form" method="post" action="<?=base_url();?>/index.php/save_incidencia">
-								<input type="hidden" name="cert_id" id="cert_id" value="<?=$cert_id;?>">
-								<div class="form-group">
-									<label class="col-sm-3 control-label no-padding-right" for="form-field-1"> Descripción: </label>
-									<div class="col-sm-4">
+					<!-- /section:basics/content.breadcrumbs -->
+					<div class="page-content">
+						<div class="page-header">
+							<h1>
+								REGISTRAR INCIDENCIA						
+							</h1>
+						</div>
+						<div class="row">
+							<div class="col-xs-12">
+								<!-- PAGE CONTENT BEGINS -->
+								<form class="form-horizontal" name="aseg" id="aseg" role="form" method="post" action="<?=base_url();?>/index.php/save_incidencia">
+									<input type="hidden" name="cert_id" id="cert_id" value="<?=$cert_id;?>">
+									<div class="form-group">
+										<label class="col-sm-3 control-label no-padding-right" for="form-field-1"> Descripción: </label>
+
+										<div class="col-sm-4">
 										<textarea name="desc_incidencia" id="desc_incidencia" cols="95" rows="5" maxlength="800"></textarea>
+										</div>
+									</div>									
+									<div class="">
+										<div class="col-md-offset-3 col-md-9" style="text-align: right;">
+											<button class="btn btn-info" type="submit">
+												<i class="ace-icon fa fa-check bigger-110"></i>
+												Guardar
+											</button>
+										</div>
 									</div>
-								</div>									
-								<div class="">
-									<div class="col-md-offset-3 col-md-9" style="text-align: right;">
-										<button class="btn btn-info" type="submit">
-											<i class="ace-icon fa fa-check bigger-110"></i>
-											Guardar
-										</button>
-									</div>
-								</div>
-							</form>
-						</div><!-- /.col -->
-					</div>	
-				</div>
-			</div><!-- /.main-content -->			
-		</div><!-- /.main-container -->
+								</form>
+							</div><!-- /.col -->
+						</div>	
+					</div>
+				</div><!-- /.main-content -->			
+			</div><!-- /.main-container -->
 		
 		<!--[if !IE]> -->
 		<script type="text/javascript">

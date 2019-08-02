@@ -177,9 +177,9 @@
 					              		<th colspan="4"><?=$nombre_plan?></th>
 					              	</tr>
 					              	<tr>
-					                <th colspan="2"><input type="image" width="40" src="https://www.red-salud.com/rsadmin/public/assets/images/aqui.gif"> Validar Cobertura</th>
-					                <th style="text-align: center;">Copago/Coaseguro</th>
-					                <th style="text-align: center;">Eventos</th>
+						                <th colspan="2"><input type="image" width="40" src="https://www.red-salud.com/rsadmin/public/assets/images/aqui.gif"> Validar Cobertura</th>
+						                <th style="text-align: center;">Copago/Coaseguro</th>
+						                <th style="text-align: center;">Eventos</th>
 					            	</tr>
 					              </thead>
 					              <?php
@@ -226,7 +226,7 @@
 					                <input type="hidden" name="cert_id" value="<?=$c->cert_id?>">
 					                <input type="hidden" name="aseg_id" value="<?=$c->aseg_id?>">
 					                <input type="hidden" name="certase_id" value="<?=$c->certase_id?>">    
-					                    <tbody>
+					              <tbody>
 					              <tr>
 					                <td width="5%" style="vertical-align: middle; text-align: center;">
 					                  <a class="boton fancybox" title="<?=$titulo?>" href="<?= base_url()?>index.php/detalle_cobertura/<?=$c->idplandetalle?>/<?=$c->certase_id?>/<?=$c->idvariableplan?>/<?=$c->estado?>" data-fancybox-width="950" data-fancybox-height="690">

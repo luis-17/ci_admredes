@@ -41,69 +41,70 @@
 
 	<body class="no-skin">
 		<!-- /section:basics/sidebar -->
-		<div class="main-content">
-			<div class="main-content-inner">				
+			<div class="main-content">
+				<div class="main-content-inner">				
 
-				<!-- /section:basics/content.breadcrumbs -->
-				<div class="page-content">	
+					<!-- /section:basics/content.breadcrumbs -->
+					<div class="page-content">	
 
-					<!-- /section:settings.box -->
-					<div class="page-header">
-						<h1>
-							<?=$usuario_call?>: Atenciones Gestionadas
-							<small>
-								<i class="ace-icon fa fa-angle-double-right"></i>									
-							</small>
-						</h1>
-					</div><!-- /.page-header -->
+						<!-- /section:settings.box -->
+						<div class="page-header">
+							<h1>
+								<?=$usuario_call?>: Atenciones Gestionadas
+								<small>
+									<i class="ace-icon fa fa-angle-double-right"></i>									
+								</small>
+							</h1>
+						</div><!-- /.page-header -->
 
-					<div class="row">
-						<!-- star table -->		
-						<div class="col-xs-12">
-							<div>
-								<table id="example" class="table table-striped table-bordered table-hover">
-									<thead>
-										<tr>
-											<th>N° Orden</th>
-											<th>Centro Médico</th>
-											<th>Usuario Reserva</th>
-											<th>Fecha Reserva</th>
-											<th>Usuario Gestiona</th>
-											<th>Fecha Confirma</th>
-											<th>Tiempo Gestión</th>
-										</tr>
-									</thead>
+						<div class="row">
+									<!-- star table -->		
+									<div class="col-xs-12">
+										<div>
+										<table id="example" class="table table-striped table-bordered table-hover">
+											<thead>
+													<tr>
+														<th>N° Orden</th>
+														<th>Centro Médico</th>
+														<th>Usuario Reserva</th>
+														<th>Fecha Reserva</th>
+														<th>Usuario Gestiona</th>
+														<th>Fecha Confirma</th>
+														<th>Tiempo Gestión</th>
+													</tr>
+												</thead>
 
-									<tbody>
-									<?php 
-										foreach ($resumen_operador as $co):													
-									?>
-										<tr>
-											<td><?=$co->estado_atencion;?><?=$co->num_orden_atencion?></td>
-											<td><?=$co->nombre_comercial_pr;?></td>
-											<td><?=$co->usuario_reserva;?></td>
-											<td><?=$co->createdat?></td>
-											<td><?=$co->username?></td>														
-											<td><?=$co->updatedat?></td>
-											<td><?=$co->promedio?></td>
-										</tr>
-									<?php endforeach; ?>
-									</tbody>
-								</table>
-							</div>
-							<script>			
-								//para paginacion
-								$(document).ready(function() {
-									$('#example').DataTable( {
-										"pagingType": "full_numbers"
-									} );
-								} );
-							</script>	
-						</div>
-					</div><!-- /.col -->
-				</div><!-- /.row -->
-			</div><!-- /.page-content -->
-		</div><!-- /.main-content -->
+												<tbody>
+													<?php 
+													foreach ($resumen_operador as $co):													
+													?>
+													<tr>
+														<td><?=$co->estado_atencion;?><?=$co->num_orden_atencion?></td>
+														<td><?=$co->nombre_comercial_pr;?></td>
+														<td><?=$co->usuario_reserva;?></td>
+														<td><?=$co->createdat?></td>
+														<td><?=$co->username?></td>														
+														<td><?=$co->updatedat?></td>
+														<td><?=$co->promedio?></td>
+													</tr>
+													<?php endforeach; ?>
+												</tbody>
+										</table>
+										</div>
+										<script>			
+													//para paginacion
+													$(document).ready(function() {
+													$('#example').DataTable( {
+													"pagingType": "full_numbers"
+													} );
+												} );
+												</script>	
+									</div>
+							</div><!-- /.col -->
+						</div><!-- /.row -->
+					</div><!-- /.page-content -->
+				</div>
+			</div><!-- /.main-content -->
 
 			
 		</div><!-- /.main-container -->

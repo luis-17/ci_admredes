@@ -438,8 +438,7 @@ class Siniestro_cnt extends CI_Controller {
 
 				   }
 				}
-
-
+				
 			echo "<script>
 				alert('Se registró el medicamento con éxito.');
 				parent.location.reload(true);
