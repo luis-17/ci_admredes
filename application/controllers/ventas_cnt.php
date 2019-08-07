@@ -1494,8 +1494,8 @@ class ventas_cnt extends CI_Controller {
 
 				dbase_close($db);
 				$mail->isSMTP();
-		        //$mail->Host     = 'relay-hosting.secureserver.net';
-		        $mail->Host = 'localhost';
+		        $mail->Host     = 'relay-hosting.secureserver.net';
+		        //$mail->Host = 'localhost';
 		        $mail->SMTPAuth = false;
 		        $mail->Username = '';
 		        $mail->Password = '';
@@ -2599,7 +2599,8 @@ class ventas_cnt extends CI_Controller {
 				file_put_contents('adjunto/comprobantes/'.$filename.'.xml', $xmlSigned);
 
 				$mail->isSMTP();
-		        $mail->Host = 'localhost';
+				$mail->Host     = 'relay-hosting.secureserver.net';
+		        //$mail->Host = 'localhost';
 		        $mail->SMTPAuth = false;
 		        $mail->Username = '';
 		        $mail->Password = '';

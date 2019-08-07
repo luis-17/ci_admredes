@@ -257,8 +257,8 @@ class Certificadodetalle_cnt extends CI_Controller {
 			
 			$mail = new PHPMailer;
 			$mail->isSMTP();
-	        //$mail->Host     = 'relay-hosting.secureserver.net';
-	       	$mail->Host = 'localhost';
+	        $mail->Host     = 'relay-hosting.secureserver.net';
+	       	//$mail->Host = 'localhost';
 	        $mail->SMTPAuth = false;
 	        $mail->SMTPSecure = false;
 	        $mail->Username = '';
@@ -338,8 +338,8 @@ class Certificadodetalle_cnt extends CI_Controller {
 			}
 			$mail2 = new PHPMailer;
 			$mail->isSMTP();
-	        //$mail->Host     = 'relay-hosting.secureserver.net';
-	       	$mail2->Host = 'localhost';
+	        $mail->Host     = 'relay-hosting.secureserver.net';
+	       	//$mail2->Host = 'localhost';
 	        $mail2->SMTPAuth = false;
 	        $mail2->SMTPSecure = false;
 	        $mail2->Username = '';
@@ -419,8 +419,8 @@ class Certificadodetalle_cnt extends CI_Controller {
 			
 			$mail = new PHPMailer;
 			$mail->isSMTP();
-	        //$mail->Host     = 'relay-hosting.secureserver.net';
-	       	$mail->Host = 'localhost';
+	        $mail->Host     = 'relay-hosting.secureserver.net';
+	       	//$mail->Host = 'localhost';
 	        $mail->SMTPAuth = false;
 	        $mail->SMTPSecure = false;
 	        $mail->Username = '';
@@ -573,8 +573,8 @@ class Certificadodetalle_cnt extends CI_Controller {
 			}
 	        $mail = new PHPMailer;
 			$mail->isSMTP();
-	        //$mail->Host     = 'relay-hosting.secureserver.net';
-	       	$mail->Host = 'localhost';
+	        $mail->Host     = 'relay-hosting.secureserver.net';
+	       	//$mail->Host = 'localhost';
 	        $mail->SMTPAuth = false;
 	        $mail->SMTPSecure = false;
 	        $mail->Username = '';
@@ -669,8 +669,8 @@ class Certificadodetalle_cnt extends CI_Controller {
 
 			$mail2 = new PHPMailer;
 			$mail2->isSMTP();
-	        //$mail->Host     = 'relay-hosting.secureserver.net';
-	       	$mail2->Host = 'localhost';
+	        $mail->Host     = 'relay-hosting.secureserver.net';
+	       	//$mail2->Host = 'localhost';
 	        $mail2->SMTPAuth = false;
 	        $mail2->SMTPSecure = false;
 	        $mail2->Username = '';

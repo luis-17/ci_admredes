@@ -1,9 +1,9 @@
 <?php
 
     //database details
-    $dbHost     = 'localhost';
-    $dbUsername = 'root';
-    $dbPassword = '';
+    $dbHost     = 'rdsinstancemysql.czvvckkesgis.us-east-2.rds.amazonaws.com:3306';
+    $dbUsername = 'rsaws2019';
+    $dbPassword = 'hcarsAcces2019$';
     $dbName     = 'new_redes_admin';
     
     //create connection and select DB

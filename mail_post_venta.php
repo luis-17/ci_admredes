@@ -1,5 +1,5 @@
 <?php 
-$cnx=mysqli_connect('localhost','redperu_admin','du2las0de1r8@peru','new_redes_peru') or die("Database Error");
+$cnx=mysqli_connect('rdsinstancemysql.czvvckkesgis.us-east-2.rds.amazonaws.com:3306','rsaws2019','hcarsAcces2019$','new_redes_peru') or die("Database Error");
 
 $sql="select idsiniestro, fecha_atencion, nombre_comercial_pr, nombre_comercial_cli, nombre_plan, aseg_numDoc, UPPER(coalesce(aseg_ape1, aseg_ape2)) as apellido, UPPER(coalesce(aseg_nom1, aseg_nom2)) as nombre, aseg_telf, aseg_email
       from siniestro s
