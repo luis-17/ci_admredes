@@ -113,7 +113,6 @@
 							<div align="center">								
 									<div class="col-xs-9 col-sm-12">
 										<div class="profile-info-row">
-
 											<form name="form" id="form" method="post" action="<?=base_url()?>index.php/consulta_incidencias_buscar" class="form-horizontal">
 												<div class="profile-info-name"> Inicio: </div>
 												<div class="profile-info-name">
@@ -121,7 +120,7 @@
 												</div>
 												<div class="profile-info-name"> Fin: </div>
 												<div class="profile-info-name">
-													<input class="form-control input-mask-date" type="date" id="fechafin" name="fechafin" required="Seleccione una fecha de fin" value="<?=$fecfin;?>">														
+													<input class="form-control input-mask-date" type="date" id="fechafin" name="fechafin" required="Seleccione una fecha de fin" value="<?=$fecfin;?>">
 												</div>
 												<div  class="profile-info-name">
 													<button type="submit" class="btn btn-info btn-xs" name="accion" value="buscar">Buscar 

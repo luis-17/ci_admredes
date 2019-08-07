@@ -77,7 +77,7 @@
 	</head>
 	<body class="no-skin">
 		<!-- #section:basics/navbar.layout -->
-		<?php include ("/home/yrg2xfqpfv7s/public_html/redsalud/rsadmin/application/views/dsb/html/headBar.php");?>
+		<?php include (APPPATH."views/dsb/html/headBar.php");?>
 
 		<!-- /section:basics/navbar.layout -->
 		<div class="main-container" id="main-container">
@@ -86,7 +86,7 @@
 			</script>
 
 			<!-- #section:basics/sidebar -->
-			<?php include ("/home/yrg2xfqpfv7s/public_html/redsalud/rsadmin/application/views/dsb/html/sideBar.php");?>
+			<?php include (APPPATH."views/dsb/html/sideBar.php");?>
 			<!-- end nav. -->
 
 

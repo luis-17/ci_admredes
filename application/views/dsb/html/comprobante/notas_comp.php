@@ -287,7 +287,7 @@
 																	    	<input type="text" class="form-control" name="nomClienteManual" id="nomClienteManual" value="">
 																		</div>
 
-																		<div class="form-group col-md-4">
+																		<div class="form-group col-md-3">
 																			<b class="text-primary">Nombre de Plan</b>
 																			<select name="planes" id="planes" required="Seleccione una opción de la lista">
 																				<option value=0>Seleccione</option>

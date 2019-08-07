@@ -69,7 +69,6 @@
 			'cod_departamento_pr' => $data['departamento'],
 			'idusuario'	=> $data['idusuario']
 		);
-
 		$this->db->insert('proveedor_int',$array);
 	}
 

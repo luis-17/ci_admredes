@@ -1084,6 +1084,8 @@ class Liquidacion_cnt extends CI_Controller {
 						}
 					$texto.='</tbody>
 						</table>';
+
+
 			
 			$mail = new PHPMailer;	
 			$mail->isSMTP();

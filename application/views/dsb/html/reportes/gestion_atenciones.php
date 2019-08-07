@@ -111,25 +111,28 @@
 											<div class="">
 												<div class="profile-info-row">
 
-												<form name="form" id="form" method="post" action="<?=base_url()?>index.php/gestion_atenciones_buscar" class="form-horizontal">
-													<div class="profile-info-name"> Inicio: </div>
-													<div class="profile-info-name">
-														<input class="form-control input-mask-date" type="date" id="fechainicio" name="fechainicio" required="Seleccione una fecha de inicio" value="<?=$fecinicio;?>" >
-													</div>
-													<div class="profile-info-name"> Fin: </div>
-													<div class="profile-info-name">
-														<input class="form-control input-mask-date" type="date" id="fechafin" name="fechafin" required="Seleccione una fecha de fin" value="<?=$fecfin;?>">														
-													</div>
-													<div  class="profile-info-name">
-													<button type="submit" class="btn btn-info btn-xs" name="accion" value="buscar">Buscar 
-														<i class="ace-icon glyphicon glyphicon-search bigger-110 icon-only"></i>
-													</button>
-													</div>
-													<div  class="profile-info-name">
-													<button class="btn btn-info btn-xs" type="submit" name="accion" value="exportar">Exportar
-														<i class="ace-icon fa fa-download bigger-110 icon-only"></i>
-													</button>
-													</div>
+													<form name="form" id="form" method="post" action="<?=base_url()?>index.php/gestion_atenciones_buscar" class="form-horizontal">
+														<div class="profile-info-name"> Inicio: </div>
+														<div class="profile-info-name">
+															<input class="form-control input-mask-date" type="date" id="fechainicio" name="fechainicio" required="Seleccione una fecha de inicio" value="<?=$fecinicio;?>" >
+														</div>
+
+														<div class="profile-info-name"> Fin: </div>
+														<div class="profile-info-name">
+															<input class="form-control input-mask-date" type="date" id="fechafin" name="fechafin" required="Seleccione una fecha de fin" value="<?=$fecfin;?>">														
+														</div>
+
+														<div  class="profile-info-name">
+															<button type="submit" class="btn btn-info btn-xs" name="accion" value="buscar">Buscar 
+																<i class="ace-icon glyphicon glyphicon-search bigger-110 icon-only"></i>
+															</button>
+														</div>
+														
+														<div  class="profile-info-name">
+															<button class="btn btn-info btn-xs" type="submit" name="accion" value="exportar">Exportar
+																<i class="ace-icon fa fa-download bigger-110 icon-only"></i>
+															</button>
+														</div>
 													</form>	
 												</div>
 											</div>

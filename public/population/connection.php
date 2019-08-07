@@ -1,10 +1,10 @@
 <?php
 
     //database details
-    $dbHost     = 'rdsinstancemysql.czvvckkesgis.us-east-2.rds.amazonaws.com:3306';
-    $dbUsername = 'rsaws2019';
-    $dbPassword = 'hcarsAcces2019$';
-    $dbName     = 'new_redes_admin';
+    $dbHost     = '50.62.209.11:3306';
+    $dbUsername = 'dev_user_rs';
+    $dbPassword = 'redsaludRS@2018';
+    $dbName     = 'db_devrs';
     
     //create connection and select DB
     $db = new mysqli($dbHost, $dbUsername, $dbPassword, $dbName);

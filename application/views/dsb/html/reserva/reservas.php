@@ -220,44 +220,44 @@
 																<td><span class="<?=$class;?>"><?=$estadoa;?></span></td>
 																<td>
 																	<div class="hidden-sm hidden-xs btn-group">
-																				<div title="Editar Reserva" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
-																					&nbsp;<a class="boton fancybox" href="<?=base_url()?>index.php/reservar_cita/<?=$mr->idcertificado?>/<?=$mr->idasegurado?>/<?=$mr->idcita?>/<?=$mr->idcertificadoasegurado?>/null/0" data-fancybox-width="950" data-fancybox-height="690">
-																						<i class="ace-icon fa fa-pencil bigger-120"></i>
-																					</a>
-																				</div>
-
-																				<div title="Anular Reserva" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
-																					&nbsp;<a class="boton fancybox" href="<?=base_url()?>index.php/anular_cita/<?=$mr->idcita?>/<?=$mr->idasegurado?>/<?=$mr->idcertificado?>" data-fancybox-width="950" data-fancybox-height="690">
-																						<i class="ace-icon glyphicon glyphicon-trash bigger-120"></i>
-																					</a>
-																				</div>																					
+																		<div title="Editar Reserva" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
+																			&nbsp;<a class="boton fancybox" href="<?=base_url()?>index.php/reservar_cita/<?=$mr->idcertificado?>/<?=$mr->idasegurado?>/<?=$mr->idcita?>/<?=$mr->idcertificadoasegurado?>/null/0" data-fancybox-width="950" data-fancybox-height="690">
+																				<i class="ace-icon fa fa-pencil bigger-120"></i>
+																			</a>
 																		</div>
 
-																		<div class="hidden-md hidden-lg">
-																			<div class="inline pos-rel">
-																				<button class="btn btn-minier btn-info dropdown-toggle" data-toggle="dropdown" data-position="auto">
-																					<i class="ace-icon fa fa-cog icon-only bigger-110"></i>
-																				</button>
+																		<div title="Anular Reserva" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
+																			&nbsp;<a class="boton fancybox" href="<?=base_url()?>index.php/anular_cita/<?=$mr->idcita?>/<?=$mr->idasegurado?>/<?=$mr->idcertificado?>" data-fancybox-width="950" data-fancybox-height="690">
+																				<i class="ace-icon glyphicon glyphicon-trash bigger-120"></i>
+																			</a>
+																		</div>																					
+																	</div>
 
-																				<ul class="dropdown-menu dropdown-only-icon dropdown-yellow dropdown-menu-right dropdown-caret dropdown-close">			
-																					<li>
-																						<div title="Editar Reserva" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
-																							&nbsp;<a class="boton fancybox" href="<?=base_url()?>index.php/reservar_cita/<?=$mr->idcertificado?>/<?=$mr->idasegurado?>/<?=$mr->idcita?>/<?=$mr->idcertificadoasegurado?>/null/0" data-fancybox-width="950" data-fancybox-height="690">
-																								<i class="ace-icon fa fa-pencil bigger-120"></i>
-																							</a>
-																						</div>
-																					</li>
-																					<li>
-																						<div title="Anular Reserva" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
-																							&nbsp;<a class="boton fancybox" href="<?=base_url()?>index.php/anular_cita/<?=$mr->idcita?>/<?=$mr->idasegurado?>/<?=$mr->idcertificado?>" data-fancybox-width="950" data-fancybox-height="690">
-																								<i class="ace-icon glyphicon glyphicon-trash bigger-120"></i>
-																							</a>
-																						</div>
+																	<div class="hidden-md hidden-lg">
+																		<div class="inline pos-rel">
+																			<button class="btn btn-minier btn-info dropdown-toggle" data-toggle="dropdown" data-position="auto">
+																				<i class="ace-icon fa fa-cog icon-only bigger-110"></i>
+																			</button>
 
-																					</li>																					
-																				</ul>
-																			</div>
+																			<ul class="dropdown-menu dropdown-only-icon dropdown-yellow dropdown-menu-right dropdown-caret dropdown-close">			
+																				<li>
+																					<div title="Editar Reserva" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
+																						&nbsp;<a class="boton fancybox" href="<?=base_url()?>index.php/reservar_cita/<?=$mr->idcertificado?>/<?=$mr->idasegurado?>/<?=$mr->idcita?>/<?=$mr->idcertificadoasegurado?>/null/0" data-fancybox-width="950" data-fancybox-height="690">
+																							<i class="ace-icon fa fa-pencil bigger-120"></i>
+																						</a>
+																					</div>
+																				</li>
+																				<li>
+																					<div title="Anular Reserva" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
+																						&nbsp;<a class="boton fancybox" href="<?=base_url()?>index.php/anular_cita/<?=$mr->idcita?>/<?=$mr->idasegurado?>/<?=$mr->idcertificado?>" data-fancybox-width="950" data-fancybox-height="690">
+																							<i class="ace-icon glyphicon glyphicon-trash bigger-120"></i>
+																						</a>
+																					</div>
+
+																				</li>																					
+																			</ul>
 																		</div>
+																	</div>
 																</td>
 															</tr>
 															<?php } ?>
@@ -336,48 +336,48 @@
 																<td><span class="<?=$class;?>"><?=$estadoa;?></span></td>
 																<td>
 																	<div class="hidden-sm hidden-xs btn-group">
-																				<div title="Notificar al afiliado" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
-																					&nbsp;<a class="boton fancybox" href="<?=base_url()?>index.php/notificacion_afiliado/<?=$or->idcita;?>" data-fancybox-width="950" data-fancybox-height="690">
-																						<i class="ace-icon glyphicon glyphicon-headphones bigger-120 <?=$color?>"></i>
-																					</a>
-																				</div>	
-																				<div title="Reenviar Email Proveedor" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
-																					&nbsp;<a class="boton fancybox" href="<?=base_url()?>index.php/reenviar_proveedor/<?=$or->idcita;?>" data-fancybox-width="950" data-fancybox-height="690">
-																						<i class="ace-icon fa fa-envelope bigger-120 blue"></i>
-																					</a>
-																				</div>	
-																				<div title="Reenviar Email Afiliado" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
-																					&nbsp;<a class="boton fancybox" href="<?=base_url()?>index.php/reenviar_afiliado/<?=$or->idcita;?>" data-fancybox-width="950" data-fancybox-height="690">
-																						<i class="ace-icon fa fa-envelope-o bigger-120 blue"></i>
-																					</a>
-																				</div>		
+																		<div title="Notificar al afiliado" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
+																			&nbsp;<a class="boton fancybox" href="<?=base_url()?>index.php/notificacion_afiliado/<?=$or->idcita;?>" data-fancybox-width="950" data-fancybox-height="690">
+																				<i class="ace-icon glyphicon glyphicon-headphones bigger-120 <?=$color?>"></i>
+																			</a>
+																		</div>	
+																		<div title="Reenviar Email Proveedor" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
+																			&nbsp;<a class="boton fancybox" href="<?=base_url()?>index.php/reenviar_proveedor/<?=$or->idcita;?>" data-fancybox-width="950" data-fancybox-height="690">
+																				<i class="ace-icon fa fa-envelope bigger-120 blue"></i>
+																			</a>
 																		</div>
+																		<div title="Reenviar Email Afiliado" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
+																			&nbsp;<a class="boton fancybox" href="<?=base_url()?>index.php/reenviar_afiliado/<?=$or->idcita;?>" data-fancybox-width="950" data-fancybox-height="690">
+																				<i class="ace-icon fa fa-envelope-o bigger-120 blue"></i>
+																			</a>
+																		</div>		
+																	</div>
 
-																		<div class="hidden-md hidden-lg">
-																			<div class="inline pos-rel">
-																				<button class="btn btn-minier btn-info dropdown-toggle" data-toggle="dropdown" data-position="auto">
-																					<i class="ace-icon fa fa-cog icon-only bigger-110"></i>
-																				</button>
+																	<div class="hidden-md hidden-lg">
+																		<div class="inline pos-rel">
+																			<button class="btn btn-minier btn-info dropdown-toggle" data-toggle="dropdown" data-position="auto">
+																				<i class="ace-icon fa fa-cog icon-only bigger-110"></i>
+																			</button>
 
-																				<ul class="dropdown-menu dropdown-only-icon dropdown-yellow dropdown-menu-right dropdown-caret dropdown-close">		
+																			<ul class="dropdown-menu dropdown-only-icon dropdown-yellow dropdown-menu-right dropdown-caret dropdown-close">		
 																					
-																					<li>
-																						<div title="Reenviar Email Proveedor" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
-																							&nbsp;<a class="boton fancybox" href="<?=base_url()?>index.php/reenviar_proveedor/<?=$or->idcita;?>" data-fancybox-width="950" data-fancybox-height="690">
-																								<i class="ace-icon fa fa-envelope bigger-120"></i>
-																							</a>
-																						</div>
-																					</li>
-																					<li>	
-																						<div title="Reenviar Email Afiliado" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
-																							&nbsp;<a class="boton fancybox" href="<?=base_url()?>index.php/reenviar_afiliado/<?=$or->idcita;?>" data-fancybox-width="950" data-fancybox-height="690">
-																								<i class="ace-icon fa fa-envelope-o bigger-120"></i>
-																							</a>
-																						</div>	
-																					</li>		
-																				</ul>
-																			</div>
+																				<li>
+																					<div title="Reenviar Email Proveedor" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
+																						&nbsp;<a class="boton fancybox" href="<?=base_url()?>index.php/reenviar_proveedor/<?=$or->idcita;?>" data-fancybox-width="950" data-fancybox-height="690">
+																							<i class="ace-icon fa fa-envelope bigger-120"></i>
+																						</a>
+																					</div>
+																				</li>
+																				<li>	
+																					<div title="Reenviar Email Afiliado" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
+																						&nbsp;<a class="boton fancybox" href="<?=base_url()?>index.php/reenviar_afiliado/<?=$or->idcita;?>" data-fancybox-width="950" data-fancybox-height="690">
+																							<i class="ace-icon fa fa-envelope-o bigger-120"></i>
+																						</a>
+																					</div>	
+																				</li>		
+																			</ul>
 																		</div>
+																	</div>
 																</td>
 															</tr>
 															<?php } ?>
@@ -500,35 +500,35 @@
 													} );
 												</script>
 										</div>
-								</div>
+									</div>
 
 								<!-- PAGE CONTENT ENDS -->
-							</div><!-- /.col -->
-						</div><!-- /.row -->
-					</div><!-- /.page-content -->
-				</div>
-			</div><!-- /.main-content -->
-
-			<div class="footer">
-				<div class="footer-inner">
-					<!-- #section:basics/footer -->
-					<div class="footer-content">
-						<span class="bigger-120">
-							<span class="blue bolder">Red Salud Admin</span>
-							Application &copy; 2018
-						</span>
-
-						&nbsp; &nbsp;
+								</div><!-- /.col -->
+							</div><!-- /.row -->
+						</div><!-- /.page-content -->
 					</div>
+				</div><!-- /.main-content -->
 
-					<!-- /section:basics/footer -->
+				<div class="footer">
+					<div class="footer-inner">
+						<!-- #section:basics/footer -->
+						<div class="footer-content">
+							<span class="bigger-120">
+								<span class="blue bolder">Red Salud Admin</span>
+								Application &copy; 2018
+							</span>
+
+							&nbsp; &nbsp;
+						</div>
+
+						<!-- /section:basics/footer -->
+					</div>
 				</div>
-			</div>
 
-			<a href="#" id="btn-scroll-up" class="btn-scroll-up btn btn-sm btn-inverse">
-				<i class="ace-icon fa fa-angle-double-up icon-only bigger-110"></i>
-			</a>
-		</div><!-- /.main-container -->
+				<a href="#" id="btn-scroll-up" class="btn-scroll-up btn btn-sm btn-inverse">
+					<i class="ace-icon fa fa-angle-double-up icon-only bigger-110"></i>
+				</a>
+			</div><!-- /.main-container -->
 
 		<!-- basic scripts -->
 

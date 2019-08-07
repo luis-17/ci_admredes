@@ -1,7 +1,7 @@
 <?php 
 class CustomHeaders extends SoapHeader { 
 
-	private $wss_ns = 'https://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd'; 
+	private $wss_ns = 'http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd'; 
 
 	function __construct($user, $pass, $ns = null) { 
 		if ($ns) { 

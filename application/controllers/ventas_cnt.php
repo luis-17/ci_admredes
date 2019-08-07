@@ -410,7 +410,7 @@ class ventas_cnt extends CI_Controller {
 			//for para recorrer los planes obtenidos de la vista y hacer update del idestadocobro
 			for ($i=0; $i < count(array_unique($idPlanCheck)); $i++) { 
 				
-				$this->comprobante_pago_mdl->updateEstadoCobro($inicio, $fin, $idPlanCheck[$i]);
+				$this->comprobante_pago_mdl->updateEstadoCobroFact($inicio, $fin, $idPlanCheck[$i]);
 
 			}
 		}
@@ -1494,8 +1494,8 @@ class ventas_cnt extends CI_Controller {
 
 				dbase_close($db);
 				$mail->isSMTP();
-		        $mail->Host     = 'relay-hosting.secureserver.net';
-		        //$mail->Host = 'localhost';
+		        //$mail->Host     = 'relay-hosting.secureserver.net';
+		        $mail->Host = 'localhost';
 		        $mail->SMTPAuth = false;
 		        $mail->Username = '';
 		        $mail->Password = '';
@@ -2599,8 +2599,7 @@ class ventas_cnt extends CI_Controller {
 				file_put_contents('adjunto/comprobantes/'.$filename.'.xml', $xmlSigned);
 
 				$mail->isSMTP();
-				$mail->Host     = 'relay-hosting.secureserver.net';
-		        //$mail->Host = 'localhost';
+		        $mail->Host = 'localhost';
 		        $mail->SMTPAuth = false;
 		        $mail->Username = '';
 		        $mail->Password = '';
@@ -2901,7 +2900,7 @@ class ventas_cnt extends CI_Controller {
     	include ('./application/libraries/xmldsig/src/XMLSecurityKey.php');
     	include ('./application/libraries/xmldsig/src/Sunat/SignedXml.php');
     	include ('./application/libraries/CustomHeaders.php');
-    	include ('./application/libraries/phpqrcode/qrlib.php');
+    	//include ('./application/libraries/phpqrcode/qrlib.php');
 
 		$numLet = new NumeroALetras();
 
@@ -3028,10 +3027,11 @@ $datos.='</SummaryDocuments>';
 				if (!file_exists($carpetaCdr)) {
 				    mkdir($carpetaCdr, 0777, true);
 				}
-				
+
 				if (!file_exists($carpetaBoleta)) {
 				    mkdir($carpetaBoleta, 0777, true);
 				}
+
 				$doc = new DOMDocument();
 				$doc->loadxml($datos);
 				$doc->save('adjunto/xml/boletas/'.$fileBoleta.'/'.$filename.'.xml');
@@ -3042,7 +3042,7 @@ $datos.='</SummaryDocuments>';
 				$xmlSigned = $signer->signFromFile($xmlPath);
 				file_put_contents($filename.'.xml', $xmlSigned);
 				//echo $xmlSigned;
-			    
+
 			    $this->load->library('zip');
 
 			    $this->zip->add_data($filename.'.xml', $xmlSigned);
@@ -3052,14 +3052,41 @@ $datos.='</SummaryDocuments>';
 				unlink($filename.".xml");
 				unlink($carpetaBoleta.'/'.$filename.".xml");
 
+				$zipXml = $filename.'.zip'; 
+
 				$service = 'adjunto/wsdl/billService.wsdl'; 
-				//$service = 'https://e-beta.sunat.gob.pe/ol-ti-itcpfegem-beta/billService?wsdl';
-				//$service = ' https://e-factura.sunat.gob.pe/ol-ti-itcpfegem/billService?wsdl';
+
+				$WSHeader = '<wsse:Security xmlns:wsse="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd">
+								<wsse:UsernameToken>
+									<wsse:Username>20600258894AESPINOZ</wsse:Username>
+									<wsse:Password>Conta1234</wsse:Password>
+								</wsse:UsernameToken>
+							</wsse:Security>';
+
+				$headers = new SoapHeader('http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd', 'Security', new SoapVar($WSHeader, XSD_ANYXML));
+				$client = new SoapClient($service, array(
+					'cache_wsdl' => WSDL_CACHE_NONE,
+					'trace' => TRUE,
+					//'soap_version' => SOAP_1_2
+				));
+
+				$params = array(
+					'fileName' => $zipXml, 
+					'contentFile' => file_get_contents('adjunto/xml/boletas/'.$fileBoleta.'/'.$zipXml) 
+				);
 				
+				$client->__soapCall('sendSummary', array("parameters"=>$params), null, $headers);
+
+				$status = $client->__getLastResponse();
+
+
+				//$service = 'adjunto/wsdl/billService.wsdl'; 
+				/*$service = 'https://e-beta.sunat.gob.pe/ol-ti-itcpfegem-beta/billService?wsdl';
+
 		    	//$headers = new CustomHeaders('20600258894MODDATOS', 'MODDATOS');
-		    	//$headers = new CustomHeaders('20600258894DCACEDA2', 'DCACE716186');
-		    	$headers = new CustomHeaders('20600258894ESPINOZA', 'Conta123');
-			    	
+		    	$headers = new CustomHeaders('20600258894DCACEDA2', 'DCACE716186'); 
+		    	$headers = new CustomHeaders('20600258894AESPINOZ', 'Conta1234'); 
+
 		    	$client = new SoapClient($service, array(
 		    		'cache_wsdl' => WSDL_CACHE_NONE,
 		    		'trace' => TRUE,
@@ -3068,15 +3095,15 @@ $datos.='</SummaryDocuments>';
 
 		    	$client->__setSoapHeaders([$headers]); 
 		    	$fcs = $client->__getFunctions();
-		    	$zipXml = $filename.'.zip'; 
+		    	$zipXml = $filename.'.zip';
 		    	$params = array( 
 		    		'fileName' => $zipXml, 
-		    		'contentFile' => file_get_contents('adjunto/xml/boletas/'.$fileBoleta.'/'.$zipXml) 
-		    	); 
+		    		'contentFile' => file_get_contents('adjunto/xml/boletas/'.$fileBoleta.'/'.$zipXml)
+		    	);
 
 		    	$client->sendSummary($params);
-		    	$status = $client->__getLastResponse();
-		    	
+		    	$status = $client->__getLastResponse();*/
+
 		    	$carpeta = 'adjunto/xml/boletas/'.$filecdr;
 				if (!file_exists($carpeta)) {
 				    mkdir($carpeta, 0777, true);
@@ -3097,7 +3124,14 @@ $datos.='</SummaryDocuments>';
 					$ticket = $r->nodeValue;
 				}
 
-				$estado = $client->getStatus(array('ticket' => $ticket));
+				$estado = array(
+					'ticket' => $ticket
+				);
+				
+				$client->__soapCall('getStatus', array("parameters"=>$estado), null, $headers);
+				//$statusDos = $client->__getLastResponse();
+
+				//$estado = $client->getStatus(array('ticket' => $ticket));
 				$estadoArray = (array)$estado;
 				$contenido = (array)$estadoArray['status'];
 				//print_r($contenido['content']);
@@ -3292,12 +3326,10 @@ $datos.='</SummaryDocuments>';
 					//unlink('adjunto/xml/facturas/'.$fileFactura.'/'.$filename.'.xml');
 
 					//$service = 'adjunto/wsdl/billService.wsdl'; 
-					//$service = 'https://e-beta.sunat.gob.pe/ol-ti-itcpfegem-beta/billService?wsdl';
-					$service = ' https://e-factura.sunat.gob.pe/ol-ti-itcpfegem/billService?wsdl';
+					$service = 'https://e-beta.sunat.gob.pe/ol-ti-itcpfegem-beta/billService?wsdl';
 					
 			    	//$headers = new CustomHeaders('20600258894MODDATOS', 'MODDATOS');
-			    	//$headers = new CustomHeaders('20600258894DCACEDA2', 'DCACE716186');
-			    	$headers = new CustomHeaders('20600258894ESPINOZA', 'Conta123');
+			    	$headers = new CustomHeaders('20600258894DCACEDA2', 'DCACE716186'); 
 
 			    	
 			    	$client = new SoapClient($service, array(

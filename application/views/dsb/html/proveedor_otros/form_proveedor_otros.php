@@ -154,7 +154,7 @@
 							<div class="col-xs-12">
 							
 								<!-- PAGE CONTENT BEGINS -->
-								<form class="form-horizontal" role="form" method="post" action="<?=base_url()?>index.php/proveedor_otros_guardar">
+								<form class="form-horizontal" role="form" method="post" action="<?=base_url()?>index.php/proveedor_otros_guardar2">
 									<input type="hidden" id="idproveedor" name="idproveedor" value="<?=$id;?>" >
 									
 									<div class="form-group">

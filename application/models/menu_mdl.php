@@ -22,7 +22,6 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 	 return $menu->result();
 	}
 
-
 	function getSubMenu($idusuario) {
 	 $this->db->select("menu.idmenu, submenu.descripcion as submenu, archivo");
 	 $this->db->from('submenu');	 
@@ -34,6 +33,5 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 	 $submenu = $this->db->get();
 	 return $submenu->result();
 	}
-
 }
 ?>

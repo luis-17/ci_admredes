@@ -46,49 +46,47 @@
 	</head>
 
 	<body style="">	
-			<!-- /section:basics/sidebar -->
-			<div class="page-content">
-						<div class="page-header">
-							<h1>
-							Anular Reserva de Atención										
-							</h1>
-						</div>
-						<?php 
-							foreach ($getcita as $c) {
-								$idsiniestro=$c->idsiniestro;
-								$num=$c->num_orden_atencion; 
-							}
-						?>
-						<div class="row">
-							<div class="col-xs-12">
-								<!-- PAGE CONTENT BEGINS -->
-								<form class="form-horizontal" role="form" method="post" action="<?=base_url()?>index.php/eliminar_cita">
-									<input type="hidden" name="idcita" id="idcita" value="<?=$cita?>">
-									<input type="hidden" id="idusuario" name="idusuario" value="<?=$idusuario;?>">
-									<input type="hidden" name="idsiniestro" id="idsiniestro" value="<?=$idsiniestro?>">	
-									<h4>¿Está seguro de anular la reserva de atención PO<?=$num;?>?</h4>
+		<!-- /section:basics/sidebar -->
+		<div class="page-content">
+			<div class="page-header">
+				<h1>
+					Anular Reserva de Atención										
+				</h1>
+			</div>
+			<?php 
+			foreach ($getcita as $c) {
+				$idsiniestro=$c->idsiniestro;
+				$num=$c->num_orden_atencion; 
+			}
+			?>
+			<div class="row">
+				<div class="col-xs-12">
+					<!-- PAGE CONTENT BEGINS -->
+					<form class="form-horizontal" role="form" method="post" action="<?=base_url()?>index.php/eliminar_cita">
+						<input type="hidden" name="idcita" id="idcita" value="<?=$cita?>">
+						<input type="hidden" id="idusuario" name="idusuario" value="<?=$idusuario;?>">
+						<input type="hidden" name="idsiniestro" id="idsiniestro" value="<?=$idsiniestro?>">	
+						<h4>¿Está seguro de anular la reserva de atención PO<?=$num;?>?</h4>
 
-									<div class="clearfix form-actions">
-										<div class="col-md-offset-3 col-md-9">
-											<button class="btn btn-info" type="submit">
-												<i class="ace-icon fa fa-check bigger-110"></i>
-												Sí
-											</button>
-											<a href="<?=  base_url()?>index.php/aseg_atenciones/<?=$aseg?>/<?=$cert?>"><button class="btn btn-info" type="button">
-												<i class="ace-icon glyphicon glyphicon-remove bigger-110"></i>
-												No
-											</button>
-											</a>
-										</div>
-									</div>
-								</form>
-							</div><!-- /.col -->
+						<div class="clearfix form-actions">
+							<div class="col-md-offset-3 col-md-9">
+								<button class="btn btn-info" type="submit">
+									<i class="ace-icon fa fa-check bigger-110"></i>
+									Sí
+								</button>
+								<a href="<?=  base_url()?>index.php/aseg_atenciones/<?=$aseg?>/<?=$cert?>">
+									<button class="btn btn-info" type="button">
+										<i class="ace-icon glyphicon glyphicon-remove bigger-110"></i>
+										No
+									</button>
+								</a>
+							</div>
 						</div>
-					</div>
-				</div><!-- /.main-content -->			
-			</div><!-- /.main-container -->
-		<!-- basic scripts -->
-
+					</form>
+				</div><!-- /.col -->
+			</div>
+		</div>
+	
 		<!--[if !IE]> -->
 		<script type="text/javascript">
 			window.jQuery || document.write("<script src='<?=  base_url()?>public/assets/js/jquery.js'>"+"<"+"/script>");

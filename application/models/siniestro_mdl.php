@@ -6,7 +6,8 @@
  $this->load->database();
  }
 	
-	function getInfoSiniestro($id){
+	function getInfoSiniestro($id)
+	{
 		$this->db->select("C.plan_id, C.cert_num, P.idproveedor, P.nombre_comercial_pr, S.idsiniestro, A.aseg_id, A.aseg_numDoc, CONCAT(COALESCE(aseg_nom1,''), ' ', COALESCE(aseg_nom2,''), ' ', COALESCE(aseg_ape1,''), ' ', COALESCE(aseg_ape2,'')) AS asegurado, S.num_orden_atencion, S.fecha_atencion, SD.dianostico_temp, T.medicamento_temp, T.cantidad_trat, T.dosis_trat, T.tipo_tratamiento, SA.analisis_str, SA.si_cubre");
 		$this->db->from("siniestro S");
 		$this->db->join("certificado C","C.cert_id=S.idcertificado");
@@ -21,7 +22,8 @@
 	return $infoSiniestro->result();
 	}
 
-	function getTriaje($id){
+	function getTriaje($id)
+	{
 		$this->db->select("T.idtriaje, S.idasegurado, S.idsiniestro, S.idespecialidad, motivo_consulta, presion_arterial_mm, frec_cardiaca, frec_respiratoria, peso, talla, estado_cabeza, piel_faneras, cv_ruido_cardiaco, tp_murmullo_vesicular, estado_abdomen, ruido_hidroaereo, estado_neurologico, estado_osteomuscular, gu_puno_percusion_lumbar, gu_puntos_reno_uretelares");
 		$this->db->from("triaje T");
 		$this->db->join("siniestro S","S.idsiniestro=T.idsiniestro");		
@@ -31,8 +33,8 @@
 	 return $triaje->row_array();	
 	}
 
-
-	function getPlan($id){
+	function getPlan($id)
+	{
 		$this->db->select("C.plan_id");
 		$this->db->from("siniestro S");
 		$this->db->join("certificado C","C.cert_id=S.idcertificado");		
@@ -41,8 +43,8 @@
 		return $plan->row_array();	
 	}
 
-
-	function getDiagnostico($id){
+	function getDiagnostico($id)
+	{
 		$this->db->select("idsiniestrodiagnostico, idsiniestro, tipo_diagnostico, es_principal, dianostico_temp");
 		$this->db->from("siniestro_diagnostico");
 		$this->db->where("idsiniestro = $id");
@@ -51,7 +53,8 @@
 	 return $diagnostico->result();
 	}
 
-	function getSiniestroDiagnostico($idsiniestrodiagnostico){
+	function getSiniestroDiagnostico($idsiniestrodiagnostico)
+	{
 		$this->db->select("idsiniestrodiagnostico, idsiniestro, tipo_diagnostico, es_principal, dianostico_temp");
 		$this->db->from("siniestro_diagnostico");
 		$this->db->where("idsiniestrodiagnostico = $idsiniestrodiagnostico");
@@ -60,8 +63,8 @@
 	 return $diagnostico->row_array();
 	}
 
-
-	function getMedicamento($id){
+	function getMedicamento($id)
+	{
 		$this->db->select("idtratamiento, idsiniestrodiagnostico, cantidad_trat, dosis_trat, medicamento_temp, tipo_tratamiento");
 		$this->db->from("tratamiento");
 		$this->db->where("idsiniestrodiagnostico in (select idsiniestrodiagnostico from siniestro_diagnostico where idsiniestro =  $id)");
@@ -71,7 +74,8 @@
 	}
 
 
-	function getTratamiento($idtratamiento){
+	function getTratamiento($idtratamiento)
+	{
 		$this->db->select("idtratamiento, idsiniestrodiagnostico, idmedicamento, cantidad_trat, dosis_trat, medicamento_temp, tipo_tratamiento");
 		$this->db->from("tratamiento");
 		$this->db->where("idtratamiento =  $idtratamiento");
@@ -81,18 +85,18 @@
 	}
 
 
-	function getLaboratorio($id){
+	function getLaboratorio($id)
+	{
 		$this->db->select("idsiniestroanalisis, idsiniestro, idproducto, analisis_str, si_cubre");
 		$this->db->from("siniestro_analisis");
 		$this->db->where("idsiniestro=$id");
 
 	$laboratorio = $this->db->get();
-	 return $laboratorio->result();	
-
+	 return $laboratorio->result();
 	}
 
-
-	function getEspecialidad() {
+	function getEspecialidad()
+	{
         $data = array();
         $query = $this->db->get('especialidad');
         if ($query->num_rows() > 0) {
@@ -106,60 +110,50 @@
 
     function getHistoria($idasegurado)
     {       
-        $query = $this->db->query('select idhistoria from historia where idasegurado ='.$idasegurado.' order by idhistoria asc limit 1');			
-        
+        $query = $this->db->query('select idhistoria from historia where idasegurado ='.$idasegurado.' order by idhistoria asc limit 1');		        
         return $query->row_array();        
     }
-
 
     function detalle_plan($id)
     {       
         /*$query = $this->db->query('select idhistoria from historia where idasegurado ='.$idasegurado.' order by idhistoria asc limit 1');*/
-
         $query = $this->db->query("select P.nombre_plan, PD.idvariableplan, VP.nombre_var, PD.valor_detalle, PD.texto_web from plan_detalle PD
         inner join plan P on P.idplan = PD.idplan
         inner join variable_plan VP on VP.idvariableplan = PD.idvariableplan
         inner join certificado C on C.plan_id = P.idplan
         inner join siniestro S on S.idcertificado = C.cert_id
-        where S.idsiniestro =".$id." and PD.valor_detalle is not null");			
-        
+        where S.idsiniestro =".$id." and PD.valor_detalle is not null");	       
         return $query->row_array();        
     }
 
-
     function getProducto($idespecialidad)
     {       
-        $query = $this->db->query('select idproducto from producto where idespecialidad='.$idespecialidad);			
-        
+        $query = $this->db->query('select idproducto from producto where idespecialidad='.$idespecialidad);		        
         return $query->row_array();        
     }
 
     function getIdAseguradoOnSiniestro($idsiniestro)
     {       
-        $query = $this->db->query('select idasegurado from siniestro where idsiniestro='.$idsiniestro);			
-        
+        $query = $this->db->query('select idasegurado from siniestro where idsiniestro='.$idsiniestro);	        
         return $query->row_array();        
     }
 
-
-    function getMediforDiag($resultado){
-    	
+    function getMediforDiag($resultado)
+    {    	
 		$this->db->select("M.idmedicamento, M.nombre_med, M.presentacion_med, M.estado_med, DM.idmedicamento, DM.iddiagnostico, D.iddiagnostico, D.codigo_cie, D.descripcion_cie");
 		$this->db->from("medicamento M");
 		$this->db->join("diagnostico_medicamento DM","DM.idmedicamento=M.idmedicamento");
 		$this->db->join("diagnostico D","D.iddiagnostico=DM.iddiagnostico");
 		$this->db->where("codigo_cie", $resultado);
-
 	$medicamento = $this->db->get();
 	 return $medicamento->result_array();	
 	}
 
-
-	function getNumOA(){
+	function getNumOA()
+	{
     $query = $this->db->query('SELECT * FROM siniestro ORDER BY num_orden_atencion DESC LIMIT 1');
         return $query->row_array();
 	}
-
 
 	function guardaSiniestro($data) {
 	 //$factual=date("Y-m-d H:i:s");
@@ -179,17 +173,14 @@
 	 $this->db->insert('siniestro');
 	 }
 
-
 	 function guardaLiquidacion($data) {
 	 //$factual=date("Y-m-d H:i:s");
-
 	 	$idsiniestro = $data['idsiniestro'];
 	 	$this->db->where('idsiniestro', $idsiniestro);
 		$q = $this->db->get('liquidacion');
 		//$this->db->reset_query();
 
 		if ($q->num_rows()>0){
-
 			$query = $this->db->query('SELECT liquidacionId FROM liquidacion where idsiniestro ='.$idsiniestro. ' LIMIT 1');
 			$row = $query->row_array();
 			$liquidacionId = $row['liquidacionId'];
@@ -197,7 +188,6 @@
 			$this->db->set('liquidacionTotal', $data['total_neto']);
 			$this->db->where('liquidacionId', $liquidacionId);
 			$this->db->update('liquidacion');
-
 
 			for($num = 1; $num<=4; $num++)
 			{ 
@@ -239,9 +229,7 @@
 	 				};
 				};
 			};
-
 		}else{
-
 			$this->db->set('liquidacionTotal', $data['total_neto']);
 			$this->db->set('idsiniestro', $idsiniestro);
 			$this->db->insert('liquidacion');
@@ -259,19 +247,14 @@
 		 			$this->db->insert('liquidacion_detalle');
 		 		};
 			};
-
-		 };
+		};
  	 }
 
-
  	 function guardaLiquidacion2($data) {
- 	 	
-
  	 	$idsiniestro = $data['idsiniestro'];
 	 	$this->db->where('idsiniestro', $idsiniestro);
 		$q = $this->db->get('liquidacion');
 		//$this->db->reset_query();
-
 
 		if ($q->num_rows()>0){
 
@@ -334,17 +317,14 @@
 		 };
  	 }
 
-
-	function guardaHistoria($idasegurado) {
+	function guardaHistoria($idasegurado){
 	 //$factual=date("Y-m-d H:i:s");
 	 $this->db->set('idasegurado', $idasegurado); 
 	 $this->db->insert('historia');
 	 }
 
-
-
-    function guardaTriaje($data) {
-		 
+    function guardaTriaje($data) 
+    {		 
 		 $this->db->set('idasegurado', $data['idasegurado']);
 		 $this->db->set('idsiniestro', $data['idsiniestro']);
 		 $this->db->set('motivo_consulta', $data['motivo_consulta']);
@@ -363,14 +343,12 @@
 		 $this->db->set('estado_neurologico', $data['estado_neurologico']);
 		 $this->db->set('estado_osteomuscular', $data['estado_osteomuscular']);
 		 $this->db->set('gu_puno_percusion_lumbar', $data['gu_puno_percusion_lumbar']);
-		 $this->db->set('gu_puntos_reno_uretelares', $data['gu_puntos_reno_uretelares']);		 
-
+		 $this->db->set('gu_puntos_reno_uretelares', $data['gu_puntos_reno_uretelares']);	
 		 $this->db->insert('triaje');
 	}
 
-
-	function updateTriaje($data) {
-		 
+	function updateTriaje($data) 
+	{		 
 		 $this->db->set('idasegurado', $data['idasegurado']);
 		 $this->db->set('idsiniestro', $data['idsiniestro']);
 		 $this->db->set('motivo_consulta', $data['motivo_consulta']);
@@ -389,8 +367,7 @@
 		 $this->db->set('estado_neurologico', $data['estado_neurologico']);
 		 $this->db->set('estado_osteomuscular', $data['estado_osteomuscular']);
 		 $this->db->set('gu_puno_percusion_lumbar', $data['gu_puno_percusion_lumbar']);
-		 $this->db->set('gu_puntos_reno_uretelares', $data['gu_puntos_reno_uretelares']);		 
-
+		 $this->db->set('gu_puntos_reno_uretelares', $data['gu_puntos_reno_uretelares']);
 		 $this->db->where('idtriaje', $data['idtriaje']);
  		 $this->db->update('triaje');
 	}
@@ -400,9 +377,6 @@
 		$this->db->where('idsiniestro', $data['idsiniestro']); 
 		$this->db->update('siniestro');
 	}
-
-
-
 
 	function search($term){ 
       //usamos after para decir que empiece a buscar por
@@ -429,14 +403,15 @@
 	 }
     } 
 
-    function updateSiniestro_diag($data) { 		
+    function updateSiniestro_diag($data)
+    { 		
 		$this->db->set('fase_atencion', $data['sin_estado']);
 		$this->db->where('idsiniestro', $data['idsiniestro']); 
 		$this->db->update('siniestro');
 	}
 
-
-	function guardaDiagnosticoSin($data) {
+	function guardaDiagnosticoSin($data)
+	{
 	 $factual=date("Y-m-d H:i:s");
 	 $this->db->set('idsiniestro', $data['idsiniestro']);
 	 $this->db->set('dianostico_temp', $data['dianostico_temp']);
@@ -445,12 +420,11 @@
 	 $this->db->set('createdat', $factual);
 	 //$this->db->set('updatedat', $factual);
 	 $this->db->insert('siniestro_diagnostico');
-
 	 //return $last_id;
 	}
 
-
-	function guardaTratamiento($data) {
+	function guardaTratamiento($data)
+	{
 	 $factual=date("Y-m-d H:i:s");
 	 $this->db->set('idmedicamento', $data['idMedi']);
 	 $this->db->set('idsiniestrodiagnostico', $data['diag_id']);
@@ -463,8 +437,8 @@
 	 $this->db->insert('tratamiento');
 	}
 
-
-	function updateTratamiento($data) { 		
+	function updateTratamiento($data)
+	{ 		
 		$this->db->set('idmedicamento', $data['idmedi']);
 		$this->db->set('cantidad_trat', $data['cant']); 
 		$this->db->set('dosis_trat', $data['dosis']);
@@ -474,14 +448,14 @@
 		$this->db->update('tratamiento');
 	}
 
-
-	function deleteTratamiento($data) { 		
+	function deleteTratamiento($data)
+	{ 		
 		$this->db->where('idtratamiento', $data['idtratamiento']);
 		$this->db->delete('tratamiento'); 
 	}
 	
-	function getVariable($id){
-
+	function getVariable($id)
+	{
 		$query = $this->db->query("select dp.idplandetalle, dp.idvariableplan, nombre_var, coalesce(pc1.valor,0) as valor1, coalesce(pc2.valor,0) as valor2, coalesce(pc3.valor,0) as valor3, coalesce(pc1.idoperador,0) as cobertura, coalesce(pc2.idoperador,0) as copago, coalesce(pc3.idoperador,0) as hasta, dp.texto_web AS detalle, COALESCE (liqdetalleid, 0) AS liqdetalleid, COALESCE (liqdetalle_aprovpago, 0) AS liqdetalle_aprovpago, COALESCE (liqdetalle_monto, 0.00) AS liqdetalle_monto,	COALESCE (liqdetalle_neto, 0.00) AS liqdetalle_neto,	COALESCE (ld.idproveedor, 0) AS idprov,	COALESCE (liqdetalle_numfact, '') AS liqdetalle_numfact, 	liquidacionTotal,	liquidacionTotal_neto,	COALESCE (l.liquidacionId, 0) AS liq_id 
 			FROM siniestro s
 			JOIN certificado c ON s.idcertificado = c.cert_id
@@ -511,7 +485,8 @@
  		return $query->result();
 	}
 
-	function save_liquidacion($data){
+	function save_liquidacion($data)
+	{
 		$array = array(
 			'idsiniestro' => $data['idsiniestro'],
 			'liquidacionTotal' => $data['liq_total'], 
@@ -522,7 +497,8 @@
 		$this->db->insert("liquidacion",$array);
 	}
 
-	function up_liquidacion($data){
+	function up_liquidacion($data)
+	{
 		$array = array(
 			'liquidacionTotal' => $data['liq_total'], 
 			'liquidacionTotal_neto' => $data['liq_neto'],
@@ -532,7 +508,8 @@
 		$this->db->update("liquidacion",$array);
 	}
 
-	function save_detalleliquidacion($data){
+	function save_detalleliquidacion($data)
+	{
 		if($data['aprov_pago']==1){
 			$idusu=$data['idusuario'];
 		}else{
@@ -552,7 +529,8 @@
 		$this->db->insert("liquidacion_detalle",$array);
 	}
 
-	function up_detalleliquidacion($data){
+	function up_detalleliquidacion($data)
+	{
 		if($data['aprov_pago']==1){
 			$idusu=$data['idusuario'];
 		}else{
@@ -571,7 +549,8 @@
 		return $this->db->update('liquidacion_detalle', $array);
 	}
 
-	function num_orden($id){
+	function num_orden($id)
+	{
 		$this->db->select("num_orden_atencion");
 		$this->db->from("siniestro");
 		$this->db->where("idsiniestro",$id);
@@ -579,7 +558,8 @@
 		return $query->result();
 	}
 
-	function getVariables_sin($id){
+	function getVariables_sin($id)
+	{
 		$this->db->distinct("vp.idvariableplan");
 		$this->db->select("pd.idplandetalle, vp.idvariableplan, vp.nombre_var, coalesce(concat(vez_actual,'/'),'') as vez_actual2, vez_actual, coalesce(total_vez,'Ilimitados') as total_vez, c.cert_id, s.idsiniestro, pe.idperiodo");
 		$this->db->from("siniestro s");
@@ -595,7 +575,8 @@
 		return $query->result();
 	}
 
-	function getProductos_analisis($id, $ids){
+	function getProductos_analisis($id, $ids)
+	{
 		$this->db->distinct("pr.idproducto");
 		$this->db->select("pr.idproducto, descripcion_prod, case when sa.idproducto is null then '' else 'checked' end as checked");
 		$this->db->from("producto pr");
@@ -608,7 +589,8 @@
 		return $query->result();
 	}
 
-	function getAnalisisNo($ids,$idv){
+	function getAnalisisNo($ids,$idv)
+	{
 		$this->db->select("coalesce(idsiniestroanalisis,0) as idsiniestroanalisis, analisis_str");
 		$this->db->from("siniestro_analisis sa");
 		$this->db->join("plan_detalle pd","sa.idplandetalle=pd.idplandetalle and sa.idplandetalle=$idv","left");
@@ -619,7 +601,8 @@
 		return $query->result();
 	}
 
-	function validarProd($data){
+	function validarProd($data)
+	{
 		$this->db->select("*");
 		$this->db->from("siniestro_analisis");
 		$this->db->where("idsiniestro", $data['sin_id']);
@@ -629,7 +612,8 @@
 		return $query->result();
 	}
 
-	function insertar_analisis($data){
+	function insertar_analisis($data)
+	{
 		$array = array(
 			'idsiniestro' => $data['sin_id'],
 			'idproducto' => $data['idpr'],
@@ -641,7 +625,8 @@
 		$this->db->insert("siniestro_analisis",$array);
 	}
 
-	function activar_analisis($data){
+	function activar_analisis($data)
+	{
 		$array = array(
 			'estado_sian' => 3
 		);
@@ -651,7 +636,8 @@
 		$this->db->update("siniestro_analisis",$array);
 	}
 
-	function eliminar_analisis($data){
+	function eliminar_analisis($data)
+	{
 		$array = array('estado_sian' => 0 );
 		$this->db->where("idsiniestro",$data['sin_id']);
 		$this->db->where("estado_sian<>3");
@@ -659,7 +645,8 @@
 		$this->db->update("siniestro_analisis",$array);
 	}
 
-	function actualizar_analisis($data){
+	function actualizar_analisis($data)
+	{
 		$array = array('estado_sian' => 2 );
 		$this->db->where("idsiniestro",$data['sin_id']);
 		$this->db->where("estado_sian",3);
@@ -667,7 +654,8 @@
 		$this->db->update("siniestro_analisis",$array);
 	}
 
-	function insertar_NC($data){
+	function insertar_NC($data)
+	{
 		$array = array
 		(
 			'idsiniestro' => $data['sin_id'],
@@ -679,7 +667,8 @@
 		$this->db->insert("siniestro_analisis",$array);
 	}
 
-	function update_NC($data){
+	function update_NC($data)
+	{
 		$array = array
 		(
 			'analisis_str' => $data['servicio'],
@@ -691,7 +680,8 @@
 		$this->db->update("siniestro_analisis",$array);
 	}
 
-	function eliminar_todo($data){
+	function eliminar_todo($data)
+	{
 		$array = array('estado_sian' => 0 );
 		$this->db->where("idsiniestro",$data['sin_id']);
 		$this->db->where("idproducto is not null");
@@ -699,14 +689,16 @@
 		$this->db->update("siniestro_analisis",$array);
 	}
 
-	function eliminar_servicio($data){
+	function eliminar_servicio($data)
+	{
 		$array = array('estado_sian' => 0 );
 		$this->db->where("idsiniestroanalisis",$data['idnc']);		
 		$this->db->where("idplandetalle",$data['idplandetalle']);
 		$this->db->update("siniestro_analisis",$array);
 	}
 
-	function get_medicamentos($id){
+	function get_medicamentos($id)
+	{
 		$this->db->select("*");
 		$this->db->from("tratamiento");
 		$this->db->where("idsiniestrodiagnostico",$id);
@@ -715,12 +707,14 @@
 		return $query->result();
 	}
 
-	function eliminar_diagnostico($id){
+	function eliminar_diagnostico($id)
+	{
 		$this->db->where("idsiniestrodiagnostico",$id);
 		$this->db->delete("siniestro_diagnostico");
 	}
 
-	function getCert($data){
+	function getCert($data)
+	{
 		$this->db->select("c.cert_id, (vez_actual)+1 as vez_actual, cant, cant_tot, ca.certase_id");
 		$this->db->from("certificado c");
 		$this->db->join("siniestro s","c.cert_id=s.idcertificado");
@@ -734,12 +728,71 @@
 		return $query->result();
 	}
 
-	function up_periodo_evento($data){
+	function up_periodo_evento($data)
+	{
 		$array = array('vez_actual' => $data['vez_actual'] );
 		$this->db->where('idplandetalle',$data['idplandetalle']);
 		$this->db->where('certase_id',$data['certase_id']);
 		$this->db->update('periodo_evento',$array);
 	}
 
+	function getMesaPartes()
+	{
+		$query = $this->db->query("select idrecepcion, s.idsiniestro, razon_social_pr, numero_documento_pr, nombre_comercial_pr, date_format(fecha_recepcion,'%d/%m/%Y') as fecha_recepcion, tipo_documento, serie, numero, importe, username, s.num_orden_atencion
+									from mesa_partes mp
+									inner join siniestro s on mp.idsiniestro = s.idsiniestro
+									inner join proveedor pr on pr.idproveedor = mp.idproveedor
+									inner join usuario u on u.idusuario=mp.usuario_recepciona
+									where estado=1");
+		return $query->result();
+	}
+
+	function getSiniestro($nro_orden)
+	{
+		$query = $this->db->query("select s.idsiniestro, c.cert_id, c.cert_num, a.aseg_ape1, a.aseg_ape2, a.aseg_nom1, a.aseg_nom2, a.aseg_numDoc, p.nombre_plan, nombre_comercial_pr, date_format(fecha_atencion,'%d-%m-%Y') as fecha_atencion, nombre_comercial_cli
+									from siniestro s 
+									inner join proveedor pr on pr.idproveedor=s.idproveedor
+									inner join certificado c on s.idcertificado=c.cert_id
+									inner join asegurado a on a.aseg_id=s.idasegurado 
+									inner join plan p on p.idplan=c.plan_id 
+									inner join cliente_empresa ce on ce.idclienteempresa=p.idclienteempresa
+									where num_orden_atencion=$nro_orden and estado_siniestro=1");
+		return $query->row_array();
+	}
+
+	function getFactura($idrecepcion)
+	{
+		$query = $this->db->query("select idrecepcion, username, tipo_documento, serie, numero, importe, aseg_ape1, aseg_ape2, aseg_nom1, aseg_nom2, razon_social_pr, nombre_comercial_pr, numero_documento_pr, fecha_atencion, aseg_numDoc, nombre_plan, num_orden_atencion
+									from mesa_partes mp
+									inner join usuario u on mp.usuario_recepciona=u.idusuario
+									inner join siniestro s on s.idsiniestro=mp.idsiniestro
+									inner join certificado c on c.cert_id=s.idcertificado
+									inner join plan p on p.idplan=c.plan_id
+									inner join asegurado a on a.aseg_id=s.idasegurado
+									inner join proveedor pr on pr.idproveedor=s.idproveedor
+									where idrecepcion=$idrecepcion");
+		return $query->row_array();
+	}
+
+	function getCoberturasFactura($idsiniestro)
+	{
+		$query = $this->db->query("select pd.idplandetalle, vp.nombre_var, texto_web, pe.finVig, total_vez, vez_actual, tiempo, num_eventos, case when idsiniestrodetalle is null then 'disabled' else '' end as estado, coalesce(pc1.valor,0) as valor1, coalesce(pc2.valor,0) as valor2, coalesce(pc3.valor,0) as valor3, coalesce(pc1.idoperador,0) as cobertura, coalesce(pc2.idoperador,0) as copago, coalesce(pc3.idoperador,0) as hasta,DATE_ADD(ca.cert_iniVig, INTERVAL p.dias_carencia DAY) as cert_iniVig, DATE_ADD(ca.cert_finVig, INTERVAL p.dias_mora DAY) AS cert_finVig, pd.iniVig, pd.finVig, pd.idvariableplan, c.cert_id, a.aseg_id, ca.certase_id, cobertura
+from siniestro s 
+inner join certificado c on s.idcertificado=c.cert_id 
+inner join asegurado a on a.aseg_id=s.idasegurado
+inner join certificado_asegurado ca on ca.aseg_id=a.aseg_id and ca.cert_id=c.cert_id
+inner join plan p on p.idplan=c.plan_id 
+inner join plan_detalle pd on pd.idplan=p.idplan
+left join periodo_evento pe on pe.certase_id=ca.certase_id and pd.idplandetalle=pe.idplandetalle
+left join siniestro_detalle sd on sd.idplandetalle=pd.idplandetalle and s.idsiniestro=sd.idsiniestro
+LEFT JOIN plan_coaseguro pc1 on pc1.idplandetalle=pd.idplandetalle and pc1.idoperador=1 and pc1.estado=1
+LEFT JOIN plan_coaseguro pc2 on pc2.idplandetalle=pd.idplandetalle and pc2.idoperador=2 and pc2.estado=1
+LEFT JOIN plan_coaseguro pc3 on pc3.idplandetalle=pd.idplandetalle and pc3.idoperador=3 and pc3.estado=1
+left join (select GROUP_CONCAT(concat(' ',descripcion,' ',valor)) as cobertura, idplandetalle from plan_coaseguro pc inner join operador o on pc.idoperador=o.idoperador
+where pc.estado=1 group by idplandetalle)a on a.idplandetalle=pd.idplandetalle
+inner join variable_plan vp on vp.idvariableplan=pd.idvariableplan
+where s.idsiniestro=$idsiniestro and pd.idplandetalle in (select idplandetalle from plan_coaseguro where estado=1)");
+		return $query->result();
+	}
 }
 ?>
