@@ -46,13 +46,14 @@
 	</head>
 
 	<body class="no-skin" style="">	
-		<!-- /section:basics/sidebar -->
-		<div class="main-content">
-			<div class="main-content-inner">
-			<!-- #section:basics/content.breadcrumbs -->					
-				<!-- /section:basics/content.breadcrumbs -->
-				<div class="page-content">
-					<div class="row">
+			<!-- /section:basics/sidebar -->
+			<div class="main-content">
+				<div class="main-content-inner">
+					<!-- #section:basics/content.breadcrumbs -->
+					
+					<!-- /section:basics/content.breadcrumbs -->
+					<div class="page-content">
+						<div class="row">
 						<div class="col-xs-12">
 							<div class="modal-header no-padding">
 								<div class="table-header">
@@ -60,97 +61,99 @@
 								</div>
 							</div>
 							<div>
-								<table id="example" class="table table-striped table-bordered table-hover">
-									<thead  style="font-size: 12px;">
-										<tr>
-											<th>ID</th>
-											<th>Num. Orden</th>
-											<th>Fecha Atención</th>
-											<th>Centro Médico</th>
-											<th>Especialidad</th>
-											<th>Estado</th>
-											<th></th>
-										</tr>
-									</thead>
+							<table id="example" class="table table-striped table-bordered table-hover">
+								<thead  style="font-size: 12px;">
+									<tr>
+										<th>ID</th>
+										<th>Num. Orden</th>
+										<th>Fecha Atención</th>
+										<th>Centro Médico</th>
+										<th>Especialidad</th>
+										<th>Estado</th>
+										<th></th>
+									</tr>
+								</thead>
 
-									<tbody  style="font-size: 12px;">	
-									<?php foreach ($atenciones as $a):
-										$e1=0;
-										$e2=0;
-										if($a->estado_atencion=='P'){
-											$atencion="PO".$a->num_orden_atencion;
-											$fecha=$a->fecha_cita;
-											switch ($a->estado_cita):
-												case 0: 
-													$estadoa='Reserva Anulada';
-													$class="label label-danger label-white middle";
-													$e1=0;
-												break;
-												case 1:
-													$estadoa='Reserva Por Confirmar';
-													$e1=1;
-													$class="label label-warning label-white middle";
-												break;
-												case 2:
-													$estadoa='Reserva Confirmada';
-													$e1=2;
-													$class="label label-success label-white middle";
-												break;
-											endswitch;
-											$mostrar="S";
-										}else{
-											$atencion="OA".$a->num_orden_atencion;
-											$fecha=$a->fecha_atencion;
-											$fecha=date("d-m-Y", strtotime($fecha));
-											switch($a->estado_siniestro):
-												case 0: 
-													$estadoa='Atención Anulada';
-													$e2=0;
-													$class="label label-danger label-white middle";
-												break;
-												case 1:
-													$estadoa='Atención Abierta';
-													$e2=1;
-													$class="label label-info label-white middle";
-												break;
-												case 2:
-													$estadoa='Atención Cerrada';
-													$e2=2;
-													$class="label label-purple label-white middle";
-												break;
-											endswitch;
-											$mostrar="N";
-										}?>
-																						
-										<tr>
-											<td><?=$a->idsiniestro?></td>
-											<td><?=$atencion?></td>
-											<td><?=$fecha?></td>
-											<td><?=$a->nombre_comercial_pr;?></td>
-											<td><?=$a->nombre_esp;?></td>
-											<td><span class="<?=$class;?>"><?=$estadoa;?></span></td>
-											<td>
-												<div class="hidden-sm hidden-xs btn-group">												
-													<?php if($e1!=0&&$mostrar=='S'){ ?>
-													<div title="Editar Reserva" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
-														<a class="boton fancybox" href="<?=  base_url()?>index.php/reservar_cita/<?=$a->idcertificado?>/<?=$a->idasegurado?>/<?=$a->idcita?>/<?=$a->idcertificadoasegurado?>/null/0" data-fancybox-width="950" data-fancybox-height="690">
-															<i class="ace-icon glyphicon glyphicon-pencil bigger-120"></i>
-														</a>
-													</div>
-													<div title="Anular Reserva" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
-														<a class="boton fancybox" href="<?=  base_url()?>index.php/anular_cita/<?=$a->idcita?>/<?=$a->idasegurado?>/<?=$a->idcertificado?>" data-fancybox-width="950" data-fancybox-height="690">
-															<i class="ace-icon glyphicon glyphicon-trash bigger-120"></i>
-														</a>
-													</div>
-													<?php } ?>
+								<tbody  style="font-size: 12px;">	
+								<?php foreach ($atenciones as $a):
+									$e1=0;
+									$e2=0;
+									if($a->estado_atencion=='P'){
+										$atencion="PO".$a->num_orden_atencion;
+										$fecha=$a->fecha_cita;
+										switch ($a->estado_cita):
+											case 0: 
+												$estadoa='Reserva Anulada';
+												$class="label label-danger label-white middle";
+												$e1=0;
+											break;
+											case 1:
+												$estadoa='Reserva Por Confirmar';
+												$e1=1;
+												$class="label label-warning label-white middle";
+											break;
+											case 2:
+												$estadoa='Reserva Confirmada';
+												$e1=2;
+												$class="label label-success label-white middle";
+											break;
+										endswitch;
+										$mostrar="S";
+									}else{
+										$atencion="OA".$a->num_orden_atencion;
+										$fecha=$a->fecha_atencion;
+										$fecha=date("d-m-Y", strtotime($fecha));
+										switch($a->estado_siniestro):
+											case 0: 
+												$estadoa='Atención Anulada';
+												$e2=0;
+												$class="label label-danger label-white middle";
+											break;
+											case 1:
+												$estadoa='Atención Abierta';
+												$e2=1;
+												$class="label label-info label-white middle";
+											break;
+											case 2:
+												$estadoa='Atención Cerrada';
+												$e2=2;
+												$class="label label-purple label-white middle";
+											break;
+										endswitch;
+										$mostrar="N";
+									}?>
+																					
+									<tr>
+										<td><?=$a->idsiniestro?></td>
+										<td><?=$atencion?></td>
+										<td><?=$fecha?></td>
+										<td><?=$a->nombre_comercial_pr;?></td>
+										<td><?=$a->nombre_esp;?></td>
+										<td><span class="<?=$class;?>"><?=$estadoa;?></span></td>
+										<td>
+											<div class="hidden-sm hidden-xs btn-group">
+											
+												<?php if($e1!=0&&$mostrar=='S'){ ?>
+												<div title="Editar Reserva" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
+													<a class="boton fancybox" href="<?=  base_url()?>index.php/reservar_cita/<?=$a->idcertificado?>/<?=$a->idasegurado?>/<?=$a->idcita?>/<?=$a->idcertificadoasegurado?>/null/0" data-fancybox-width="950" data-fancybox-height="690">
+														<i class="ace-icon glyphicon glyphicon-pencil bigger-120"></i>
+													</a>
 												</div>
+												<div title="Anular Reserva" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
+													<a class="boton fancybox" href="<?=  base_url()?>index.php/anular_cita/<?=$a->idcita?>/<?=$a->idasegurado?>/<?=$a->idcertificado?>" data-fancybox-width="950" data-fancybox-height="690">
+														<i class="ace-icon glyphicon glyphicon-trash bigger-120"></i>
+													</a>
+												</div>
+												<?php } ?>
+											</div>
 
-												<div class="hidden-md hidden-lg">
-													<div class="inline pos-rel">														
-													<?php if($e1!=0&&$mostrar=='S'){ ?>
-														<button class="btn btn-minier btn-info dropdown-toggle" data-toggle="dropdown" data-position="auto">
-															<i class="ace-icon fa fa-cog icon-only bigger-110"></i>
-														</button>
+											<div class="hidden-md hidden-lg">
+												<div class="inline pos-rel">
+													
+															<?php if($e1!=0&&$mostrar=='S'){ ?>
+													<button class="btn btn-minier btn-info dropdown-toggle" data-toggle="dropdown" data-position="auto">
+														<i class="ace-icon fa fa-cog icon-only bigger-110"></i>
+													</button>
 														<ul class="dropdown-menu dropdown-only-icon dropdown-yellow dropdown-menu-right dropdown-caret dropdown-close">
 															<li>
 																<div title="Editar Reserva" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
@@ -166,15 +169,15 @@
 																	</a>
 																</div>
 															</li>
-														</ul>													
-													<?php } ?>
+															<?php } ?>
+														</ul>
 													</div>
-												</div>
-											</td>
-										</tr>
-									<?php endforeach;?>
-									</tbody>
-								</table>
+											</div>
+										</td>
+									</tr>
+								<?php endforeach;?>
+								</tbody>
+							</table>
 							</div>
 							<script>			
 								//para paginacion
@@ -184,11 +187,12 @@
 									} );
 								} );
 							</script>	
+							</div>
 						</div>
-					</div>
-				</div>
-			</div><!-- /.main-content -->			
-		</div><!-- /.main-container -->
+						</div>
+					</div><!-- /.main-content -->
+			
+				</div><!-- /.main-container -->
 
 		<!-- basic scripts -->
 

@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Invoice xmlns="urn:oasis:names:specification:ubl:schema:xsd:Invoice-2" xmlns:cac="urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2" xmlns:cbc="urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2" xmlns:ccts="urn:un:unece:uncefact:documentation:2" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:ext="urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2" xmlns:qdt="urn:oasis:names:specification:ubl:schema:xsd:QualifiedDatatypes-2" xmlns:udt="urn:un:unece:uncefact:data:specification:UnqualifiedDataTypesSchemaModule:2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <ext:UBLExtensions>
+    <ext:UBLExtension>
+      <ext:ExtensionContent>
+      <ds:Signature Id="SignIMM">
+  <ds:SignedInfo><ds:CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/>
+    <ds:SignatureMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#rsa-sha256"/>
+  <ds:Reference URI=""><ds:Transforms><ds:Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature"/></ds:Transforms><ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/><ds:DigestValue>3S2M1fX36ZXkSR5OVSRS6yKlxTjSTKfLFI7rFGju0FY=</ds:DigestValue></ds:Reference></ds:SignedInfo><ds:SignatureValue>uCgQHWn3o1gUPBgg5+CaHr4NEsooKeecfFQMDEofdx12AsJRCZO6ZNuiIoseQfuRI7llUARbKuHlM+jQ3ztROe+RqGeX4+UMCy5QZtCyEFk7gHzCd+n7CNsVSImIVNw2udz2gEiKHCHhPUsaTYlnk1rW3vvBFPecGNWZ1l2heA5+KRP9G+stpc5i4gm5mJLnSiCkC/Fs4cV7lWKDajuzwXB+mkNyNMDX2u4wpeoyQIjAk0DDt0UNEcW2QwIFQKHNfjBjAGtdlQWIZ6oPV17kH5MSE8nXUBu/ZylAKtioP6LizgckmO9CemPr7bXxcEKLaSK+DTXfFGCtDoVnREt3mg==</ds:SignatureValue>
+<ds:KeyInfo><ds:X509Data><ds:X509Certificate>MIIFFDCCA/ygAwIBAgIIUeB4Sz1IVswwDQYJKoZIhvcNAQELBQAwRjEkMCIGA1UEAwwbTGxhbWEucGUgU0hBMjU2IFN0YW5kYXJkIENBMREwDwYDVQQKDAhMTEFNQS5QRTELMAkGA1UEBhMCUEUwHhcNMTgxMTE1MjI1MTU1WhcNMTkxMTE1MjI1MTU1WjCB8DEpMCcGA1UECQwgQVYuIEpPU0UgUEFSRE8gTlJPLiA2MDEgSU5ULiA1MDIxJDAiBgkqhkiG9w0BCQEWFWRjYWNlZGFAcmVkLXNhbHVkLmNvbTEiMCAGA1UEAwwZVkFTUVVFWiBST0pBUyBNQVJUSU4gSVZBTjERMA8GA1UEBRMIMTY0MDU2MjAxFDASBgNVBAsMCzIwNjAwMjU4ODk0MTQwMgYDVQQKDCtIRUFMVEggQ0FSRSBBRE1JTklTVFJBVElPTiBSRUQgU0FMVUQgUy5BLkMuMQ0wCwYDVQQHDARMSU1BMQswCQYDVQQGEwJQRTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAOHrhnI54utPOjGWIO54YQ9M7ZzlFi0E2BFIpY1Rer4wMybJ1khSa5ug2dClUNyPlTy1GwfWlcmJ4oasA75b1O9Rd9o1joFueXADyed7kmaIfM6/UShaJnQLgzmgkNr2KnHHeWiC3Je4camHyAwV5PJMU2Sau9vJAzusvTH07hbrnmh2JbtVrdmaZ3Hdqm17YgvtdEu9m1uydfbKj4d5ebFaXeFfQ+rPuXyJ1PGnMmYQh3zKOyiMGF8bvpD4Ha3q7uHwfaUccsISIYDWSsj4pDuz+QiTA+riNCB5cnH/83dBx2cgrU4AKZKOD/XJ0pZqlsYG5xJNE72Mh8/t6AQKRa8CAwEAAaOCAVkwggFVMAwGA1UdEwEB/wQCMAAwHwYDVR0jBBgwFoAUXYhbretl+/5oouTZbz1XcqLvK5kwMAYIKwYBBQUHAQEEJDAiMCAGCCsGAQUFBzABhhRodHRwOi8vb2NzcC5sbGFtYS5wZTAgBgNVHREEGTAXgRVkY2FjZWRhQHJlZC1zYWx1ZC5jb20wRgYDVR0gBD8wPTA7Bg0rBgEEAYOXdwABAAIBMCowKAYIKwYBBQUHAgEWHGh0dHBzOi8vbGxhbWEucGUvcmVwb3NpdG9yeS8wHQYDVR0lBBYwFAYIKwYBBQUHAwIGCCsGAQUFBwMEMDoGA1UdHwQzMDEwL6AtoCuGKWh0dHA6Ly9jcmwubGxhbWEucGUvbGxhbWFwZXN0YW5kYXJkY2EuY3JsMB0GA1UdDgQWBBTIldUIlzDR8yNxRSKmV0nLSPfOJDAOBgNVHQ8BAf8EBAMCBsAwDQYJKoZIhvcNAQELBQADggEBAJQwWqeCpJKGgftnrUHmo4nPbxerWJuZuVnHYi6vZAQuUCWe7mHUYs76KnuervJ/8wyS9EmEgwWX/dY0my/xAo0Gg0lO/Cu3iF53TwpTKPqEMum54TVTBj+8ADwI9QDTGyQeGgax96h9rk5r68CIySz4wF0EJ4fso9Rm+QvxIBCWTIaJhXEtjcXw7tP0Q4ziX3cfp53d8PGCbO+4HZ4z8+EeOg9jFl2gVOWTAe08NCfeQ0hPsT+kh6Vy1BqJZ0mpj/R93fBt7+myVsLlg1vVZBgF5McWKkzHwDddSvegsi8k3K16R7omQhDI3MCfNjKnt47XMYjkpvEnRIyu+qzdvkE=</ds:X509Certificate><ds:X509Certificate>MIIDoDCCAoigAwIBAgIIPqXfSPJocNIwDQYJKoZIhvcNAQELBQAwOzEZMBcGA1UEAwwQTGxhbWEucGUgUm9vdCBDQTERMA8GA1UECgwITExBTUEuUEUxCzAJBgNVBAYTAlBFMB4XDTE4MDcxODIzMDUxOFoXDTM4MDcxMzIyNTQyMVowRjEkMCIGA1UEAwwbTGxhbWEucGUgU0hBMjU2IFN0YW5kYXJkIENBMREwDwYDVQQKDAhMTEFNQS5QRTELMAkGA1UEBhMCUEUwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQC70HwZu6wAQIYR7TMNbYm3KJxv60Ax0FpARIt+4hGOrK6LN0OBPQA1BUJqg27zrPx2PG5J1C4aqvd6QgyeQJC3hdcsThYMQbq62aPjQaVWlY5dPWNtWRhi/3YCXNyLlMs16TZfRx5N/KvgJSBrAYRzPMqRhontKmrxKzjZTl29EfyBdLu5WwGv5Z2sKmoArp0Te/Np/9+ND4mopl7wsgBWfv8TxCrWhkAxvLm2R4psRO6eJgCJYWN7AyzkRH3YR68yrfz2bg3VFPiVVydgSrEYUFwKXCuKZfx2jOCDIPjf8L11nuhDL0U0b4ko5HgQ4SSPqlWYtKMbXjI5AJEvdzjTAgMBAAGjgZwwgZkwDwYDVR0TAQH/BAUwAwEB/zAfBgNVHSMEGDAWgBSmg0TNVZeEH4gJ4a115ylaX5j3pDA2BgNVHR8ELzAtMCugKaAnhiVodHRwOi8vY3JsLmxsYW1hLnBlL2xsYW1hcGVyb290Y2EuY3JsMB0GA1UdDgQWBBRdiFut62X7/mii5NlvPVdyou8rmTAOBgNVHQ8BAf8EBAMCAYYwDQYJKoZIhvcNAQELBQADggEBAGntu+P4r1+TOjWWL0wmGS9pvQmqleKTwyXaKCeBdx6Jkg+JzvEnvetxZ3qvZ54RPUH5bAo/Hi504wungaDrFys6D49b8NYay8X7vCpY/UQU8aspU4JRF6cNLyQr4tfwF3raoRn12sOuOd342bGdmgsqxzGXzioT3m7/xX7Xo+mnPa3nP6F211pOZ/I22s2+FackqXcyHX59JxBvZ0HXZ7FWPlmOWbVq/vHTkVpaaG++KLCbr64cP3M9D98tawgjp4T6sns2yrBw8Jr4QMymF+8JBJkUZJP5cWrvJu522BhDwMJoj7LFtlq+4Anb2jy3L+KVlEvUzsxUOADQEpeb9hc=</ds:X509Certificate><ds:X509Certificate>MIIDWzCCAkOgAwIBAgIIOixEWV433QMwDQYJKoZIhvcNAQELBQAwOzEZMBcGA1UEAwwQTGxhbWEucGUgUm9vdCBDQTERMA8GA1UECgwITExBTUEuUEUxCzAJBgNVBAYTAlBFMB4XDTE4MDcxODIyNTQyMVoXDTM4MDcxMzIyNTQyMVowOzEZMBcGA1UEAwwQTGxhbWEucGUgUm9vdCBDQTERMA8GA1UECgwITExBTUEuUEUxCzAJBgNVBAYTAlBFMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAsUhv+jmfYMop5RUOZUZYaDwJtREVNMrpFu8Wu1ybT94LFGO8h11bwnOy92R+ARPSm/JF8jzBu/M7/JKQqe1dUEOaleWvNRMko2CTvAdkkmWdaAQloR+D5N8DgoAz/XStGwOUInuKCj3NDfdmN81j88hicK1/jsf0Cm6e8eIBdtpkwwwJPuQQMU4sFK1sAFC453etEVCoXVYjELUVdlm6ZaB0otpqYG7xiKRL2iaxGOxX7U7jUoYMKQMKfD5foiNyJojNq3wFpkZiifvqf6oYxw41w8OJ0tPvEDVCJKn0bouOF2fctVsrvB6uiURvIuiVJpHOwggcjQA32lo+tGuYpwIDAQABo2MwYTAPBgNVHRMBAf8EBTADAQH/MB8GA1UdIwQYMBaAFKaDRM1Vl4QfiAnhrXXnKVpfmPekMB0GA1UdDgQWBBSmg0TNVZeEH4gJ4a115ylaX5j3pDAOBgNVHQ8BAf8EBAMCAYYwDQYJKoZIhvcNAQELBQADggEBAHAm1Fne6tOL/uLyfmT/g3D1rnp9iT0mFPTAy/FC/zYLCFacpeZYgxnH5zFkJXRSCmFAf05M2tbUulIGTZCs+z5La0VdYnwAp7DovKuKU81rUHp5QXmFc4W6rMqZXtLg3kzfi2y9KfTeiZjE/MiDWPP65XlF7xhC3vEOzh3yP8kRkSb4SUbRReV+ZBb2un4eM3exFYc+RckIjA9PyMBK75XPi0VeJm4qWoYYuQr/4cro76AyyIJTp9IsUWP53Gzqbl4ZdBuFPJoF6FkTs1Wbg39IEDBiKtkn6pUtCq6bIvuygYsPCQoDkeFRKYcyUCuvoA/3akhr3u8l7aTqTn8A6G0=</ds:X509Certificate></ds:X509Data></ds:KeyInfo></ds:Signature></ext:ExtensionContent>
+    </ext:UBLExtension>
+  </ext:UBLExtensions>
+  <cbc:UBLVersionID>2.1</cbc:UBLVersionID>
+  <cbc:CustomizationID>2.0</cbc:CustomizationID>
+  <cbc:ProfileID schemeName="SUNAT:Identificador de Tipo de Operación" schemeAgencyName="PE:SUNAT" schemeURI="urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo17">0101</cbc:ProfileID>
+  <cbc:ID>F004-00000001</cbc:ID>
+  <cbc:IssueDate>2019-07-26</cbc:IssueDate>
+  <cbc:InvoiceTypeCode listID="0101" listAgencyName="PE:SUNAT" listName="SUNAT:Identificador de Tipo de Documento" listURI="urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo01">01</cbc:InvoiceTypeCode>
+  <cbc:DocumentCurrencyCode listID="ISO 4217 Alpha" listName="Currency" listAgencyName="United Nations Economic Commission for Europe">PEN</cbc:DocumentCurrencyCode>
+  <cbc:LineCountNumeric>1</cbc:LineCountNumeric>
+  <cac:Signature>
+    <cbc:ID>SignIMM</cbc:ID>
+    <cac:SignatoryParty>
+      <cac:PartyIdentification>
+        <cbc:ID>20600258894</cbc:ID>
+      </cac:PartyIdentification>
+      <cac:PartyName>
+        <cbc:Name>RED SALUD</cbc:Name>
+      </cac:PartyName>
+    </cac:SignatoryParty>
+    <cac:DigitalSignatureAttachment>
+      <cac:ExternalReference>
+        <cbc:URI>#SignIMM</cbc:URI>
+      </cac:ExternalReference>
+    </cac:DigitalSignatureAttachment>
+  </cac:Signature>
+  <cac:AccountingSupplierParty>
+    <cac:Party>
+      <cac:PartyIdentification>
+        <cbc:ID schemeID="6" schemeName="SUNAT:Identificador de Documento de Identidad" schemeAgencyName="PE:SUNAT" schemeURI="urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo06">20600258894</cbc:ID>
+      </cac:PartyIdentification>
+      <cac:PartyName>
+        <cbc:Name>RED SALUD</cbc:Name>
+      </cac:PartyName>
+      <cac:PartyLegalEntity>
+        <cbc:RegistrationName>HEALTH CARE ADMINISTRATION RED SALUD S.A.C.</cbc:RegistrationName>
+        <cac:RegistrationAddress>
+			<cbc:AddressTypeCode>0000</cbc:AddressTypeCode>
+        </cac:RegistrationAddress>
+      </cac:PartyLegalEntity>
+    </cac:Party>
+  </cac:AccountingSupplierParty>
+  <cac:AccountingCustomerParty>
+    <cac:Party>
+      <cac:PartyIdentification>
+        <cbc:ID schemeID="6" schemeName="SUNAT:Identificador de Documento de Identidad" schemeAgencyName="PE:SUNAT" schemeURI="urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo06">20551764266</cbc:ID>
+      </cac:PartyIdentification>
+      <cac:PartyLegalEntity>
+        <cbc:RegistrationName>ALPHA ENERGY SERVICES S.A.C.</cbc:RegistrationName>
+      </cac:PartyLegalEntity>
+    </cac:Party>
+  </cac:AccountingCustomerParty>
+  <cac:TaxTotal>
+    <cbc:TaxAmount currencyID="PEN">846.46</cbc:TaxAmount>
+    <cac:TaxSubtotal>
+      <cbc:TaxableAmount currencyID="PEN">4702.54</cbc:TaxableAmount>
+      <cbc:TaxAmount currencyID="PEN">846.46</cbc:TaxAmount>
+      <cac:TaxCategory>
+        <cbc:ID schemeID="UN/ECE 5305" schemeName="Tax Category Identifier" schemeAgencyName="United Nations Economic Commission for Europe">S</cbc:ID>
+        <cac:TaxScheme>
+          <cbc:ID schemeID="UN/ECE 5153" schemeAgencyID="6">1000</cbc:ID>
+          <cbc:Name>IGV</cbc:Name>
+          <cbc:TaxTypeCode>VAT</cbc:TaxTypeCode>
+        </cac:TaxScheme>
+      </cac:TaxCategory>
+    </cac:TaxSubtotal>
+  </cac:TaxTotal>
+  <cac:LegalMonetaryTotal>
+    <cbc:PayableAmount currencyID="PEN">5549.00</cbc:PayableAmount>
+  </cac:LegalMonetaryTotal>
+  <cac:InvoiceLine>
+    <cbc:ID>1</cbc:ID>
+    <cbc:InvoicedQuantity unitCode="ZZ" unitCodeListID="UN/ECE rec 20" unitCodeListAgencyName="United Nations Economic Commission forEurope">1</cbc:InvoicedQuantity>
+    <cbc:LineExtensionAmount currencyID="PEN">4702.54</cbc:LineExtensionAmount>
+    <cac:PricingReference>
+      <cac:AlternativeConditionPrice>
+        <cbc:PriceAmount currencyID="PEN">5549.00</cbc:PriceAmount>
+        <cbc:PriceTypeCode listName="SUNAT:Indicador de Tipo de Precio" listAgencyName="PE:SUNAT" listURI="urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo16">01</cbc:PriceTypeCode>
+      </cac:AlternativeConditionPrice>
+    </cac:PricingReference>
+    <cac:TaxTotal>
+      <cbc:TaxAmount currencyID="PEN">846.46</cbc:TaxAmount>
+      <cac:TaxSubtotal>
+        <cbc:TaxableAmount currencyID="PEN">4702.54</cbc:TaxableAmount>
+        <cbc:TaxAmount currencyID="PEN">846.46</cbc:TaxAmount>
+        <cac:TaxCategory>
+          <cbc:ID schemeID="UN/ECE 5305" schemeName="Tax Category Identifier" schemeAgencyName="United Nations Economic Commission for Europe">S</cbc:ID>
+          <cbc:Percent>18.00</cbc:Percent>
+          <cbc:TaxExemptionReasonCode listAgencyName="PE:SUNAT" listName="SUNAT:Codigo de Tipo de Afectación del IGV" listURI="urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo07">10</cbc:TaxExemptionReasonCode>
+          <cac:TaxScheme>
+            <cbc:ID schemeID="UN/ECE 5153" schemeName="Tax Scheme Identifier" schemeAgencyName="United Nations Economic Commission for Europe">1000</cbc:ID>
+            <cbc:Name>IGV</cbc:Name>
+            <cbc:TaxTypeCode>VAT</cbc:TaxTypeCode>
+          </cac:TaxScheme>
+        </cac:TaxCategory>
+      </cac:TaxSubtotal>
+    </cac:TaxTotal>
+    <cac:Item>
+      <cbc:Description>ALPHA ENERGY SERVICES</cbc:Description>
+    </cac:Item>
+    <cac:Price>
+      <cbc:PriceAmount currencyID="PEN">4702.54</cbc:PriceAmount>
+    </cac:Price>
+  </cac:InvoiceLine>
+</Invoice>

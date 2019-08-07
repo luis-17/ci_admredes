@@ -3,8 +3,7 @@
 	extract($user);
 	date_default_timezone_set('America/Lima');
 ?>
-<html lang="en">
-	<head>
+<html lang="en"><head>
 		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 		<meta charset="utf-8">
 		<title>Tables - Ace Admin</title>
@@ -43,7 +42,7 @@
 		<script src="<?=base_url()?>public/pagination/dataTables.bootstrap.min.js"></script>
 	</head>
 
-	<body>	
+	<body style="">	
 		<!-- /section:basics/sidebar -->
 		<div class="page-content">
 			<div class="page-header">
@@ -256,5 +255,5 @@
 		<script src="<?=  base_url()?>public/docs/assets/js/language/html.js"></script>
 		<script src="<?=  base_url()?>public/docs/assets/js/language/css.js"></script>
 		<script src="<?=  base_url()?>public/docs/assets/js/language/javascript.js"></script>
-	</body>
+</body>
 </html>

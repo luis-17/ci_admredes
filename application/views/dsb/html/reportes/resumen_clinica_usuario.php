@@ -58,44 +58,50 @@
 						</div><!-- /.page-header -->
 
 						<div class="row">
-							<!-- star table -->		
-							<div class="col-xs-12">
-								<div>
-									<table id="example" class="table table-striped table-bordered table-hover">
-										<thead>
-											<tr>
-												<th>Centro Médico</th>
-												<th>Número de atenciones</th>
-												<th>Promedio Tiempo</th>
-											</tr>
-										</thead>
+									<!-- star table -->		
+									<div class="col-xs-12">
+										<div>
+										<table id="example" class="table table-striped table-bordered table-hover">
+											<thead>
+													<tr>
+														<th>Centro Médico</th>
+														<th>Número de atenciones</th>
+														<th>Promedio Tiempo</th>
+													</tr>
+												</thead>
 
-										<tbody>
-										<?php 
-											foreach ($resumen_clinica_usuario as $co):													
-										?>
-											<tr>
-												<td><?=$co->nombre_comercial_pr;?></td>
-												<td><?=$co->atenciones;?></td>
-												<td><?=$co->promedio;?></td>														
-											</tr>
-										<?php endforeach; ?>
-										</tbody>
-									</table>
-								</div>
-								<script>			
-									//para paginacion
-									$(document).ready(function() {
-										$('#example').DataTable( {
-											"pagingType": "full_numbers"
-										} );
-									} );
-								</script>	
-							</div>
-						</div><!-- /.col -->
-					</div><!-- /.row -->
-				</div><!-- /.page-content -->
+												<tbody>
+													<?php 
+													foreach ($resumen_clinica_usuario as $co):													
+													?>
+													<tr>
+														<td><?=$co->nombre_comercial_pr;?></td>
+														<td><?=$co->atenciones;?></td>
+														<td><?=$co->promedio;?></td>
+														
+													</tr>
+													<?php endforeach; ?>
+												</tbody>
+										</table>
+										</div>
+										<script>			
+													//para paginacion
+													$(document).ready(function() {
+													$('#example').DataTable( {
+													"pagingType": "full_numbers"
+													} );
+												} );
+												</script>	
+									</div>
+							</div><!-- /.col -->
+						</div><!-- /.row -->
+					</div><!-- /.page-content -->
+				</div>
 			</div><!-- /.main-content -->
+
+			
+		</div><!-- /.main-container -->
+
 		<!-- basic scripts -->
 
 		<!--[if !IE]> -->

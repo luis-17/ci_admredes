@@ -3054,9 +3054,11 @@ $datos.='</SummaryDocuments>';
 
 				$service = 'adjunto/wsdl/billService.wsdl'; 
 				//$service = 'https://e-beta.sunat.gob.pe/ol-ti-itcpfegem-beta/billService?wsdl';
+				//$service = ' https://e-factura.sunat.gob.pe/ol-ti-itcpfegem/billService?wsdl';
 				
 		    	//$headers = new CustomHeaders('20600258894MODDATOS', 'MODDATOS');
-		    	$headers = new CustomHeaders('20600258894DCACEDA2', 'DCACE716186'); 
+		    	//$headers = new CustomHeaders('20600258894DCACEDA2', 'DCACE716186');
+		    	$headers = new CustomHeaders('20600258894ESPINOZA', 'Conta123');
 			    	
 		    	$client = new SoapClient($service, array(
 		    		'cache_wsdl' => WSDL_CACHE_NONE,
@@ -3289,11 +3291,13 @@ $datos.='</SummaryDocuments>';
 					//unlink($filename.".xml");
 					//unlink('adjunto/xml/facturas/'.$fileFactura.'/'.$filename.'.xml');
 
-					$service = 'adjunto/wsdl/billService.wsdl'; 
+					//$service = 'adjunto/wsdl/billService.wsdl'; 
 					//$service = 'https://e-beta.sunat.gob.pe/ol-ti-itcpfegem-beta/billService?wsdl';
+					$service = ' https://e-factura.sunat.gob.pe/ol-ti-itcpfegem/billService?wsdl';
 					
 			    	//$headers = new CustomHeaders('20600258894MODDATOS', 'MODDATOS');
-			    	$headers = new CustomHeaders('20600258894DCACEDA2', 'DCACE716186'); 
+			    	//$headers = new CustomHeaders('20600258894DCACEDA2', 'DCACE716186');
+			    	$headers = new CustomHeaders('20600258894ESPINOZA', 'Conta123');
 
 			    	
 			    	$client = new SoapClient($service, array(

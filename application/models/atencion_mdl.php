@@ -20,7 +20,7 @@
 		$this->db->order_by("idsiniestro", "asc");
 
 	$atenciones = $this->db->get();
-	return $atenciones->result();
+	 return $atenciones->result();
 	}
 
 	function getPreOrden(){

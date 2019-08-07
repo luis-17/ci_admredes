@@ -389,8 +389,8 @@
 																		<div title="Nuevo Diagnóstico" style="float:right;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
 																				<a class="boton fancybox" href="<?=  base_url()?>index.php/add_diagnostico/<?=$idsiniestro?>" title="Nuevo Diagnóstico" data-fancybox-width="950" data-fancybox-height="490">
 																					Nuevo Diagnóstico
-																			</a>
-																		</div>
+																				</a>
+																			</div>
 																	</th>
 																</tr>
 															</thead>

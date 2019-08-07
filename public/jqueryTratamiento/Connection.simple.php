@@ -20,7 +20,11 @@ function dbConnect (){
  	$pwd = 	'doc$%&54321';*/
 
  	$conn =	null;
+<<<<<<< HEAD
  	$host = 'rdsinstancemysql.czvvckkesgis.us-east-2.rds.amazonaws.com:3306';
+=======
+ 	$host = 'rdsinstancemysql.czvvckkesgis.us-east-2.rds.amazonaws.com';
+>>>>>>> e7f32a0472a6af9a99bae7a245abd1956da8c8a3
  	$db = 	'new_redes_peru';
  	$user = 'rsaws2019';
  	$pwd = 	'hcarsAcces2019$';

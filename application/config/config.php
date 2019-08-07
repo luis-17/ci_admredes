@@ -23,8 +23,14 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 | a PHP script and you can easily do that on your own.
 |
 */
+<<<<<<< HEAD
 //$config['base_url'] = 'http://localhost/ci_admredes';
 $config['base_url'] = 'https://www.red-salud.com/rsadmin/';
+=======
+//$config['base_url'] = 'https://localhost/ci_admredes/';
+$config['base_url'] = 'https://www.red-salud.com/rsadmin/';
+//$config['base_url'] = 'http://www.suma-salud.com/rsadmin/';
+>>>>>>> e7f32a0472a6af9a99bae7a245abd1956da8c8a3
 
 
 /*

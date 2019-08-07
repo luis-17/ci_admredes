@@ -105,6 +105,10 @@
 		countRowNC --;
 	}
 </script>
+
+
+
+
 	<script type="text/javascript"> 
 	  function tabE(obj,e){ 
 	   var e=(typeof event!='undefined')?window.event:e;// IE : Moz 
@@ -137,6 +141,7 @@
         
       </div>
     </nav>
+
     <!-- Main jumbotron for a primary marketing message or call to action -->
     <div class="jumbotron">
       <div class="container">        
@@ -148,31 +153,42 @@
 					</div>
 					<input class="form-control" name="dianostico_temp" id="dianostico_temp"/><br>
 					<br><button type="submit" class="btn btn-primary btnSearch">Generar Tratamiento para Diagnóstico Principal</button>
+					
 			</div>
+
+
 			<div id="grupo4">
-				<input type="hidden" name="idsiniestro" id="idsiniestro" value="<?php echo $idsiniestro;?>">						    
+				 <input type="hidden" name="idsiniestro" id="idsiniestro" value="<?php echo $idsiniestro;?>">
+						    
 			</div>
-			<div id="grupo5">							
+
+			<div id="grupo5">
+							
 				<div class="form-group col-md-6">
 					<hr style="border-top: 1px solid #135c9a;">						        
 					<h4 style="color:#033766;">Tratamiento No Cubierto</h4>
 					<div id="messageAtention">
 						<h5>Todo tratamiento indicado como tratamiento no cubierto, deberán ser asumidas por el paciente.</h5>
 					</div>
+
+
 					<div id='itemRows2'>
 					    <table class='table'>
 					        <thead>
-						        <tr>
-							        <th style='width:15.5em; text-align:center;'>MEDICINA</th>
-							        <th style='width:13.5em; text-align:center;'>CANTIDAD</th>
-							        <th style='width:13.5em; text-align:center;'>DOSIS</th>
-						        </tr>
+					        <tr>
+						        <th style='width:15.5em; text-align:center;'>MEDICINA</th>
+						        <th style='width:13.5em; text-align:center;'>CANTIDAD</th>
+						        <th style='width:13.5em; text-align:center;'>DOSIS</th>
+					        </tr>
 					        </thead>
-						    <br>    
+						    <br>        
+								
+								
 							<tr class='fila-base'>
 							<td>
 								<input type='text' class='form-control' name='mediNC' id='mediNC' style='width:15.5em;' ><br><br>
-							</td>								
+							</td>
+								
 							<td>
 								<input type='text' class='form-control' name='cantNC' id='cantNC' style='width:8em;' ><br><br>
 								</td> 
@@ -189,6 +205,8 @@
 			</div>
 				<button class="btn btn-primary" value="Click Me!" onclick="submitForms()">Guardar y continuar</button><br><br>
 		</form>
+
+
       </div>
     </div>
 
