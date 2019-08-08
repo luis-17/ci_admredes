@@ -355,5 +355,76 @@
  		$this->db->delete('plan_usuario');
  	}
 
+ 	function getProveedorChecked($id){
+ 		$this->db->select("p.idproveedor, p.nombre_comercial_pr, case when d.idproveedor= p.idproveedor then 'checked' else '' end as checked, d.idplanproveedor");
+ 		$this->db->from("proveedor p");
+ 		$this->db->join("(SELECT idplan, idproveedor, idplanproveedor FROM plan_proveedor WHERE idplan=".$id." and estado=1) d","p.idproveedor = d.idproveedor","left");
+ 		$this->db->order_by("idproveedor");
+
+ 		$query = $this->db->get();
+ 		return $query->result();
+ 	}
+
+ 	function getPlanProveedor($id){
+ 		$this->db->select('*');
+ 		$this->db->from('plan_proveedor');
+ 		$this->db->where('idplan='.$id);
+
+	 $querys = $this->db->get();
+	 return $querys->result();
+ 	}
+
+ 	function getPlanProveedorChecked($id){
+ 		$this->db->select('pr.idproveedor, pr.razon_social_pr, pr.nombre_comercial_pr, pr.direccion_pr');
+ 		$this->db->from('plan_proveedor pp');
+ 		$this->db->join('proveedor pr','pp.idproveedor = pr.idproveedor');
+ 		$this->db->where('idplan='.$id.' and estado=1');
+
+	 $querys = $this->db->get();
+	 return $querys->result();
+ 	}
+
+ 	function select_planprov($idproveedor, $idplan){
+ 		$this->db->select("idplanproveedor");
+ 		$this->db->from("plan_proveedor");
+ 		$this->db->where("idproveedor",$idproveedor);
+ 		$this->db->where("idplan",$idplan);
+ 		$query = $this->db->get();
+ 		return $query->result();
+ 	}
+
+ 	function activar_planprov($idproveedor, $idplan){
+ 		$this->db->set('estado', 1 );
+ 		$this->db->where("idproveedor",$idproveedor);
+ 		$this->db->where("idplan",$idplan);
+ 		$this->db->update("plan_proveedor");
+ 	}
+
+ 	function insertar_planprov($idproveedor, $idplan){
+		$this->db->set("idproveedor",$idproveedor);
+		$this->db->set("idplan",$idplan);
+		$this->db->set('estado', 1);
+		$this->db->insert('plan_proveedor');
+ 	}
+
+ 	function cambiar_planprov($idproveedor, $idplan){
+ 		$this->db->set('estado', 0 );
+ 		$this->db->where("idproveedor",$idproveedor);
+ 		$this->db->where("idplan",$idplan);
+ 		$this->db->update("plan_proveedor");
+ 	}
+
+ 	function cambiar_planprov_todos(){
+ 		$this->db->set('estado', 0 );
+ 		$this->db->update("plan_proveedor");
+ 	}
+
+ 	function eliminar_planprov($idproveedor, $idplan){		
+ 		$this->db->where("idproveedor",$idproveedor);
+ 		$this->db->where("idplan",$idplan);
+ 		$this->db->where("estado",1);
+		$this->db->delete("plan_proveedor");
+ 	}
+
 }
 ?>

@@ -880,5 +880,115 @@ class plan_cnt extends CI_Controller {
 				location.href='".base_url()."index.php/addresponsable/".$id."/".$nom."';
 				</script>";
  	}
+
+ 	public function plan_proveedor($id)
+ 	{
+ 		$plan = $this->plan_mdl->getPlan($id);
+		$data['plan'] = $plan;	
+ 		$planproveedor = $this->plan_mdl->getPlanProveedor($id);
+		$data['planproveedor'] = $planproveedor;
+		$proveedores = $this->plan_mdl->getPlanProveedorChecked($id);
+		$data['proveedores'] = $proveedores;
+
+ 		$this->load->view('dsb/html/plan/plan_proveedor.php',$data);
+ 	}
+
+	public function detalle_proveedor(){
+
+		$html = null;
+		$id = $_POST['idplan'];
+		$proveedores = $this->plan_mdl->getProveedorChecked($id);
+		$data['proveedores'] = $proveedores;
+
+		if(!empty($proveedores)){
+			$html .= '<label class="col-sm-2 control-label no-padding-right" for="form-field-1"> Proveedores: </label>
+						<div class="col-sm-10">
+							<table>';
+
+			$html .= "<tr>
+					    <th><input type='checkbox' onclick='marcar(this);'></th>
+					    <th>Marcar/Desmarcar todos</th>
+					  </tr>";
+
+			$cont1=2;
+			$cont2=0;
+			foreach ($proveedores as $p) {
+
+				if($cont1==2){
+					$html.='<tr>';
+				}
+					$html.="<td><input type='checkbox' name='chk[]' value='".$p->idproveedor."' ".$p->checked."></td>
+					<td width='49%'>".$p->nombre_comercial_pr."</td>";
+
+				if($cont2==1){
+					$cont1=2;
+				}else{
+					$cont1=0;
+				}
+
+				$cont2++;
+
+				if($cont1==2){
+					$html.='</tr>';
+					$cont2=0;	
+				}	
+			}
+
+			$html.='</table></div>';
+		}
+
+		echo json_encode($html);
+	}
+
+	public function save_proveedor(){
+		$idplan = $_POST['idplan'];
+
+		if(!empty($_POST['chk'])){
+			$proveedor=$_POST['chk'];
+			$num=count($proveedor);
+
+			/*1 3 7
+			  1 7 9
+			  num=3
+			  i=0 num=3 chk=1 chk=1
+			  i=1 num=3 chk=3 chk=7
+			  i=2 num=3 chk=7 chk=9
+			  i=3 num=3*/
+
+			$this->plan_mdl->cambiar_planprov_todos();
+
+			for($i=0; $i<$num; $i++){
+
+				$prov = $proveedor[$i];
+
+				$accion = $this->plan_mdl->select_planprov($prov, $idplan);
+
+				if(empty($accion)){
+					$this->plan_mdl->insertar_planprov($prov, $idplan);
+				}else{
+					$this->plan_mdl->activar_planprov($prov, $idplan);
+				}
+				
+			}
+
+			//$this->plan_mdl->eliminar_planprov($prov, $idplan);
+			//$this->plan_mdl->cambiar_planprov($prov, $idplan);
+			echo "<script>
+			alert('Se asignaron los proveedores al plan con éxito.');
+			location.href='".base_url()."index.php/plan_proveedor/".$idplan."';
+			</script>";
+
+		} else {
+
+			$this->plan_mdl->cambiar_planprov_todos();
+
+			echo "<script>
+			alert('Se asignaron los proveedores al plan con éxito.');
+			location.href='".base_url()."index.php/plan_proveedor/".$idplan."';
+			</script>";
+		}
+
+
+	}
  	
 }

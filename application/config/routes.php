@@ -185,6 +185,10 @@ $route['cobertura_anular/(:any)/(:any)/(:any)'] = 'plan_cnt/cobertura_anular/$1/
 $route['cobertura_activar/(:any)/(:any)/(:any)'] = 'plan_cnt/cobertura_activar/$1/$2/$3';
 $route['seleccionar_cobertura/(:any)/(:any)/(:any)'] = 'plan_cnt/seleccionar_cobertura/$1/$2/$3';
 
+$route['plan_proveedor/(:any)'] = 'plan_cnt/plan_proveedor/$1';
+$route['save_proveedor'] = 'plan_cnt/save_proveedor';
+$route['plan_proveedor'] = 'plan_cnt/plan_proveedor';
+
 $route['consultar_cobros_buscar'] = 'Reportes_cnt/buscar';
 $route['consultar_detalle_cobros/(:any)/(:any)/(:any)/(:any)'] = 'Reportes_cnt/detalle_cobros/$1/$2/$3/$4';
 $route['exc_cobros/(:any)/(:any)/(:any)'] = 'Reportes_cnt/exc_cobros/$1/$2/$3';
