@@ -135,6 +135,64 @@ class Cotizador_cnt extends CI_Controller {
 		//redirect('index.php/cotizador_calcular');
 	}
 
+	public function cotizador_cobertura(){
+		//load session library
+		$this->load->library('session');
+
+		//restrict users to go to home if not logged in
+		if($this->session->userdata('user')){
+			//$this->load->view('home');
+
+			$user = $this->session->userdata('user');
+			extract($user);
+
+			$menuLista = $this->menu_mdl->getMenu($idusuario);
+			$data['menu1'] = $menuLista;
+
+			$submenuLista = $this->menu_mdl->getSubMenu($idusuario);
+			$data['menu2'] = $submenuLista;
+
+			$data['nom'] = 'Agregar Cotización';
+
+			$items = $this->cotizador_mdl->getItems();
+			$data['items'] = $items;	
+
+			/*$cotizaciones = $this->cotizador_mdl->getCotizaciones();
+			$data['cotizaciones'] = $cotizaciones;*/
+			$cotizaciones = $this->cotizador_mdl->getCotizaciones3();
+			foreach ($cotizaciones as $ct) {
+				$data['idcotizacion'] = $ct->idcotizacion;
+				$idcotizacion = $data['idcotizacion'];
+				$data['nombre_cotizacion'] = $ct->nombre_cotizacion;
+				$nombre_cotizacion = $data['nombre_cotizacion'];
+			}
+
+			$data['cobertura'] = $this->cotizador_mdl->getDetalleCobertura($idcotizacion);
+			foreach ($data['cobertura'] as $c) {
+				$data['idcotizaciondetalle'] = $c->idcotizaciondetalle;
+				$idcotizaciondetalle = $data['idcotizaciondetalle'];
+			}
+
+			$data['detallecobertura'] = $this->cotizador_mdl->getCobertura($idcotizaciondetalle);
+			foreach ($data['detallecobertura'] as $dc) {
+				$data['idcotizacioncobertura'] = $dc->idcotizaciondetalle;
+				$idcotizacioncobertura = $data['idcotizacioncobertura'];
+			}
+
+			$data['cotizaciones'] = $cotizaciones;
+
+			$data['accion'] = 'Nueva Cotización';
+			$data['iddet'] = 0;
+			$data['cadena'] = "";
+
+			$this->load->view('dsb/html/plan/cotizador_cobertura.php',$data);
+		} else {
+			redirect('/');
+		}
+	}
+
+//-------------------------------------------------------------------------------------------------
+
 	public function cotizador_calcular(){
 		//load session library
 		$this->load->library('session');
@@ -238,7 +296,7 @@ class Cotizador_cnt extends CI_Controller {
 							if (empty($dc->cobertura)) {
 								$html .= "<td><a class='boton fancybox' data-fancybox-width='800' data-fancybox-height='700' href='".base_url()."index.php/cot_coaseguro/".$dc->idcotizaciondetalle."' title='Agregar Coaseguro'><i class='ace-icon glyphicon glyphicon-plus red'></i></a></td>";
 							} else {
-								$html .= "<td><a href='".base_url()."index.php/cot_coaseguro/".$dc->idcotizaciondetalle."' title='Eliminar Coaseguro'><i class='ace-icon glyphicon glyphicon-remove blue'></i></a>".$dc->cobertura."</td>";
+								$html .= "<td><a href='".base_url()."index.php/del_coaseguro/".$dc->idcotizaciondetalle."' title='Eliminar Coaseguro'><i class='ace-icon glyphicon glyphicon-remove blue'></i></a>".$dc->cobertura."</td>";
 							}
 							$html .= "<td></td>";
 						} else {
@@ -250,9 +308,9 @@ class Cotizador_cnt extends CI_Controller {
 							$anualadic = $dc->neventosadicional*$dc->costo;
 							$html .= "<td>S/. ".$anualadic."<input type='text' class='hidden' id='costoAnualAdic' name='costoAnualAdic[]' value='".$anualadic."'></td>";
 							if (empty($dc->cobertura)) {
-							$html .= "<td><a class='boton fancybox' data-fancybox-width='800' data-fancybox-height='700' href='".base_url()."index.php/cot_coaseguro/".$dc->idcotizaciondetalle."' title='Agregar Coaseguro'><i class='ace-icon glyphicon glyphicon-plus red'></i></a></td>";
+								$html .= "<td><a class='boton fancybox' data-fancybox-width='800' data-fancybox-height='700' href='".base_url()."index.php/cot_coaseguro/".$dc->idcotizaciondetalle."' title='Agregar Coaseguro'><i class='ace-icon glyphicon glyphicon-plus red'></i></a></td>";
 							} else {
-								$html .= "<td><a href='".base_url()."index.php/cot_coaseguro/".$dc->idcotizaciondetalle."' title='Eliminar Coaseguro'><i class='ace-icon glyphicon glyphicon-remove blue'></i></a>".$dc->cobertura."</td>";
+								$html .= "<td><a href='".base_url()."index.php/del_coaseguro/".$dc->idcotizaciondetalle."' title='Eliminar Coaseguro'><i class='ace-icon glyphicon glyphicon-remove blue'></i></a>".$dc->cobertura."</td>";
 							}
 							$html .= "<td></td>";
 							$sumaanual = $sumaanual + $anual;
@@ -407,7 +465,7 @@ class Cotizador_cnt extends CI_Controller {
 							if (empty($dc->cobertura)) {
 								$html .= "<td><a class='boton fancybox'  data-fancybox-width='800' data-fancybox-height='700' href='".base_url()."index.php/cot_coaseguro/".$dc->idcotizaciondetalle."' title='Agregar Coaseguro'><i class='ace-icon glyphicon glyphicon-plus red'></i></a></td>";
 							} else {
-								$html .= "<td><a class='boton fancybox'  data-fancybox-width='800' data-fancybox-height='700' href='".base_url()."index.php/cot_coaseguro/".$dc->idcotizaciondetalle."' title='Eliminar Coaseguro'><i class='ace-icon glyphicon glyphicon-remove blue'></i></a>".$dc->cobertura."</td>";
+								$html .= "<td><a class='boton fancybox'  data-fancybox-width='800' data-fancybox-height='700' href='".base_url()."index.php/del_coaseguro/".$dc->idcotizaciondetalle."' title='Eliminar Coaseguro'><i class='ace-icon glyphicon glyphicon-remove blue'></i></a>".$dc->cobertura."</td>";
 							}
 							$html .= "<td></td>";
 						} else {
@@ -421,7 +479,7 @@ class Cotizador_cnt extends CI_Controller {
 							if (empty($dc->cobertura)) {
 								$html .= "<td><a class='boton fancybox' data-fancybox-width='800' data-fancybox-height='700' href='".base_url()."index.php/cot_coaseguro/".$dc->idcotizaciondetalle."' title='Agregar Coaseguro'><i class='ace-icon glyphicon glyphicon-plus red'></i></a></td>";
 							} else {
-								$html .= "<td><a href='".base_url()."index.php/cot_coaseguro/".$dc->idcotizaciondetalle."' title='Eliminar Coaseguro'><i class='ace-icon glyphicon glyphicon-remove blue'></i></a>".$dc->cobertura."</td>";
+								$html .= "<td><a href='".base_url()."index.php/del_coaseguro/".$dc->idcotizaciondetalle."' title='Eliminar Coaseguro'><i class='ace-icon glyphicon glyphicon-remove blue'></i></a>".$dc->cobertura."</td>";
 							}
 							$html .= "<td></td>";
 							$sumaanual = $sumaanual + $anual;
@@ -597,7 +655,7 @@ class Cotizador_cnt extends CI_Controller {
 						if (empty($dc->cobertura)) {
 							$html .= "<td><a class='boton fancybox' data-fancybox-width='800' data-fancybox-height='700' href='".base_url()."index.php/cot_coaseguro/".$dc->idcotizaciondetalle."' title='Agregar Coaseguro'><i class='ace-icon glyphicon glyphicon-plus red'></i></a></td>";
 						} else {
-							$html .= "<td><a href='".base_url()."index.php/cot_coaseguro/".$dc->idcotizaciondetalle."' title='Eliminar Coaseguro'><i class='ace-icon glyphicon glyphicon-remove blue'></i></a>".$dc->cobertura."</td>";
+							$html .= "<td><a href='".base_url()."index.php/del_coaseguro/".$dc->idcotizaciondetalle."' title='Eliminar Coaseguro'><i class='ace-icon glyphicon glyphicon-remove blue'></i></a>".$dc->cobertura."</td>";
 						}
 						$html .= "<td></td>";
 					$html .= "</tr>";
@@ -605,37 +663,37 @@ class Cotizador_cnt extends CI_Controller {
 					$sumaanualadicional = $sumaanualadicional + $anualadic;
 				}
 
-					//prima plan
-					$gastoAnualPersona = $sumaanual/12;
-					$siniestralidadSoles = $gastoAnualPersona*$siniestralidadM;
-					$gastosAdm = $siniestralidadSoles*0.25;
-					$siniGastosAdm = $siniestralidadSoles+$gastosAdm;
-					$gastosMkt = $siniGastosAdm*0.05;
-					$siniGastAdmGastMkt = $siniGastosAdm+$gastosMkt;
-					$costosAdm = $siniGastAdmGastMkt*0.05;
-					$gastos = $siniGastAdmGastMkt+$costosAdm;
-					$reserva = $gastos*0.1;
-					$gastosTotal = $gastos+$reserva;
-					$primaMinIgv = ($gastosTotal/$poblacion)*1.18;
-					$inflMedica = $primaMinIgv*0.05;
-					$prima = $primaMinIgv+$inflMedica;
-					$primaDec=number_format((float)$prima, 2, '.', ',');
+				//prima plan
+				$gastoAnualPersona = $sumaanual/12;
+				$siniestralidadSoles = $gastoAnualPersona*$siniestralidadM;
+				$gastosAdm = $siniestralidadSoles*0.25;
+				$siniGastosAdm = $siniestralidadSoles+$gastosAdm;
+				$gastosMkt = $siniGastosAdm*0.05;
+				$siniGastAdmGastMkt = $siniGastosAdm+$gastosMkt;
+				$costosAdm = $siniGastAdmGastMkt*0.05;
+				$gastos = $siniGastAdmGastMkt+$costosAdm;
+				$reserva = $gastos*0.1;
+				$gastosTotal = $gastos+$reserva;
+				$primaMinIgv = ($gastosTotal/$poblacion)*1.18;
+				$inflMedica = $primaMinIgv*0.05;
+				$prima = $primaMinIgv+$inflMedica;
+				$primaDec=number_format((float)$prima, 2, '.', ',');
 
-					//prima plan adicional
-					$gastoAnualPersonaAd = $sumaanualadicional/12;
-					$siniestralidadSolesAd = $gastoAnualPersonaAd*$siniestralidadM;
-					$gastosAdmAd = $siniestralidadSolesAd*0.25; 
-					$siniGastosAdmAd = $siniestralidadSolesAd+$gastosAdmAd;
-					$gastosMktAd = $siniGastosAdmAd*0.05;
-					$siniGastAdmGastMktAd = $siniGastosAdmAd+$gastosMktAd;
-					$costosAdmAd = $siniGastAdmGastMktAd*0.05;
-					$gastosAd = $siniGastAdmGastMktAd+$costosAdmAd;
-					$reservaAd = $gastosAd*0.1;
-					$gastosTotalAd = $gastosAd+$reservaAd;
-					$primaMinIgvAd = ($gastosTotalAd/$poblacion)*1.18;
-					$inflMedicaAd = $primaMinIgvAd*0.05;
-					$primaAd = $primaMinIgvAd+$inflMedicaAd;
-					$primaDecAd=number_format((float)$primaAd, 2, '.', ',');
+				//prima plan adicional
+				$gastoAnualPersonaAd = $sumaanualadicional/12;
+				$siniestralidadSolesAd = $gastoAnualPersonaAd*$siniestralidadM;
+				$gastosAdmAd = $siniestralidadSolesAd*0.25; 
+				$siniGastosAdmAd = $siniestralidadSolesAd+$gastosAdmAd;
+				$gastosMktAd = $siniGastosAdmAd*0.05;
+				$siniGastAdmGastMktAd = $siniGastosAdmAd+$gastosMktAd;
+				$costosAdmAd = $siniGastAdmGastMktAd*0.05;
+				$gastosAd = $siniGastAdmGastMktAd+$costosAdmAd;
+				$reservaAd = $gastosAd*0.1;
+				$gastosTotalAd = $gastosAd+$reservaAd;
+				$primaMinIgvAd = ($gastosTotalAd/$poblacion)*1.18;
+				$inflMedicaAd = $primaMinIgvAd*0.05;
+				$primaAd = $primaMinIgvAd+$inflMedicaAd;
+				$primaDecAd=number_format((float)$primaAd, 2, '.', ',');
 
 					$html .= "<tr>";
 						$html .= "<td align='right' colspan='5'><b>Total anual:</b></td>";
@@ -725,7 +783,7 @@ class Cotizador_cnt extends CI_Controller {
 						if (empty($dc->cobertura)) {
 							$html .= "<td><a class='boton fancybox' data-fancybox-width='800' data-fancybox-height='700' href='".base_url()."index.php/cot_coaseguro/".$dc->idcotizaciondetalle."' title='Agregar Coaseguro'><i class='ace-icon glyphicon glyphicon-plus red'></i></a></td>";
 						} else {
-							$html .= "<td><a href='".base_url()."index.php/cot_coaseguro/".$dc->idcotizaciondetalle."' title='Eliminar Coaseguro'><i class='ace-icon glyphicon glyphicon-remove blue'></i></a>".$dc->cobertura."</td>";
+							$html .= "<td><a href='".base_url()."index.php/del_coaseguro/".$dc->idcotizaciondetalle."' title='Eliminar Coaseguro'><i class='ace-icon glyphicon glyphicon-remove blue'></i></a>".$dc->cobertura."</td>";
 						}
 						$html .= "<td></td>";
 					$html .= "</tr>";

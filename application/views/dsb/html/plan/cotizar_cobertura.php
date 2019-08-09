@@ -117,7 +117,7 @@
 						<!-- #section:settings.box -->
 						<div class="page-header">
 							<h1>	
-							Plan: <?=str_replace("%20"," ",$nom);?>						
+							Cotización: <?=str_replace("%20"," ",$nom);?>						
 							</h1>
 						</div>
 						<div class="row">
@@ -125,8 +125,8 @@
 								<!-- PAGE CONTENT BEGINS -->
 								<form class="form-horizontal" id="form" name="form" role="form" method="post" action="<?=base_url()?>index.php/guardar_cobertura">
 									<input type="hidden" id="nom" name="nom" value="<?=$nom;?>">
-									<input type="hidden" name="idplan" id="idplan" value="<?=$id?>">
-									<input type="hidden" id="idplandetalle" name="idplandetalle" value="<?=$iddet?>" />
+									<input type="hidden" id="idcotizacion" name="idcotizacion" value="<?=$idcotizacion;?>">
+									<!--<input type="hidden" id="idcotizaciondetalle" name="idcotizaciondetalle" value="<?=$idcotizaciondetalle;?>">-->
 									<?php 
 									if($iddet==0):
 										$item=0;
@@ -274,7 +274,7 @@
 															</thead>
 															<tbody style="font-size: 12px;">
 																<?php $cont=0;
-																foreach($cobertura as $c):
+																foreach($detallecobertura as $c):
 																	if($c->visible==1):
 																		$visible='Sí';
 																		else:
@@ -296,7 +296,7 @@
 																			$num=$c->num_eventos;
 																			switch ($c->tiempo) {
 																				case '1 month':
-																					$tiempo= '<a class="boton fancybox"  data-fancybox-width="600" data-fancybox-height="400" title="Editar Evento" href="'.base_url().'index.php/eventos/'.$c->idplandetalle.'">'.$num." Menual(es) </a>";
+																					$tiempo= '<a class="boton fancybox" data-fancybox-width="600" data-fancybox-height="400" title="Editar Evento" href="'.base_url().'index.php/eventos/'.$c->idplandetalle.'">'.$num." Menual(es) </a>";
 																					break;															
 																				case '2 month':
 																					$tiempo= '<a class="boton fancybox"  data-fancybox-width="600" data-fancybox-height="400" title="Editar Evento" href="'.base_url().'index.php/eventos/'.$c->idplandetalle.'">'.$num." Bimestral(es)</a>";

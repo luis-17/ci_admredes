@@ -361,7 +361,7 @@
    						dataType: 'json',
    						data: $("#formCoti").serialize(),
    						complete:function(){
-   							window.location.href = ("<?= BASE_URL()?>index.php/cotizador_calcular")
+   							window.location.href = ("<?= BASE_URL()?>index.php/cotizador_cobertura")
    						},
    						success: function(data){
 
