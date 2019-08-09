@@ -3054,12 +3054,16 @@ $datos.='</SummaryDocuments>';
 
 				$zipXml = $filename.'.zip'; 
 
-				$service = 'adjunto/wsdl/billService.wsdl'; 
+				$service = 'adjunto/wsdl/billService.wsdl';
+				//$service = 'https://e-beta.sunat.gob.pe/ol-ti-itcpfegem-beta/billService?wsdl';
+				//usuarios
+				/*20600258894MODDATOS MODDATOS
+				  20600258894DCACEDA2 DCACE716186*/
 
 				$WSHeader = '<wsse:Security xmlns:wsse="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd">
 								<wsse:UsernameToken>
-									<wsse:Username>20600258894AESPINOZ</wsse:Username>
-									<wsse:Password>Conta1234</wsse:Password>
+									<wsse:Username>20600258894DCACEDA2</wsse:Username>
+									<wsse:Password>DCACE716186</wsse:Password>
 								</wsse:UsernameToken>
 							</wsse:Security>';
 
@@ -3078,31 +3082,6 @@ $datos.='</SummaryDocuments>';
 				$client->__soapCall('sendSummary', array("parameters"=>$params), null, $headers);
 
 				$status = $client->__getLastResponse();
-
-
-				//$service = 'adjunto/wsdl/billService.wsdl'; 
-				/*$service = 'https://e-beta.sunat.gob.pe/ol-ti-itcpfegem-beta/billService?wsdl';
-
-		    	//$headers = new CustomHeaders('20600258894MODDATOS', 'MODDATOS');
-		    	$headers = new CustomHeaders('20600258894DCACEDA2', 'DCACE716186'); 
-		    	$headers = new CustomHeaders('20600258894AESPINOZ', 'Conta1234'); 
-
-		    	$client = new SoapClient($service, array(
-		    		'cache_wsdl' => WSDL_CACHE_NONE,
-		    		'trace' => TRUE,
-		    		//'soap_version' => SOAP_1_2
-		    	));
-
-		    	$client->__setSoapHeaders([$headers]); 
-		    	$fcs = $client->__getFunctions();
-		    	$zipXml = $filename.'.zip';
-		    	$params = array( 
-		    		'fileName' => $zipXml, 
-		    		'contentFile' => file_get_contents('adjunto/xml/boletas/'.$fileBoleta.'/'.$zipXml)
-		    	);
-
-		    	$client->sendSummary($params);
-		    	$status = $client->__getLastResponse();*/
 
 		    	$carpeta = 'adjunto/xml/boletas/'.$filecdr;
 				if (!file_exists($carpeta)) {
@@ -3123,29 +3102,78 @@ $datos.='</SummaryDocuments>';
 				foreach ($respuesta as $r) {
 					$ticket = $r->nodeValue;
 				}
+					
+				
+			}
+
+			sleep(5);
+
+			foreach ($boletasAgr as $ba) {
+
+	    		$fechanombre = str_replace ("-" , "", $ba->fecha_emision);
+	    		$filename="20600258894-RC-".$fechanombre."-".$ba->nume_corre_res;
+
+				$filecdr=$ba->mesanio.'-cdrboletas'.$ba->serie;
+
+				$serviceCdr = 'adjunto/wsdl/billService.wsdl';
+
+				$WSHeaderCdr = '<wsse:Security xmlns:wsse="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd">
+								<wsse:UsernameToken>
+									<wsse:Username>20600258894DCACEDA2</wsse:Username>
+									<wsse:Password>DCACE716186</wsse:Password>
+								</wsse:UsernameToken>
+							</wsse:Security>';
+
+				$headersCdr = new SoapHeader('http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd', 'Security', new SoapVar($WSHeaderCdr, XSD_ANYXML));
+
+				$clientCdr = new SoapClient($serviceCdr, array(
+					'cache_wsdl' => WSDL_CACHE_NONE,
+					'trace' => TRUE,
+					//'soap_version' => SOAP_1_2
+				));
 
 				$estado = array(
 					'ticket' => $ticket
 				);
 				
-				$client->__soapCall('getStatus', array("parameters"=>$estado), null, $headers);
-				//$statusDos = $client->__getLastResponse();
-
-				//$estado = $client->getStatus(array('ticket' => $ticket));
-				$estadoArray = (array)$estado;
+				$prueba = $clientCdr->__soapCall('getStatus', array("parameters"=>$estado), null, $headersCdr);
+				$estadoArray = (array)$prueba;
 				$contenido = (array)$estadoArray['status'];
-				//print_r($contenido['content']);
-				$archivo = fopen('adjunto/xml/boletas/'.$filecdr.'/'.'R-'.$filename.'.zip','w+');
-				fputs($archivo,$contenido['content']);
-				fclose($archivo);
+				$statucode = $contenido['statusCode'];
 
+				print_r($statucode." ");
+
+				$statusCdr = $clientCdr->__getLastResponse();
+
+				//$comparar = (string)$statusCdr;
+
+				/*if ($comparar = '0098' || $comparar == '0') {
+					print_r($comparar."  ");
+				}*/
+
+				$this->load->library('zip');
+				$this->zip->add_data('R-'.$filename.'.xml', $statusCdr);
+				$this->zip->archive('adjunto/xml/boletas/'.$filecdr.'/'.'R-'.$filename.'.zip');
 				$archivo2 = chmod('adjunto/xml/boletas/'.$filecdr.'/'.'R-'.$filename.'.zip', 0777);
 
-				unlink('adjunto/xml/boletas/'.$filecdr.'/'.'C'.$filename.'.xml');
+					//unlink('adjunto/xml/boletas/'.$filecdr.'/'.'C'.$filename.'.xml');
 
-				$this->comprobante_pago_mdl->updateEstadoCobroEmitido($ba->fecha_emision, $ba->nume_corre_res, $ba->serie);
-				
+				//print_r($comparar);
+
+				if ($statucode = '0098' || $statucode == '0'){
+
+					//print_r($statusCdr."  ");
+					$this->comprobante_pago_mdl->updateEstadoCobroEmitido($ba->fecha_emision, $ba->nume_corre_res, $ba->serie);
+					
+				}
+
+					//Descargamos el Archivo Response
+					/*$archivoCdr = fopen('adjunto/xml/boletas/'.$filecdr.'/'.'R-'.$filename.'.xml','w+');
+					fputs($archivoCdr, $statusCdr);
+					fclose($archivoCdr);*/
 			}
+
+
 
     	} elseif (substr($numSerie, 0, 1) == 'F') {
 	    		
