@@ -190,7 +190,7 @@
  	}
 
  	function getCobros($id,$fecha,$fecha2){
- 		$this->db->select("c.cert_id, cert_num, cont_numDoc, concat(coalesce(cont_ape1,''),' ',coalesce(cont_ape2,''),' ',coalesce(cont_nom1,''),' ',coalesce(cont_nom2,''))as contratante, cant, case when vez_cobro is null then 1 else (vez_cobro)+1 end as vez_cobro, prima_monto, prima_adicional, c.cert_finVig, c.plan_id,	case when vez_cobro is null then 'Nuevo Cobro' else (case when '".$fecha."'>(select co.cob_finCobertrura from cobro co where co.cert_id=c.cert_id order by co.cob_id desc limit 1) then 'Nuevo Cobro' else (case when '".$fecha."'=(select co.cob_iniCobertura from cobro co where co.cert_id=c.cert_id order by co.cob_id desc limit 1) and '".$fecha2."'=(select co.cob_finCobertura from cobro co where co.cert_id=c.cert_id order by co.cob_id desc limit 1)then 'Actualizar Cobro' else 'No Disponible' end ) end) end as accion");
+ 		$this->db->select("c.cert_id, cert_num, cont_numDoc, concat(coalesce(cont_ape1,''),' ',coalesce(cont_ape2,''),' ',coalesce(cont_nom1,''),' ',coalesce(cont_nom2,''))as contratante, cant, case when vez_cobro is null then 1 else (vez_cobro)+1 end as vez_cobro, prima_monto, prima_adicional, c.cert_finVig, c.plan_id,	case when vez_cobro is null then 'Nuevo Cobro' else (case when '".$fecha."'>(select co.cob_finCobertura from cobro co where co.cert_id=c.cert_id order by co.cob_id desc limit 1) then 'Nuevo Cobro' else (case when '".$fecha."'=(select co.cob_iniCobertura from cobro co where co.cert_id=c.cert_id order by co.cob_id desc limit 1) and '".$fecha2."'=(select co.cob_finCobertura from cobro co where co.cert_id=c.cert_id order by co.cob_id desc limit 1)then 'Actualizar Cobro' else 'No Disponible' end ) end) end as accion");
  		$this->db->from("certificado c");
  		$this->db->join("contratante co","c.cont_id=co.cont_id");
  		$this->db->join("(select count(certase_id) AS cant, ca.cert_id FROM certificado_asegurado ca inner join certificado c on ca.cert_id=c.cert_id where plan_id=".$id." and c.cert_estado=1 and ca.cert_estado=1 and cert_num not like 'PR%' GROUP BY ca.cert_id)x","x.cert_id=c.cert_id");
@@ -223,6 +223,7 @@
  		$this->db->where("cert_id",$data['cert_id']);
  		$this->db->update("certificado",$array);
  	}
+ 	
  	function upCertAseg($data){
  		$array = array('cert_finVig' => $data['fecha_fin'] );
  		$this->db->where("cert_id",$data['cert_id']);
