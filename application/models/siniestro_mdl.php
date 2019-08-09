@@ -469,11 +469,9 @@
 			LEFT JOIN plan_coaseguro pc2 on pc2.idplandetalle=dp.idplandetalle and pc2.idoperador=2 and pc2.estado=1
 			LEFT JOIN plan_coaseguro pc3 on pc3.idplandetalle=dp.idplandetalle and pc3.idoperador=3 and pc3.estado=1
 			WHERE
-			s.idsiniestro = $id and dp.estado_pd=1
-			GROUP BY pd.idplandetalle
-
+			s.idsiniestro = $id and dp.estado_pd=1 and (pc1.valor>0 or pc2.valor or pc3.valor>0)
+			GROUP BY dp.idplandetalle
 			UNION 
-
 			SELECT 0 as idplandetalle, 1000 as idvariableplan, 'Gastos Aprobados'as nombre_var, 100 as valor1, 0 as valor2, 0 as valor3, 1 as cobertura, 0 as copago, 0 as hasta, '' AS detalle, COALESCE (liqdetalleid, 0) AS liqdetalleid,	COALESCE (liqdetalle_aprovpago, 0) AS liqdetalle_aprovpago,	COALESCE (liqdetalle_monto, 0.00) AS liqdetalle_monto,	COALESCE (liqdetalle_neto, 0.00) AS liqdetalle_neto,	COALESCE (ld.idproveedor, 0) AS idprov,	COALESCE (liqdetalle_numfact, '') AS liqdetalle_numfact,	liquidacionTotal,	liquidacionTotal_neto,	COALESCE (l.liquidacionId, 0) AS liq_id
 			FROM siniestro s
 			JOIN certificado c ON s.idcertificado = c.cert_id
@@ -481,7 +479,9 @@
 			LEFT JOIN liquidacion_detalle ld ON l.liquidacionId = ld.liquidacionId
 			WHERE
 			s.idsiniestro = $id  and (case when liqdetalleid is not null then ld.idplandetalle=0 else 1=1 end)
-			order by idvariableplan"); 
+			order by idvariableplan
+
+"); 
  		return $query->result();
 	}
 

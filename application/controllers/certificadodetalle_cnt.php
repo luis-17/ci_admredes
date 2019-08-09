@@ -257,8 +257,9 @@ class Certificadodetalle_cnt extends CI_Controller {
 			
 			$mail = new PHPMailer;
 			$mail->isSMTP();
-	        $mail->Host     = 'relay-hosting.secureserver.net';
-	       	//$mail->Host = 'localhost';
+	        //$mail->Host     = 'relay-hosting.secureserver.net';
+	        //$mail->Host     = 'smtpout.secureserver.net';
+	       	$mail->Host = 'localhost';
 	        $mail->SMTPAuth = false;
 	        $mail->SMTPSecure = false;
 	        $mail->Username = '';
@@ -337,9 +338,10 @@ class Certificadodetalle_cnt extends CI_Controller {
 					<p>Atte. '.$nombres_col.' '.$ap_paterno_col.' '.$ap_materno_col.'</p></div>';
 			}
 			$mail2 = new PHPMailer;
-			$mail->isSMTP();
-	        $mail->Host     = 'relay-hosting.secureserver.net';
-	       	//$mail2->Host = 'localhost';
+			$mail2->isSMTP();
+	        //$mail2->Host     = 'relay-hosting.secureserver.net';	        
+	        //$mail2->Host     = 'smtpout.secureserver.net';
+	       	$mail2->Host = 'localhost';
 	        $mail2->SMTPAuth = false;
 	        $mail2->SMTPSecure = false;
 	        $mail2->Username = '';
@@ -573,8 +575,8 @@ class Certificadodetalle_cnt extends CI_Controller {
 			}
 	        $mail = new PHPMailer;
 			$mail->isSMTP();
-	        $mail->Host     = 'relay-hosting.secureserver.net';
-	       	//$mail->Host = 'localhost';
+	        //$mail->Host     = 'relay-hosting.secureserver.net';
+	       	$mail->Host = 'localhost';
 	        $mail->SMTPAuth = false;
 	        $mail->SMTPSecure = false;
 	        $mail->Username = '';
@@ -669,8 +671,8 @@ class Certificadodetalle_cnt extends CI_Controller {
 
 			$mail2 = new PHPMailer;
 			$mail2->isSMTP();
-	        $mail->Host     = 'relay-hosting.secureserver.net';
-	       	//$mail2->Host = 'localhost';
+	        //$mail->Host     = 'relay-hosting.secureserver.net';
+	       	$mail2->Host = 'localhost';
 	        $mail2->SMTPAuth = false;
 	        $mail2->SMTPSecure = false;
 	        $mail2->Username = '';

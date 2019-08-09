@@ -169,7 +169,7 @@ class Siniestro_cnt extends CI_Controller {
 	        $texto = '<div style=" width: 45%">
 	        			<h4 class="blue">
 	        			<i class="ace-icon fa fa-leaf bigger-110"></i>
-								Otros Servicios
+							Otros Servicios
 						</h4>
 					</div>
 					<div class="space-8"></div>
