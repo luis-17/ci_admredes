@@ -1564,9 +1564,9 @@ class notas_cnt extends CI_Controller {
 	    		$igv = $b->total-$b->neto;
 	    		$tot=$b->total;
 	    		$nt=$b->neto;
-	    		$total = number_format((float)$tot, 2, '.', '');
-	    		$neto = number_format((float)$nt, 2, '.', '');
-	    		$igvfinal=number_format((float)$igv, 2, '.', '');
+	    		$total = number_format((float)$tot, 2, '.', ',');
+	    		$neto = number_format((float)$nt, 2, '.', ',');
+	    		$igvfinal=number_format((float)$igv, 2, '.', ',');
 	    		$totalSinDec = substr ($total, 0, -3);
 	    		$totalDec = substr ($total, -2);
 
@@ -1613,15 +1613,20 @@ class notas_cnt extends CI_Controller {
 	            $this->pdf->SetFont('Arial','B',7);
 	            $this->pdf->SetTextColor(255,255,255);
 	            $this->pdf->SetFillColor(204, 006, 005); 
-	            $this->pdf->Cell(190,10,"Motivo de Devolución",1,0,'C', true);
+	            $this->pdf->Cell(190,10,utf8_decode("Motivo de Devolución"),1,0,'C', true);
 	            $this->pdf->Ln('10');
 	            $this->pdf->SetFont('Arial', '',7);
 	            $this->pdf->SetTextColor(000,000,000);
-	            $this->pdf->MultiCell(190,10, utf8_decode($b->sustento_nota)."\n"."Documento de Referencia: ".$b->seriecorrelativoDoc,1, 'C');
+	            $this->pdf->MultiCell(190,10, utf8_decode($b->sustento_nota)."\n"."Documento de Referencia: BV".$b->seriecorrelativoDoc,1, 'C');
 	            $this->pdf->Ln('5');
 	            //--
 	            $this->pdf->SetFont('Arial', '',8);
-	            $this->pdf->Cell(100,10,"  SON ".$numLet->convertir($totalSinDec, 'Y')." ".$totalDec."/100 SOLES",0,0,'L');
+	            if ($b->numero_letras == NULL) {
+					$this->pdf->Cell(100,10,"  SON ".$numLet->convertir($totalSinDec, 'Y')." ".$totalDec."/100 SOLES",0,0,'L');
+				} else {
+					$this->pdf->Cell(100,10,"  SON ".$b->numero_letras,0,0,'L');
+				}
+	            //$this->pdf->Cell(100,10,"  SON ".$numLet->convertir($totalSinDec, 'Y')." ".$totalDec."/100 SOLES",0,0,'L');
 	            $this->pdf->Image(base_url().'/adjunto/qr/'.$b->mes."".$b->serie."".$b->correlativo.'.png',24,170,30,0);
 	            //--
 	            $this->pdf->SetFont('Arial', '',7);
@@ -1722,7 +1727,12 @@ class notas_cnt extends CI_Controller {
 	            $this->pdf->Ln('5');
 
 	            $this->pdf->SetFont('Arial', '',8);
-	            $this->pdf->Cell(100,10,"  SON ".$numLet->convertir($totalSinDec, 'Y')." ".$totalDec."/100 SOLES",0,0,'L');
+	            if ($b->numero_letras == NULL) {
+					$this->pdf->Cell(100,10,"  SON ".$numLet->convertir($totalSinDec, 'Y')." ".$totalDec."/100 SOLES",0,0,'L');
+				} else {
+					$this->pdf->Cell(100,10,"  SON ".$f->numero_letras,0,0,'L');
+				}
+	            //$this->pdf->Cell(100,10,"  SON ".$numLet->convertir($totalSinDec, 'Y')." ".$totalDec."/100 SOLES",0,0,'L');
 
 	            $this->pdf->Cell(60,10,"Operaciones gravadas",1,0,'C');
 	            $this->pdf->Cell(30,10,"S/. ".$neto." ",1,0,'R');
@@ -1905,6 +1915,12 @@ class notas_cnt extends CI_Controller {
 
 				if ($idestadocobro == 2) {
 
+					/*Cuando la boleta sea mayor a 700 agregar este campo
+					<cac:AccountingCustomerParty>
+						<cbc:CustomerAssignedAccountID>00000000</cbc:CustomerAssignedAccountID>
+						<cbc:AdditionalAccountID>1</cbc:AdditionalAccountID>
+					</cac:AccountingCustomerParty>*/
+
 					$filename="20600258894-RC-".$fechanombre."-".$nc->nume_corre_res;
 					//agregar -'.$b->nume_corre_res.' en ID en caso no funcione el envío.
 	    		$datos = '<?xml version="1.0" encoding="UTF-8"?>
@@ -1938,10 +1954,19 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 </cac:AccountingSupplierParty>';
 		$notas = $this->comprobante_pago_mdl->getDatosXmlNotasBoleta($fecinicio, $canales);
 		foreach ($notas as $n) {
-			$datos.='<sac:SummaryDocumentsLine>
+			$datos.='
+			<sac:SummaryDocumentsLine>
 	<cbc:LineID>'.$linea.'</cbc:LineID>
 	<cbc:DocumentTypeCode>07</cbc:DocumentTypeCode>
-	<cbc:ID>'.$n->serie.'-'.$n->correlativo.'</cbc:ID>
+	<cbc:ID>'.$n->serie.'-'.$n->correlativo.'</cbc:ID>';
+	if ($n->total > 700) {
+		$datos.='
+		<cac:AccountingCustomerParty>
+			<cbc:CustomerAssignedAccountID>00000000</cbc:CustomerAssignedAccountID>
+			<cbc:AdditionalAccountID>1</cbc:AdditionalAccountID>
+		</cac:AccountingCustomerParty>';
+	}
+	$datos.='
 	<cac:BillingReference>
 		<cac:InvoiceDocumentReference>
 			<cbc:ID>'.$n->serie_doc.'-'.$n->correlativo_doc.'</cbc:ID>
@@ -2022,31 +2047,36 @@ $datos.='</SummaryDocuments>';
 					unlink($filename.".xml");
 					unlink($carpetaNota.'/'.$filename.".xml");
 
+					//----------------------------------------
+
+					$zipXml = $filename.'.zip'; 
+
 					$service = 'adjunto/wsdl/billService.wsdl'; 
-					//$service = 'https://e-beta.sunat.gob.pe/ol-ti-itcpfegem-beta/billService?wsdl';
+
+					$WSHeader = '<wsse:Security xmlns:wsse="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd">
+									<wsse:UsernameToken>
+										<wsse:Username>20600258894DCACEDA2</wsse:Username>
+										<wsse:Password>DCACE716186</wsse:Password>
+									</wsse:UsernameToken>
+								</wsse:Security>';
+
+					$headers = new SoapHeader('http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd', 'Security', new SoapVar($WSHeader, XSD_ANYXML));
+					$client = new SoapClient($service, array(
+						'cache_wsdl' => WSDL_CACHE_NONE,
+						'trace' => TRUE,
+						//'soap_version' => SOAP_1_2
+					));
+
+					$params = array(
+						'fileName' => $zipXml, 
+						'contentFile' => file_get_contents($carpetaNota.'/'.$zipXml) 
+					);
 					
-			    	//$headers = new CustomHeaders('20600258894MODDATOS', 'MODDATOS');
-			    	$headers = new CustomHeaders('20600258894DCACEDA2', 'DCACE716186'); 
+					$client->__soapCall('sendSummary', array("parameters"=>$params), null, $headers);
 
-			    	$client = new SoapClient($service, array(
-			    		'cache_wsdl' => WSDL_CACHE_NONE,
-			    		'trace' => TRUE,
-			    		//'soap_version' => SOAP_1_2
-			    	));
-					//print_r($client);
-			    	//exit();
-			    	$client->__setSoapHeaders([$headers]);
-			    	$fcs = $client->__getFunctions();
-			    	$zipXml = $filename.'.zip'; 
-			    	$params = array(
-			    		'fileName' => $zipXml,
-			    		'contentFile' => file_get_contents($carpetaNota.'/'.$zipXml) 
-			    	); 
-			    	
-			    	$client->sendSummary($params);
-			    	$status = $client->__getLastResponse();
+					$status = $client->__getLastResponse();
 
-			    	$carpeta = 'adjunto/xml/notasdecredito/'.$filecdr;
+					$carpeta = 'adjunto/xml/notasdecredito/'.$filecdr;
 					if (!file_exists($carpeta)) {
 					    mkdir($carpeta, 0777, true);
 					}
@@ -2055,10 +2085,9 @@ $datos.='</SummaryDocuments>';
 					$archivo = fopen($carpetaCdr.'/'.'C'.$filename.'.xml','w+');
 					fputs($archivo, $status);
 					fclose($archivo);
-
 					//LEEMOS EL ARCHIVO XML
 					$responsexml = simplexml_load_file($carpetaCdr.'/'.'C'.$filename.'.xml');
-					
+
 					$xml = file_get_contents($carpetaCdr.'/C'.$filename.'.xml');
 					$DOM = new DOMDocument('1.0', 'utf-8');
 					$DOM->loadXML($xml);
@@ -2067,43 +2096,81 @@ $datos.='</SummaryDocuments>';
 						$ticket = $r->nodeValue;
 					}
 
-					$estado = $client->getStatus(array('ticket' => $ticket));
-					$estadoArray = (array)$estado;
-					$contenido = (array)$estadoArray['status'];
-					//print_r($contenido['content']);
-					$archivo = fopen('adjunto/xml/notasdecredito/'.$filecdr.'/'.'R-'.$filename.'.zip','w+');
-					fputs($archivo,$contenido['content']);
-					fclose($archivo);
-
-					$archivo2 = chmod('adjunto/xml/notasdecredito/'.$filecdr.'/'.'R-'.$filename.'.zip', 0777);
-
-					unlink('adjunto/xml/notasdecredito/'.$filecdr.'/'.'C'.$filename.'.xml');
-					
-					$this->comprobante_pago_mdl->updateEstadoCobroEmitidoManual($nc->fecha_emision, $nc->correlativo, 'BC01');
-					//verificar respuesta SUNAT
-					/*if (file_exists($carpetaCdr.'/R-'.$filename.'.zip')) {
-						if ($this->zip->open($carpetaCdr.'/R-'.$filename.'.zip') === TRUE) {
-						    $this->zip->extractTo($carpetaCdr.'/');
-						    $this->zip->close();
-						}
-						unlink($carpetaCdr.'/R-'.$filename.'.zip');
-					}
-
-					$xml = file_get_contents($carpetaCdr.'/R-'.$filename.'.xml');
-					$DOM = new DOMDocument('1.0', 'utf-8');
-					$DOM->loadXML($xml);
-					$respuesta = $DOM->getElementsByTagName('Description');
-					foreach ($respuesta as $r) {
-						$descripcion = $r->nodeValue;
-					}
-					
-					if ($descripcion == 'La '.$tipodocumento.' numero '.$nameDoc.', ha sido aceptada') {*/
-					//if (!file_exists('adjunto/xml/notasdecredito/'.$filecdr.'/'.'R-'.$filename.'.zip')) {
-						//$this->comprobante_pago_mdl->updateEstadoCobroEmitido($nc->fecha_emision, $nc->corre, 'BC01');
-					//}
-					//}
+					/*$estado = array(
+						'ticket' => $ticket
+					);*/
 				}
 			}
+
+			sleep(10);
+
+			foreach ($notaCredito as $nc) {
+
+	    		$numeroConCeros = str_pad($nc->correlativo, 5, "0", STR_PAD_LEFT);
+	    		$fechanombre = str_replace ("-" , "", $nc->fecha_emision);
+				$idestadocobro = $nc->idestadocobro;
+
+				if ($idestadocobro == 2) {
+
+		    		$filename="20600258894-RC-".$fechanombre."-".$nc->nume_corre_res;
+
+					$filecdr=$nc->mesanio.'-cdrNotaCreditoBoleta'.$nc->serie;
+					$fileNota=$nc->mesanio.'-NotaCreditoBoleta'.$nc->serie;
+					$carpetaCdr = 'adjunto/xml/notasdecredito/'.$filecdr;
+			    	$carpetaNota = 'adjunto/xml/notasdecredito/'.$fileNota;
+
+					$serviceCdr = 'adjunto/wsdl/billService.wsdl';
+
+					$WSHeaderCdr = '<wsse:Security xmlns:wsse="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd">
+									<wsse:UsernameToken>
+										<wsse:Username>20600258894DCACEDA2</wsse:Username>
+										<wsse:Password>DCACE716186</wsse:Password>
+									</wsse:UsernameToken>
+								</wsse:Security>';
+
+					$headersCdr = new SoapHeader('http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd', 'Security', new SoapVar($WSHeaderCdr, XSD_ANYXML));
+
+					$clientCdr = new SoapClient($serviceCdr, array(
+						'cache_wsdl' => WSDL_CACHE_NONE,
+						'trace' => TRUE,
+						//'soap_version' => SOAP_1_2
+					));
+
+					$estado = array(
+						'ticket' => $ticket
+					);
+					
+					$prueba = $clientCdr->__soapCall('getStatus', array("parameters"=>$estado), null, $headersCdr);
+					$estadoArray = (array)$prueba;
+					$contenido = (array)$estadoArray['status'];
+					$statucode = $contenido['statusCode'];
+
+					print_r($statucode." ");
+
+					$statusCdr = $clientCdr->__getLastResponse();
+
+					//$comparar = (string)$statusCdr;
+
+					/*if ($comparar = '0098' || $comparar == '0') {
+						print_r($comparar."  ");
+					}*/
+
+					$this->load->library('zip');
+					$this->zip->add_data('R-'.$filename.'.xml', $statusCdr);
+					$this->zip->archive('adjunto/xml/notasdecredito/'.$filecdr.'/'.'R-'.$filename.'.zip');
+					$archivo2 = chmod('adjunto/xml/notasdecredito/'.$filecdr.'/'.'R-'.$filename.'.zip', 0777);
+
+						//unlink('adjunto/xml/notasdecredito/'.$filecdr.'/'.'C'.$filename.'.xml');
+
+
+					if ($statucode = '0098' || $statucode == '0'){
+
+						$this->comprobante_pago_mdl->updateEstadoCobroEmitidoManual($nc->fecha_emision, $nc->correlativo, 'BC01');
+						
+					}
+				}
+			}
+
 
 		} elseif ($canales == 'FC01') {
 
