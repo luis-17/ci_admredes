@@ -1,11 +1,7 @@
 <?php
-ini_set('max_execution_time', 6000);
-ini_set('memory_limit', -1);
-date_default_timezone_set('America/Lima');
-defined('BASEPATH') OR exit('No direct script access allowed');
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Cotizador_cnt extends CI_Controller {
+class cotizador_cnt extends CI_Controller {
 
 	public function __construct()
     {
@@ -35,7 +31,7 @@ class Cotizador_cnt extends CI_Controller {
 	 * map to /index.php/welcome/<method_name>
 	 * @see https://codeigniter.com/user_guide/general/urls.html
 	 */
-	public function cotizador()
+	public function index()
 	{
 		//load session library
 		$this->load->library('session');
@@ -53,19 +49,65 @@ class Cotizador_cnt extends CI_Controller {
 			$submenuLista = $this->menu_mdl->getSubMenu($idusuario);
 			$data['menu2'] = $submenuLista;
 
-			$cotizaciones = $this->cotizador_mdl->getCotizaciones();
-			$data['cotizaciones'] = $cotizaciones;
-			$cotizaciones2 = $this->cotizador_mdl->getCotizaciones2();
-			$data['cotizaciones2'] = $cotizaciones2;
+			$planes = $this->cotizador_mdl->getCotizaciones();
+			$data['planes'] = $planes;
+			$data['planes2'] = $this->cotizador_mdl->getCotizaciones2();
 
-			$this->load->view('dsb/html/plan/cotizador.php',$data);
+			$this->load->view('dsb/html/cotizador/cotizacion.php',$data);
 		}
 		else{
 			redirect('/');
 		}
 	}
 
-	public function cotizador_registrar()
+
+	public function guardar_cotizacion()
+	{
+		//load session library
+		$this->load->library('session');
+
+		//restrict users to go to home if not logged in
+		if($this->session->userdata('user')){
+			//$this->load->view('home');
+			$user = $this->session->userdata('user');
+			extract($user);			
+			$idplan = $_POST['idplan'];
+			$data['idplan'] = $idplan;
+			$data['idusuario'] = $idusuario;
+			$data['tiporesponsable'] = 'P';
+			$data['idplan'] = $_POST['idplan'];
+			$data['cliente'] = $_POST['cliente'];
+			$nombre_plan = $_POST['nombre_plan'];
+			$data['nombre_plan'] = $nombre_plan;
+			$data['carencia'] = $_POST['carencia'];
+			$data['mora'] = $_POST['mora'];
+			$data['atencion'] = $_POST['atencion'];
+			$data['num_afiliados'] = $_POST['num_afiliados'];
+			$data['tipo_plan'] = $_POST['tipo_plan'];
+			$data['tipo_cotizacion'] = $_POST['tipo_cotizacion'];
+
+			if($idplan == 0){
+				$this->cotizador_mdl->in_Cotizacion($data);
+				$data['idcotizacion'] = $this->db->insert_id();
+				$this->cotizador_mdl->in_CotDetalle($data);
+				$idCotDetalle = $this->db->insert_id();
+				$data['idCotDetalle'] = $idCotDetalle;
+				$this->cotizador_mdl->inCotUsuario($data);
+			}else{
+
+			}
+ 
+			redirect('index.php/coberturas_cotizacion/'.$idCotDetalle.'/'.$nombre_plan);
+			
+		}
+		else{
+			redirect('/');
+		}
+		
+	}
+
+
+	public function nueva_cotizacion()
 	{
 		//load session library
 		$this->load->library('session');
@@ -89,53 +131,17 @@ class Cotizador_cnt extends CI_Controller {
 			$clientes = $this->cotizador_mdl->getClientes();
 			$data['clientes'] = $clientes;
 
-			$data['accion'] = 'Registrar Cotización';
+			$data['accion'] = 'Nueva Cotización';
 
-			$this->load->view('dsb/html/plan/cotizador_editar.php',$data);
+			$this->load->view('dsb/html/cotizador/cotizacion_plan.php',$data);
 		}
 		else{
 			redirect('/');
 		}
 	}
 
-	public function cotizador_guardar()
+	public function coberturas_cotizacion($idCotDetalle,$nombre_plan)
 	{
-		$user = $this->session->userdata('user');
-		extract($user);
-		$data['idusuario'] = $idusuario;
-		$data['tiporesponsable'] = 'P';
-		$data['idcotizacion'] = $_POST['idcotizacion'];
-		$data['cliente'] = $_POST['cliente'];
-		$data['nombre_cotizacion'] = $_POST['nombre_cotizacion'];
-		$data['codigo_cotizacion'] = $_POST['codigo_cotizacion'];
-		$data['carencia'] = $_POST['carencia'];
-		$data['mora'] = $_POST['mora'];
-		$data['atencion'] = $_POST['atencion'];
-		//$data['prima'] = $_POST['prima'];
-		//$data['prima_adicional'] = $_POST['prima_adicional'];
-		$data['num_afiliados'] = $_POST['num_afiliados'];
-		$data['flg_activar'] = $_POST['flg_activar'];
-		$data['flg_cancelar'] = $_POST['flg_cancelar'];
-		$data['flg_dependientes'] = $_POST['flg_dependientes'];
-
-		if($_POST['idcotizacion']==0):
-			$this->cotizador_mdl->insert_cotizacion($data);
-			$data['idcotizacion'] = $this->db->insert_Id();	
-			$this->cotizador_mdl->inCotiUsuario($data);
-			$idcoti = $data['idcotizacion'];
-			$this->cotizador_mdl->insert_preDetalle($idcoti, 1);
-
-			//$asunto="NOTIFICACION: CREACION DE UN PLAN DE SALUD";
-			//$accion="creaci&oacute;n";
-		else:
-			$this->cotizador_mdl->update_plan($data);
-			//$asunto="NOTIFICACION: ACTUALIZACION DE PLAN DE SALUD: ".$data['nombre_plan'];
-			//$accion="actualizaci&oacute;n";
-		endif;
-		//redirect('index.php/cotizador_calcular');
-	}
-
-	public function cotizador_cobertura(){
 		//load session library
 		$this->load->library('session');
 
@@ -152,686 +158,348 @@ class Cotizador_cnt extends CI_Controller {
 			$submenuLista = $this->menu_mdl->getSubMenu($idusuario);
 			$data['menu2'] = $submenuLista;
 
-			$data['nom'] = 'Agregar Cotización';
+			$cobertura = $this->cotizador_mdl->getCobertura($idCotDetalle);
+			$data['cobertura'] = $cobertura;
 
 			$items = $this->cotizador_mdl->getItems();
 			$data['items'] = $items;	
 
-			/*$cotizaciones = $this->cotizador_mdl->getCotizaciones();
-			$data['cotizaciones'] = $cotizaciones;*/
-			$cotizaciones = $this->cotizador_mdl->getCotizaciones3();
-			foreach ($cotizaciones as $ct) {
-				$data['idcotizacion'] = $ct->idcotizacion;
-				$idcotizacion = $data['idcotizacion'];
-				$data['nombre_cotizacion'] = $ct->nombre_cotizacion;
-				$nombre_cotizacion = $data['nombre_cotizacion'];
-			}
+			$operador=$this->cotizador_mdl->get_operador();
+			$data['operador'] = $operador;
 
-			$data['cobertura'] = $this->cotizador_mdl->getDetalleCobertura($idcotizacion);
-			foreach ($data['cobertura'] as $c) {
-				$data['idcotizaciondetalle'] = $c->idcotizaciondetalle;
-				$idcotizaciondetalle = $data['idcotizaciondetalle'];
-			}
-
-			$data['detallecobertura'] = $this->cotizador_mdl->getCobertura($idcotizaciondetalle);
-			foreach ($data['detallecobertura'] as $dc) {
-				$data['idcotizacioncobertura'] = $dc->idcotizaciondetalle;
-				$idcotizacioncobertura = $data['idcotizacioncobertura'];
-			}
-
-			$data['cotizaciones'] = $cotizaciones;
-
-			$data['accion'] = 'Nueva Cotización';
+			$data['nom'] = $nombre_plan;
+			$data['id'] = $idCotDetalle;
+			$CotDetalle = $this->cotizador_mdl->getEstado($idCotDetalle);
+			$data['estado'] = $CotDetalle['estado'];
 			$data['iddet'] = 0;
 			$data['cadena'] = "";
 
-			$this->load->view('dsb/html/plan/cotizador_cobertura.php',$data);
-		} else {
-			redirect('/');
-		}
-	}
-
-//-------------------------------------------------------------------------------------------------
-
-	public function cotizador_calcular(){
-		//load session library
-		$this->load->library('session');
-
-		//restrict users to go to home if not logged in
-		if($this->session->userdata('user')){
-			//$this->load->view('home');
-
-			$user = $this->session->userdata('user');
-			extract($user);
-
-			$menuLista = $this->menu_mdl->getMenu($idusuario);
-			$data['menu1'] = $menuLista;
-
-			$submenuLista = $this->menu_mdl->getSubMenu($idusuario);
-			$data['menu2'] = $submenuLista;
-
-			$data['nom'] = 'Calcular Cotización';
-
-			$items = $this->cotizador_mdl->getItems();
-			$data['items'] = $items;	
-
-			/*$cotizaciones = $this->cotizador_mdl->getCotizaciones();
-			$data['cotizaciones'] = $cotizaciones;*/
-			$cotizaciones = $this->cotizador_mdl->getCotizaciones3();
-			foreach ($cotizaciones as $ct) {
-				$data['idcotizacion'] = $ct->idcotizacion;
-				$idcotizacion = $data['idcotizacion'];
-				$data['nombre_cotizacion'] = $ct->nombre_cotizacion;
-				$nombre_cotizacion = $data['nombre_cotizacion'];
-			}
-
-			$cobertura = $this->cotizador_mdl->getDetalleCobertura($idcotizacion);
-			foreach ($cobertura as $c) {
-				$data['idcotizaciondetalle'] = $c->idcotizaciondetalle;
-				$idcotizaciondetalle = $data['idcotizaciondetalle'];
-			}
-
-			$detallecobertura = $this->cotizador_mdl->getCobertura($idcotizaciondetalle);
-			foreach ($detallecobertura as $dc) {
-				$data['idcotizacioncobertura'] = $dc->idcotizaciondetalle;
-				$idcotizacioncobertura = $data['idcotizacioncobertura'];
-			}
-
-			$data['cotizaciones'] = $cotizaciones;
-
-			$data['accion'] = 'Nueva Cotización';
-			$data['iddet'] = 0;
-			$data['cadena'] = "";
-
-			$this->load->view('dsb/html/plan/cotizador_calcular.php',$data);
+			$this->load->view('dsb/html/cotizador/cotizador_cobertura.php',$data);
 		}
 		else{
 			redirect('/');
 		}
 	}
 
-	public function mostrarTabla(){
-		$html = null;
-		$idcotizacion = $_POST['idcotizacion'];
-		$idcotizaciondetalle = $_POST['idcotizaciondetalle'];
+	public function detalle_producto()
+	{
+		$item = $_POST['id'];
 
-		$detallecobertura = $this->cotizador_mdl->getCoberturaVariables($idcotizaciondetalle);
-		$cotizacionDetalle = $this->cotizador_mdl->getDetalleCobertura($idcotizaciondetalle);
-		$cotizacionDetalleArray = json_decode(json_encode($cotizacionDetalle), true);
-		$cotizacionDetallestring = array_values($cotizacionDetalleArray)[0];
-		$poblacion = $cotizacionDetallestring['poblacion_persona'];
-		$siniestralidadM = $cotizacionDetallestring['siniestralidad_mensual'];
-
-		$user = $this->session->userdata('user');
-		extract($user);
-
-		$html .= "<div align='center' class='col-xs-12'>";
-			$html .= "<table align='center' id='tablaDatos' class='table table-striped table-bordered table-hover'>";
-				$html .= "<thead>";
-					$html .= "<tr>";
-						$html .= "<th>Cobertura</th>";
-						$html .= "<th>Descripción</th>";
-						$html .= "<th>N° de eventos</th>";
-						$html .= "<th>N° de eventos (Adicional)</th>";
-						$html .= "<th>Costo por evento (S/.)</th>";
-						$html .= "<th>Costo anual (S/.)</th>";
-						$html .= "<th>Costo anual adicional (S/.)</th>";
-						$html .= "<th>Coaseguro</th>";
-						$html .= "<th>Opciones</th>";
-					$html .= "</tr>";
-				$html .= "</thead>";
-				$html .= "<tbody>";
-				$sumaanual = 0;
-				$sumaanualadicional = 0;
-				foreach ($detallecobertura as $dc) {
-					$html .= "<tr>";
-						$html .= "<td>".$dc->nombre_var."<input type='text' class='hidden' id='idcotizacioncobertura' name='idcotizacioncobertura[]' value='".$dc->idcotizacioncobertura."'></td>";
-						$html .= "<td>".$dc->texto_web."<input type='text' class='hidden' id='texto_web' name='texto_web[]' value='".$dc->texto_web."'></td>";
-						if ($dc->idcalcular == null) {
-							$html .= "<td><input type='number' id='eventos' name='eventos[]' value='' required><input type='text' class='hidden' id='idcalcular' name='idcalcular[]' value=''></td>";
-							$html .= "<td><input type='number' id='eventosAd' name='eventosAd[]' value='' required></td>";
-							$html .= "<td><input type='number' id='costo' name='costo[]' value='' required></td>";
-							$html .= "<td></td>";
-							$html .= "<td></td>";
-							if (empty($dc->cobertura)) {
-								$html .= "<td><a class='boton fancybox' data-fancybox-width='800' data-fancybox-height='700' href='".base_url()."index.php/cot_coaseguro/".$dc->idcotizaciondetalle."' title='Agregar Coaseguro'><i class='ace-icon glyphicon glyphicon-plus red'></i></a></td>";
-							} else {
-								$html .= "<td><a href='".base_url()."index.php/del_coaseguro/".$dc->idcotizaciondetalle."' title='Eliminar Coaseguro'><i class='ace-icon glyphicon glyphicon-remove blue'></i></a>".$dc->cobertura."</td>";
-							}
-							$html .= "<td></td>";
-						} else {
-							$html .= "<td>".$dc->neventos."<input type='text' class='hidden' id='eventos' name='eventos[]' value='".$dc->neventos."'><input type='text' class='hidden' id='idcalcular' name='idcalcular[]' value='".$dc->idcalcular."'></td>";
-							$html .= "<td>".$dc->neventosadicional."<input type='text' class='hidden' id='eventosAd' name='eventosAd[]' value='".$dc->neventosadicional."'></td>";
-							$html .= "<td>S/. ".$dc->costo."<input type='text' class='hidden' id='costo' name='costo[]' value='".$dc->costo."'></td>";
-							$anual = $dc->neventos*$dc->costo;
-							$html .= "<td>S/. ".$anual."<input type='text' class='hidden' id='costoAnual' name='costoAnual[]' value='".$anual."'></td>";
-							$anualadic = $dc->neventosadicional*$dc->costo;
-							$html .= "<td>S/. ".$anualadic."<input type='text' class='hidden' id='costoAnualAdic' name='costoAnualAdic[]' value='".$anualadic."'></td>";
-							if (empty($dc->cobertura)) {
-								$html .= "<td><a class='boton fancybox' data-fancybox-width='800' data-fancybox-height='700' href='".base_url()."index.php/cot_coaseguro/".$dc->idcotizaciondetalle."' title='Agregar Coaseguro'><i class='ace-icon glyphicon glyphicon-plus red'></i></a></td>";
-							} else {
-								$html .= "<td><a href='".base_url()."index.php/del_coaseguro/".$dc->idcotizaciondetalle."' title='Eliminar Coaseguro'><i class='ace-icon glyphicon glyphicon-remove blue'></i></a>".$dc->cobertura."</td>";
-							}
-							$html .= "<td></td>";
-							$sumaanual = $sumaanual + $anual;
-							$sumaanualadicional = $sumaanualadicional + $anualadic;
-						}
-					$html .= "</tr>";
+		$productos = $this->cotizador_mdl->get_productos($item);
+		if(!empty($productos)){
+		$cadena = '<label class="col-sm-3 control-label no-padding-right" for="form-field-1"> Detalle: </label>
+					<div class="col-sm-9">
+						<table style="font-size: 12px;" width="100%">
+							<tr><td colspan="2"><input type="checkbox"  id="checkTodos"><b>Marcar/Desmarcar Todos</b></td></tr>';
+			$cont1=2;
+			$cont2=0;
+			foreach ($productos as $pr) {
+				if($cont1==2){
+				$cadena.='<tr>';
 				}
-				if (empty($sumaanual)) {
-					$html .= "<tr>";
-						$html .= "<td align='right' colspan='5'><b>Total anual:</b></td>";
-						$html .= "<td>S/. 0.00</td>";
-						$html .= "<td>S/. 0.00</td>";
-						$html .= "<td></td>";
-						$html .= "<td></td>";
-					$html .= "</tr>";
-				} else {
-					$html .= "<tr>";
-						$html .= "<td align='right' colspan='5'><b>Total anual:</b></td>";
-						$html .= "<td>S/. ".$sumaanual."</td>";
-						$html .= "<td>S/. ".$sumaanualadicional."</td>";
-						$html .= "<td></td>";
-						$html .= "<td></td>";
-					$html .= "</tr>";
+					$cadena.="<td width='1%'><input type='checkbox' name='prod[]' value='".$pr->idproducto."'></td>
+							<td width='49%'>".$pr->descripcion_prod."</td>";
+
+				if($cont2==1){
+					$cont1=2;
+				}else{
+					$cont1=0;
 				}
-
-				if (empty($poblacion)) {
-					$html .= "<tr>";
-						$html .= "<td align='right' colspan='2'><b>Población personas:</b></td>";
-						$html .= "<td colspan='2'><input type='number' id='personas' name='personas' value='' required></td>";
-						$html .= "<td align='right' colspan='3'><b>Siniestralidad mensual:</b></td>";
-						$html .= "<td colspan='2'><input type='number' id='siniMensual' name='siniMensual' value='' required></td>";
-					$html .= "</tr>";
-					$html .= "<tr>";
-						$html .= "<td align='right' colspan='2'><b>Prima:</b></td>";
-						$html .= "<td colspan='2'>S/. 0.00</td>";
-						$html .= "<td align='right' colspan='3'><b>Prima Adicional:</b></td>";
-						$html .= "<td colspan='2'>S/. 0.00</td>";
-					$html .= "</tr>";
-					$html .= "<tr>";
-						$html .= "<td align='right' colspan='2'><b>Copago:</b></td>";
-						$html .= "<td colspan='2'>S/. 0.00</td>";
-						$html .= "<td align='right' colspan='3'><b>Copago Adicional:</b></td>";
-						$html .= "<td colspan='2'>S/. 0.00</td>";
-					$html .= "</tr>";
-				} else {
-
-					//prima plan
-					$gastoAnualPersona = $sumaanual/12;
-					$siniestralidadSoles = $gastoAnualPersona*$siniestralidadM;
-					$gastosAdm = $siniestralidadSoles*0.25;
-					$siniGastosAdm = $siniestralidadSoles+$gastosAdm;
-					$gastosMkt = $siniGastosAdm*0.05;
-					$siniGastAdmGastMkt = $siniGastosAdm+$gastosMkt;
-					$costosAdm = $siniGastAdmGastMkt*0.05;
-					$gastos = $siniGastAdmGastMkt+$costosAdm;
-					$reserva = $gastos*0.1;
-					$gastosTotal = $gastos+$reserva;
-					$primaMinIgv = ($gastosTotal/$poblacion)*1.18;
-					$inflMedica = $primaMinIgv*0.05;
-					$prima = $primaMinIgv+$inflMedica;
-					$primaDec=number_format((float)$prima, 2, '.', ',');
-
-					//prima plan adicional
-					$gastoAnualPersonaAd = $sumaanualadicional/12;
-					$siniestralidadSolesAd = $gastoAnualPersonaAd*$siniestralidadM;
-					$gastosAdmAd = $siniestralidadSolesAd*0.25; 
-					$siniGastosAdmAd = $siniestralidadSolesAd+$gastosAdmAd;
-					$gastosMktAd = $siniGastosAdmAd*0.05;
-					$siniGastAdmGastMktAd = $siniGastosAdmAd+$gastosMktAd;
-					$costosAdmAd = $siniGastAdmGastMktAd*0.05;
-					$gastosAd = $siniGastAdmGastMktAd+$costosAdmAd;
-					$reservaAd = $gastosAd*0.1;
-					$gastosTotalAd = $gastosAd+$reservaAd;
-					$primaMinIgvAd = ($gastosTotalAd/$poblacion)*1.18;
-					$inflMedicaAd = $primaMinIgvAd*0.05;
-					$primaAd = $primaMinIgvAd+$inflMedicaAd;
-					$primaDecAd=number_format((float)$primaAd, 2, '.', ',');
-
-					$html .= "<tr>";
-						$html .= "<td align='right' colspan='2'><b>Población personas:</b></td>";
-						$html .= "<td colspan='2'>".$poblacion."<input type='hidden' id='personas' name='personas' value='".$poblacion."'></td>";
-						$html .= "<td align='right' colspan='3'><b>Siniestralidad mensual:</b></td>";
-						$html .= "<td colspan='2'>".$siniestralidadM."<input type='hidden' id='siniMensual' name='siniMensual' value='".$siniestralidadM."'></td>";
-					$html .= "</tr>";
-					$html .= "<tr>";
-						$html .= "<td align='right' colspan='2'><b>Prima:</b></td>";
-						$html .= "<td colspan='2'>S/. ".$primaDec."</td>";
-						$html .= "<td align='right' colspan='3'><b>Prima Adicional:</b></td>";
-						$html .= "<td colspan='2'>S/. ".$primaDecAd."</td>";
-					$html .= "</tr>";
-					$html .= "<tr>";
-						$html .= "<td align='right' colspan='2'><b>Copago:</b></td>";
-						$html .= "<td colspan='2'>S/. </td>";
-						$html .= "<td align='right' colspan='3'><b>Copago Adicional:</b></td>";
-						$html .= "<td colspan='2'>S/. </td>";
-					$html .= "</tr>";
-				}
-				$html .= "</tbody>";
-			$html .= "</table>";
-		$html .= "</div>";
-
-		echo json_encode($html);
-	}
-
-	public function agregarCobertura(){
-		$html = null;
-		$idcotizacion = $_POST['idcotizacion'];
-		$idcotizaciondetalle = $_POST['idcotizaciondetalle'];
-		$idvariableplan = $_POST['item'];
-		$texto_web = $_POST['descripcion'];
-
-		$this->cotizador_mdl->insertCobertura($idcotizaciondetalle, $idvariableplan, $texto_web);
-
-		$detallecobertura = $this->cotizador_mdl->getCoberturaVariables($idcotizaciondetalle);
-		$cotizacionDetalle = $this->cotizador_mdl->getDetalleCobertura($idcotizaciondetalle);
-		$cotizacionDetalleArray = json_decode(json_encode($cotizacionDetalle), true);
-		$cotizacionDetallestring = array_values($cotizacionDetalleArray)[0];
-		$poblacion = $cotizacionDetallestring['poblacion_persona'];
-		$siniestralidadM = $cotizacionDetallestring['siniestralidad_mensual'];
-
-		$user = $this->session->userdata('user');
-		extract($user);
-
-		$html .= "<div align='center' class='col-xs-12'>";
-			$html .= "<table align='center' id='tablaDatos' class='table table-striped table-bordered table-hover'>";
-				$html .= "<thead>";
-					$html .= "<tr>";
-						$html .= "<th>Cobertura</th>";
-						$html .= "<th>Descripción</th>";
-						$html .= "<th>N° de eventos</th>";
-						$html .= "<th>N° de eventos (Adicional)</th>";
-						$html .= "<th>Costo por evento (S/.)</th>";
-						$html .= "<th>Costo anual (S/.)</th>";
-						$html .= "<th>Costo anual adicional (S/.)</th>";
-						$html .= "<th>Coaseguro</th>";
-						$html .= "<th>Opciones</th>";
-					$html .= "</tr>";
-				$html .= "</thead>";
-				$html .= "<tbody>";
-				$sumaanual = 0;
-				$sumaanualadicional = 0;
-				foreach ($detallecobertura as $dc) {
-					$html .= "<tr>";
-						$html .= "<td>".$dc->nombre_var."<input type='text' class='hidden' id='idcotizacioncobertura' name='idcotizacioncobertura[]' value='".$dc->idcotizacioncobertura."'></td>";
-						$html .= "<td>".$dc->texto_web."<input type='text' class='hidden' id='texto_web' name='texto_web[]' value='".$dc->texto_web."'></td>";
-						if ($dc->idcalcular == null) {
-							$html .= "<td><input type='number' id='eventos' name='eventos[]' value='' required><input type='text' class='hidden' id='idcalcular' name='idcalcular[]' value=''></td>";
-							$html .= "<td><input type='number' id='eventosAd' name='eventosAd[]' value='' required></td>";
-							$html .= "<td><input type='number' id='costo' name='costo[]' value='' required></td>";
-							$html .= "<td></td>";
-							$html .= "<td></td>";
-							if (empty($dc->cobertura)) {
-								$html .= "<td><a class='boton fancybox'  data-fancybox-width='800' data-fancybox-height='700' href='".base_url()."index.php/cot_coaseguro/".$dc->idcotizaciondetalle."' title='Agregar Coaseguro'><i class='ace-icon glyphicon glyphicon-plus red'></i></a></td>";
-							} else {
-								$html .= "<td><a class='boton fancybox'  data-fancybox-width='800' data-fancybox-height='700' href='".base_url()."index.php/del_coaseguro/".$dc->idcotizaciondetalle."' title='Eliminar Coaseguro'><i class='ace-icon glyphicon glyphicon-remove blue'></i></a>".$dc->cobertura."</td>";
-							}
-							$html .= "<td></td>";
-						} else {
-							$html .= "<td>".$dc->neventos."<input type='text' class='hidden' id='eventos' name='eventos[]' value='".$dc->neventos."'><input type='text' class='hidden' id='idcalcular' name='idcalcular[]' value='".$dc->idcalcular."'></td>";
-							$html .= "<td>".$dc->neventosadicional."<input type='text' class='hidden' id='eventosAd' name='eventosAd[]' value='".$dc->neventosadicional."'></td>";
-							$html .= "<td>S/. ".$dc->costo."<input type='text' class='hidden' id='costo' name='costo[]' value='".$dc->costo."'></td>";
-							$anual = $dc->neventos*$dc->costo;
-							$html .= "<td>S/. ".$anual."<input type='text' class='hidden' id='costoAnual' name='costoAnual[]' value='".$anual."'></td>";
-							$anualadic = $dc->neventosadicional*$dc->costo;
-							$html .= "<td>S/. ".$anualadic."<input type='text' class='hidden' id='costoAnualAdic' name='costoAnualAdic[]' value='".$anualadic."'></td>";
-							if (empty($dc->cobertura)) {
-								$html .= "<td><a class='boton fancybox' data-fancybox-width='800' data-fancybox-height='700' href='".base_url()."index.php/cot_coaseguro/".$dc->idcotizaciondetalle."' title='Agregar Coaseguro'><i class='ace-icon glyphicon glyphicon-plus red'></i></a></td>";
-							} else {
-								$html .= "<td><a href='".base_url()."index.php/del_coaseguro/".$dc->idcotizaciondetalle."' title='Eliminar Coaseguro'><i class='ace-icon glyphicon glyphicon-remove blue'></i></a>".$dc->cobertura."</td>";
-							}
-							$html .= "<td></td>";
-							$sumaanual = $sumaanual + $anual;
-							$sumaanualadicional = $sumaanualadicional + $anualadic;
-						}
-					$html .= "</tr>";
-				}
-				if (empty($sumaanual)) {
-					$html .= "<tr>";
-						$html .= "<td align='right' colspan='5'><b>Total anual:</b></td>";
-						$html .= "<td>S/. 0.00</td>";
-						$html .= "<td>S/. 0.00</td>";
-						$html .= "<td></td>";
-						$html .= "<td></td>";
-					$html .= "</tr>";
-				} else {
-					$html .= "<tr>";
-						$html .= "<td align='right' colspan='5'><b>Total anual:</b></td>";
-						$html .= "<td>S/. ".$sumaanual."</td>";
-						$html .= "<td>S/. ".$sumaanualadicional."</td>";
-						$html .= "<td></td>";
-						$html .= "<td></td>";
-					$html .= "</tr>";
-				}
-
-				if (empty($poblacion)) {
-					$html .= "<tr>";
-						$html .= "<td align='right' colspan='2'><b>Población personas:</b></td>";
-						$html .= "<td colspan='2'><input type='number' id='personas' name='personas' value='' required></td>";
-						$html .= "<td align='right' colspan='3'><b>Siniestralidad mensual:</b></td>";
-						$html .= "<td colspan='2'><input type='number' id='siniMensual' name='siniMensual' value='' required></td>";
-					$html .= "</tr>";
-					$html .= "<tr>";
-						$html .= "<td align='right' colspan='2'><b>Prima:</b></td>";
-						$html .= "<td colspan='2'>S/. 0.00</td>";
-						$html .= "<td align='right' colspan='3'><b>Prima Adicional:</b></td>";
-						$html .= "<td colspan='2'>S/. 0.00</td>";
-					$html .= "</tr>";
-					$html .= "<tr>";
-						$html .= "<td align='right' colspan='2'><b>Copago:</b></td>";
-						$html .= "<td colspan='2'>S/. 0.00</td>";
-						$html .= "<td align='right' colspan='3'><b>Copago Adicional:</b></td>";
-						$html .= "<td colspan='2'>S/. 0.00</td>";
-					$html .= "</tr>";
-				} else {
-
-					//prima plan
-					$gastoAnualPersona = $sumaanual/12;
-					$siniestralidadSoles = $gastoAnualPersona*$siniestralidadM;
-					$gastosAdm = $siniestralidadSoles*0.25;
-					$siniGastosAdm = $siniestralidadSoles+$gastosAdm;
-					$gastosMkt = $siniGastosAdm*0.05;
-					$siniGastAdmGastMkt = $siniGastosAdm+$gastosMkt;
-					$costosAdm = $siniGastAdmGastMkt*0.05;
-					$gastos = $siniGastAdmGastMkt+$costosAdm;
-					$reserva = $gastos*0.1;
-					$gastosTotal = $gastos+$reserva;
-					$primaMinIgv = ($gastosTotal/$poblacion)*1.18;
-					$inflMedica = $primaMinIgv*0.05;
-					$prima = $primaMinIgv+$inflMedica;
-					$primaDec=number_format((float)$prima, 2, '.', ',');
-
-					//prima plan adicional
-					$gastoAnualPersonaAd = $sumaanualadicional/12;
-					$siniestralidadSolesAd = $gastoAnualPersonaAd*$siniestralidadM;
-					$gastosAdmAd = $siniestralidadSolesAd*0.25; 
-					$siniGastosAdmAd = $siniestralidadSolesAd+$gastosAdmAd;
-					$gastosMktAd = $siniGastosAdmAd*0.05;
-					$siniGastAdmGastMktAd = $siniGastosAdmAd+$gastosMktAd;
-					$costosAdmAd = $siniGastAdmGastMktAd*0.05;
-					$gastosAd = $siniGastAdmGastMktAd+$costosAdmAd;
-					$reservaAd = $gastosAd*0.1;
-					$gastosTotalAd = $gastosAd+$reservaAd;
-					$primaMinIgvAd = ($gastosTotalAd/$poblacion)*1.18;
-					$inflMedicaAd = $primaMinIgvAd*0.05;
-					$primaAd = $primaMinIgvAd+$inflMedicaAd;
-					$primaDecAd=number_format((float)$primaAd, 2, '.', ',');
-
-					$html .= "<tr>";
-						$html .= "<td align='right' colspan='2'><b>Población personas:</b></td>";
-						$html .= "<td colspan='2'>".$poblacion."<input type='hidden' id='personas' name='personas' value='".$poblacion."'></td>";
-						$html .= "<td align='right' colspan='3'><b>Siniestralidad mensual:</b></td>";
-						$html .= "<td colspan='2'>".$siniestralidadM."<input type='hidden' id='siniMensual' name='siniMensual' value='".$siniestralidadM."'></td>";
-					$html .= "</tr>";
-					$html .= "<tr>";
-						$html .= "<td align='right' colspan='2'><b>Prima:</b></td>";
-						$html .= "<td colspan='2'>S/. ".$primaDec."</td>";
-						$html .= "<td align='right' colspan='3'><b>Prima Adicional:</b></td>";
-						$html .= "<td colspan='2'>S/. ".$primaDecAd."</td>";
-					$html .= "</tr>";
-					$html .= "<tr>";
-						$html .= "<td align='right' colspan='2'><b>Copago:</b></td>";
-						$html .= "<td colspan='2'>S/. </td>";
-						$html .= "<td align='right' colspan='3'><b>Copago Adicional:</b></td>";
-						$html .= "<td colspan='2'>S/. </td>";
-					$html .= "</tr>";
-				}
-				$html .= "</tbody>";
-			$html .= "</table>";
-		$html .= "</div>";
-
-		echo json_encode($html);	
-	}
-
-	public function calcularCobertura(){
-		$html = null;
-		$idcotizacion = $_POST['idcotizacion'];
-		$idcotizaciondetalle = $_POST['idcotizaciondetalle'];
-		$idvariableplan = $_POST['item'];
-		$texto_web = $_POST['descripcion'];
-		$eventos = $_POST['eventos'];
-		$eventosAd = $_POST['eventosAd'];
-		$costo = $_POST['costo'];
-		$idcalcular = $_POST['idcalcular'];
-		$personas = $_POST['personas'];
-		$siniMensual = $_POST['siniMensual'];
-		$idcotizacioncobertura = $_POST['idcotizacioncobertura'];
-
-
-		for ($i=0; $i < count($eventos); $i++) { 
-			if (empty($idcalcular[$i])) {
-				$this->cotizador_mdl->insertVariables($eventos[$i], $eventosAd[$i], $costo[$i], $idcotizacioncobertura[$i]);
-			} else {
-				$this->cotizador_mdl->updateVariables($eventos[$i], $eventosAd[$i], $costo[$i], $idcotizacioncobertura[$i], $idcalcular[$i]);
+				$cont2++;
+				if($cont1==2){
+				$cadena.='</tr>';
+				$cont2=0;	
+				}			
 			}
+
+		$cadena.='</table></div>';
+		$cadena.="<script>
+					$('document').ready(function(){
+					   $('#checkTodos').change(function () {
+					      $('input:checkbox').prop('checked', $(this).prop('checked'));
+					  });
+					});
+					</script>";
+		}else{
+			$cadena="<input type='hidden' id='prod' name='prod' value=''>";
 		}
 
-		if (empty($personas) || empty($siniMensual)) {
-			$this->cotizador_mdl->inserteDetalles($personas, $siniMensual, $idcotizaciondetalle);
-		} else {
-			$this->cotizador_mdl->updateDetalles($personas, $siniMensual, $idcotizaciondetalle);
+		$precio = $this->cotizador_mdl->get_precio($item);		
+		$precio_sugerido = $precio['precio_sugerido'];
+		if($precio_sugerido>0){
+			$cadena.='<div class="col-xs-12 alert alert-info">
+							<div class="form-group">						
+								<label class="col-sm-3 control-label no-padding-right" for="form-field-1"> Costo por Evento: </label>
+								<div class="col-sm-6">
+									<input type="text" id="precio_sugerido" name="precio_sugerido" value="'.$precio_sugerido.'">
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-3 control-label no-padding-right" for="form-field-1"> Eventos a Cotizar (Titular): </label>
+								<div class="col-sm-6">
+									<input type="text" id="eventost" name="eventost" value="">
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-3 control-label no-padding-right" for="form-field-1"> Eventos a Cotizar (Adicional): </label>
+								<div class="col-sm-6">
+									<input type="text" id="eventosa" name="eventosa" value="">
+								</div>
+							</div>
+						</div>';
+		}else{
+			$cadena.='<input type="hidden" name="precio_sugerido" value="">
+						<input type="hidden" name="eventost" value="">
+						<input type="hidden" name="eventosa" value="">';
 		}
 		
-		$detallecobertura = $this->cotizador_mdl->getCoberturaVariables($idcotizaciondetalle);
-		$cotizacionDetalle = $this->cotizador_mdl->getDetalleCobertura($idcotizaciondetalle);
-		$cotizacionDetalleArray = json_decode(json_encode($cotizacionDetalle), true);
-		$cotizacionDetallestring = array_values($cotizacionDetalleArray)[0];
-		$poblacion = $cotizacionDetallestring['poblacion_persona'];
-		$siniestralidadM = $cotizacionDetallestring['siniestralidad_mensual'];
-
-		$user = $this->session->userdata('user');
-		extract($user);
-
-		$html .= "<div align='center' class='col-xs-12'>";
-			$html .= "<table align='center' id='tablaDatos' class='table table-striped table-bordered table-hover'>";
-				$html .= "<thead>";
-					$html .= "<tr>";
-						$html .= "<th>Cobertura</th>";
-						$html .= "<th>Descripción</th>";
-						$html .= "<th>N° de eventos</th>";
-						$html .= "<th>N° de eventos (Adicional)</th>";
-						$html .= "<th>Costo por evento (S/.)</th>";
-						$html .= "<th>Costo anual (S/.)</th>";
-						$html .= "<th>Costo anual adicional (S/.)</th>";
-						$html .= "<th>Coaseguro</th>";
-						$html .= "<th>Opciones</th>";
-					$html .= "</tr>";
-				$html .= "</thead>";
-				$html .= "<tbody>";
-				$sumaanual = 0;
-				$sumaanualadicional = 0;
-				foreach ($detallecobertura as $dc) {
-					$html .= "<tr>";
-						$html .= "<td>".$dc->nombre_var."<input type='text' class='hidden' id='nombre_var' name='nombre_var[]' value='".$dc->nombre_var."'></td>";
-						$html .= "<td>".$dc->texto_web."<input type='text' class='hidden' id='texto_web' name='texto_web[]' value='".$dc->texto_web."'></td>";
-						$html .= "<td>".$dc->neventos."<input type='text' class='hidden' id='eventos' name='eventos[]' value='".$dc->neventos."'></td>";
-						$html .= "<td>".$dc->neventosadicional."<input type='text' class='hidden' id='eventosAd' name='eventosAd[]' value='".$dc->neventosadicional."'></td>";
-						$html .= "<td>S/. ".$dc->costo."<input type='text' class='hidden' id='costo' name='costo[]' value='".$dc->costo."'></td>";
-						$anual = $dc->neventos*$dc->costo;
-						$html .= "<td>S/. ".$anual."<input type='text' class='hidden' id='costoAnual' name='costoAnual[]' value='".$anual."'></td>";
-						$anualadic = $dc->neventosadicional*$dc->costo;
-						$html .= "<td>S/. ".$anualadic."<input type='text' class='hidden' id='costoAnualAdic' name='costoAnualAdic[]' value='".$anualadic."'></td>";
-						if (empty($dc->cobertura)) {
-							$html .= "<td><a class='boton fancybox' data-fancybox-width='800' data-fancybox-height='700' href='".base_url()."index.php/cot_coaseguro/".$dc->idcotizaciondetalle."' title='Agregar Coaseguro'><i class='ace-icon glyphicon glyphicon-plus red'></i></a></td>";
-						} else {
-							$html .= "<td><a href='".base_url()."index.php/del_coaseguro/".$dc->idcotizaciondetalle."' title='Eliminar Coaseguro'><i class='ace-icon glyphicon glyphicon-remove blue'></i></a>".$dc->cobertura."</td>";
-						}
-						$html .= "<td></td>";
-					$html .= "</tr>";
-					$sumaanual = $sumaanual + $anual;
-					$sumaanualadicional = $sumaanualadicional + $anualadic;
-				}
-
-				//prima plan
-				$gastoAnualPersona = $sumaanual/12;
-				$siniestralidadSoles = $gastoAnualPersona*$siniestralidadM;
-				$gastosAdm = $siniestralidadSoles*0.25;
-				$siniGastosAdm = $siniestralidadSoles+$gastosAdm;
-				$gastosMkt = $siniGastosAdm*0.05;
-				$siniGastAdmGastMkt = $siniGastosAdm+$gastosMkt;
-				$costosAdm = $siniGastAdmGastMkt*0.05;
-				$gastos = $siniGastAdmGastMkt+$costosAdm;
-				$reserva = $gastos*0.1;
-				$gastosTotal = $gastos+$reserva;
-				$primaMinIgv = ($gastosTotal/$poblacion)*1.18;
-				$inflMedica = $primaMinIgv*0.05;
-				$prima = $primaMinIgv+$inflMedica;
-				$primaDec=number_format((float)$prima, 2, '.', ',');
-
-				//prima plan adicional
-				$gastoAnualPersonaAd = $sumaanualadicional/12;
-				$siniestralidadSolesAd = $gastoAnualPersonaAd*$siniestralidadM;
-				$gastosAdmAd = $siniestralidadSolesAd*0.25; 
-				$siniGastosAdmAd = $siniestralidadSolesAd+$gastosAdmAd;
-				$gastosMktAd = $siniGastosAdmAd*0.05;
-				$siniGastAdmGastMktAd = $siniGastosAdmAd+$gastosMktAd;
-				$costosAdmAd = $siniGastAdmGastMktAd*0.05;
-				$gastosAd = $siniGastAdmGastMktAd+$costosAdmAd;
-				$reservaAd = $gastosAd*0.1;
-				$gastosTotalAd = $gastosAd+$reservaAd;
-				$primaMinIgvAd = ($gastosTotalAd/$poblacion)*1.18;
-				$inflMedicaAd = $primaMinIgvAd*0.05;
-				$primaAd = $primaMinIgvAd+$inflMedicaAd;
-				$primaDecAd=number_format((float)$primaAd, 2, '.', ',');
-
-					$html .= "<tr>";
-						$html .= "<td align='right' colspan='5'><b>Total anual:</b></td>";
-						$html .= "<td>S/. ".$sumaanual."</td>";
-						$html .= "<td>S/. ".$sumaanualadicional."</td>";
-						$html .= "<td></td>";
-						$html .= "<td></td>";
-					$html .= "</tr>";
-					$html .= "<tr>";
-						$html .= "<td align='right' colspan='2'><b>Población personas:</b></td>";
-						$html .= "<td colspan='2'>".$poblacion."<input type='hidden' id='personas' name='personas' value='".$poblacion."'></td>";
-						$html .= "<td align='right' colspan='3'><b>Siniestralidad mensual:</b></td>";
-						$html .= "<td colspan='2'>".$siniestralidadM."<input type='hidden' id='siniMensual' name='siniMensual' value='".$siniestralidadM."'></td>";
-					$html .= "</tr>";
-					$html .= "<tr>";
-						$html .= "<td align='right' colspan='2'><b>Prima:</b></td>";
-						$html .= "<td colspan='2'>S/. ".$primaDec."</td>";
-						$html .= "<td align='right' colspan='3'><b>Prima Adicional:</b></td>";
-						$html .= "<td colspan='2'>S/. ".$primaDecAd."</td>";
-					$html .= "</tr>";
-					$html .= "<tr>";
-						$html .= "<td align='right' colspan='2'><b>Copago:</b></td>";
-						$html .= "<td colspan='2'>S/. </td>";
-						$html .= "<td align='right' colspan='3'><b>Copago Adicional:</b></td>";
-						$html .= "<td colspan='2'>S/. </td>";
-					$html .= "</tr>";
-				$html .= "</tbody>";
-			$html .= "</table>";
-		$html .= "</div>";
-
-		echo json_encode($html);	
+		echo $cadena;
 	}
 
-	public function editarCobertura(){
-		$html = null;
-		$idcotizacion = $_POST['idcotizacion'];
+	public function guardar_cotcobertura(){
+		//load session library
+		$this->load->library('session');
+
+		//restrict users to go to home if not logged in
+		if($this->session->userdata('user')){
+			//$this->load->view('home');
+
+			$user = $this->session->userdata('user');
+			extract($user);
+
+			$accion = $_POST['guardar'];
+			if($accion=='guardar'){
+
+			$menuLista = $this->menu_mdl->getMenu($idusuario);
+			$data['menu1'] = $menuLista;
+
+			$submenuLista = $this->menu_mdl->getSubMenu($idusuario);
+			$data['menu2'] = $submenuLista;
+
+			$data['nom'] = $_POST['nom'];
+			$data['id'] = $_POST['idcotizaciondetalle'];
+			$data['iddet'] = $_POST['idcotizacioncobertura'];
+			$data['item'] = $_POST['item'];
+			$data['descripcion'] = $_POST['descripcion'];
+			$data['visible'] = $_POST['visible'];
+			$data['precio'] = $_POST['precio_sugerido'];
+			$data['e_titular'] = $_POST['eventost'];
+			$data['e_adicional'] = $_POST['eventosa'];
+
+			if($_POST['inicio']==1){
+				$num1=$_POST['num'];
+				$tiempo1=$_POST['tiempo'];
+				$data['iniVig'] = $num1.' '.$tiempo1;
+			}else{
+				$data['iniVig'] = 0;
+			}
+
+			if($_POST['fin']==1){
+				$num2=$_POST['num2'];
+				$tiempo2=$_POST['tiempo2'];
+				$data['finVig'] = $num2.' '.$tiempo2;
+			}else{
+				$data['finVig'] = 0;
+			}
+
+					$caso=1;
+					$this->cotizador_mdl->insert_cobertura($data);
+					$data['iddet'] = $this->db->insert_id();
+					$prod = $_POST['prod'];
+					if(!empty($prod)){
+					$cont = count($prod);
+						for($i=0;$i<$cont;$i++){
+						$data['idprod'] = $prod[$i];
+						$this->cotizador_mdl->insert_proddet($data);
+						
+						}
+					}
+			}/*else{
+					$this->cotizador_mdl->update_cobertura($data);
+				$caso=2;
+			}
+
+			if($caso==2){
+				$user = $this->session->userdata('user');
+				extract($user);
+
+				$cob = $this->cotizador_mdl->selecionar_cobertura2($data['iddet']);
+			}	*/	
+
+			$cobertura = $this->cotizador_mdl->getCobertura($data['id']);
+			$data['cobertura'] = $cobertura;
+			$items = $this->cotizador_mdl->getItems();
+			$data['items'] = $items;
+			$data['iddet'] = 0;
+			$data['cadena'] = "";
+			$operador=$this->cotizador_mdl->get_operador();
+			$data['operador'] = $operador;
+
+			$id = $_POST['idcotizaciondetalle'];
+			$nom = $_POST['nom'];
+
+			redirect('index.php/coberturas_cotizacion/'.$id.'/'.$nom);
+		}
+		else{
+			redirect('/');
+		}		
+	}
+
+	public function cotizacion_variables($idCotDetalle, $nom)
+	{
+		//load session library
+		$this->load->library('session');
+
+		//restrict users to go to home if not logged in
+		if($this->session->userdata('user')){
+			//$this->load->view('home');
+
+			$user = $this->session->userdata('user');
+			extract($user);
+
+			$menuLista = $this->menu_mdl->getMenu($idusuario);
+			$data['menu1'] = $menuLista;
+
+			$submenuLista = $this->menu_mdl->getSubMenu($idusuario);
+			$data['menu2'] = $submenuLista;
+
+			$variables = $this->cotizador_mdl->getVariables($idCotDetalle);
+
+			$data['poblacion'] = $variables['poblacion'];
+			$data['siniestralidad'] = $variables['siniestralidad_mensual'];
+			$data['g_administrativos'] = $variables['gastos_administrativos'];
+			$data['marketing'] = $variables['gastos_marketing'];
+			$data['reserva'] = $variables['reserva'];
+			$data['inflacion'] = $variables['inflacion_medica'];
+			$data['remanente'] = $variables['remanente'];
+			$data['c_administrativos'] = $variables['costos_administrativos'];
+			$data['id'] = $idCotDetalle;
+			$data['nom'] = $nom;
+
+			$this->load->view('dsb/html/cotizador/cotizacion_variables.php',$data);
+		}
+		else{
+			redirect('/');
+		}
+	}
+
+	public function guardar_variables(){
 		$idcotizaciondetalle = $_POST['idcotizaciondetalle'];
-		$idvariableplan = $_POST['item'];
-		$texto_web = $_POST['descripcion'];
-		$eventos = $_POST['eventos'];
-		$eventosAd = $_POST['eventosAd'];
-		$costo = $_POST['costo'];
-		//$idcotizacioncobertura = $_POST['idcotizacioncobertura'];
-		$idcalcular = $_POST['idcalcular'];
-		$personas = $_POST['personas'];
-		$siniMensual = $_POST['siniMensual'];
-		
-		$detallecobertura = $this->cotizador_mdl->getCoberturaVariables($idcotizaciondetalle);
-		$cotizacionDetalle = $this->cotizador_mdl->getDetalleCobertura($idcotizaciondetalle);
-		$cotizacionDetalleArray = json_decode(json_encode($cotizacionDetalle), true);
-		$cotizacionDetallestring = array_values($cotizacionDetalleArray)[0];
-		$poblacion = $cotizacionDetallestring['poblacion_persona'];
-		$siniestralidadM = $cotizacionDetallestring['siniestralidad_mensual'];
+		$nom = $_POST['nom'];
+		$data['idcotizaciondetalle'] = $idcotizaciondetalle;
+		$data['poblacion'] = $_POST['personast'];
+		$data['siniestralidad'] = $_POST['siniestralidadt'];
+		$data['g_administrativos'] = $_POST['gastos_administrativost'];
+		$data['marketing'] = $_POST['marketingt'];
+		$data['reserva'] = $_POST['reservat'];
+		$data['inflacion'] = $_POST['inflaciont'];
+		$data['remanente'] = $_POST['remanentet'];
+		$data['c_administrativos'] = $_POST['costos_administrativost'];
 
-		$user = $this->session->userdata('user');
-		extract($user);
-
-		$html .= "<div align='center' class='col-xs-12'>";
-			$html .= "<table align='center' id='tablaDatos' class='table table-striped table-bordered table-hover'>";
-				$html .= "<thead>";
-					$html .= "<tr>";
-						$html .= "<th>Cobertura</th>";
-						$html .= "<th>Descripción</th>";
-						$html .= "<th>N° de eventos</th>";
-						$html .= "<th>N° de eventos (Adicional)</th>";
-						$html .= "<th>Costo por evento (S/.)</th>";
-						$html .= "<th>Costo anual (S/.)</th>";
-						$html .= "<th>Costo anual adicional (S/.)</th>";
-						$html .= "<th>Coaseguro</th>";
-						$html .= "<th>Opciones</th>";
-					$html .= "</tr>";
-				$html .= "</thead>";
-				$html .= "<tbody>";
-				$sumaanual = 0;
-				$sumaanualadicional = 0;
-				foreach ($detallecobertura as $dc) {
-					$html .= "<tr>";
-						$html .= "<td>".$dc->nombre_var."<input type='text' class='hidden' id='idcotizacioncobertura' name='idcotizacioncobertura[]' value='".$dc->idcotizacioncobertura."'></td>";
-						$html .= "<td>".$dc->texto_web."<input type='text' class='hidden' id='texto_web' name='texto_web[]' value='".$dc->texto_web."'></td>";
-						$html .= "<td><input type='number' id='eventos' name='eventos[]' value='".$dc->neventos."' required><input type='text' class='hidden' id='idcalcular' name='idcalcular[]' value='".$dc->idcalcular."'></td>";
-						$html .= "<td><input type='number' id='eventosAd' name='eventosAd[]' value='".$dc->neventosadicional."' required></td>";
-						$html .= "<td><input type='number' id='costo' name='costo[]' value='".$dc->costo."' required></td>";
-						$anual = $dc->neventos*$dc->costo;
-						$html .= "<td>S/. 0.00<input type='text' class='hidden' id='costoAnual' name='costoAnual[]' value='".$anual."'></td>";
-						$anualadic = $dc->neventosadicional*$dc->costo;
-						$html .= "<td>S/. 0.00<input type='text' class='hidden' id='costoAnualAdic' name='costoAnualAdic[]' value='".$anualadic."'></td>";
-						if (empty($dc->cobertura)) {
-							$html .= "<td><a class='boton fancybox' data-fancybox-width='800' data-fancybox-height='700' href='".base_url()."index.php/cot_coaseguro/".$dc->idcotizaciondetalle."' title='Agregar Coaseguro'><i class='ace-icon glyphicon glyphicon-plus red'></i></a></td>";
-						} else {
-							$html .= "<td><a href='".base_url()."index.php/del_coaseguro/".$dc->idcotizaciondetalle."' title='Eliminar Coaseguro'><i class='ace-icon glyphicon glyphicon-remove blue'></i></a>".$dc->cobertura."</td>";
-						}
-						$html .= "<td></td>";
-					$html .= "</tr>";
-					$sumaanual = $sumaanual + $anual;
-					$sumaanualadicional = $sumaanualadicional + $anualadic;
-				}
-					$html .= "<tr>";
-						$html .= "<td align='right' colspan='5'><b>Total anual:</b></td>";
-						$html .= "<td>S/. 0.00</td>";
-						$html .= "<td>S/. 0.00</td>";
-						$html .= "<td></td>";
-						$html .= "<td></td>";
-					$html .= "</tr>";
-					$html .= "<tr>";
-						$html .= "<td align='right' colspan='2'><b>Población personas:</b></td>";
-						$html .= "<td colspan='2'><input type='number' id='personas' name='personas' value='".$poblacion."'></td>";
-						$html .= "<td align='right' colspan='3'><b>Siniestralidad mensual:</b></td>";
-						$html .= "<td colspan='2'><input type='number' id='siniMensual' name='siniMensual' value='".$siniestralidadM."'></td>";
-					$html .= "</tr>";
-					$html .= "<tr>";
-						$html .= "<td align='right' colspan='2'><b>Prima:</b></td>";
-						$html .= "<td colspan='2'>S/. 0.00</td>";
-						$html .= "<td align='right' colspan='3'><b>Prima Adicional:</b></td>";
-						$html .= "<td colspan='2'>S/. 0.00</td>";
-					$html .= "</tr>";
-					$html .= "<tr>";
-						$html .= "<td align='right' colspan='2'><b>Copago:</b></td>";
-						$html .= "<td colspan='2'>S/. 0.00</td>";
-						$html .= "<td align='right' colspan='3'><b>Copago Adicional:</b></td>";
-						$html .= "<td colspan='2'>S/. 0.00</td>";
-					$html .= "</tr>";
-				$html .= "</tbody>";
-			$html .= "</table>";
-		$html .= "</div>";
-
-		echo json_encode($html);
+		$this->cotizador_mdl->up_variables($data);
+		redirect('index.php/visualizar_cotizacion/'.$idcotizaciondetalle.'/'.$nom);
 	}
 
- 	public function cot_coaseguro($id){
- 		$eventos = $this->cotizador_mdl->getEventos($id);
-		$data['nom'] = $eventos['nombre_var'];
+	public function visualizar_cotizacion($idCotDetalle, $nom){
+		//load session library
+		$this->load->library('session');
+
+		//restrict users to go to home if not logged in
+		if($this->session->userdata('user')){
+			//$this->load->view('home');
+
+			$user = $this->session->userdata('user');
+			extract($user);
+
+			$menuLista = $this->menu_mdl->getMenu($idusuario);
+			$data['menu1'] = $menuLista;
+
+			$submenuLista = $this->menu_mdl->getSubMenu($idusuario);
+			$data['menu2'] = $submenuLista;
+
+			$data['nom'] = $nom;
+			$data['id'] = $idCotDetalle;
+
+			$data['cot_detalle'] = $this->cotizador_mdl->getCoberturaDetalle($idCotDetalle);
+			$data['cot_cobertura'] = $this->cotizador_mdl->getCoberturasCalculo($idCotDetalle);
+
+			$this->load->view('dsb/html/cotizador/cotizacion_calculo.php',$data);
+		}
+		else{
+			redirect('/');
+		}
+	}
+
+	public function guardar_primas()
+	{
+		//load session library
+		$this->load->library('session');
+
+		//restrict users to go to home if not logged in
+		if($this->session->userdata('user')){
+			//$this->load->view('home');
+
+			$user = $this->session->userdata('user');
+			extract($user);
+
+			$menuLista = $this->menu_mdl->getMenu($idusuario);
+			$data['menu1'] = $menuLista;
+
+			$submenuLista = $this->menu_mdl->getSubMenu($idusuario);
+			$data['menu2'] = $submenuLista;
+			$id = $_POST['idcotizaciondetalle'];
+			$nom = $_POST['nom'];
+			$data['idcotizaciondetalle'] = $id;
+			$data['nom'] = $nom;
+			$data['titular'] = $_POST['titular'];
+			$data['adicional'] = $_POST['adicional'];
+			$this->cotizador_mdl->upPrimas($data);
+			redirect('index.php/propuesta_comercial/'.$id.'/'.$nom);
+		}
+		else{
+			redirect('/');
+		}
+	}
+
+	public function propuesta_comercial($idcotizaciondetalle, $nom){
+		//load session library
+		$this->load->library('session');
+
+		//restrict users to go to home if not logged in
+		if($this->session->userdata('user')){
+			//$this->load->view('home');
+
+			$user = $this->session->userdata('user');
+			extract($user);
+
+			$menuLista = $this->menu_mdl->getMenu($idusuario);
+			$data['menu1'] = $menuLista;
+
+			$submenuLista = $this->menu_mdl->getSubMenu($idusuario);
+			$data['menu2'] = $submenuLista;
+
+			$data['idcotizaciondetalle'] = $idcotizaciondetalle;
+			$data['nom'] = $nom;
+			$data['coberturas'] = $this->cotizador_mdl->getCoberturas2($idcotizaciondetalle);
+			$data['coberturas2'] = $this->cotizador_mdl->getCoberturas3($idcotizaciondetalle);
+			$data['cot_detalle'] = $this->cotizador_mdl->getCoberturaDetalle($idcotizaciondetalle);
+
+			$this->load->view('dsb/html/cotizador/propuesta_comercial.php',$data);
+		}
+		else{
+			redirect('/');
+		}
+	}
+
+	public function coaseguro_cotizacion($id, $nom){
+		$data['nom'] = $nom;
 		$data['id'] = $id;
 		$data['operador'] = $this->cotizador_mdl->getOperador();
 		$data['coaseguros'] = $this->cotizador_mdl->getCoaseguros($id);
-		$this->load->view('dsb/html/plan/cot_coaseguros.php',$data);
+		$this->load->view('dsb/html/cotizador/coaseguros.php',$data);
  	}
 
-  	public function reg_cotcoaseguro(){
+ 	public function reg_cotcoaseguro(){
  		$user = $this->session->userdata('user');
 		extract($user);
 		$data['idusuario'] = $idusuario;
@@ -839,13 +507,90 @@ class Cotizador_cnt extends CI_Controller {
 		$data['idoperador'] = $_POST['operador'];
 		$data['valor'] = $_POST['valor'];
 		$id = $_POST['id'];
+		$nom = $_POST['nom'];
 		$data['id'] = $id;
 
 		$this->cotizador_mdl->inCoaseguro($data);
 		echo "<script>
 				alert('Se registró el coaseguro con éxito.');
-				location.href='".base_url()."index.php/cot_coaseguro/".$id."';
+				location.href='".base_url()."index.php/coaseguro_cotizacion/".$id."/".$nom."';
 				</script>";
  	}
+
+ 	public function eventos_cotizacion($id)
+	{
+		$eventos = $this->cotizador_mdl->getEventos($id);
+		$data['nom'] = $eventos['nombre_var'];
+		$data['num'] = $eventos['num_eventos'];
+		$data['tiempo'] = $eventos['tiempo'];
+		$data['id'] = $id;
+		$this->load->view('dsb/html/cotizador/eventos.php',$data);
+	}
+
+	public function reg_evento_cotizacion()
+	{
+		$data['id'] = $_POST['id'];		
+		$accion = $_POST['guardar'];
+
+		if($accion=="guardar"){
+			$data['num_eventos'] = $_POST['numero'];
+			$data['tiempo'] = $_POST['periodo'];	
+			$this->cotizador_mdl->upEventos($data);
+			echo "<script>
+				alert('Se actualizó el número de eventos con éxito.');
+				parent.location.reload(true);
+				parent.$.fancybox.close();
+				</script>";		
+		}else{
+			$data['num_eventos']=0;
+			$data['tiempo'] ="";
+			$this->cotizador_mdl->upEventos($data);
+			echo "<script>
+				alert('Se eliminó el número de eventos con éxito.');
+				parent.location.reload(true);
+				parent.$.fancybox.close();
+				</script>";
+		}
+		
+	}
+
+	public function sol_apGerencia()
+	{
+		$data['id'] = $_POST['idcotizaciondetalle'];
+		$data['estado'] = 2;
+
+		$this->cotizador_mdl->upEstadoCot($data);
+		echo "<script>
+			alert('Se envió la solicitud de aprobación a Gerencia con éxito.');
+			location.href='".base_url()."index.php/cotizador';
+			</script>";		
+	}
+
+	public function cot_pendientes()
+	{
+		//load session library
+		$this->load->library('session');
+
+		//restrict users to go to home if not logged in
+		if($this->session->userdata('user')){
+			//$this->load->view('home');
+
+			$user = $this->session->userdata('user');
+			extract($user);
+
+			$menuLista = $this->menu_mdl->getMenu($idusuario);
+			$data['menu1'] = $menuLista;
+
+			$submenuLista = $this->menu_mdl->getSubMenu($idusuario);
+			$data['menu2'] = $submenuLista;
+
+			$data['planes2'] = $this->cotizador_mdl->getCotizaciones3();
+
+			$this->load->view('dsb/html/cotizador/cot_pendientes.php',$data);
+		}
+		else{
+			redirect('/');
+		}
+	}
  	
 }

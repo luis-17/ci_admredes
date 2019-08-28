@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html lang="en">
 	<head>
 		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
@@ -20,7 +20,13 @@
 
 		<!-- ace styles -->
 		<link rel="stylesheet" href="<?=  base_url()?>public/assets/css/ace.css" class="ace-main-stylesheet" id="main-ace-style" />
-		<!--<script type="text/javascript" src="<?=  base_url()?>public/fancybox/lib/jquery.mousewheel-3.0.6.pack.js"></script>-->
+
+		<!-- jQuery library is required, see https://jquery.com/ -->
+		<script type="text/javascript" src="<?=base_url()?>public/assets/js/jquery/jquery.js"></script>
+	
+		
+
+		<script type="text/javascript" src="<?=  base_url()?>public/fancybox/lib/jquery.mousewheel-3.0.6.pack.js"></script>
 		<!-- FancyBox -->
 		<!-- Add jQuery library -->
 		<script type="text/javascript" src="https://code.jquery.com/jquery-latest.min.js"></script>
@@ -50,14 +56,6 @@
 		<script src="<?=  base_url()?>public/assets/js/ace-extra.js"></script>
 
 		<!-- HTML5shiv and Respond.js for IE8 to support HTML5 elements and media queries -->
-
-
-			<!-- para paginacion -->
-		<script src="<?=base_url()?>public/pagination/jquery.dataTables.min.css"></script>
-		<script src="<?=base_url()?>public/pagination/jquery-1.12.4.js"></script>
-		<script src="<?=base_url()?>public/pagination/jquery.dataTables.min.js"></script>
-		<script src="<?=base_url()?>public/pagination/dataTables.bootstrap.min.js"></script>
-
 
 	</head>
 
@@ -89,128 +87,121 @@
 								<i class="ace-icon fa fa-home home-icon"></i>
 								<a href="<?=base_url()?>">Inicio</a>
 							</li>
-							<li class="active">Canales</li>
+							<li class="active"><a href="#">Planes</a></li>
+							<li><a href="<?=base_url()?>index.php/cotizador">Cotizador</a></li>
+							<li class="active">Variables</li>
 						</ul><!-- /.breadcrumb -->
 
 						<!-- /section:basics/content.searchbox -->
 					</div>
-
+					
 					<!-- /section:basics/content.breadcrumbs -->
 					<div class="page-content">
-						<!-- #section:settings.box -->
-
-						<!-- /section:settings.box -->
 						<div class="page-header">
-							<h1>
-								Consolidado de Canales de Venta
-								<small>
-									<i class="ace-icon fa fa-angle-double-right"></i>
-								</small>
+							<h1>	
+							<?=str_replace("%20"," ",$nom);?>: Variables de Cotización
 							</h1>
-						</div><!-- /.page-header -->
-
+						</div>
 						<div class="row">
-							<div class="col-xs-12">
-								<div class="widget-toolbar no-border invoice-info">
-									<a href="<?=base_url()?>index.php/canal_registrar"><button class="btn btn-white btn-info">
-										Nuevo Canal
-									</button></a>
-								</div>
-								<br/>
-								<br/>
+							<div class="col-xs-12">							
 								<!-- PAGE CONTENT BEGINS -->
-								
-								<div class="col-xs-12">
-									<div>
-									<table id="example" class="table table-striped table-bordered table-hover">
-										<thead>
-											<tr>
-												<th>ID</th>
-												<th>Tipo</th>
-												<th>RUC</th>
-												<th>Razón Social</th>
-												<th>Nombre Comercial</th>
-												<th>Estado</th>
-												<th></th>
-											</tr>
-										</thead>
-										<tbody>
-										
-										<?php foreach ($canal as $c) {?>
-											<tr>
-												<td><?=$c->idclienteempresa;?></td>
-												<td><?=$c->descripcion_cc;?></td>
-												<td><?=$c->numero_documento_cli?></td>
-												<td><?=$c->razon_social_cli?></td>
-												<td><?=$c->nombre_comercial_cli?></td>
-												<td><?php if($c->estado_cli==1){
-													echo '<a href="'.base_url().'index.php/canal_anular/'.$c->idclienteempresa.'"><span class="label label-info label-white middle">Activo</span></a>';
-													}else{
-														echo '<a href="'.base_url().'index.php/canal_activar/'.$c->idclienteempresa.'"><span class="label label-danger label-white middle">Inactivo</span></a>';
-														}?>
-												</td>
-												<td>
-													<div class="hidden-sm hidden-xs btn-group">
-														<div title="Editar Canal" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
-															&nbsp;<a href="<?=base_url()?>index.php/canal_editar/<?=$c->idclienteempresa?>">
-																<i class="ace-icon fa fa-pencil bigger-120"></i>
-															</a>
-														</div>														
-													</div>
+								<form class="form-horizontal" role="form" method="post" action="<?=base_url()?>index.php/guardar_variables">
+									<input type="hidden" id="idcotizaciondetalle" name="idcotizaciondetalle" value="<?=$id;?>" />
+									<input type="hidden" name="nom" value="<?=$nom?>">
+									<div class="form-group">
+										<label class="col-sm-3 control-label no-padding-right" for="form-field-1"> Población (N° Personas):</label>
 
-													<div class="hidden-md hidden-lg">
-														<div class="inline pos-rel">
-															<button class="btn btn-minier btn-primary dropdown-toggle" data-toggle="dropdown" data-position="auto">
-																<i class="ace-icon fa fa-cog icon-only bigger-110"></i>
-															</button>
+										<div class="col-sm-3">
+											<input type="number" id="personast" name="personast" class="col-xs-10 col-sm-5" value="<?=$poblacion?>" required><label style="color: #FF0101;">&nbsp;*</label>
+										</div>
+									</div>
 
-															<ul class="dropdown-menu dropdown-only-icon dropdown-yellow dropdown-menu-right dropdown-caret dropdown-close">	
-																<li>
-																	<div title="Editar Canal" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
-																		&nbsp;<a href="<?=base_url()?>index.php/canal_editar/<?=$c->idclienteempresa?>">
-																			<i class="ace-icon fa fa-pencil bigger-120"></i>
-																		</a>
-																	</div>
-																</li>
-															</ul>
-														</div>
-													</div>
-												</td>
-											</tr>
-										<?php } ?>
-										</tbody>
-									</table>									
-								</div><!-- PAGE CONTENT ENDS -->	
-								<script>			
-										//para paginacion
-										$(document).ready(function() {
-										$('#example').DataTable( {
-										"pagingType": "full_numbers"
-										} );
-									} );
-								</script>	
-								</div>						
+									<div class="form-group">
+										<label class="col-sm-3 control-label no-padding-right" for="form-field-1"> % Siniestralidad Mensual:</label>
+
+										<div class="col-sm-3">
+											<input type="text" id="siniestralidadt" name="siniestralidadt" class="col-xs-10 col-sm-5" value="<?=$siniestralidad?>" required><label style="color: #FF0101;">&nbsp;*</label>
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label class="col-sm-3 control-label no-padding-right" for="form-field-1"> % Gastos Administrativos:</label>
+
+										<div class="col-sm-3">
+											<input type="text" id="gastos_administrativost" name="gastos_administrativost" class="col-xs-10 col-sm-5" value="<?=$g_administrativos?>" required><label style="color: #FF0101;">&nbsp;*</label>
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label class="col-sm-3 control-label no-padding-right" for="form-field-1"> % Gastos Marketing:</label>
+
+										<div class="col-sm-3">
+											<input type="text" id="marketingt" name="marketingt" class="col-xs-10 col-sm-5" value="<?=$marketing?>" required><label style="color: #FF0101;">&nbsp;*</label>
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label class="col-sm-3 control-label no-padding-right" for="form-field-1"> % Costos Administrativos:</label>
+
+										<div class="col-sm-3">
+											<input type="text" id="costos_administrativost" name="costos_administrativost" class="col-xs-10 col-sm-5" value="<?=$c_administrativos?>" required><label style="color: #FF0101;">&nbsp;*</label>
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label class="col-sm-3 control-label no-padding-right" for="form-field-1"> % Reserva:</label>
+
+										<div class="col-sm-3">
+											<input type="text" id="reservat" name="reservat" class="col-xs-10 col-sm-5" value="<?=$reserva?>" required><label style="color: #FF0101;">&nbsp;*</label>
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label class="col-sm-3 control-label no-padding-right" for="form-field-1"> % Inflación Médica:</label>
+
+										<div class="col-sm-3">
+											<input type="text" id="inflaciont" name="inflaciont" class="col-xs-10 col-sm-5" value="<?=$inflacion?>" required><label style="color: #FF0101;">&nbsp;*</label>
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label class="col-sm-3 control-label no-padding-right" for="form-field-1"> Remanente (S/.):</label>
+
+										<div class="col-sm-3">
+											<input type="text" id="remanentet" name="remanentet" class="col-xs-10 col-sm-5" value="<?=$remanente?>" required><label style="color: #FF0101;">&nbsp;*</label>
+										</div>
+									</div>
+
+									<div class="clearfix form-actions">
+										<div class="col-md-offset-3 col-md-9">
+											<button class="btn btn-info" type="submit">
+												<i class="ace-icon fa fa-check bigger-110"></i>
+												Siguiente
+											</button>
+										</div>
+									</div>
+								</form>
+							
 							</div><!-- /.col -->
-						</div><!-- /.row -->
-					</div><!-- /.page-content -->
-				</div>
-			</div><!-- /.main-content -->
-
-			<div class="footer">
-				<div class="footer-inner">
-					<!-- #section:basics/footer -->
-					<div class="footer-content">
-						<span class="bigger-120">
-							<span class="blue bolder">Red Salud</span>
-							Application &copy; 2018
-						</span>
-
-						&nbsp; &nbsp;
+						</div>
 					</div>
+				</div><!-- /.main-content -->
+				<br/>
 
-					<!-- /section:basics/footer -->
+				<div class="footer">
+					<div class="footer-inner">
+						<!-- #section:basics/footer -->
+						<div class="footer-content">
+							<span class="bigger-120">
+								<span class="blue bolder">Red Salud</span>
+								Application &copy; 2018
+							</span>                                                              
+							&nbsp; &nbsp;
+						</div>
+
+						<!-- /section:basics/footer -->
+					</div>
 				</div>
-			</div>
 
 			<a href="#" id="btn-scroll-up" class="btn-scroll-up btn btn-sm btn-inverse">
 				<i class="ace-icon fa fa-angle-double-up icon-only bigger-110"></i>
@@ -218,8 +209,6 @@
 		</div><!-- /.main-container -->
 
 		<!-- basic scripts -->
-
-		<!-- fin scripts paginacion -->
 
 		<!--[if !IE]> -->
 		<script type="text/javascript">

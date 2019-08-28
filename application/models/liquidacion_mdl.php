@@ -83,7 +83,6 @@
 			'usuario_genera' => $data['idusuario'],
 			'liqgrupo_estado' => 0
 		);
-
 		$this->db->insert('liquidacion_grupo',$array);
 	}
 	

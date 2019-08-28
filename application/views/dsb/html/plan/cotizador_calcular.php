@@ -40,16 +40,16 @@
 
 		<script>
 			$(".fancybox")
-	    .attr('rel', 'gallery')
-	    .fancybox({
-	        type: 'iframe',
-	        autoSize : false,
-	        beforeLoad : function() {         
-	            this.width  = parseInt(this.element.data('fancybox-width'));  
-	            this.height = parseInt(this.element.data('fancybox-height'));
-	        }
-	    });
-	</script>
+	    	.attr('rel', 'gallery')
+	    	.fancybox({
+	        	type: 'iframe',
+	        	autoSize : false,
+	        	beforeLoad : function() {         
+	           		this.width  = parseInt(this.element.data('fancybox-width'));  
+	           		this.height = parseInt(this.element.data('fancybox-height'));
+	        	}
+	    	});
+		</script>
 		<!-- inline styles related to this page -->
 
 		<!-- ace settings handler -->
@@ -81,7 +81,6 @@
 						<script type="text/javascript">
 							try{ace.settings.check('breadcrumbs' , 'fixed')}catch(e){}
 						</script>
-
 						<ul class="breadcrumb">
 							<li>
 								<i class="ace-icon fa fa-home home-icon"></i>
@@ -90,7 +89,6 @@
 							<li><a href="<?=base_url()?>index.php/cotizador">Cotizador</a></li>
 							<li class="active"><?=$accion?></li>
 						</ul><!-- /.breadcrumb -->
-
 						<!-- /section:basics/content.searchbox -->
 					</div>
 					

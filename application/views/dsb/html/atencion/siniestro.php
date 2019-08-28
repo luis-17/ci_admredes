@@ -603,7 +603,7 @@
 											        <th>Proveedor</th>
 											        <th>Monto Neto a pagar</th>
 											        <th>Nº Factura</th>
-											        <th>Aprobar Pago</th>
+											        <th>Ap. Pago</th>
 											      </thead>
 											      <tbody>
 											      <?php 
@@ -622,7 +622,7 @@
 											          	<input type="hidden" id= "espe" name= "espe" value="<?php echo $idespecialidad;?>">
 											          	<input type="hidden" name="liqdetalleid<?=$cont?>" value="<?=$v->liqdetalleid?>">
 											          </td>
-											          <td><div class="input-group">
+											          <td width="130px"><div class="input-group">
 											              <span class="input-group-addon">S/.</span>
 											              <input onkeyup="calcular(<?=$cont?>,<?=$v->valor1?>,<?=$v->valor2?>,<?=$v->valor3?>,<?=$v->cobertura?>,<?=$v->copago?>,<?=$v->hasta?>)" type="number" id= "monto<?=$cont?>" name= "monto<?=$cont?>" placeholder="0,00" step="0.01" class="txtCal item1 form-control" value="<?=$v->liqdetalle_monto;?>" <?=$estado?> >
 											            </div>
@@ -642,12 +642,12 @@
 															}?>
 														</select>  
 											          </td>
-											          <td><div id="sumaNeto" class="input-group">
+											          <td  width="130px"><div id="sumaNeto" class="input-group">
 											          	<span id= "netospan<?=$cont;?>" class="input-group-addon">S/.</span>
 											          	<input type="text" id= "neto<?=$cont?>" name= "neto<?=$cont?>" class="form-control txtCal2" placeholder="0,00" value="<?=$v->liqdetalle_neto;?>" <?=$estado?> /></div>
 											          </td>
-											          <td><input type="text" id= "factura<?=$cont?>" name= "factura<?=$cont?>" class="form-control" placeholder="000-000000" value="<?=$v->liqdetalle_numfact?>" <?=$estado?> /></td>
-											          <td><input type="hidden" name="aprovpago<?=$cont?>" id="aprovpago<?=$cont?>" value="<?=$v->liqdetalle_aprovpago?>" />
+											          <td  width="200px"><input type="text" id= "factura<?=$cont?>" name= "factura<?=$cont?>" class="form-control" placeholder="000-000000" value="<?=$v->liqdetalle_numfact?>" <?=$estado?> /></td>
+											          <td  width="3%"><input type="hidden" name="aprovpago<?=$cont?>" id="aprovpago<?=$cont?>" value="<?=$v->liqdetalle_aprovpago?>" />
 											          	<input type="hidden" name="estado<?=$cont?>" id="estado<?=$cont?>" value="<?=$v->liqdetalle_aprovpago?>">
 											          	<input onclick="aprovpago(<?=$cont?>)" type="checkbox" id="pago<?=$cont?>" name="pago<?=$cont?>" <?=$estado?> <?php if($v->liqdetalle_aprovpago!=0){ echo "checked";} ?> ></td>          
 											        </tr>

@@ -171,7 +171,7 @@ class Siniestro_cnt extends CI_Controller {
 	        			<i class="ace-icon fa fa-leaf bigger-110"></i>
 							Otros Servicios
 						</h4>
-					</div>
+					  </div>
 					<div class="space-8"></div>
 								<div id="faq-list-3" class="panel-group accordion-style1 accordion-style2">';
 	        $cont = 1;
@@ -567,8 +567,7 @@ class Siniestro_cnt extends CI_Controller {
 				$liq_id2=$liq_id;	
 				$data['liq_id']=$liq_id2;
 				$this->siniestro_mdl->up_liquidacion($data);			
-			}
-			
+			}	
 
 			for($i=0;$i<$cont;$i++){
 				$data['idplandetalle'] = $_POST['idplandetalle'.$i];

@@ -1,3 +1,7 @@
+<?php 
+$user = $this->session->userdata('user');
+extract($user);
+?>
 <!DOCTYPE html>
 <html lang="en">
 	<head>
@@ -89,7 +93,8 @@
 								<i class="ace-icon fa fa-home home-icon"></i>
 								<a href="<?=base_url()?>">Inicio</a>
 							</li>
-							<li class="active">Canales</li>
+							<li class="active"><a href="#">Planes</a></li>
+							<li class="active">Cotizador</li>
 						</ul><!-- /.breadcrumb -->
 
 						<!-- /section:basics/content.searchbox -->
@@ -102,7 +107,7 @@
 						<!-- /section:settings.box -->
 						<div class="page-header">
 							<h1>
-								Consolidado de Canales de Venta
+								Planes Cotizados
 								<small>
 									<i class="ace-icon fa fa-angle-double-right"></i>
 								</small>
@@ -110,14 +115,7 @@
 						</div><!-- /.page-header -->
 
 						<div class="row">
-							<div class="col-xs-12">
-								<div class="widget-toolbar no-border invoice-info">
-									<a href="<?=base_url()?>index.php/canal_registrar"><button class="btn btn-white btn-info">
-										Nuevo Canal
-									</button></a>
-								</div>
-								<br/>
-								<br/>
+							<div class="col-xs-12">								
 								<!-- PAGE CONTENT BEGINS -->
 								
 								<div class="col-xs-12">
@@ -126,69 +124,88 @@
 										<thead>
 											<tr>
 												<th>ID</th>
-												<th>Tipo</th>
-												<th>RUC</th>
-												<th>Razón Social</th>
-												<th>Nombre Comercial</th>
+												<th>Responsable de Cuenta</th>
+												<th>Cliente</th>
+												<th>Plan</th>
 												<th>Estado</th>
 												<th></th>
 											</tr>
 										</thead>
 										<tbody>
 										
-										<?php foreach ($canal as $c) {?>
+										<?php 
+										foreach($planes2 as $p){?>
 											<tr>
-												<td><?=$c->idclienteempresa;?></td>
-												<td><?=$c->descripcion_cc;?></td>
-												<td><?=$c->numero_documento_cli?></td>
-												<td><?=$c->razon_social_cli?></td>
-												<td><?=$c->nombre_comercial_cli?></td>
-												<td><?php if($c->estado_cli==1){
-													echo '<a href="'.base_url().'index.php/canal_anular/'.$c->idclienteempresa.'"><span class="label label-info label-white middle">Activo</span></a>';
-													}else{
-														echo '<a href="'.base_url().'index.php/canal_activar/'.$c->idclienteempresa.'"><span class="label label-danger label-white middle">Inactivo</span></a>';
-														}?>
+												<td><?=$p->idcotizacion?></td>
+												<td><?=$p->username?></td>
+												<td><?=$p->nombre_comercial_cli?></td>
+												<td><?=$p->nombre_cotizacion?></td>
+												<td><?php
+													switch ($p->estado) {
+													 	case '1':
+													 		echo '<a href="#"><span class="label label-white middle">Generada</span></a>';
+													 		break;
+													 	case '2':
+													 		echo '<a href="#"><span class="label label-warning label-white middle">Esperando Aprobación</span></a>';
+													 		break;
+													 	case '3':
+													 		echo '<a href="#"><span class="label label-danger label-white middle">Rechazó Gerencia</span></a>';
+													 		break;
+													 	case '4':
+													 		echo '<a href="#"><span class="label label-success label-white middle">Aprobó Gerencia</span></a>';
+													 		break;
+													 	case '5':
+													 		echo '<a href="#"><span class="label label-danger label-white middle">Rechazó Cliente</span></a>';
+													 		break;
+													 	case '6':
+													 		echo '<a href="#"><span class="label label-info label-white middle">Aprobó Cliente</span></a>';
+													 		break;
+													 	default:
+													 		# code...
+													 		break;
+													 }
+													 ?>
 												</td>
 												<td>
 													<div class="hidden-sm hidden-xs btn-group">
-														<div title="Editar Canal" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
-															&nbsp;<a href="<?=base_url()?>index.php/canal_editar/<?=$c->idclienteempresa?>">
-																<i class="ace-icon fa fa-pencil bigger-120"></i>
-															</a>
-														</div>														
-													</div>
-
-													<div class="hidden-md hidden-lg">
-														<div class="inline pos-rel">
-															<button class="btn btn-minier btn-primary dropdown-toggle" data-toggle="dropdown" data-position="auto">
-																<i class="ace-icon fa fa-cog icon-only bigger-110"></i>
-															</button>
-
-															<ul class="dropdown-menu dropdown-only-icon dropdown-yellow dropdown-menu-right dropdown-caret dropdown-close">	
-																<li>
-																	<div title="Editar Canal" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
-																		&nbsp;<a href="<?=base_url()?>index.php/canal_editar/<?=$c->idclienteempresa?>">
-																			<i class="ace-icon fa fa-pencil bigger-120"></i>
-																		</a>
-																	</div>
-																</li>
-															</ul>
+														<div title="Ver Cotización" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
+														<a href="<?=base_url()?>index.php/propuesta_comercial/<?=$p->idcotizacion?>/<?=$p->nombre_cotizacion?>">
+															<i class="ace-icon fa fa-eye bigger-120 blue"></i>
+														</a>
 														</div>
 													</div>
-												</td>
-											</tr>
-										<?php } ?>
+
+														<div class="hidden-md hidden-lg">
+															<div class="inline pos-rel">
+																<button class="btn btn-minier btn-info dropdown-toggle" data-toggle="dropdown" data-position="auto">
+																	<i class="ace-icon fa fa-cog icon-only bigger-110"></i>
+																</button>
+
+																<ul class="dropdown-menu dropdown-only-icon dropdown-yellow dropdown-menu-right dropdown-caret dropdown-close">
+																		<li>
+																			<div title="Ver Cotización" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
+																				<a class="boton fancybox" href="<?=base_url()?>index.php/plan_cobertura/<?=$p->idcotizacion?>/<?=$p->nombre_cotizacion?>" data-fancybox-width="950" data-fancybox-height="690">
+																					<i class="ace-icon fa fa-eye bigger-120 blue"></i>
+																				</a>
+																			</div>
+																		</li>
+																	</ul>
+																</div>
+															</div>
+														</td>
+													</tr>
+												<?php }?>
 										</tbody>
-									</table>									
+									</table>							
 								</div><!-- PAGE CONTENT ENDS -->	
-								<script>			
+									<script>			
 										//para paginacion
 										$(document).ready(function() {
 										$('#example').DataTable( {
 										"pagingType": "full_numbers"
 										} );
 									} );
-								</script>	
+									</script>	
 								</div>						
 							</div><!-- /.col -->
 						</div><!-- /.row -->

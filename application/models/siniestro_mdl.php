@@ -777,21 +777,21 @@
 	function getCoberturasFactura($idsiniestro)
 	{
 		$query = $this->db->query("select pd.idplandetalle, vp.nombre_var, texto_web, pe.finVig, total_vez, vez_actual, tiempo, num_eventos, case when idsiniestrodetalle is null then 'disabled' else '' end as estado, coalesce(pc1.valor,0) as valor1, coalesce(pc2.valor,0) as valor2, coalesce(pc3.valor,0) as valor3, coalesce(pc1.idoperador,0) as cobertura, coalesce(pc2.idoperador,0) as copago, coalesce(pc3.idoperador,0) as hasta,DATE_ADD(ca.cert_iniVig, INTERVAL p.dias_carencia DAY) as cert_iniVig, DATE_ADD(ca.cert_finVig, INTERVAL p.dias_mora DAY) AS cert_finVig, pd.iniVig, pd.finVig, pd.idvariableplan, c.cert_id, a.aseg_id, ca.certase_id, cobertura
-from siniestro s 
-inner join certificado c on s.idcertificado=c.cert_id 
-inner join asegurado a on a.aseg_id=s.idasegurado
-inner join certificado_asegurado ca on ca.aseg_id=a.aseg_id and ca.cert_id=c.cert_id
-inner join plan p on p.idplan=c.plan_id 
-inner join plan_detalle pd on pd.idplan=p.idplan
-left join periodo_evento pe on pe.certase_id=ca.certase_id and pd.idplandetalle=pe.idplandetalle
-left join siniestro_detalle sd on sd.idplandetalle=pd.idplandetalle and s.idsiniestro=sd.idsiniestro
-LEFT JOIN plan_coaseguro pc1 on pc1.idplandetalle=pd.idplandetalle and pc1.idoperador=1 and pc1.estado=1
-LEFT JOIN plan_coaseguro pc2 on pc2.idplandetalle=pd.idplandetalle and pc2.idoperador=2 and pc2.estado=1
-LEFT JOIN plan_coaseguro pc3 on pc3.idplandetalle=pd.idplandetalle and pc3.idoperador=3 and pc3.estado=1
-left join (select GROUP_CONCAT(concat(' ',descripcion,' ',valor)) as cobertura, idplandetalle from plan_coaseguro pc inner join operador o on pc.idoperador=o.idoperador
-where pc.estado=1 group by idplandetalle)a on a.idplandetalle=pd.idplandetalle
-inner join variable_plan vp on vp.idvariableplan=pd.idvariableplan
-where s.idsiniestro=$idsiniestro and pd.idplandetalle in (select idplandetalle from plan_coaseguro where estado=1)");
+			from siniestro s 
+			inner join certificado c on s.idcertificado=c.cert_id 
+			inner join asegurado a on a.aseg_id=s.idasegurado
+			inner join certificado_asegurado ca on ca.aseg_id=a.aseg_id and ca.cert_id=c.cert_id
+			inner join plan p on p.idplan=c.plan_id 
+			inner join plan_detalle pd on pd.idplan=p.idplan
+			left join periodo_evento pe on pe.certase_id=ca.certase_id and pd.idplandetalle=pe.idplandetalle
+			left join siniestro_detalle sd on sd.idplandetalle=pd.idplandetalle and s.idsiniestro=sd.idsiniestro
+			LEFT JOIN plan_coaseguro pc1 on pc1.idplandetalle=pd.idplandetalle and pc1.idoperador=1 and pc1.estado=1
+			LEFT JOIN plan_coaseguro pc2 on pc2.idplandetalle=pd.idplandetalle and pc2.idoperador=2 and pc2.estado=1
+			LEFT JOIN plan_coaseguro pc3 on pc3.idplandetalle=pd.idplandetalle and pc3.idoperador=3 and pc3.estado=1
+			left join (select GROUP_CONCAT(concat(' ',descripcion,' ',valor)) as cobertura, idplandetalle from plan_coaseguro pc inner join operador o on pc.idoperador=o.idoperador
+			where pc.estado=1 group by idplandetalle)a on a.idplandetalle=pd.idplandetalle
+			inner join variable_plan vp on vp.idvariableplan=pd.idvariableplan
+			where s.idsiniestro=$idsiniestro and pd.idplandetalle in (select idplandetalle from plan_coaseguro where estado=1)");
 		return $query->result();
 	}
 }

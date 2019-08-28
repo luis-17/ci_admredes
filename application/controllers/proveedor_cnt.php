@@ -186,8 +186,8 @@ class Proveedor_cnt extends CI_Controller {
 					
 					$mail = new PHPMailer;	
 					$mail->isSMTP();
-			        $mail->Host     = 'relay-hosting.secureserver.net';
-			       	//$mail->Host = 'localhost';
+			        //$mail->Host     = 'relay-hosting.secureserver.net';
+			       	$mail->Host = 'localhost';
 			        $mail->SMTPAuth = false;
 			        $mail->Username = '';
 			        $mail->Password = '';
@@ -367,8 +367,8 @@ class Proveedor_cnt extends CI_Controller {
 					
 					$mail = new PHPMailer;	
 					$mail->isSMTP();
-			        $mail->Host     = 'relay-hosting.secureserver.net';
-			       	//$mail->Host = 'localhost';
+			        //$mail->Host     = 'relay-hosting.secureserver.net';
+			       	$mail->Host = 'localhost';
 			        $mail->SMTPAuth = false;
 			        $mail->Username = '';
 			        $mail->Password = '';
@@ -666,8 +666,8 @@ class Proveedor_cnt extends CI_Controller {
 					
 					$mail = new PHPMailer;	
 					$mail->isSMTP();
-			        $mail->Host     = 'relay-hosting.secureserver.net';
-			       	//$mail->Host = 'localhost';
+			        //$mail->Host     = 'relay-hosting.secureserver.net';
+			       	$mail->Host = 'localhost';
 			        $mail->SMTPAuth = false;
 			        $mail->Username = '';
 			        $mail->Password = '';
@@ -1333,6 +1333,64 @@ class Proveedor_cnt extends CI_Controller {
 
 						
 
+ 	}
+
+ 	public function red_medica2(){
+ 		$proveedores2 = $this->proveedor_mdl->getProveedores2();
+
+				// aquí empieza
+
+				date_default_timezone_set('America/Lima');
+				$hoy = date('d/m/y H:i');
+				$anio = date('Y');
+				$this->load->library('Pdf2');
+		        $this->pdf = new Pdf2();
+
+					    $this->pdf->AddPage();
+			          	$this->pdf->SetFont('Arial','I',10); 
+			          	$this->pdf->MultiCell(0,6,'Fecha: '.$hoy,0,'R',false);
+			          	$this->pdf->Ln(8);
+			          	$this->pdf->Image(base_url().'/public/assets/avatars/logo.jpg',78,35,200);			          	
+	    				$this->pdf->Ln(90);
+			          	$this->pdf->SetFont('Helvetica','B',48);
+	    				$this->pdf->SetTextColor(1,178,243); 
+	    				$this->pdf->MultiCell(0,60, utf8_decode('RED MÉDICA '.$anio),0,'C',false);
+	    				$cont=0;
+	    				foreach ($proveedores2 as $p) {
+	    					if($cont==0){
+	    						$this->pdf->AddPage();
+	    						$this->pdf->SetFillColor(1,178,243);
+			    				$this->pdf->SetTextColor(255,255,255);
+			    				$this->pdf->SetFont('Arial','B',8);
+			    				$this->pdf->Cell(30,7,utf8_decode("DEPARTAMENTO"),1,0,'C',true);
+			    				$this->pdf->Cell(30,7,utf8_decode("PROVINCIA"),1,0,'C',true);
+			    				$this->pdf->Cell(35,7,utf8_decode("DISTRITO"),1,0,'C',true);
+			    				$this->pdf->Cell(100,7,utf8_decode("ESTABLECIMIENTO"),1,0,'C',true);
+			    				$this->pdf->Cell(141,7,utf8_decode("DIRECCIÓN"),1,0,'C',true);
+			    				$this->pdf->Ln();
+	    					}
+	    					$this->pdf->SetFillColor(255,255,255);
+			    			$this->pdf->SetTextColor(0,0,0);
+			    			$this->pdf->SetFont('Arial','',8);
+			    			$this->pdf->Cell(30,7,utf8_decode($p->dep),1,0,'L',true);
+			    			$this->pdf->Cell(30,7,utf8_decode($p->prov),1,0,'L',true);
+			    			$this->pdf->Cell(35,7,utf8_decode($p->dist),1,0,'L',true);
+			    			$this->pdf->SetFont('Arial','B',8);
+			    			$this->pdf->Cell(100,7,utf8_decode($p->nombre_comercial_pr),1,0,'L',true);
+			    			$this->pdf->SetFont('Arial','',8);
+			    			$this->pdf->Cell(141,7,utf8_decode($p->direccion_pr),1,0,'L',true);
+			    			$this->pdf->Ln();
+	    					$cont ++;
+	    					if($cont==24){
+	    						$cont=0;
+	    					}
+
+	    				}
+	    				$this->pdf->Ln(3);
+	    				$this->pdf->SetFont('Arial','B',9);
+	    				$this->pdf->MultiCell(0,10, utf8_decode('*La red médica está sujeta a cambios sin previo aviso. Cualquier duda comunicarse con RED SALUD al 014453019 Anexo: 100.'),1,'L',false);
+
+						$this->pdf->Output("red_medica.pdf", 'D');
  	}
 
 }

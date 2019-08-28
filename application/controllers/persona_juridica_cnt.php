@@ -239,7 +239,8 @@ class persona_juridica_cnt extends CI_Controller {
 			
 			$mail = new PHPMailer;	
 			$mail->isSMTP();
-	        $mail->Host     = 'relay-hosting.secureserver.net';;
+	        //$mail->Host     = 'relay-hosting.secureserver.net';
+	        $mail->Host     = 'localhost';
 	        $mail->SMTPAuth = false;
 	        $mail->Username = '';
 	        $mail->Password = '';

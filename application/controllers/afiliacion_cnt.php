@@ -437,8 +437,8 @@ class Afiliacion_cnt extends CI_Controller {
 		
 		$mail = new PHPMailer;
 		$mail->isSMTP();
-	    $mail->Host     = 'relay-hosting.secureserver.net';
-	    //$mail->Host     = 'localhost';
+	    //$mail->Host     = 'relay-hosting.secureserver.net';
+	    $mail->Host     = 'localhost';
 	    $mail->SMTPAuth = false;
 	    $mail->Username = '';
 	    $mail->Password = '';

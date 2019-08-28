@@ -83,7 +83,9 @@
 										<div style="text-align: right;" class="col-xs-12">											 
 			  								<div class="">
 												<h4 class="">
-													 <a class="" title="Descargar Red Médica" href="<?=base_url()?>index.php/red_medica"><img style="width: 35px;" src="<?=base_url()?>public/assets/images/aqui.gif"/> <b>Descargar Red Médica<b></a>													
+													<b>Descargar Red Médica<b>
+													<a class="" title="Descargar Red Médica" href="<?=base_url()?>index.php/red_medica"><img style="width: 35px;" src="<?=base_url()?>public/assets/images/xls.png"/></a>	
+													<a class="" title="Descargar Red Médica" href="<?=base_url()?>index.php/red_medica2"><img style="width: 35px;" src="<?=base_url()?>public/assets/images/pdf.png"/></a>												
 												</h4>
 											</div>											
 										</div>

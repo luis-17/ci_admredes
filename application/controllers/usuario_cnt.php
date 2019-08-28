@@ -256,8 +256,8 @@ class usuario_cnt extends CI_Controller {
 	        //$mail->Host     = 'relay-hosting.secureserver.net';
 	       	$mail = new PHPMailer;
 			$mail->isSMTP();
-	        $mail->Host     = 'relay-hosting.secureserver.net';
-	       	//$mail->Host = 'localhost';
+	        //$mail->Host     = 'relay-hosting.secureserver.net';
+	       	$mail->Host = 'localhost';
 	        $mail->SMTPAuth = false;
 	        $mail->SMTPSecure = false;
 	        $mail->Username = '';

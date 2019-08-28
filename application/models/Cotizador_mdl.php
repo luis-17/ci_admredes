@@ -7,46 +7,34 @@
  }
 
  	function getCotizaciones(){
- 		$output = '';
- 		$this->db->select('*');
- 		$this->db->from('cotizacion c');
- 		$this->db->join('cliente_empresa ce','ce.idclienteempresa=c.idclienteempresa');
- 		$this->db->join('cotizacion_usuario cu','cu.idcotizacion=c.idcotizacion','left');
- 		$this->db->order_by("nombre_comercial_cli, nombre_cotizacion");
-
-	 $planes = $this->db->get();
-	 return $planes->result();
+ 		$planes = $this->db->query("select c.idcotizacion,  nombre_comercial_cli, cd.nombre_cotizacion, cd.estado,
+				(select cd.idcotizaciondetalle from cotizacion_detalle cd where cd.idcotizacion=c.idcotizacion order by cd.idcotizaciondetalle desc limit 1) as idcotizaciondetalle, cu.idusuario
+				from cotizacion c 
+				inner join cotizacion_detalle cd on c.idcotizacion=cd.idcotizacion
+				inner join cliente_empresa ce on ce.idclienteempresa=c.idclienteempresa
+				inner join cotizacion_usuario cu on cu.idcotizaciondetalle=cd.idcotizaciondetalle");
+	 	return $planes->result();
  	}
-
+ 	
  	function getCotizaciones2(){
- 		$output = '';
- 		$this->db->select('*');
- 		$this->db->select("(select GROUP_CONCAT(concat(case when tipo_responsable='P' then 'Principal: ' else 'Apoyo: ' end, nombres_col)) from cotizacion c
-						inner join cotizacion_usuario cu on c.idcotizacion=cu.idcotizacion
-						inner join usuario u on u.idusuario=cu.idusuario
-						inner join colaborador co on co.idusuario=u.idusuario where c.idcotizacion=ct.idcotizacion) as responsable");
- 		$this->db->from('cotizacion ct');
- 		$this->db->join('cliente_empresa ce','ce.idclienteempresa=ct.idclienteempresa');
- 		$this->db->order_by("ct.nombre_cotizacion, ct.nombre_cotizacion");
-
-	 $planes = $this->db->get();
-	 return $planes->result();
+ 		$planes = $this->db->query("select c.idcotizacion,  nombre_comercial_cli, cd.nombre_cotizacion, cd.estado,
+				(select cd.idcotizaciondetalle from cotizacion_detalle cd where cd.idcotizacion=c.idcotizacion order by cd.idcotizaciondetalle desc limit 1) as idcotizaciondetalle
+				from cotizacion c 
+				inner join cotizacion_detalle cd on c.idcotizacion=cd.idcotizacion
+				inner join cliente_empresa ce on ce.idclienteempresa=c.idclienteempresa");
+		return $planes->result();
  	}
 
  	function getCotizaciones3(){
- 		$output = '';
- 		$this->db->select('*');
- 		$this->db->select("(select GROUP_CONCAT(concat(case when tipo_responsable='P' then 'Principal: ' else 'Apoyo: ' end, nombres_col)) from cotizacion c
-						inner join cotizacion_usuario cu on c.idcotizacion=cu.idcotizacion
-						inner join usuario u on u.idusuario=cu.idusuario
-						inner join colaborador co on co.idusuario=u.idusuario where c.idcotizacion=ct.idcotizacion) as responsable");
- 		$this->db->from('cotizacion ct');
- 		$this->db->join('cliente_empresa ce','ce.idclienteempresa=ct.idclienteempresa');
- 		$this->db->order_by("idcotizacion DESC");
- 		$this->db->limit(1);
-
-	 $planes = $this->db->get();
-	 return $planes->result();
+ 		$planes = $this->db->query("select c.idcotizacion,  nombre_comercial_cli, cd.nombre_cotizacion, cd.estado, u.username,
+				(select cd.idcotizaciondetalle from cotizacion_detalle cd where cd.idcotizacion=c.idcotizacion order by cd.idcotizaciondetalle desc limit 1) as idcotizaciondetalle
+				from cotizacion c 
+				inner join cotizacion_detalle cd on c.idcotizacion=cd.idcotizacion
+				inner join cliente_empresa ce on ce.idclienteempresa=c.idclienteempresa
+				inner join cotizacion_usuario cu on cu.idcotizaciondetalle=cd.idcotizaciondetalle
+				inner join usuario u on u.idusuario=cu.idusuario
+				where cd.estado=2");
+		return $planes->result();
  	}
 
  	function getClientes(){
@@ -58,65 +46,19 @@
  	return $clientes->result();
  	}
 
- 	function insert_cotizacion($data){
- 		$array = array(
-			'nombre_cotizacion' => $data['nombre_cotizacion'],
-			'codigo_cotizacion' => $data['codigo_cotizacion'],
-			'idclienteempresa' => $data['cliente'],
-			'dias_carencia' => $data['carencia'],
-			'dias_mora' => $data['mora'],
-			'dias_atencion' => $data['atencion'],
-			//'prima_monto' => $data['prima'],
-			//'prima_adicional' => $data['prima_adicional'],
-			'num_afiliados' => $data['num_afiliados'],
-			'flg_activar' => $data['flg_activar'],
-			'flg_dependientes' => $data['flg_dependientes'],
-			'flg_cancelar' => $data['flg_cancelar'],
-			'idred' => 1,
-			'estado_cotizacion' => 1
- 				 );
-		$this->db->insert('cotizacion',$array);
- 	}
 
- 	function getCotDetalle($idcotizacion){
- 		$this->db->select('*');
- 		$this->db->from('cotizacion c');
- 		$this->db->join('cotizacion_detalle cd','c.idcotizacion = cd.idcotizacion');
- 		$this->db->where('c.idcotizacion',$idcotizacion);
+ 	function getCobertura($id)
+ 	{
+ 		$this->db->select("dp.idcotizacioncobertura, dp.texto_web, dp.idcotizaciondetalle,dp.idvariableplan,dp.texto_web, dp.visible, dp.estado_pd, dp.tiempo, dp.num_eventos, vp.nombre_var, case when iniVig =0 then 0 else SUBSTRING_INDEX(iniVig,' ',1)end as num11, case when iniVig=0 then '' else SUBSTRING_INDEX(iniVig,' ',-1)end as tiempo11, case when finVig =0 then 0 else SUBSTRING_INDEX(finVig,' ',1)end as num22, case when finVig=0 then '' else SUBSTRING_INDEX(finVig,' ',-1)end as tiempo22, cobertura");
+ 		$this->db->from('cotizacion_cobertura dp'); 		
+ 		$this->db->join('variable_plan vp','dp.idvariableplan=vp.idvariableplan');
+ 		$this->db->join("(select GROUP_CONCAT(concat(' ',descripcion,' ',valor)) as cobertura, idcotizacioncobertura from cotizacion_coaseguro pc inner join operador o on pc.idoperador=o.idoperador
+ 			where pc.estado=1 group by idcotizacioncobertura)a",'a.idcotizacioncobertura=dp.idcotizacioncobertura','left');
+ 		$this->db->where('dp.idcotizaciondetalle',$id); 		
+ 		$this->db->order_by("dp.idcotizacioncobertura ");
 
- 	$items = $this->db->get();
- 	return $items->result();
- 	}
-
- 	function insert_preDetalle($idcotizacion, $numero_cot){
-		$this->db->set('idcotizacion', $idcotizacion);
-		$this->db->set('numero_cot', $numero_cot);
-		$this->db->set('estado', 0);
-		$this->db->insert('cotizacion_detalle');
- 	}
-
- 	function inCotiUsuario($data){
- 		$array = array('idusuario' => $data['idusuario'], 'tipo_responsable' => $data['tiporesponsable'], 'idcotizacion' => $data['idcotizacion']);
- 		$this->db->insert('cotizacion_usuario',$array);
- 	}
-
-  	function update_cotizacion($data){
- 		$array = array(
-			'nombre_cotizacion' => $data['nombre_cotizacion'],
-			'codigo_cotizacion' => $data['codigo_cotizacion'],
-			'idclienteempresa' => $data['cliente'],
-			'dias_carencia' => $data['carencia'],
-			'dias_mora' => $data['mora'],
-			'dias_atencion' => $data['atencion'],
-			//'prima_monto' => $data['prima'],
-			//'prima_adicional' => $data['prima_adicional'],
-			'num_afiliados' => $data['num_afiliados'],
-			'flg_activar' => $data['flg_activar'],
-			'flg_dependientes' => $data['flg_dependientes'],
-			'flg_cancelar' => $data['flg_cancelar']
-		);
-		$this->db->where('idcotizacion',$data['idcotizacion']);
-		return $this->db->update('cotizacion', $array);
+ 	$cobertura = $this->db->get();
+ 	return $cobertura->result();
  	}
 
  	function getItems(){
@@ -128,82 +70,112 @@
  	return $items->result();
  	}
 
- 	function getCobertura($id){
- 		$this->db->select("dp.idcotizacioncobertura, dp.idcotizaciondetalle, dp.idvariableplan, dp.valor_detalle, dp.simbolo_detalle, dp.texto_web, dp.visible, dp.estado_pd, dp.flg_liquidacion, dp.tiempo, dp.num_eventos, vp.nombre_var, case when iniVig =0 then 0 else SUBSTRING_INDEX(iniVig,' ',1)end as num11, case when iniVig=0 then '' else SUBSTRING_INDEX(iniVig,' ',-1)end as tiempo11, case when finVig=0 then 0 else SUBSTRING_INDEX(finVig,' ',1)end as num22, case when finVig=0 then '' else SUBSTRING_INDEX(finVig,' ',-1)end as tiempo22, cobertura");
- 		$this->db->from('cotizacion_cobertura dp');
- 		$this->db->join('variable_plan vp','dp.idvariableplan=vp.idvariableplan');
- 		$this->db->join("(select GROUP_CONCAT(concat(' ',descripcion,' ',valor)) as cobertura, idcotizacioncobertura from cotizacion_coaseguro pc inner join operador o on pc.idoperador=o.idoperador WHERE pc.estado=1 group by idcotizacioncobertura)a",'a.idcotizacioncobertura=dp.idcotizacioncobertura','left');
- 		$this->db->where('dp.idcotizaciondetalle',$id); 		
- 		$this->db->order_by("dp.idcotizacioncobertura ");
+ 	function get_operador()
+ 	{
+ 		$this->db->select('*');
+ 		$this->db->from('operador');
 
- 	$cobertura = $this->db->get();
- 	return $cobertura->result();
+ 		$query=$this->db->get();
+ 		return $query->result();
  	}
 
- 	function getCoberturaVariables($id){
- 		$this->db->select("dp.idcotizacioncobertura, dp.idcotizaciondetalle, dp.idvariableplan, dp.valor_detalle, dp.simbolo_detalle, dp.texto_web, dp.visible, dp.estado_pd, dp.flg_liquidacion, dp.tiempo, dp.num_eventos, vp.nombre_var, cv.neventos, cv.neventosadicional, cv.costo, cv.idcalcular, cobertura");
- 		$this->db->from('cotizacion_cobertura dp');
- 		$this->db->join('variable_plan vp','dp.idvariableplan=vp.idvariableplan');
- 		$this->db->join('cotizacion_detalle cd','dp.idcotizaciondetalle = cd.idcotizaciondetalle');
- 		$this->db->join('cotizacion_variables cv','dp.idcotizacioncobertura = cv.idcotizacioncobertura','left');
- 		$this->db->join("(select GROUP_CONCAT(concat(' ',descripcion,' ',valor)) as cobertura, idcotizacioncobertura from cotizacion_coaseguro pc inner join operador o on pc.idoperador=o.idoperador WHERE pc.estado=1 group by idcotizacioncobertura)a",'a.idcotizacioncobertura=dp.idcotizacioncobertura','left');
- 		$this->db->where('dp.idcotizaciondetalle',$id); 		
- 		$this->db->order_by("dp.idcotizacioncobertura");
+ 	function get_productos($item){
+ 		$this->db->select("idproducto,descripcion_prod");
+ 		$this->db->from("producto p");
+ 		$this->db->join("variable_plan vp","p.idvariableplan=vp.idvariableplan");
+ 		$this->db->where("vp.idvariableplan",$item);
+ 		$this->db->where("estado_prod","1");
+ 		$this->db->order_by("descripcion_prod","asc");
 
- 	$cobertura = $this->db->get();
- 	return $cobertura->result();
+ 		$query = $this->db->get();
+ 		return $query->result();
  	}
 
- 	function getDetalleCobertura($id){
- 		$this->db->select("*");
- 		$this->db->from("cotizacion_detalle");
- 		$this->db->where("idcotizacion",$id);
-
- 		$cobertura = $this->db->get();
- 		return $cobertura->result();
- 	}
-
- 	function insertCobertura($idcotizaciondetalle, $idvariableplan, $texto_web){
-		$this->db->set('idcotizaciondetalle', $idcotizaciondetalle);
-		$this->db->set('idvariableplan', $idvariableplan);
-		$this->db->set('texto_web', $texto_web);
-		$this->db->insert('cotizacion_cobertura');
- 	}
-
-  	function insertVariables($neventos, $neventosadicional, $costo, $idcotizacioncobertura){
-		$this->db->set('neventos', $neventos);
-		$this->db->set('neventosadicional', $neventosadicional);
-		$this->db->set('costo', $costo);
-		$this->db->set('idcotizacioncobertura', $idcotizacioncobertura);
-		$this->db->insert('cotizacion_variables');
- 	}
-
-	function updateVariables($neventos, $neventosadicional, $costo, $idcotizacioncobertura, $idcalcular){
-		$this->db->set("neventos", $neventos);
-		$this->db->set("neventosadicional", $neventosadicional);
-		$this->db->set("costo", $costo);
-		$this->db->set("idcotizacioncobertura", $idcotizacioncobertura);
-		$this->db->where("idcalcular=".$idcalcular);
-		$this->db->update("cotizacion_variables"); 
-	}
-
-	function inserteDetalles($pobloacion_persona, $siniestralidad_mensual, $idcotizaciondetalle){
-		$this->db->set("poblacion_persona", $pobloacion_persona);
-		$this->db->set("siniestralidad_mensual", $siniestralidad_mensual);
-		$this->db->where("idcotizaciondetalle=".$idcotizaciondetalle);		
-		$this->db->insert("cotizacion_detalle"); 
-	}
-
-	function updateDetalles($pobloacion_persona, $siniestralidad_mensual, $idcotizaciondetalle){
-		$this->db->set("poblacion_persona", $pobloacion_persona);
-		$this->db->set("siniestralidad_mensual", $siniestralidad_mensual);
-		$this->db->where("idcotizaciondetalle=".$idcotizaciondetalle);
-		$this->db->update("cotizacion_detalle"); 
-	}
-
- 	function getEventos($id){
- 		$query = $this->db->query("select * from cotizacion_cobertura cc inner join variable_plan vp on cc.idvariableplan=vp.idvariableplan where cc.idcotizacioncobertura=$id");
+ 	function get_precio($id){
+ 		$query = $this->db->query("select coalesce(precio_sugerido,0)as precio_sugerido from variable_plan where idvariableplan=$id");
  		return $query->row_array();
+ 	}
+
+ 	function in_Cotizacion($data){
+ 		$array = array(
+ 			'idclienteempresa' => $data['cliente'], 
+ 			'nombre_cotizacion' => $data['nombre_plan'],
+ 			'estado_cotizacion' => 1
+ 		);
+ 		$this->db->insert("cotizacion",$array);
+ 	}
+
+ 	function in_CotDetalle($data){
+ 		$array = array(
+ 			'idcotizacion' => $data['idcotizacion'],
+ 			'estado' => 1,
+ 			'nombre_cotizacion' => $data['nombre_plan'],
+ 			'dias_carencia' => $data['carencia'],
+ 			'dias_mora' => $data['mora'],
+ 			'dias_atencion' => $data['atencion'],
+ 			'num_afiliados' => $data['num_afiliados'],
+ 			'tipo_plan' => $data['tipo_plan'],
+ 			'tipo_cotizacion' => $data['tipo_cotizacion']
+ 		);
+ 		$this->db->insert("cotizacion_detalle",$array);
+ 	}
+
+ 	function inCotUsuario($data){
+ 		$array = array(
+ 			'idcotizaciondetalle' => $data['idCotDetalle'], 
+ 			'idusuario' => $data['idusuario'],
+ 			'tipo_responsable' => $data['tiporesponsable']
+ 		);
+ 		$this->db->insert("cotizacion_usuario",$array);
+ 	}
+
+ 	function getEstado($id){
+ 		$query = $this->db->query("select estado from cotizacion_detalle where idcotizaciondetalle=$id");
+ 		return $query->row_array();
+ 	}
+
+ 	function insert_cobertura($data){
+ 		$array = array(
+				 'idcotizaciondetalle' => $data['id'],
+				 'idvariableplan' => $data['item'],
+				 'texto_web' => $data['descripcion'],
+				 'visible' => $data['visible'],
+				 'iniVig' => $data['iniVig'],
+				 'finVig' => $data['finVig'],
+				 'precio' => $data['precio'],
+				 'eventos_titular' => $data['e_titular'],
+				 'eventos_adicional' => $data['e_adicional']			 
+ 				 );
+		$this->db->insert('cotizacion_cobertura',$array);
+ 	}
+
+ 	function insert_proddet($data){
+ 		$array = array(
+ 			'idcotizaciondetalle' => $data['iddet'],
+ 			'idproducto' => $data['idprod'] 
+ 			);
+
+ 	$this->db->insert('cotizacion_producto',$array);
+ 	}
+
+ 	function getVariables($id){
+ 		$query = $this->db->query("select * from cotizacion_detalle where idcotizaciondetalle=$id");
+ 		return $query->row_array();
+ 	}
+
+ 	function up_variables($data){
+ 		$array = array(
+ 			'poblacion' => $data['poblacion'], 
+ 			'siniestralidad_mensual' => $data['siniestralidad'],
+ 			'gastos_administrativos' => $data['g_administrativos'],
+ 			'gastos_marketing' => $data['marketing'],
+ 			'reserva' => $data['reserva'],
+ 			'inflacion_medica' => $data['inflacion'],
+ 			'remanente' => $data['remanente'],
+ 			'costos_administrativos' => $data['c_administrativos']
+ 		);
+ 		$this->db->where('idcotizaciondetalle',$data['idcotizaciondetalle']);
+ 		$this->db->update('cotizacion_detalle',$array);
  	}
 
  	function getOperador(){
@@ -228,15 +200,77 @@
  		$this->db->insert("cotizacion_coaseguro",$array);
  	}
 
-  	function upCoaseguro($data){
+ 	function getCoberturaDetalle($id){
+ 		$query = $this->db->query("select * from cotizacion_detalle where idcotizaciondetalle=$id");
+ 		return $query->result();
+ 	}
+
+ 	function getCoberturasCalculo($id){
+ 		$query = $this->db->query("select cc.*, nombre_var, texto_web, coalesce(pc1.valor,0) as valor1, coalesce(pc2.valor,0) as valor2, coalesce(pc3.valor,0) as valor3, coalesce(pc1.idoperador,0) as cobertura, coalesce(pc2.idoperador,0) as copago, coalesce(pc3.idoperador,0) as hasta
+									from cotizacion_detalle cd
+									inner join cotizacion_cobertura cc on cd.idcotizaciondetalle=cc.idcotizaciondetalle
+									inner join variable_plan vp on cc.idvariableplan=vp.idvariableplan
+									LEFT JOIN cotizacion_coaseguro pc1 on pc1.idcotizacioncobertura=cc.idcotizacioncobertura and pc1.idoperador=1 and pc1.estado=1
+									LEFT JOIN cotizacion_coaseguro pc2 on pc2.idcotizacioncobertura=cc.idcotizacioncobertura and pc2.idoperador=2 and pc2.estado=1
+									LEFT JOIN cotizacion_coaseguro pc3 on pc3.idcotizacioncobertura=cc.idcotizacioncobertura and pc3.idoperador=3 and pc3.estado=1
+									where cc.idcotizaciondetalle=$id and precio>0 and precio is not null");
+ 		return $query->result();
+ 	}
+
+ 	function upPrimas($data){
+ 		$array = array(
+ 			'prima_titular' => $data['titular'],
+ 			'prima_adicional' => $data['adicional']
+ 		);
+ 		$this->db->where("idcotizaciondetalle",$data['idcotizaciondetalle']);
+ 		$this->db->update("cotizacion_detalle",$array);
+ 	}
+
+ 	function getEventos($id){
+ 		$query = $this->db->query("select * from cotizacion_cobertura pd inner join variable_plan vp on pd.idvariableplan=vp.idvariableplan where idcotizacioncobertura=$id");
+ 		return $query->row_array();
+ 	}
+
+ 	function upEventos($data){
  		$array = array
  		(
- 			'usuario_anula' => $data['idusuario'],
- 			'fecha_anula' => $data['hoy'],
- 			'estado' => 0 
+ 			'num_eventos' => $data['num_eventos'], 
+ 			'tiempo' => $data['tiempo']
  		);
- 		$this->db->where("idcoaseguro",$data['idcoaseguro']);
- 		$this->db->update("plan_coaseguro",$array);
+ 		$this->db->where("idcotizacioncobertura",$data['id']);
+ 		$this->db->update("cotizacion_cobertura",$array);
+ 	}
+
+ 	function getCoberturas2($id)
+ 	{
+ 		$query = $this->db->query("select dp.idcotizacioncobertura, dp.texto_web, dp.idcotizaciondetalle,dp.idvariableplan,dp.texto_web, dp.visible, dp.estado_pd, dp.tiempo, dp.num_eventos, vp.nombre_var, 
+				case when iniVig =0 then 0 else SUBSTRING_INDEX(iniVig,' ',1)end as num11, case when iniVig=0 then '' else SUBSTRING_INDEX(iniVig,' ',-1)end as tiempo11, 
+				case when finVig =0 then 0 else SUBSTRING_INDEX(finVig,' ',1)end as num22, case when finVig=0 then '' else SUBSTRING_INDEX(finVig,' ',-1)end as tiempo22, cobertura
+				from cotizacion_cobertura dp
+				join variable_plan vp on dp.idvariableplan=vp.idvariableplan
+				inner join (select GROUP_CONCAT(concat(' ',descripcion,' ',valor)) as cobertura, idcotizacioncobertura from cotizacion_coaseguro pc inner join operador o on pc.idoperador=o.idoperador
+				 			where pc.estado=1 group by idcotizacioncobertura)a on a.idcotizacioncobertura=dp.idcotizacioncobertura
+				where dp.idcotizaciondetalle=$id	-- and coalesce(precio,0)>0
+				order by dp.idcotizacioncobertura");
+ 		return $query->result();
+ 	}
+
+ 	function getCoberturas3($id)
+ 	{
+ 		$query = $this->db->query("select dp.idcotizacioncobertura, dp.texto_web, dp.idcotizaciondetalle,dp.idvariableplan,dp.visible, dp.estado_pd, dp.tiempo, dp.num_eventos, vp.nombre_var
+				from cotizacion_cobertura dp
+				join variable_plan vp on dp.idvariableplan=vp.idvariableplan
+				where dp.idcotizaciondetalle=$id	and dp.idcotizacioncobertura not in (select idcotizacioncobertura from cotizacion_coaseguro pc inner join operador o on pc.idoperador=o.idoperador
+				 			where pc.estado=1 group by idcotizacioncobertura)
+				order by dp.idcotizacioncobertura");
+ 		return $query->result();
+ 	}
+
+ 	function upEstadoCot($data)
+ 	{
+ 		$array = array('estado' => $data['estado']);
+ 		$this->db->where('idcotizaciondetalle',$data['id']);
+ 		$this->db->update('cotizacion_detalle',$array);
  	}
 
 }

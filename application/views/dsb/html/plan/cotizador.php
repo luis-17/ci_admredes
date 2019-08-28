@@ -147,38 +147,38 @@ extract($user);
 												<td><?=$c->nombre_cotizacion?></td>
 												<td>S/. <?=$c->prima_monto?></td>
 												<td><?php if($c->estado_cotizacion==1){
-													echo '<a href="'.base_url().'index.php/plan_anular/'.$c->idcotizacion.'"><span class="label label-info label-white middle">Activo</span></a>';
+														echo '<a href="'.base_url().'index.php/plan_anular/'.$c->idcotizacion.'"><span class="label label-info label-white middle">Activo</span></a>';
 													}else{
 														echo '<a href="'.base_url().'index.php/plan_activar/'.$c->idcotizacion.'"><span class="label label-danger label-white middle">Inactivo</span></a>';
-														}?>
+													}?>
 												</td>
 												<td></td>
-													</tr>
+											</tr>
 												<?php } }}else{
 													foreach($cotizaciones2 as $c){?>
-												<tr>
+											<tr>
 												<td><?=$c->nombre_comercial_cli?></td>
 												<td><?=$c->nombre_cotizacion?></td>
 												<td>S/. <?=$c->prima_monto?></td>
 												<td><?php if($c->estado_cotizacion==1){
-													echo '<a href="'.base_url().'index.php/plan_anular/'.$c->idcotizacion.'"><span class="label label-info label-white middle">Activo</span></a>';
+														echo '<a href="'.base_url().'index.php/plan_anular/'.$c->idcotizacion.'"><span class="label label-info label-white middle">Activo</span></a>';
 													}else{
 														echo '<a href="'.base_url().'index.php/plan_activar/'.$c->idcotizacion.'"><span class="label label-danger label-white middle">Inactivo</span></a>';
-														}?>
+													}?>
 												</td>
 												<td></td>
-													</tr>
-												<?php }} ?>
+											</tr>
+										<?php }} ?>
 										</tbody>
 									</table>							
-								</div><!-- PAGE CONTENT ENDS -->	
-								<script>			
+									</div><!-- PAGE CONTENT ENDS -->	
+									<script>			
 										//para paginacion
 										$(document).ready(function() {
-										$('#example').DataTable( {
-										"pagingType": "full_numbers"
-										} );
-									} );
+											$('#example').DataTable( {
+												"pagingType": "full_numbers"
+											});
+										});
 									</script>	
 								</div>						
 							</div><!-- /.col -->

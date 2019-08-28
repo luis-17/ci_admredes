@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html lang="en">
 	<head>
 		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
@@ -20,7 +20,13 @@
 
 		<!-- ace styles -->
 		<link rel="stylesheet" href="<?=  base_url()?>public/assets/css/ace.css" class="ace-main-stylesheet" id="main-ace-style" />
-		<!--<script type="text/javascript" src="<?=  base_url()?>public/fancybox/lib/jquery.mousewheel-3.0.6.pack.js"></script>-->
+
+		<!-- jQuery library is required, see https://jquery.com/ -->
+		<script type="text/javascript" src="<?=base_url()?>public/assets/js/jquery/jquery.js"></script>
+	
+		
+
+		<script type="text/javascript" src="<?=  base_url()?>public/fancybox/lib/jquery.mousewheel-3.0.6.pack.js"></script>
 		<!-- FancyBox -->
 		<!-- Add jQuery library -->
 		<script type="text/javascript" src="https://code.jquery.com/jquery-latest.min.js"></script>
@@ -50,14 +56,6 @@
 		<script src="<?=  base_url()?>public/assets/js/ace-extra.js"></script>
 
 		<!-- HTML5shiv and Respond.js for IE8 to support HTML5 elements and media queries -->
-
-
-			<!-- para paginacion -->
-		<script src="<?=base_url()?>public/pagination/jquery.dataTables.min.css"></script>
-		<script src="<?=base_url()?>public/pagination/jquery-1.12.4.js"></script>
-		<script src="<?=base_url()?>public/pagination/jquery.dataTables.min.js"></script>
-		<script src="<?=base_url()?>public/pagination/dataTables.bootstrap.min.js"></script>
-
 
 	</head>
 
@@ -89,128 +87,151 @@
 								<i class="ace-icon fa fa-home home-icon"></i>
 								<a href="<?=base_url()?>">Inicio</a>
 							</li>
-							<li class="active">Canales</li>
+							<li class="active"><a href="#">Planes</a></li>
+							<li><a href="<?=base_url()?>index.php/cotizador">Cotizador</a></li>
+							<li class="active">Propuesta Comercial</li>
 						</ul><!-- /.breadcrumb -->
 
 						<!-- /section:basics/content.searchbox -->
 					</div>
-
+					
 					<!-- /section:basics/content.breadcrumbs -->
 					<div class="page-content">
-						<!-- #section:settings.box -->
-
-						<!-- /section:settings.box -->
 						<div class="page-header">
-							<h1>
-								Consolidado de Canales de Venta
-								<small>
-									<i class="ace-icon fa fa-angle-double-right"></i>
-								</small>
+							<h1>	
+							Propuesta Comercial
 							</h1>
-						</div><!-- /.page-header -->
-
+						</div>
 						<div class="row">
-							<div class="col-xs-12">
-								<div class="widget-toolbar no-border invoice-info">
-									<a href="<?=base_url()?>index.php/canal_registrar"><button class="btn btn-white btn-info">
-										Nuevo Canal
-									</button></a>
-								</div>
-								<br/>
-								<br/>
+							<div class="col-xs-12">							
 								<!-- PAGE CONTENT BEGINS -->
-								
-								<div class="col-xs-12">
-									<div>
-									<table id="example" class="table table-striped table-bordered table-hover">
-										<thead>
-											<tr>
-												<th>ID</th>
-												<th>Tipo</th>
-												<th>RUC</th>
-												<th>Razón Social</th>
-												<th>Nombre Comercial</th>
-												<th>Estado</th>
-												<th></th>
-											</tr>
-										</thead>
-										<tbody>
-										
-										<?php foreach ($canal as $c) {?>
-											<tr>
-												<td><?=$c->idclienteempresa;?></td>
-												<td><?=$c->descripcion_cc;?></td>
-												<td><?=$c->numero_documento_cli?></td>
-												<td><?=$c->razon_social_cli?></td>
-												<td><?=$c->nombre_comercial_cli?></td>
-												<td><?php if($c->estado_cli==1){
-													echo '<a href="'.base_url().'index.php/canal_anular/'.$c->idclienteempresa.'"><span class="label label-info label-white middle">Activo</span></a>';
-													}else{
-														echo '<a href="'.base_url().'index.php/canal_activar/'.$c->idclienteempresa.'"><span class="label label-danger label-white middle">Inactivo</span></a>';
+								<form class="form-horizontal" role="form" method="post" action="<?=base_url()?>index.php/sol_apGerencia">
+									<input type="hidden" id="idcotizaciondetalle" name="idcotizaciondetalle" value="<?=$idcotizaciondetalle;?>" />
+									<input type="hidden" name="nom" value="<?=$nom?>">
+
+									<div class="form-group">
+										<label class="col-sm-3 control-label no-padding-right" for="form-field-1"></label>
+
+										<div class="col-sm-6">
+											<table class="table table-bordered table-hover"  style="font-size: 12px;">
+												<thead>
+													<tr style="text-align: center;">
+														<th style="text-align: center;" colspan="3"><?=str_replace("%20"," ",$nom);?>: COBERTURAS DEL PLAN</th>
+													</tr>
+													<tr>
+														<th style="text-align: center;">DESCRIPCIÓN</th>
+														<th style="text-align: center;">COASEGUROS</th>	
+														<th style="text-align: center;">EVENTOS</th>
+													</tr>
+												</thead>
+												<tbody>
+													<?php foreach($coberturas as $c){ 
+													switch ($c->tiempo) {
+															case '1 day':
+																$tiempo = $c->num_eventos." diario(s)";
+															break;
+															case '1 month':
+																$tiempo = $c->num_eventos." mensual(es)";
+															break;
+															case '1 year':
+																$tiempo = $c->num_eventos." anual(s)";
+															break;	
+															default:
+																$tiempo = "Ilimitados";
+															break;
 														}?>
-												</td>
-												<td>
-													<div class="hidden-sm hidden-xs btn-group">
-														<div title="Editar Canal" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
-															&nbsp;<a href="<?=base_url()?>index.php/canal_editar/<?=$c->idclienteempresa?>">
-																<i class="ace-icon fa fa-pencil bigger-120"></i>
-															</a>
-														</div>														
-													</div>
+													<tr style="font-style: italic;">
+														<th colspan="3"><?=$c->nombre_var?></th>
+													</tr>
+													<tr>
+														<td><?=$c->texto_web?></td>
+														<td><?=$c->cobertura?></td>
+														<td><?=$tiempo?></td>
+													</tr>
+													<?php } ?>
+												</tbody>
+											</table>
+											<br>
+											<table class="table table-bordered table-hover"  style="font-size: 12px;">
+												<thead>
+													<tr>
+														<th colspan="2" style="text-align: center;">COTIZACIÓN DE APORETS</th>
+													</tr>
+													<tr>
+														<th style="text-align: center;">Cantidad Mínima de Afiliados</th>
+														<th style="text-align: center;">Precio del Plan Mensual (Inc. IGV)</th>
+													</tr>
+												</thead>
+												<tbody>
+												<?php foreach($cot_detalle as $cd){
+													$num_afiliados = $cd->num_afiliados;
+													$titular = $cd->prima_titular;
+													$adicional = $cd->prima_adicional;
+												} 
+												for($i=0; $i<$num_afiliados; $i++){
+													$prima = $titular + ($adicional*$i);
+													$prima =  number_format((float)$prima, 2, '.', '');
+												?>
+													<tr>
+														<td>Titular <?php if($i>0){ echo "+ ".$i." dependiente(s)"; } ?></td>
+														<td style="text-align: right;"><?=$prima?></td>
+													</tr>
+												<?php }?>
+												</tbody>
+											</table>
+										</div>
 
-													<div class="hidden-md hidden-lg">
-														<div class="inline pos-rel">
-															<button class="btn btn-minier btn-primary dropdown-toggle" data-toggle="dropdown" data-position="auto">
-																<i class="ace-icon fa fa-cog icon-only bigger-110"></i>
-															</button>
+										<label class="col-sm-3 control-label no-padding-right" for="form-field-1"></label>
+										
+									</div>
+									<div class="form-group">
+										<label class="col-sm-3 control-label no-padding-right" for="form-field-1"></label>
 
-															<ul class="dropdown-menu dropdown-only-icon dropdown-yellow dropdown-menu-right dropdown-caret dropdown-close">	
-																<li>
-																	<div title="Editar Canal" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
-																		&nbsp;<a href="<?=base_url()?>index.php/canal_editar/<?=$c->idclienteempresa?>">
-																			<i class="ace-icon fa fa-pencil bigger-120"></i>
-																		</a>
-																	</div>
-																</li>
-															</ul>
-														</div>
-													</div>
-												</td>
-											</tr>
-										<?php } ?>
-										</tbody>
-									</table>									
-								</div><!-- PAGE CONTENT ENDS -->	
-								<script>			
-										//para paginacion
-										$(document).ready(function() {
-										$('#example').DataTable( {
-										"pagingType": "full_numbers"
-										} );
-									} );
-								</script>	
-								</div>						
+										<div class="col-sm-6">
+											<label><h3>CONDICIONES:</h3></label>
+											<ul>
+												<?php foreach ($coberturas2 as $c2) {?>
+													<li><b><?=$c2->nombre_var?>: <?=$c2->texto_web?></b></li>
+												<?php } ?>
+											</ul>
+										</div>
+
+										<label class="col-sm-3 control-label no-padding-right" for="form-field-1"></label>
+										
+									</div>
+								
+									<div style="text-align: right;">
+									<div class="clearfix form-actions">
+										<div class="col-md-offset-3 col-md-9">
+											<button class="btn btn-info" type="submit">
+												<i class="ace-icon fa fa-check bigger-110"></i>
+												Solicitar Aprobación de Gerencia
+											</button>
+										</div>
+									</div>
+									</div>
+								</form>
+							
 							</div><!-- /.col -->
-						</div><!-- /.row -->
-					</div><!-- /.page-content -->
-				</div>
-			</div><!-- /.main-content -->
-
-			<div class="footer">
-				<div class="footer-inner">
-					<!-- #section:basics/footer -->
-					<div class="footer-content">
-						<span class="bigger-120">
-							<span class="blue bolder">Red Salud</span>
-							Application &copy; 2018
-						</span>
-
-						&nbsp; &nbsp;
+						</div>
 					</div>
+				</div><!-- /.main-content -->
+				<br/>
 
-					<!-- /section:basics/footer -->
+				<div class="footer">
+					<div class="footer-inner">
+						<!-- #section:basics/footer -->
+						<div class="footer-content">
+							<span class="bigger-120">
+								<span class="blue bolder">Red Salud</span>
+								Application &copy; 2018
+							</span>                                                              
+							&nbsp; &nbsp;
+						</div>
+
+						<!-- /section:basics/footer -->
+					</div>
 				</div>
-			</div>
 
 			<a href="#" id="btn-scroll-up" class="btn-scroll-up btn btn-sm btn-inverse">
 				<i class="ace-icon fa fa-angle-double-up icon-only bigger-110"></i>
@@ -218,8 +239,6 @@
 		</div><!-- /.main-container -->
 
 		<!-- basic scripts -->
-
-		<!-- fin scripts paginacion -->
 
 		<!--[if !IE]> -->
 		<script type="text/javascript">

@@ -347,6 +347,7 @@ $route['del_producto_save/(:any)/(:any)'] = 'Diagnosticos_cnt/del_producto_save/
 $route['add_producto_save/(:any)/(:any)'] = 'Diagnosticos_cnt/add_producto_save/$1/$2';
 $route['diagnosticos_add/(:any)'] = 'Diagnosticos_cnt/diagnosticos_add/$1';
 $route['red_medica'] = 'Proveedor_cnt/red_medica';
+$route['red_medica2'] = 'Proveedor_cnt/red_medica2';
 $route['addresponsable/(:any)/(:any)'] = 'Plan_cnt/addresponsable/$1/$2';
 $route['reg_plan_usuario'] = 'Plan_cnt/reg_plan_usuario';
 $route['eliminar_responsable/(:any)/(:any)/(:any)'] = 'Plan_cnt/eliminar_responsable/$1/$2/$3';
@@ -372,7 +373,27 @@ $route['guardar_recepcion3'] = 'Mesa_partes_cnt/guardar_recepcion3';
 $route['reg_recepcion3'] = 'Mesa_partes_cnt/reg_recepcion3';
 $route['siniestros'] = 'Siniestro_cnt/registrar_siniestro';
 $route['seleccionar_factura/(:any)/(:any)'] = 'Siniestro_cnt/seleccionar_factura/$1/$2';
-$route['cotizador'] = 'Cotizador_cnt/cotizador';
+$route['cotizador'] = 'Cotizador_cnt/index';
+$route['nueva_cotizacion'] = 'Cotizador_cnt/nueva_cotizacion';
+$route['guardar_cotizacion'] = 'Cotizador_cnt/guardar_cotizacion';
+$route['coberturas_cotizacion/(:any)/(:any)'] = 'Cotizador_cnt/coberturas_cotizacion/$1/$2';
+$route['cotizacion_cobertura/(:any)/(:any)'] = 'Cotizador_cnt/cotizacion_cobertura/$1/$2';
+$route['detalle_producto2'] = 'Cotizador_cnt/detalle_producto';
+$route['guardar_cotcobertura'] = 'Cotizador_cnt/guardar_cotcobertura';
+$route['cotizacion_variables/(:any)/(:any)'] = 'Cotizador_cnt/cotizacion_variables/$1/$2';
+$route['guardar_variables'] = 'Cotizador_cnt/guardar_variables';
+$route['visualizar_cotizacion/(:any)/(:any)'] = 'Cotizador_cnt/visualizar_cotizacion/$1/$2';
+$route['coaseguro_cotizacion/(:any)/(:any)'] = 'Cotizador_cnt/coaseguro_cotizacion/$1/$2';
+$route['reg_cotcoaseguro'] = 'Cotizador_cnt/reg_cotcoaseguro';
+$route['guardar_primas'] = 'Cotizador_cnt/guardar_primas';
+$route['propuesta_comercial/(:any)/(:any)'] = 'Cotizador_cnt/propuesta_comercial/$1/$2';
+$route['eventos_cotizacion/(:any)'] = 'Cotizador_cnt/eventos_cotizacion/$1';
+$route['reg_evento_cotizacion'] = 'Cotizador_cnt/reg_evento_cotizacion';
+$route['sol_apGerencia'] = 'Cotizador_cnt/sol_apGerencia';
+$route['cot_pendientes'] = 'Cotizador_cnt/cot_pendientes';
+
+
+
 $route['cotizador_registrar'] = 'Cotizador_cnt/cotizador_registrar';
 $route['cotizador_calcular'] = 'Cotizador_cnt/cotizador_calcular';
 $route['cotizador_cobertura'] = 'Cotizador_cnt/cotizador_cobertura';

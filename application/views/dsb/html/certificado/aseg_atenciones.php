@@ -80,6 +80,7 @@
 										if($a->estado_atencion=='P'){
 											$atencion="PO".$a->num_orden_atencion;
 											$fecha=$a->fecha_cita;
+											$fecha=date("d-m-Y", strtotime($fecha));
 											switch ($a->estado_cita):
 												case 0: 
 													$estadoa='Reserva Anulada';
