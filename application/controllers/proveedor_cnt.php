@@ -64,6 +64,8 @@ class Proveedor_cnt extends CI_Controller {
 		$this->proveedor_mdl->habilitar($id);
 		$proveedor = $this->proveedor_mdl->getProveedor($id);
 		$nombrecomercial = $proveedor['nombre_comercial_pr'];
+		$idusuario = $proveedor['idusuario'];
+		$this->proveedor_mdl->habilitarus($idusuario);
 		$hoy = date('d/m/y H:i');
 		$anio = date('Y');
 		$proveedores2 = $this->proveedor_mdl->getProveedores2();
@@ -245,6 +247,8 @@ class Proveedor_cnt extends CI_Controller {
 		$anular_proveedor = $this->proveedor_mdl->inhabilitar($id);
 		$proveedor = $this->proveedor_mdl->getProveedor($id);
 		$nombrecomercial = $proveedor['nombre_comercial_pr'];
+		$idusuario = $proveedor['idusuario'];
+		$anular_usuario = $this->proveedor_mdl->inhabilitarus($idusuario);
 		$hoy = date('d/m/y H:i');
 		$anio = date('Y');
 		$proveedores2 = $this->proveedor_mdl->getProveedores2();

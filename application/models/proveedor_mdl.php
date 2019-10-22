@@ -26,6 +26,15 @@
 		return $this->db->update('proveedor', $data);
 	}
 
+	function habilitarus($id){
+		$data = array(
+			'estado_us' => 1,
+			'updatedat' => date('Y-m-d H:i:s') 
+		);
+		$this->db->where('idusuario',$id);
+		return $this->db->update('usuario', $data);
+	}
+
 	function inhabilitar($id){
 		$data = array(
 			'estado_pr' => 0,
@@ -33,6 +42,15 @@
 		);
 		$this->db->where('idproveedor',$id);
 		return $this->db->update('proveedor', $data);
+	}
+
+	function inhabilitarus($id){
+		$data = array(
+			'estado_us' => 0,
+			'updatedat' => date('Y-m-d H:i:s') 
+		);
+		$this->db->where('idusuario',$id);
+		return $this->db->update('usuario', $data);
 	}
 
 	function dataproveedor($id){
