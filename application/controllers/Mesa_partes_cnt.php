@@ -51,10 +51,10 @@ class Mesa_partes_cnt extends CI_Controller {
 	      	$year = date('Y');
 	      	$day = date("d", mktime(0,0,0, $month+1, 0, $year));
 	      	$fecha = date('Y-m-d');
-			$nuevafecha = strtotime ( '-3 month' , strtotime ( $fecha ) ) ;
+			$nuevafecha = strtotime ( '-1 month' , strtotime ( $fecha ) ) ;
 			$month2 = date ( 'm' , $nuevafecha );
 
-			$data['fecinicio'] = date('Y-m-d', mktime(0,0,0, $month, 1, $year));
+			$data['fecinicio'] = date('Y-m-d', mktime(0,0,0, $month2, 1, $year));
 			$data['fecfin'] = date('Y-m-d', mktime(0,0,0, $month, $day, $year));
 
 			$data['getRecibidos'] = $this->mesa_partes_mdl->getRecibidos($data);
@@ -479,4 +479,30 @@ class Mesa_partes_cnt extends CI_Controller {
 				location.href='".base_url()."index.php/mesa_partes';
 				</script>";
 	}
+
+	public function ruc(){
+ 		$id = $_POST['idproveedor'];
+ 		$proveedor = $this->mesa_partes_mdl->getRuc($id);
+ 		$ruc = $proveedor['numero_documento_pr'];
+ 		$raz_social = $proveedor['razon_social_pr'];
+
+ 		$options = '<div class="form-group">
+						<label class="control-label col-xs-12 col-sm-4 no-padding-right" for="name">RUC:</label>
+						<div class="col-xs-12 col-sm-8">
+							<div class="clearfix">
+								<input  type="text" id="ruc" name="ruc" disabled class="col-xs-12 col-sm-3" value="'.$ruc.'" >
+							</div>
+						</div>																
+					</div>
+					<div class="form-group">
+						<label class="control-label col-xs-12 col-sm-4 no-padding-right" for="name">Razón Social:</label>
+						<div class="col-xs-12 col-sm-8">
+							<div class="clearfix">
+								<input  type="text" id="razon_social" name="razon_social" disabled class="col-xs-12 col-sm-3" value="'.$raz_social.'" >
+							</div>
+						</div>																
+					</div>'
+					;
+ 		echo $options;
+ 	}
 }

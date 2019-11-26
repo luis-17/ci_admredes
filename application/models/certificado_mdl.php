@@ -433,12 +433,16 @@
 	}
 
 	function getCoberturasOperador($id){
-		$query = $this->db->query("select nombre_var, texto_web, num_eventos, tiempo, cobertura as coaseguro FROM variable_plan vp 
+		$query = $this->db->query("select nombre_var, texto_web, num_eventos, tiempo, cobertura as coaseguro,  coalesce(bloqueos,'-') as bloqueos FROM variable_plan vp 
 									inner join plan_detalle pd on vp.idvariableplan=pd.idvariableplan
 									inner join (select GROUP_CONCAT(concat(' ',descripcion,' ',valor)) as cobertura, idplandetalle from plan_coaseguro pc inner join operador o on pc.idoperador=o.idoperador
 								where pc.estado=1 group by idplandetalle)a on a.idplandetalle=pd.idplandetalle
 									inner join plan p on pd.idplan=p.idplan 
 									inner join certificado c on c.plan_id=p.idplan
+									left join (select idplandetalle_bloquea, GROUP_CONCAT(concat(' ', vp2.nombre_var)) as bloqueos from plan_detalle_bloqueo pb 
+						inner join plan_detalle  pd2 on pb.idplandetalle_bloqueado=pd2.idplandetalle
+						inner join variable_plan vp2 on pd2.idvariableplan=vp2.idvariableplan
+						GROUP BY idplandetalle_bloquea)b on b.idplandetalle_bloquea=pd.idplandetalle
 									where c.cert_id=$id and estado_pd=1 order by vp.idvariableplan");
 		return $query->result();
 	}
@@ -449,7 +453,7 @@
 									inner join plan_detalle pd on vp.idvariableplan=pd.idvariableplan
 									inner join plan p on pd.idplan=p.idplan 
 									inner join certificado c on c.plan_id=p.idplan
-									where c.cert_id=$id and estado_pd=1 and simbolo_detalle='' order by vp.idvariableplan");
+									where c.cert_id=$id and estado_pd=1 and pd.idplandetalle not in (select idplandetalle from plan_coaseguro where estado=1) order by vp.idvariableplan");
 		return $query->result();
 	}
 

@@ -3,6 +3,8 @@
 // ini_set("memory_limit","256M");
 error_reporting(E_ALL);
 ini_set("display_error", "on");
+ini_set('max_execution_time', 10000);
+ini_set('memory_limit', -1);
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Reportes_cnt extends CI_Controller {
@@ -16,6 +18,7 @@ class Reportes_cnt extends CI_Controller {
         //$this->load->helper(array('fechas','otros')); 
         $this->load->model('menu_mdl');
         $this->load->model('reportes_mdl');
+        $this->load->model('liquidacion_mdl');
     }
 
 	/**
@@ -63,7 +66,7 @@ class Reportes_cnt extends CI_Controller {
 		$data['planes'] = $planes;
 		$canales = $this->reportes_mdl->getCanales();
 		$data['canales'] = $canales;
-		$data['canal'] = '';
+		$data['canal'] = "";
 
 		$data['estilo'] = 'none';
 
@@ -137,9 +140,9 @@ class Reportes_cnt extends CI_Controller {
 		        $this->excel->getActiveSheet()->setTitle('Liquidación');
 		        $this->excel->getActiveSheet()->setCellValue('A1', 'Periodo');
 		        $this->excel->getActiveSheet()->setCellValue('B1', 'Plan');
-		        $this->excel->getActiveSheet()->setCellValue('C1', 'Descripcion');
+		        $this->excel->getActiveSheet()->setCellValue('C1', 'Descripción');
 		        $this->excel->getActiveSheet()->setCellValue('D1', 'Prima inc. IGV');
-		        $this->excel->getActiveSheet()->setCellValue('E1', 'Cant. de Pólizas');
+		        $this->excel->getActiveSheet()->setCellValue('E1', 'Cant. de Cobros');
 		        $this->excel->getActiveSheet()->setCellValue('F1', 'Sub Total');
 		        //$this->excel->getActiveSheet()->getStyle('A1')->getFont()->setSize(20);
 		        $this->excel->getActiveSheet()->getStyle('A1:F1')->getFont()->setBold(true);
@@ -198,9 +201,10 @@ class Reportes_cnt extends CI_Controller {
 		        $this->excel->getActiveSheet()->setCellValue('C1', 'Contratante');
 		        $this->excel->getActiveSheet()->setCellValue('D1', 'Vez Cobro');
 		        $this->excel->getActiveSheet()->setCellValue('E1', 'fecha');
-		        $this->excel->getActiveSheet()->setCellValue('F1', 'Importe inc. IGV');
-		        $this->excel->getActiveSheet()->getStyle('A1:F1')->getFont()->setBold(true);
-		        $this->excel->getActiveSheet()->getStyle('A1:F1')->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()->setRGB('E0E0E0');
+		        $this->excel->getActiveSheet()->setCellValue('F1', 'Importe inc. IGV');		        
+		        $this->excel->getActiveSheet()->setCellValue('G1', 'Descripción');
+		        $this->excel->getActiveSheet()->getStyle('A1:G1')->getFont()->setBold(true);
+		        $this->excel->getActiveSheet()->getStyle('A1:G1')->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()->setRGB('E0E0E0');
 
 		        $cont2=2;
 
@@ -210,7 +214,8 @@ class Reportes_cnt extends CI_Controller {
 			        $this->excel->getActiveSheet()->setCellValue('C'.$cont2, $c2->contratante);
 			        $this->excel->getActiveSheet()->setCellValue('D'.$cont2, $c2->cob_vezCob);
 			        $this->excel->getActiveSheet()->setCellValue('E'.$cont2, $c2->cob_fechCob);
-			        $this->excel->getActiveSheet()->setCellValue('F'.$cont2, ($c2->cob_importe/100));
+			        $this->excel->getActiveSheet()->setCellValue('F'.$cont2, ($c2->cob_importe/100));			        
+			        $this->excel->getActiveSheet()->setCellValue('G'.$cont2, $c2->num_afiliados);
 			        $cont2=$cont2+1;
 		        }
 		         for($i=1;$i<$cont2;$i++){
@@ -220,12 +225,13 @@ class Reportes_cnt extends CI_Controller {
 		        	$this->excel->getActiveSheet()->getStyle('D'.$i)->applyFromArray($estilo);
 		        	$this->excel->getActiveSheet()->getStyle('E'.$i)->applyFromArray($estilo);
 		        	$this->excel->getActiveSheet()->getStyle('F'.$i)->applyFromArray($estilo);
+		        	$this->excel->getActiveSheet()->getStyle('G'.$i)->applyFromArray($estilo);
 		        }
 
 		        $this->excel->setActiveSheetIndex(0);
 		 
 		        header('Content-Type: application/vnd.ms-excel');
-		        header('Content-Disposition: attachment;filename="Liquidación '.$nom_plan.' '.$hoy.'.csv"');
+		        header('Content-Disposition: attachment;filename="Liquidación '.$nom_plan.' '.$hoy.'.xls"');
 		        header('Cache-Control: max-age=0'); //no cache
 		        $objWriter = PHPExcel_IOFactory::createWriter($this->excel, 'Excel5');
 		        // Forzamos a la descarga
@@ -236,11 +242,12 @@ class Reportes_cnt extends CI_Controller {
 		}
 	}
 
-	public function detalle_cobros($importe,$plan,$inicio,$fin){
+	public function detalle_cobros($importe,$plan,$inicio,$fin,$num_afi){
 		$datos['plan'] = $plan;		
 		$datos['inicio'] = $inicio;
 		$datos['fin'] = $fin;
 		$datos['importe'] = $importe;
+		$datos['num_afi'] = $num_afi;
 
 		$cobros = $this->reportes_mdl->getCobros($datos);
 		$data['cobros'] = $cobros;
@@ -1411,16 +1418,16 @@ class Reportes_cnt extends CI_Controller {
 		        	if($valor>0){
 		        		$indicador=round(($valor/$num),1);
 		        		if($indicador<1.5){
-		        			$calificacion = 'Pésimo';
-		        		}elseif ($indicador>1.4 && $indicador<2.5) {
-		        			$calificacion = 'Malo';
-		        		}elseif ($indicador>2.4 && $indicador<3.5) {
-		        			$calificacion = 'Regular';
-		        		}elseif($indicador>3.4 && $indicador<4.5){
-		        			$calificacion = 'Bueno';
-		        		}else{
-		        			$calificacion = 'Excelente';
-		        		}
+							$calificacion = 'Nada satisfecho';
+						}elseif ($indicador>1.4 && $indicador<2.5) {
+							$calificacion = 'Poco satisfecho';
+						}elseif ($indicador>2.4 && $indicador<3.5) {
+							$calificacion = 'Satisfecho';
+						}elseif($indicador>3.4 && $indicador<4.5){
+							$calificacion = 'Muy satisfecho';
+						}else{
+							$calificacion = 'Totalmente satisfecho';
+						}
 		        	}else{
 		        		$indicador='-';
 		        		$calificacion='-';
@@ -1493,16 +1500,16 @@ class Reportes_cnt extends CI_Controller {
 		        	if($num>0){
 		        		$indicador=round(($valor/$num),1);
 		        		if($indicador<1.5){
-		        			$calificacion = 'Pésimo';
-		        		}elseif ($indicador>1.4 && $indicador<2.5) {
-		        			$calificacion = 'Malo';
-		        		}elseif ($indicador>2.4 && $indicador<3.5) {
-		        			$calificacion = 'Regular';
-		        		}elseif($indicador>3.4 && $indicador<4.5){
-		        			$calificacion = 'Bueno';
-		        		}else{
-		        			$calificacion = 'Excelente';
-		        		}
+							$calificacion = 'Nada satisfecho';
+						}elseif ($indicador>1.4 && $indicador<2.5) {
+							$calificacion = 'Poco satisfecho';
+						}elseif ($indicador>2.4 && $indicador<3.5) {
+							$calificacion = 'Satisfecho';
+						}elseif($indicador>3.4 && $indicador<4.5){
+							$calificacion = 'Muy satisfecho';
+						}else{
+							$calificacion = 'Totalmente satisfecho';
+						}
 		        	}
 		        	if($num2>0){
 		        		$indicador2=round(($valor2/$num2),1);
@@ -1521,10 +1528,10 @@ class Reportes_cnt extends CI_Controller {
 		        	if($num>0 or $num2>0){
 
 		        	$this->excel->getActiveSheet()->setCellValue('A'.$cont, $rc2->nombre_comercial_pr);
-			        $this->excel->getActiveSheet()->setCellValue('B'.$cont, $num);			        
+			        $this->excel->getActiveSheet()->setCellValue('B'.$cont, $rc2->num_encuestas3);			        
 			        $this->excel->getActiveSheet()->setCellValue('C'.$cont, $indicador);
 		        	$this->excel->getActiveSheet()->setCellValue('D'.$cont, $calificacion);
-			        $this->excel->getActiveSheet()->setCellValue('E'.$cont, $num2);
+			        $this->excel->getActiveSheet()->setCellValue('E'.$cont, $rc2->num_encuestas3);
 			        $this->excel->getActiveSheet()->setCellValue('F'.$cont, $indicador2);			        
 			        $this->excel->getActiveSheet()->setCellValue('G'.$cont, $calificacion2);
 			        $cont=$cont+1;
@@ -1599,14 +1606,15 @@ class Reportes_cnt extends CI_Controller {
 		        $this->excel->getActiveSheet()->setCellValue('E1', 'DNI');		        
 		        $this->excel->getActiveSheet()->setCellValue('F1', 'Afiliado');        
 		        $this->excel->getActiveSheet()->setCellValue('G1', 'Usuario Gestiona');		              
-		        $this->excel->getActiveSheet()->setCellValue('H1', 'Usuario Califica');		              
-		        $this->excel->getActiveSheet()->setCellValue('I1', 'Estado Calificación');		              
-		        $this->excel->getActiveSheet()->setCellValue('J1', 'Inidicador');
-		        $this->excel->getActiveSheet()->setCellValue('K1', 'Calificación');
-		        $this->excel->getActiveSheet()->setCellValue('L1', 'Comentario');
+		        $this->excel->getActiveSheet()->setCellValue('H1', 'Usuario Califica');			        	              
+		        $this->excel->getActiveSheet()->setCellValue('I1', 'Fecha Califica');		              
+		        $this->excel->getActiveSheet()->setCellValue('K1', 'Estado Calificación');		              
+		        $this->excel->getActiveSheet()->setCellValue('K1', 'Inidicador');
+		        $this->excel->getActiveSheet()->setCellValue('L1', 'Calificación');
+		        $this->excel->getActiveSheet()->setCellValue('M1', 'Comentario');
 		        //$this->excel->getActiveSheet()->getStyle('A1')->getFont()->setSize(20);
-		        $this->excel->getActiveSheet()->getStyle('A1:L1')->getFont()->setBold(true);
-		        $this->excel->getActiveSheet()->getStyle('A1:L1')->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()->setRGB('E0E0E0');
+		        $this->excel->getActiveSheet()->getStyle('A1:M1')->getFont()->setBold(true);
+		        $this->excel->getActiveSheet()->getStyle('A1:M1')->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()->setRGB('E0E0E0');
 		        $cont=2;
 
 		        foreach ($encuesta_detalle as $ed) {
@@ -1651,11 +1659,12 @@ class Reportes_cnt extends CI_Controller {
 		        	$this->excel->getActiveSheet()->setCellValue('E'.$cont, $ed->aseg_numDoc);
 			        $this->excel->getActiveSheet()->setCellValue('F'.$cont, $ed->afiliado);
 			        $this->excel->getActiveSheet()->setCellValue('G'.$cont, $ed->username);
-			        $this->excel->getActiveSheet()->setCellValue('H'.$cont, $ed->medio_calificacion);
-			        $this->excel->getActiveSheet()->setCellValue('I'.$cont, $estado);
-			        $this->excel->getActiveSheet()->setCellValue('J'.$cont, $indicador);
-			        $this->excel->getActiveSheet()->setCellValue('K'.$cont, $calificacion);
-			        $this->excel->getActiveSheet()->setCellValue('L'.$cont, $ed->comentario);
+			        $this->excel->getActiveSheet()->setCellValue('H'.$cont, $ed->medio_calificacion);			        
+			        $this->excel->getActiveSheet()->setCellValue('I'.$cont, $ed->fecha_hora);
+			        $this->excel->getActiveSheet()->setCellValue('J'.$cont, $estado);
+			        $this->excel->getActiveSheet()->setCellValue('K'.$cont, $indicador);
+			        $this->excel->getActiveSheet()->setCellValue('L'.$cont, $calificacion);
+			        $this->excel->getActiveSheet()->setCellValue('M'.$cont, $ed->comentario);
 			        $cont=$cont+1;
 		        }
 
@@ -1671,7 +1680,8 @@ class Reportes_cnt extends CI_Controller {
 		        	$this->excel->getActiveSheet()->getStyle('I'.$i)->applyFromArray($estilo);	        	
 		        	$this->excel->getActiveSheet()->getStyle('J'.$i)->applyFromArray($estilo);	        	
 		        	$this->excel->getActiveSheet()->getStyle('K'.$i)->applyFromArray($estilo);	        	
-		        	$this->excel->getActiveSheet()->getStyle('L'.$i)->applyFromArray($estilo);
+		        	$this->excel->getActiveSheet()->getStyle('L'.$i)->applyFromArray($estilo);		        	        	
+		        	$this->excel->getActiveSheet()->getStyle('M'.$i)->applyFromArray($estilo);
 		        }
 
 		        $this->excel->setActiveSheetIndex(0);
@@ -1679,6 +1689,381 @@ class Reportes_cnt extends CI_Controller {
 
 		        header('Content-Type: application/vnd.ms-excel');
 		        header('Content-Disposition: attachment;filename="Post-Venta '.$hoy.'.xls"');
+		        header('Cache-Control: max-age=0'); //no cache
+		        $objWriter = PHPExcel_IOFactory::createWriter($this->excel, 'Excel5');
+		        // Forzamos a la descarga
+		        $objWriter->save('php://output');
+		    }
+		}
+		else{
+			redirect('/');
+		}
+	}
+
+	public function liq_pagadas()
+	{
+		//load session library
+		$this->load->library('session');
+
+		//restrict users to go to home if not logged in
+		if($this->session->userdata('user')){
+			//$this->load->view('home');
+			$user = $this->session->userdata('user');
+			extract($user);
+
+			$menuLista = $this->menu_mdl->getMenu($idusuario);
+			$data['menu1'] = $menuLista;
+
+			$submenuLista = $this->menu_mdl->getSubMenu($idusuario);
+			$data['menu2'] = $submenuLista;	
+
+			$data['pagos_pendientes'] = $this->liquidacion_mdl->getPagospendientes();
+			$data['getPagosRealizados'] = $this->liquidacion_mdl->getPagosRealizados();
+
+			$this->load->view('dsb/html/reportes/liq_pagadas.php',$data);
+		}
+		else{
+			redirect('/');
+		}	
+	}
+
+	public function pago_detalle2($idpago){
+		$pagoDet = $this->liquidacion_mdl->pagoDet($idpago);
+		$cadena = "";
+		foreach ($pagoDet as $p) {
+			$id = $p->liqgrupo_id;
+			$liquidacionDet = $this->liquidacion_mdl->getLiquidacionDet($id);
+			$liquidacion = $this->liquidacion_mdl->liquidacionpdf($id); 
+			$num = $p->liq_num;
+			$liquidacion_grupo = $this->liquidacion_mdl->getLiquidacionGrupo($id);
+
+			$cadena .= '
+						<div class="page-header">
+							<h1>	
+							Detalle Liquidación: L'.$num.'
+							</h1>
+						</div>
+
+						<div class="row">
+							<div class="col-xs-12">
+								<!-- PAGE CONTENT BEGINS -->
+
+							<div class="tabbable">
+									<!-- #section:pages/faq -->
+								<div class="col-xs-12">';	
+								foreach ($liquidacion as $l){
+								    		$razon_social = $l->razon_social_pr;
+								    		$ruc = $l->numero_documento_pr;
+								    		$banco = $l->descripcion;
+								    		$tipo = $l->descripcion_fp;
+								    		$op = $l->numero_operacion;
+								    		$total = $l->total;
+								    		$igv = $total * 0.18;
+								    		$subtotal = $total - $igv;
+								    		$cta_corriente = $l->cta_corriente;
+								    		$cta_detracciones = $l->cta_detracciones;
+								    		$colaborador = $l->colaborador;
+								    		$detraccion = $l->detraccion;
+
+								    		$igv = number_format((float)$igv, 2, ".", "");
+								    		$subtotal = number_format((float)$subtotal, 2, ".", "");
+								    		$total = number_format((float)$total, 2, ".", "");
+								    		$detraccion = number_format((float)$detraccion,2,".","");
+
+								    		$neto = $total - $detraccion;
+								    		$neto = number_format((float)$neto,2,".","");
+
+										} 
+							$cadena.='<table class="table table-striped table-bordered table-hover"  style="font-size: 12px;">
+										<tr>
+										<th width="30%">Nombre/Razón Social</th>
+										<td>'.$razon_social.'</td>
+										</tr>
+										<tr>
+										<th width="30%">DNI/RUC</th>
+										<td>'.$ruc.'</td>
+										</tr>
+										<tr>
+										<th width="30%">Concepto</th>
+										<td>Liquidación de Facturas</td>
+										</tr>
+									</table>
+
+									<h4>N° Documentos:</h4>	
+									<table id="example" class="table table-striped table-bordered table-hover"  style="font-size: 12px;">
+										<thead>
+											<tr>
+												<th>CC</th>
+												<th>Plan</th>
+												<th>N° Factura</th>
+												<th>N° Orden Atención</th>
+												<th>Afiliado</th>
+												<th>Concepto</th>
+												<th>Importe Bruto</th>
+												<th>Importe Neto</th>
+											</tr>
+										</thead>
+										<tbody>';
+										foreach ($liquidacionDet as $ld){ 
+											$liqdetalle_monto = $ld->liqdetalle_monto;
+											$liqdetalle_monto = number_format((float)$liqdetalle_monto, 2, ".", "");
+											$liqdetalle_neto = $ld->liqdetalle_neto;
+											$liqdetalle_neto = number_format((float)$liqdetalle_neto, 2, ".", "");
+										
+									$cadena.='<tr>
+												<td>'.$ld->centro_costo.'</td>
+												<td>'.$ld->nombre_plan.'</td>
+												<td>'.$ld->liqdetalle_numfact.'</td>
+												<td>'.$ld->num_orden_atencion.'</td>
+												<td>'.$ld->afiliado.'</td>
+												<td>'.$ld->nombre_var.'</td>
+												<td style="text-align: right;">'.$liqdetalle_monto.' PEN</td>
+												<td style="text-align: right;">'.$liqdetalle_neto.' PEN</td>
+											</tr>';
+										 }
+									$cadena.='</tbody>
+									</table>
+
+									<h4>Detalle a Pagar</h4>	
+
+									<div style="float: left; width: 49%">
+									<table class="table table-striped table-bordered table-hover"  style="font-size: 12px;">
+										<tr>
+											<th width="30%" align="left"> Sub Total</th>
+											<td style="text-align: right;">'.$subtotal.' PEN</td>
+										</tr>
+										<tr>
+											<th width="30%" align="left"> IGV</th>
+											<td style="text-align: right;">'.$igv.' PEN</td>
+										</tr>
+										<tr>
+											<th width="30%" align="left"> Total</th>
+											<td style="text-align: right;">'.$total.' PEN</td>
+										</tr>
+									</table>
+									</div>
+									<div style="float: right; width: 49%">
+									<table class="table table-striped table-bordered table-hover"  style="font-size: 12px;">
+										<tr>
+											<th width="30%" align="right"> Detracciones</th>
+											<td style="text-align: right;">'.$detraccion.' PEN</td>
+										</tr>
+										<tr>
+											<th width="30%" align="right"> NETO A PAGAR</th>
+											<th style="text-align: right; color: red">'.$neto.' PEN</th>
+										</tr>
+									</table>
+									<br>
+									<br>
+									</div>';
+
+
+									if(!empty($liquidacion_grupo)){
+
+								$cadena.='<h4>Detalle del Pago Realizado</h4>
+									<table class="table table-striped table-bordered table-hover"  style="font-size: 12px;">
+										<thead>
+											<tr>
+												<th>Usuario Liquida</th>
+												<th>Fecha</th>
+												<th>Banco</th>
+												<th>Forma de Pago</th>
+												<th>N° Operación</th>
+												<th>Correo Notificación</th>
+											</tr>														
+										</thead>
+										<tbody>';
+											foreach ($liquidacion_grupo as $lg) { 
+										$cadena.='<tr>
+												<td>'.$lg->username.'</td>
+												<td>'.$lg->fecha_pago.'</td>
+												<td>'.$lg->descripcion.'</td>
+												<td>'.$lg->descripcion_fp.'</td>
+												<td>'.$lg->numero_operacion.'</td>
+												<td>'.$lg->email_notifica.'</td>
+											</tr>';
+										} 
+										$cadena.='</tbody>
+									</table>';
+								}
+								$cadena.='</div><!-- /.col -->
+						</div>';
+
+		}
+
+		$data['cadena'] = $cadena;
+
+
+		
+		$this->load->view('dsb/html/reportes/pago_detalle.php',$data);
+	}
+
+	public function consultar_siniestros(){
+		//load session library
+		$this->load->library('session');
+
+		//restrict users to go to home if not logged in
+		if($this->session->userdata('user')){
+			//$this->load->view('home');
+
+			$user = $this->session->userdata('user');
+			extract($user);
+
+		$menuLista = $this->menu_mdl->getMenu($idusuario);
+		$data['menu1'] = $menuLista;
+
+		$month = date('m');
+      	$year = date('Y');
+      	$day = date("d", mktime(0,0,0, $month+1, 0, $year));
+
+      	$month2 = $month;
+
+		$data['fecinicio'] = date('Y-m-d', mktime(0,0,0, $month2, 1, $year));
+		$data['fecfin'] = date('Y-m-d', mktime(0,0,0, $month, $day, $year));
+
+		$submenuLista = $this->menu_mdl->getSubMenu($idusuario);
+		$data['menu2'] = $submenuLista;	
+
+		$data['getDetalleSiniestros'] = $this->reportes_mdl->getDetalleSiniestros($data);
+
+		$this->load->view('dsb/html/reportes/consultar_siniestros.php',$data);
+		}
+		else{
+			redirect('/');
+		}
+	}
+
+	public function consultar_siniestros_buscar(){
+		//load session library
+		$this->load->library('session');
+
+		//restrict users to go to home if not logged in
+		if($this->session->userdata('user')){
+			//$this->load->view('home');
+
+			$user = $this->session->userdata('user');
+			extract($user);
+
+			$menuLista = $this->menu_mdl->getMenu($idusuario);
+			$data['menu1'] = $menuLista;
+
+			$submenuLista = $this->menu_mdl->getSubMenu($idusuario);
+			$data['menu2'] = $submenuLista;
+			$data['fecinicio'] = $_POST['fechainicio'];
+			$data['fecfin'] = $_POST['fechafin'];
+
+			$getDetalleSiniestros = $this->reportes_mdl->getDetalleSiniestros($data);
+			$data['getDetalleSiniestros'] = $getDetalleSiniestros;
+
+
+			$accion=$_POST['accion'];
+
+			if($accion=='buscar'){
+				$this->load->view('dsb/html/reportes/consultar_siniestros.php',$data);
+			}else{
+				$this->load->library('excel');
+				$hoy=date('Y-m-d');
+				// $datos['canal'] = $_POST['canal'];
+				// $datos['plan'] = $_POST['plan'];
+				// $datos['inicio'] = $_POST['fechainicio'];
+				// $datos['fin'] = $_POST['fechafin']
+				$estilo = array( 
+				  'borders' => array(
+				    'outline' => array(
+				      'style' => PHPExcel_Style_Border::BORDER_THIN
+				    )
+				  )
+				);
+
+		        $this->excel->setActiveSheetIndex(0);
+		        $this->excel->getActiveSheet()->setTitle('Resumen Siniestros');
+		        $this->excel->getActiveSheet()->setCellValue('A1', 'N° Orden');
+		        $this->excel->getActiveSheet()->setCellValue('B1', 'Fec. Atención');		        
+		        $this->excel->getActiveSheet()->setCellValue('C1', 'Plan');
+		        $this->excel->getActiveSheet()->setCellValue('D1', 'Centro Médico');		        
+		        $this->excel->getActiveSheet()->setCellValue('E1', 'Servicio');
+		        $this->excel->getActiveSheet()->setCellValue('F1', 'Diagnóstico');		        
+		        $this->excel->getActiveSheet()->setCellValue('G1', 'Titular');		        
+		        $this->excel->getActiveSheet()->setCellValue('H1', 'Afiliado');		        
+		        $this->excel->getActiveSheet()->setCellValue('I1', 'Consulta');		        		        
+		        $this->excel->getActiveSheet()->setCellValue('K1', 'Medicamentos');		        
+		        $this->excel->getActiveSheet()->setCellValue('M1', 'Laboratorios');		        
+		        $this->excel->getActiveSheet()->setCellValue('O1', 'Imágenes');
+		        //$this->excel->getActiveSheet()->getStyle('A1')->getFont()->setSize(20);
+		        $this->excel->getActiveSheet()->getStyle('A1:P2')->getFont()->setBold(true);
+		        $this->excel->getActiveSheet()->getStyle('A1:P2')->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()->setRGB('E0E0E0');
+		        $this->excel->getActiveSheet()->mergeCells('A1:A2');
+		        $this->excel->getActiveSheet()->mergeCells('B1:B2');
+		        $this->excel->getActiveSheet()->mergeCells('C1:C2');		        
+		        $this->excel->getActiveSheet()->mergeCells('D1:D2');
+		        $this->excel->getActiveSheet()->mergeCells('E1:E2');
+		        $this->excel->getActiveSheet()->mergeCells('F1:F2');		        
+		        $this->excel->getActiveSheet()->mergeCells('G1:G2');
+		        $this->excel->getActiveSheet()->mergeCells('H1:H2');
+		        $this->excel->getActiveSheet()->mergeCells('I1:J1');
+		        $this->excel->getActiveSheet()->mergeCells('K1:L1');		        
+		        $this->excel->getActiveSheet()->mergeCells('M1:N1');
+		        $this->excel->getActiveSheet()->mergeCells('O1:P1');
+		        $this->excel->getActiveSheet()->setCellValue('I2', 'Fec. Pago');
+		        $this->excel->getActiveSheet()->setCellValue('J2', 'Gasto');		        
+		        $this->excel->getActiveSheet()->setCellValue('K2', 'Fec. Pago');
+		        $this->excel->getActiveSheet()->setCellValue('L2', 'Gasto');
+		        $this->excel->getActiveSheet()->setCellValue('M2', 'Fec. Pago');
+		        $this->excel->getActiveSheet()->setCellValue('N2', 'Gasto');
+		        $this->excel->getActiveSheet()->setCellValue('O2', 'Fec. Pago');
+		        $this->excel->getActiveSheet()->setCellValue('P2', 'Gasto');
+
+		        $cont=3;
+
+		        foreach ($getDetalleSiniestros as $s) {
+		        	$consulta = number_format((float)$s->consulta, 2, ".", "");
+					$medicamentos = number_format((float)$s->medicamentos, 2, ".", "");
+					$laboratorios = number_format((float)$s->laboratorio, 2, ".", "");
+					$imagenes = number_format((float)$s->imagenes, 2, ".", "");
+		        	$this->excel->getActiveSheet()->setCellValue('A'.$cont, $s->num_orden_atencion);
+			        $this->excel->getActiveSheet()->setCellValue('B'.$cont, $s->fecha_atencion);
+			        $this->excel->getActiveSheet()->setCellValue('C'.$cont, $s->nombre_plan);			        
+			        $this->excel->getActiveSheet()->setCellValue('D'.$cont, $s->nombre_comercial_pr);
+		        	$this->excel->getActiveSheet()->setCellValue('E'.$cont, $s->nombre_esp);
+			        $this->excel->getActiveSheet()->setCellValue('F'.$cont, $s->dianostico_temp);
+			        $this->excel->getActiveSheet()->setCellValue('G'.$cont, $s->contratante);
+			        $this->excel->getActiveSheet()->setCellValue('H'.$cont, $s->asegurado);
+			        $this->excel->getActiveSheet()->setCellValue('I'.$cont, $s->pago_consulta);
+			        $this->excel->getActiveSheet()->setCellValue('J'.$cont, $consulta);
+			        $this->excel->getActiveSheet()->setCellValue('K'.$cont, $s->pago_medicamentos);
+			        $this->excel->getActiveSheet()->setCellValue('L'.$cont, $medicamentos);
+			        $this->excel->getActiveSheet()->setCellValue('M'.$cont, $s->pago_lab);
+			        $this->excel->getActiveSheet()->setCellValue('N'.$cont, $laboratorios);
+			        $this->excel->getActiveSheet()->setCellValue('O'.$cont, $s->pago_imagenes);
+			        $this->excel->getActiveSheet()->setCellValue('P'.$cont, $imagenes);
+			        $cont=$cont+1;
+		        }
+
+		       for($i=1;$i<=$cont;$i++){
+		        	$this->excel->getActiveSheet()->getStyle('A'.$i)->applyFromArray($estilo);
+		        	$this->excel->getActiveSheet()->getStyle('B'.$i)->applyFromArray($estilo);
+		        	$this->excel->getActiveSheet()->getStyle('C'.$i)->applyFromArray($estilo);
+		        	$this->excel->getActiveSheet()->getStyle('D'.$i)->applyFromArray($estilo);
+		        	$this->excel->getActiveSheet()->getStyle('E'.$i)->applyFromArray($estilo);
+		        	$this->excel->getActiveSheet()->getStyle('F'.$i)->applyFromArray($estilo);
+		        	$this->excel->getActiveSheet()->getStyle('G'.$i)->applyFromArray($estilo);
+		        	$this->excel->getActiveSheet()->getStyle('H'.$i)->applyFromArray($estilo);
+		        	$this->excel->getActiveSheet()->getStyle('I'.$i)->applyFromArray($estilo);
+		        	$this->excel->getActiveSheet()->getStyle('J'.$i)->applyFromArray($estilo);
+		        	$this->excel->getActiveSheet()->getStyle('K'.$i)->applyFromArray($estilo);
+		        	$this->excel->getActiveSheet()->getStyle('L'.$i)->applyFromArray($estilo);
+		        	$this->excel->getActiveSheet()->getStyle('M'.$i)->applyFromArray($estilo);
+		        	$this->excel->getActiveSheet()->getStyle('N'.$i)->applyFromArray($estilo);
+		        	$this->excel->getActiveSheet()->getStyle('O'.$i)->applyFromArray($estilo);
+		        	$this->excel->getActiveSheet()->getStyle('P'.$i)->applyFromArray($estilo);
+		        }
+
+		        
+		        $this->excel->setActiveSheetIndex(0);
+
+
+		        header('Content-Type: application/vnd.ms-excel');
+		        header('Content-Disposition: attachment;filename="Siniestralidad '.$hoy.'.xls"');
 		        header('Cache-Control: max-age=0'); //no cache
 		        $objWriter = PHPExcel_IOFactory::createWriter($this->excel, 'Excel5');
 		        // Forzamos a la descarga

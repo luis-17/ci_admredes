@@ -1,7 +1,3 @@
-<?php 
-$user = $this->session->userdata('user');
-extract($user);
-?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html lang="en">
 	<head>
@@ -92,128 +88,88 @@ extract($user);
 								<a href="<?=base_url()?>">Inicio</a>
 							</li>
 							<li class="active"><a href="#">Planes</a></li>
-							<li><a href="<?=base_url()?>index.php/cotizador">Cotizador</a></li>
-							<li class="active">Propuesta Comercial</li>
+							<li><a href="<?=base_url()?>index.php/cotizador">Cotizacion</a></li>
+							<li class="active"><?=$plan?></li>
 						</ul><!-- /.breadcrumb -->
 
 						<!-- /section:basics/content.searchbox -->
-					</div>
+					</div>					
 					
 					<!-- /section:basics/content.breadcrumbs -->
 					<div class="page-content">
 						<div class="page-header">
 							<h1>	
-							Propuesta Comercial
+							<?php echo $plan.': Aprobada por Gerencia';?>
 							</h1>
 						</div>
 						<div class="row">
-							<div class="col-xs-12">							
+							<div class="col-xs-12">
+
 								<!-- PAGE CONTENT BEGINS -->
-								<form class="form-horizontal" role="form" method="post" action="<?=base_url()?>index.php/sol_apGerencia">
-									<input type="hidden" id="idcotizaciondetalle" name="idcotizaciondetalle" value="<?=$idcotizaciondetalle;?>" />
-									<input type="hidden" name="nom" value="<?=$nom?>">
-									<input type="hidden" name="estado" value="<?=$estado?>">
-
+								<form class="form-horizontal" role="form">
 									<div class="form-group">
 										<label class="col-sm-3 control-label no-padding-right" for="form-field-1"></label>
 
 										<div class="col-sm-6">
 											<table class="table table-bordered table-hover"  style="font-size: 12px;">
 												<thead>
-													<tr style="text-align: center;">
-														<th style="text-align: center;" colspan="3"><?=str_replace("%20"," ",$nom);?>: COBERTURAS DEL PLAN</th>
-													</tr>
 													<tr>
-														<th style="text-align: center;">DESCRIPCIÓN</th>
-														<th style="text-align: center;">COASEGUROS</th>	
-														<th style="text-align: center;">EVENTOS</th>
+														<th colspan="4" style="text-align: center;">DATOS DE LA PROPUESTA</th>
 													</tr>
 												</thead>
-												<tbody>
-													<?php foreach($coberturas as $c){ 
-													switch ($c->tiempo) {
-															case '1 day':
-																$tiempo = $c->num_eventos." diario(s)";
-															break;
-															case '1 month':
-																$tiempo = $c->num_eventos." mensual(es)";
-															break;
-															case '1 year':
-																$tiempo = $c->num_eventos." anual(s)";
-															break;	
-															default:
-																$tiempo = "Ilimitados";
-															break;
-														}?>
-													<tr style="font-style: italic;">
-														<th colspan="3"><?=$c->nombre_var?></th>
+												<tbody>												
+													<tr>
+														<th>Cliente</th>
+														<td><?=$cliente?></td>
+														<th>Plan Cotizado</th>
+														<td><?=$plan?></td>
 													</tr>
 													<tr>
-														<td><?=$c->texto_web?></td>
-														<td><?=$c->cobertura?></td>
-														<td><?=$tiempo?></td>
-													</tr>
-													<?php } ?>
-												</tbody>
-											</table>
-											<br>
-											<table class="table table-bordered table-hover"  style="font-size: 12px;">
-												<thead>
-													<tr>
-														<th colspan="2" style="text-align: center;">COTIZACIÓN DE APORETS</th>
+														<th>Ejecutiva de Cuenta</th>
+														<td><?=$ejecutiva?></td>
+														<th>Fecha de Creación</th>
+														<td><?=$fecha_creacion?></td>
 													</tr>
 													<tr>
-														<th style="text-align: center;">Cantidad Mínima de Afiliados</th>
-														<th style="text-align: center;">Precio del Plan Mensual (Inc. IGV)</th>
+														<th>Tipo de Cotización</th>
+														<td><?=$tipo_cotizacion?></td>
+														<th>Tipo de Plan</th>
+														<td><?=$tipo_plan?></td>
 													</tr>
-												</thead>
-												<tbody>
-												<?php foreach($cot_detalle as $cd){
-													$num_afiliados = $cd->num_afiliados;
-													$titular = $cd->prima_titular;
-													$adicional = $cd->prima_adicional;
-												} 
-												for($i=0; $i<$num_afiliados; $i++){
-													$prima = $titular + ($adicional*$i);
-													$prima =  number_format((float)$prima, 2, '.', '');
-												?>
 													<tr>
-														<td>Titular <?php if($i>0){ echo "+ ".$i." dependiente(s)"; } ?></td>
-														<td style="text-align: right;"><?=$prima?></td>
+														<th>Días de Carencia</th>
+														<td><?=$carencia?></td>
+														<th>Días de Mora</th>
+														<td><?=$mora?></td>
 													</tr>
-												<?php }?>
+													<tr>
+														<th>Fecuencia de Atención</th>
+														<td>Cada <?=$atencion?> días</td>
+														<th>Afiliados por Póliza</th>
+														<td><?=$afiliados?></td>
+													</tr>
+
 												</tbody>
 											</table>
 										</div>
-
-										<label class="col-sm-3 control-label no-padding-right" for="form-field-1"></label>
 										
 									</div>
-									<div class="form-group">
-										<label class="col-sm-3 control-label no-padding-right" for="form-field-1"></label>
 
-										<div class="col-sm-6">
-											<label><h3>CONDICIONES:</h3></label>
-											<ul>
-												<?php foreach ($coberturas2 as $c2) {?>
-													<li><b><?=$c2->nombre_var?>: <?=$c2->texto_web?></b></li>
-												<?php } ?>
-											</ul>
-										</div>
-
-										<label class="col-sm-3 control-label no-padding-right" for="form-field-1"></label>
-										
-									</div>
-								
-									<div style="text-align: right;">
 									<div class="clearfix form-actions">
 										<div class="col-md-offset-3 col-md-9">
-											<button name="accion" class="btn btn-info" type="submit" value="solicitar">
+											<a href="<?=base_url()?>index.php/generar_cotPdf/<?=$id?>" class="btn btn-info">
+												<i class="ace-icon fa fa-download bigger-110"></i>
+												Descargar
+											</a>
+											<a href="<?=base_url()?>index.php/aceptar_cliente/<?=$id?>" class="btn btn-info">
 												<i class="ace-icon fa fa-check bigger-110"></i>
-												Solicitar Aprobación de Gerencia
-											</button>
+												Aceptada por el Cliente
+											</a>
+											<a href="<?=base_url()?>index.php/desaprobarCot/<?=$id?>" class="btn btn-info">
+												<i class="ace-icon glyphicon glyphicon-remove bigger-110"></i>
+												Rechazada por el Cliente
+											</a>
 										</div>
-									</div>
 									</div>
 								</form>
 							

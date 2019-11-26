@@ -1,8 +1,3 @@
-<?php
-	$user = $this->session->userdata('user');
-	extract($user);
-	date_default_timezone_set('America/Lima');
-?>
 <html lang="en"><head>
 		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 		<meta charset="utf-8">
@@ -43,7 +38,7 @@
 		<script src="../assets/js/html5shiv.js"></script>
 		<script src="../assets/js/respond.js"></script>
 		<![endif]-->
-		<!-- para paginacion -->
+			<!-- para paginacion -->
 		<script src="<?=base_url()?>public/pagination/jquery.dataTables.min.css"></script>
 		<script src="<?=base_url()?>public/pagination/jquery-1.12.4.js"></script>
 		<script src="<?=base_url()?>public/pagination/jquery.dataTables.min.js"></script>
@@ -52,103 +47,34 @@
 
 	<body style="">	
 			<!-- /section:basics/sidebar -->
-			<div class="page-content">
-						<div class="page-header">
-							<h1>
-								<?=$nom?>: Bloqueos					
-							</h1>
-						</div>
+			<div class="main-content">
+				<div class="main-content-inner">
+					<!-- #section:basics/content.breadcrumbs -->
+					
+					<!-- /section:basics/content.breadcrumbs -->
+					<div class="page-content">
+
 						<div class="row">
 							<div class="col-xs-12">
 								<!-- PAGE CONTENT BEGINS -->
-								<form class="form-horizontal" role="form" method="post" action="<?=base_url()?>index.php/reg_bloqueo_cot">
-									<div class="form-group">
-										<input type="hidden" name="id" id="id" value="<?=$id?>">
-										<label class="col-sm-3 control-label no-padding-right" for="form-field-1"> Cobertura: </label>
-										<div class="col-sm-5">
-											<select name="cob_bloqueada" id="cob_bloqueada" required="true">
-												<option>Seleccionar</option>
-												<?php foreach ($coberturas as $c) { ?>
-													<option value="<?=$c->idcotizacioncobertura?>"><?=$c->nombre_var?></option>
-												<?php } ?>
-											</select>
-										</div>
-									</div>				
 
-									<div class="clearfix form-actions">
-										<div class="col-md-offset-3 col-md-12">
-											<button class="btn btn-info" type="submit" id="guardar" name="guardar">
-												<i class="ace-icon fa fa-check bigger-110"></i>
-												Guardar
-											</button>
-										</div>
-									</div>
-								</form>
-
-							</div><!-- /.col -->
-
-							<div class="col-xs-12">
-							<br>
-								<table id="example" class="table table-striped table-bordered table-hover"  style="font-size: 12px;">
-									<thead>
-										<th>Fecha y Hora</th>
-										<th>Cobertura Bloqueada</th>
-										<th>Usuario Bloqueó</th>
-										<th width="5%"></th>
-									</thead>
-									<tbody>
-										<?php foreach ($bloqueos as $b) { ?>
-											<tr>
-												<td><?=$b->fecha?></td>
-												<td><?=$b->nombre_var?></td>
-												<td><?=$b->username?></td>
-												<td width="5%"><a title="Eliminar BLoqueo" href="<?=base_url()?>index.php/anular_bloqueo_cot/<?=$b->idbloqueo?>/<?=$id?>"><i class="ace-icon glyphicon glyphicon-trash blue"></i></a></td>
-											</tr>
-										<?php } ?>
-									</tbody>
-								</table>
-								<script>			
-										//para paginacion
-										$(document).ready(function() {
-										$('#example').DataTable( {
-										"pagingType": "full_numbers"
-										} );
-									} );
-								</script>
-								<br>
-								<div class="clearfix form-actions">
-									<div class="col-md-offset-3 col-md-12">
-										<button class="btn btn-info" type="button" onclick="cerrar();">
-											<i class="ace-icon fa fa-check bigger-110"></i>
-												Cerrar
-										</button>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>			
+								<?=$cadena?>
+					</div><!-- /.main-content -->			
+				</div><!-- /.main-container -->
+		
 		<!-- basic scripts -->
 
 		<!--[if !IE]> -->
 		<script type="text/javascript">
 			window.jQuery || document.write("<script src='<?=  base_url()?>public/assets/js/jquery.js'>"+"<"+"/script>");
 		</script><script src="<?=  base_url()?>public/assets/js/jquery.js"></script>
-		<script type="text/javascript">
-			function cerrar(){
-				parent.location.reload(true);
-  				parent.$.fancybox.close();
-  			}
-		</script>
-
 
 		<!-- <![endif]-->
-
 		<!--[if IE]>
 <script type="text/javascript">
  window.jQuery || document.write("<script src='../assets/js/jquery1x.js'>"+"<"+"/script>");
 </script>
 <![endif]-->
-		</script>
 		<script type="text/javascript">
 			if('ontouchstart' in document.documentElement) document.write("<script src='<?=  base_url()?>public/assets/js/jquery.mobile.custom.js'>"+"<"+"/script>");
 		</script>
@@ -182,7 +108,6 @@
 		<script src="<?=  base_url()?>public/assets/js/ace/ace.settings-skin.js"></script>
 		<script src="<?=  base_url()?>public/assets/js/ace/ace.widget-on-reload.js"></script>
 		<script src="<?=  base_url()?>public/assets/js/ace/ace.searchbox-autocomplete.js"></script>
-
 		<!-- the following scripts are used in demo only for onpage help and you don't need them -->
 		<link rel="stylesheet" href="<?=  base_url()?>public/assets/css/ace.onpage-help.css">
 		<link rel="stylesheet" href="<?=  base_url()?>public/docs/assets/js/themes/sunburst.css">
@@ -195,5 +120,4 @@
 		<script src="<?=  base_url()?>public/docs/assets/js/language/html.js"></script>
 		<script src="<?=  base_url()?>public/docs/assets/js/language/css.js"></script>
 		<script src="<?=  base_url()?>public/docs/assets/js/language/javascript.js"></script>
-</body>
-</html>
+</body></html>

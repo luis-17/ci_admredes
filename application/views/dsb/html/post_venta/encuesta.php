@@ -158,7 +158,7 @@
 											<?php } ?>
 											<tr>
 												<td>¿Tiene algún comentario y/o sugerencia que le gustaría compartir?</td>
-												<td colspan="5"><textarea maxlength="1000" name="comentario" id="comentario" cols="80" rows="1" placeholder="Escribir comentario y/o sugerencia aquí"></textarea></td>
+												<td colspan="5"><textarea maxlength="2500" name="comentario" id="comentario" cols="80" rows="1" placeholder="Escribir comentario y/o sugerencia aquí"></textarea></td>
 											</tr>
 										</tbody>
 									</table>																

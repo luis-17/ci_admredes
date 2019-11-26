@@ -637,9 +637,10 @@
 																	}else{
 																		$selected="";
 																	}
-																	echo "<option value='". $u['idproveedor']."'".$selected.">" . $u['nombre_comercial_pr']."</option>";	
+																	echo "<option value='". $u['idproveedor']."'".$selected.">" . $u['nombre_comercial_pr']." / ".$u['numero_documento_pr']."</option>";	
 																	}
-															}?>
+																}
+															?>
 														</select>  
 											          </td>
 											          <td  width="130px"><div id="sumaNeto" class="input-group">
@@ -687,7 +688,7 @@
 										          		<option value="0">--- Seleccionar Proveedor ---</option>
 														<?php if (count($proveedor)) {
 															foreach ($proveedor as $u) {
-																echo "<option value='". $u['idproveedor']."'>" . $u['nombre_comercial_pr']."</option>";	
+																echo "<option value='". $u['idproveedor']."'>" . $u['nombre_comercial_pr']." / ".$u['numero_documento_pr']."</option>";	
 																}
 														}?>
 													</select>

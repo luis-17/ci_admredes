@@ -38,6 +38,11 @@
 				<!-- #section:basics/navbar.dropdown -->
 				<div class="navbar-buttons navbar-header pull-right" role="navigation">
 					<ul class="nav ace-nav">
+						<li class="grey">
+							<a title="Consultas" href="<?=base_url()?>index.php/consultas">
+								<i class="ace-icon fa fa-info-circle"></i>								
+							</a>
+						</li>
 
 						<!-- #section:basics/navbar.user_menu -->
 						<li class="light-blue">

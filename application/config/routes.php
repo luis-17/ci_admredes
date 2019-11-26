@@ -190,7 +190,7 @@ $route['save_proveedor'] = 'plan_cnt/save_proveedor';
 $route['plan_proveedor'] = 'plan_cnt/plan_proveedor';
 
 $route['consultar_cobros_buscar'] = 'Reportes_cnt/buscar';
-$route['consultar_detalle_cobros/(:any)/(:any)/(:any)/(:any)'] = 'Reportes_cnt/detalle_cobros/$1/$2/$3/$4';
+$route['consultar_detalle_cobros/(:any)/(:any)/(:any)/(:any)/(:any)'] = 'Reportes_cnt/detalle_cobros/$1/$2/$3/$4/$5';
 $route['exc_cobros/(:any)/(:any)/(:any)'] = 'Reportes_cnt/exc_cobros/$1/$2/$3';
 
 $route['consultar_atenciones_buscar'] = 'Reportes_cnt/consultar_atenciones_buscar';
@@ -266,7 +266,6 @@ $route['imprimir_liquidacion2/(:any)/(:any)'] = 'Liquidacion_cnt/liquidacion_pdf
 $route['generar_cobros'] = 'Persona_juridica_cnt/generar_cobros';
 $route['buscar_cobros'] = 'Persona_juridica_cnt/buscar_cobros';
 $route['registrar_cobros'] ='Persona_juridica_cnt/registrar_cobros';
-
 
 $route['solicitud_cancelacion'] = 'Persona_juridica_cnt/solicitud_cancelacion';
 $route['aceptar_solicitud/(:any)'] = 'Persona_juridica_cnt/aceptar_solicitud/$1';
@@ -371,6 +370,7 @@ $route['editar_recepcion/(:any)'] = 'Mesa_partes_cnt/editar_recepcion/$1';
 $route['reg_recepcion'] = 'Mesa_partes_cnt/reg_recepcion';
 $route['guardar_recepcion3'] = 'Mesa_partes_cnt/guardar_recepcion3';
 $route['reg_recepcion3'] = 'Mesa_partes_cnt/reg_recepcion3';
+$route['ruc'] = 'Mesa_partes_cnt/ruc';
 $route['siniestros'] = 'Siniestro_cnt/registrar_siniestro';
 $route['seleccionar_factura/(:any)/(:any)'] = 'Siniestro_cnt/seleccionar_factura/$1/$2';
 $route['cotizador'] = 'Cotizador_cnt/index';
@@ -391,18 +391,39 @@ $route['eventos_cotizacion/(:any)'] = 'Cotizador_cnt/eventos_cotizacion/$1';
 $route['reg_evento_cotizacion'] = 'Cotizador_cnt/reg_evento_cotizacion';
 $route['sol_apGerencia'] = 'Cotizador_cnt/sol_apGerencia';
 $route['cot_pendientes'] = 'Cotizador_cnt/cot_pendientes';
+$route['editar_cotizacion/(:any)/(:any)'] = 'Cotizador_cnt/editar_cotizacion/$1/$2';
+$route['desaprobarCot/(:any)'] = 'Cotizador_cnt/desaprobarCot/$1';
+$route['guardar_desaprobacion'] = 'Cotizador_cnt/guardar_desaprobacion';
+$route['revision_propuesta/(:any)/(:any)/(:any)/(:any)'] = 'Cotizador_cnt/revision_propuesta/$1/$2/$3/$4';
+$route['aprobCot/(:any)'] = 'Cotizador_cnt/aprobCot/$1';
+$route['cotizacion_rechazo/(:any)'] = 'Cotizador_cnt/cotizacion_rechazo/$1';
+$route['duplicar_data/(:any)/(:any)'] = 'Cotizador_cnt/duplicar_data/$1/$2';
+$route['cotizacion_aprobacion/(:any)/(:any)'] = 'Cotizador_cnt/cotizacion_aprobacion/$1/$2';
+$route['generar_cotPdf/(:any)'] = 'Cotizador_cnt/generar_cotPdf/$1';
+$route['aceptar_cliente/(:any)'] = 'Cotizador_cnt/aceptar_cliente/$1';
+$route['bloqueo_cot/(:any)'] = 'Cotizador_cnt/bloqueo_cot/$1';
+$route['reg_bloqueo_cot'] = 'Cotizador_cnt/reg_bloqueo_cot';
+$route['anular_bloqueo_cot/(:any)/(:any)'] = 'Cotizador_cnt/anular_bloqueo_cot/$1/$2';
+$route['seleccionar_cobertura_cot/(:any)/(:any)/(:any)'] = 'Cotizador_cnt/seleccionar_cobertura_cot/$1/$2/$3';
 
+$route['eliminar_producto_cot/(:any)/(:any)/(:any)/(:any)'] = 'Cotizador_cnt/eliminar_producto/$1/$2/$3/$4';
+$route['insertar_producto_cot/(:any)/(:any)/(:any)/(:any)'] = 'Cotizador_cnt/insertar_producto/$1/$2/$3/$4';
 
-
-$route['cotizador_registrar'] = 'Cotizador_cnt/cotizador_registrar';
-$route['cotizador_calcular'] = 'Cotizador_cnt/cotizador_calcular';
-$route['cotizador_cobertura'] = 'Cotizador_cnt/cotizador_cobertura';
-$route['cotizador_guardar'] = 'Cotizador_cnt/cotizador_guardar';
-$route['cot_coaseguro/(:any)'] = 'Cotizador_cnt/cot_coaseguro/$1';
-$route['reg_cotcoaseguro'] = 'Cotizador_cnt/reg_cotcoaseguro';
 
 $route['consultar_postVenta'] = 'Reportes_cnt/consultar_postVenta';
 $route['consultar_postVenta_buscar'] = 'Reportes_cnt/consultar_postVenta_buscar';
+
+$route['consultar_siniestros'] = 'Reportes_cnt/consultar_siniestros';
+$route['consultar_siniestros_buscar'] = 'Reportes_cnt/consultar_siniestros_buscar';
+
+$route['consultas'] = 'Login_cnt/consultas';
+
+$route['detalle_plan'] = 'Login_cnt/detalle_plan';
+$route['diagnosticos_detalle2/(:any)/(:any)'] = 'Login_cnt/diagnosticos_detalle2/$1/$2';
+
+
+$route['liq_pagadas'] = 'Reportes_cnt/liq_pagadas';
+$route['pago_detalle2/(:any)'] = 'Reportes_cnt/pago_detalle2/$1';
 
 $route['start_sesion'] = 'Login_cnt/start_sesion';
 $route['logout'] = 'Login_cnt/logout';

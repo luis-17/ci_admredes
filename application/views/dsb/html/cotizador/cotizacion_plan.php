@@ -94,6 +94,33 @@
 
 						<!-- /section:basics/content.searchbox -->
 					</div>
+					<?php if($id==0):
+							$cliente="";
+							$nombre_plan="";
+							$carencia="";
+							$mora="";
+							$atencion="";
+							$num_afiliados="";
+							$nom = "Nueva Cotización";
+							$tipo_plan = "";
+							$tipo_cot = "";
+							$readonly = "";
+							$idcotizacion = "";
+								else:
+									foreach ($cotizacion as $c):
+										$cliente=$c->idclienteempresa;
+										$nombre_plan=$c->nombre_cotizacion;
+										$carencia=$c->dias_carencia;
+										$mora=$c->dias_mora;
+										$atencion=$c->dias_atencion;
+										$num_afiliados=$c->num_afiliados;
+										$nom = $nombre_plan;
+										$tipo_plan = $c->tipo_plan;
+										$tipo_cot = $c->tipo_cotizacion;
+										$readonly = 'readonly="readonly"';
+										$idcotizacion = $c->idcotizacion;
+									endforeach;
+					endif; ?>
 					
 					<!-- /section:basics/content.breadcrumbs -->
 					<div class="page-content">
@@ -104,39 +131,17 @@
 						</div>
 						<div class="row">
 							<div class="col-xs-12">
-							<?php if($id==0):
-									$cliente="";
-									$nombre_plan="";
-									$codigo_plan="";
-									$carencia="";
-									$mora="";
-									$atencion="";
-									$prima="";
-									$cuerpo="";
-									$prima_ad="";
-									$num_afiliados="";
-									else:
-										foreach ($plan as $p):
-											$cliente=$p->idclienteempresa;
-											$nombre_plan=$p->nombre_plan;
-											$codigo_plan=$p->codigo_plan;
-											$carencia=$p->dias_carencia;
-											$mora=$p->dias_mora;
-											$atencion=$p->dias_atencion;
-											$prima=$p->prima_monto;
-											$cuerpo=$p->cuerpo_mail;
-											$prima_ad=$p->prima_adicional*1;
-											$num_afiliados=$p->num_afiliados;
-											endforeach;
-								endif; ?>
+
 								<!-- PAGE CONTENT BEGINS -->
 								<form class="form-horizontal" role="form" method="post" action="<?=base_url()?>index.php/guardar_cotizacion">
-									<input type="hidden" id="idcotizacion" name="idcotizacion" value="<?=$id;?>" />
+									<input type="hidden" name="idcotizacion" value="<?=$idcotizacion?>">
+									<input type="hidden" id="idcotizaciondetalle" name="idcotizaciondetalle" value="<?=$id;?>" />
+									<input type="hidden" name="estado" value="<?=$estado?>">
 									<div class="form-group">
 										<label class="col-sm-3 control-label no-padding-right" for="form-field-1">Cliente: </label>
 
 										<div class="col-sm-9">
-											<select id="cliente" name="cliente" value="" class="col-xs-10 col-sm-5" required="Seleccionar una opción de la lista">
+											<select id="cliente" name="cliente" value="" class="col-xs-10 col-sm-5" required="Seleccionar una opción de la lista" <?=$readonly?> >
 												<option value="">Seleccionar</option>	
 												<?php foreach($clientes as $c):
 													if($cliente==$c->idclienteempresa):
@@ -162,9 +167,9 @@
 										<label class="col-sm-3 control-label no-padding-right" for="form-field-1"> Tipo Plan: </label>
 
 										<div class="col-sm-9">
-											<input type="radio" id="res1" name="tipo_plan" value="1" required="required">
+											<input type="radio" id="res1" name="tipo_plan" value="1" required="required" <?php if($tipo_plan==1){ echo "checked";} ?>>
 											<label for="res1">Compulsivo </label>&nbsp;&nbsp;
-											<input  type="radio" id="res2" name="tipo_plan" value="2" required="required" >
+											<input  type="radio" id="res2" name="tipo_plan" value="2" required="required" <?php if($tipo_plan==2){ echo "checked";} ?>>
 											<label for="res2">Optativo </label><label style="color: #FF0101;">&nbsp;*</label>
 										</div>
 									</div>
@@ -173,9 +178,9 @@
 										<label class="col-sm-3 control-label no-padding-right" for="form-field-1"> Tipo Cotización: </label>
 
 										<div class="col-sm-9">
-											<input type="radio" id="res1" name="tipo_cotizacion" value="1" required="required">
+											<input type="radio" id="res1" name="tipo_cotizacion" value="1" required="required" <?php if($tipo_cot==1){ echo "checked";} ?>>
 											<label for="res1">Mensual </label>&nbsp;&nbsp;
-											<input  type="radio" id="res2" name="tipo_cotizacion" value="2" required="required" >
+											<input  type="radio" id="res2" name="tipo_cotizacion" value="2" required="required" <?php if($tipo_cot==2){ echo "checked";} ?>>
 											<label for="res2">Anual </label><label style="color: #FF0101;">&nbsp;*</label>
 										</div>
 									</div>

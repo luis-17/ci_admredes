@@ -87,7 +87,11 @@
 							</li>
 
 							<li class="active">
-								Post-Venta
+								<a href="">Reportes</a>
+							</li>
+
+							<li class="active">
+								Consultar Siniestros
 							</li>
 						</ul><!-- /.breadcrumb -->
 
@@ -100,7 +104,7 @@
 						<!-- /section:settings.box -->
 						<div class="page-header">
 							<h1>
-								Consultar Post-Venta
+								Consultar Siniestros
 								<small>
 									<i class="ace-icon fa fa-angle-double-right"></i>
 								</small>
@@ -111,7 +115,7 @@
 								<div class="col-xs-9 col-sm-12">
 									<div class="alert alert-info">
 
-										<form name="form" id="form" method="post" action="<?=base_url()?>index.php/consultar_postVenta_buscar" class="form-horizontal">
+										<form name="form" id="form" method="post" action="<?=base_url()?>index.php/consultar_siniestros_buscar" class="form-horizontal">
 											<div class="profile-info-name"> Inicio: </div>
 											<div class="profile-info-name">
 												<input class="form-control input-mask-date" type="date" id="fechainicio" name="fechainicio" required="Seleccione una fecha de inicio" value="<?=$fecinicio;?>" >
@@ -147,11 +151,11 @@
 									<ul class="nav nav-tabs padding-18 tab-size-bigger" id="myTab">
 										<li class="active">
 											<a data-toggle="tab" href="#faq-tab-1">
-												Resumen General
+												Detalle
 											</a>
 										</li>
 
-										<li>
+										<!-- <li>
 											<a data-toggle="tab" href="#faq-tab-2">
 												Resumen por Cliente
 											</a>
@@ -179,118 +183,80 @@
 											<a data-toggle="tab" href="#faq-tab-6">
 												Detalle
 											</a>
-										</li>							
+										</li>							 -->
 									</ul>
 
 									<!-- /section:pages/faq -->
 									<div class="tab-content no-border padding-24">
 										<div id="faq-tab-1" class="tab-pane fade in active">
 											<!-- star table -->														
-												<div class="col-xs-9">
-													<table align="center" id="example" class="table table-striped table-bordered table-hover">
-														<thead>
-															<tr>
-																<th rowspan="2">Item</th>
-																<th colspan="2" align="center">Teléfono</th>														
-																<th colspan="2" align="center">Correo Electrónico</th>
-																<th colspan="2" align="center">Total Post Venta</th>
-															</tr>
+												<div class="col-xs-12">
+													<table align="center" id="example" class="table table-bordered table-hover">
+														<thead>															
 															<tr>														
-																<td width="10%" align="center">Cantidad</td>
-																<td width="10%" align="center">Porcentaje</td>
-																<td width="10%" align="center">Cantidad</td>
-																<td width="10%" align="center">Porcentaje</td>
-																<td width="10%" align="center">Cantidad</td>
-																<td width="10%" align="center">Porcentaje</td>
+																<th rowspan="2">N° Orden</th>
+																<th rowspan="2">Fec.Atención</th>
+																<th rowspan="2">Plan</th>
+																<th rowspan="2">Centro Médico</th>
+																<th rowspan="2">Servicio</th>
+																<th rowspan="2">Diagnóstico</th>
+																<th rowspan="2">Titular</th>
+																<th rowspan="2">Afiliado</th>
+																<th colspan="2">Consulta</th>
+																<th colspan="2">Medicamentos</th>
+																<th colspan="2">Laboratorios</th>
+																<th colspan="2">Imágenes</th>
+															</tr>
+															<tr>
+																<th>Fec. Pago</th>
+																<th>Gasto</th>
+																<th>Fec. Pago</th>
+																<th>Gasto</th>
+																<th>Fec. Pago</th>
+																<th>Gasto</th>
+																<th>Fec. Pago</th>
+																<th>Gasto</th>																
 															</tr>
 														</thead>
 														<tbody>	
-															<?php 
-																$total_encuestas = $contestaron_telf+$contestaron_correo+ $no_contestaron + $no_opinan;
-																$total_contestaron = $contestaron_telf+$contestaron_correo;
-																$total_telf = $contestaron_telf + $no_contestaron + $no_opinan;
-																if($total_telf>0){
-																	$porc_telf = round((($contestaron_telf*100)/$total_telf),2);
-																	$porc_nocontestaron = round((($no_contestaron*100)/$total_telf),2);
-																	$porc_noopinan = round((($no_opinan*100)/$total_telf),2);
-																	$totporctelf = round((($total_telf*100)/$atenciones),2);
-																}else{
-																	$porc_telf = 0;
-																	$porc_nocontestaron = 0;
-																	$porc_noopinan = 0;
-																	$totporctelf = 0;
-																}
-																if($total_encuestas>0){
-																	$porc_contestaron = round((($total_contestaron*100)/$total_encuestas),2);
-																	$porc_noc = round((($no_contestaron*100)/$total_encuestas),2);
-																	$porc_noop = round((($no_opinan*100)/$total_encuestas),2);
-																	$porc_telf2 =round((($total_telf*100)/$total_encuestas),2);
-																	$porc_correo2 = round((($contestaron_correo*100)/$total_encuestas),2);
-																}else{
-																	$porc_contestaron = 0;
-																	$porc_noc = 0;
-																	$porc_noop = 0;
-																	$porc_telf2 = 0;
-																	$porc_correo2 = 0;
-																}
-																if($contestaron_correo>0){
-																	$porc_correo = round((($contestaron_correo*100)/$contestaron_correo),2);
-																	$totporcorreo = round((($contestaron_correo*100)/$atenciones),2);
-																}else{
-																	$porc_correo = 0;
-																	$totporcorreo = 0;
-																}	
-															?>
-															
-															<tr>															
-																<td>Contestaron</td>	
-																<td align="right"><?=$contestaron_telf?></td>
-																<td align="right"><?=$porc_telf?>%</td>														
-																<td align="right"><?=$contestaron_correo?></td>
-																<td align="right"><?=$porc_correo?>%</td>
-																<td align="right"><?=$total_contestaron?></td>
-																<td align="right"><?=$porc_contestaron?>%</td>
+															<?php foreach ($getDetalleSiniestros as $s) {
+																$consulta = number_format((float)$s->consulta, 2, ".", "");
+																$medicamentos = number_format((float)$s->medicamentos, 2, ".", "");
+																$laboratorios = number_format((float)$s->laboratorio, 2, ".", "");
+																$imagenes = number_format((float)$s->imagenes, 2, ".", "");
+																?>					
+															<tr>													
+																<td><?=$s->num_orden_atencion?></td>	
+																<td><?=$s->fecha_atencion?></td>
+																<td><?=$s->nombre_plan?></td>														
+																<td><?=$s->nombre_comercial_pr?></td>
+																<td><?=$s->nombre_esp?></td>
+																<td><?=$s->dianostico_temp?></td>
+																<td><?=$s->contratante?></td>
+																<td><?=$s->asegurado?></td>
+																<td><?=$s->pago_consulta?></td>
+																<td align="right"><?=$consulta?></td>
+																<td><?=$s->pago_medicamentos?></td>
+																<td align="right"><?=$medicamentos?></td>
+																<td><?=$s->pago_lab?></td>
+																<td align="right"><?=$laboratorios?></td>
+																<td><?=$s->pago_imagenes?></td>
+																<td align="right"><?=$imagenes?></td>
 															</tr>
-															<tr>
-																<td>No Contestaron</td>
-																<td align="right"><?=$no_contestaron?></td>
-																<td align="right"><?=$porc_nocontestaron?>%</td>														
-																<td align="right">0</td>
-																<td align="right">0%</td>
-																<td align="right"><?=$no_contestaron?></td>
-																<td align="right"><?=$porc_noc?>%</td>
-															</tr>
-															<tr>
-																<td>No Opinaron</td>
-																<td align="right"><?=$no_opinan?></td>
-																<td align="right"><?=$porc_noopinan?>%</td>														
-																<td align="right">0</td>
-																<td align="right">0%</td>
-																<td align="right"><?=$no_opinan?></td>
-																<td align="right"><?=$porc_noop?>%</td>
-															</tr>
-															<tr>
-																<td rowspan="2">TOTAL POST VENTA</td>
-																<td align="right" colspan="2"><?=$total_telf?></td>														
-																<td align="right" colspan="2"><?=$contestaron_correo?></td>
-																<td style="vertical-align: middle;" rowspan="2" align="right" colspan="2"><?=$total_encuestas?></td>
-															</tr>
-															<tr>																
-																<td align="right" colspan="2"><?=$porc_telf2?>%</td>														
-																<td align="right" colspan="2"><?=$porc_correo2?>%</td>
-															</tr>
-															<tr>
-																<th>TOTAL ATENCIONES</th>
-																<td align="right" colspan="2"><b><?=$totporctelf?>%<b></td>														
-																<td align="right" colspan="2"><b><?=$totporcorreo?>%<b></td>
-																<td align="right" colspan="2"><b><?=$atenciones?><b></td>
-															</tr>
+															<?php } ?>
 														</tbody>												
 													</table>
+													<script>			
+														//para paginacion
+														$(document).ready(function() {
+														$('#example').DataTable( {
+														"pagingType": "full_numbers"
+														} );
+													} );
+													</script>
 												</div>
 										</div>
-										<div id="faq-tab-2" class="tab-pane fade">
-											<!-- star table -->		
+										<!-- <div id="faq-tab-2" class="tab-pane fade">
 												<div class="col-xs-12">
 													<table align="center" id="example2" class="table table-striped table-bordered table-hover">
 														<thead>
@@ -338,11 +304,8 @@
 													</script>	
 												</div>	
 										</div>
-										<div id="faq-tab-3" class="tab-pane fade">
-											<!-- star table -->		
+										<!-- <div id="faq-tab-3" class="tab-pane fade">
 											<div class="col-xs-12">
-
-												<!-- end table -->
 												<table width="100%" align="center" id="example3" class="table table-striped table-bordered table-hover">
 														<thead>
 															<tr>
@@ -370,15 +333,15 @@
 																if($valor>0){
 																	$indicador=round(($valor/$num),1);
 																	if($indicador<1.5){
-																		$calificacion = 'Nada satisfecho';
+																		$calificacion = 'Pésimo';
 																	}elseif ($indicador>1.4 && $indicador<2.5) {
-																		$calificacion = 'Poco satisfecho';
+																		$calificacion = 'Malo';
 																	}elseif ($indicador>2.4 && $indicador<3.5) {
-																		$calificacion = 'Satisfecho';
+																		$calificacion = 'Regular';
 																	}elseif($indicador>3.4 && $indicador<4.5){
-																		$calificacion = 'Muy satisfecho';
+																		$calificacion = 'Bueno';
 																	}else{
-																		$calificacion = 'Totalmente satisfecho';
+																		$calificacion = 'Excelente';
 																	}
 																}else{
 																	$indicador='-';
@@ -422,9 +385,8 @@
 													} );
 													</script>		
 												</div>
-										</div>
-										<div id="faq-tab-4" class="tab-pane fade">
-											<!-- star table -->														
+										</div> -->
+										<!-- <div id="faq-tab-4" class="tab-pane fade">											
 												<div class="col-xs-12">
 													<table width="100%" align="center" id="example4" class="table table-striped table-bordered table-hover">
 														<thead>
@@ -451,15 +413,15 @@
 																if($num>0){
 																	$indicador=round(($valor/$num),1);
 																	if($indicador<1.5){
-																		$calificacion = 'Nada satisfecho';
+																		$calificacion = 'Pésimo';
 																	}elseif ($indicador>1.4 && $indicador<2.5) {
-																		$calificacion = 'Poco satisfecho';
+																		$calificacion = 'Malo';
 																	}elseif ($indicador>2.4 && $indicador<3.5) {
-																		$calificacion = 'Satisfecho';
+																		$calificacion = 'Regular';
 																	}elseif($indicador>3.4 && $indicador<4.5){
-																		$calificacion = 'Muy satisfecho';
+																		$calificacion = 'Bueno';
 																	}else{
-																		$calificacion = 'Totalmente satisfecho';
+																		$calificacion = 'Excelente';
 																	}
 																}
 																if($num2>0){
@@ -480,10 +442,10 @@
 															?>
 															<tr>
 																<td><?=$rc2->nombre_comercial_pr?></td>
-																<td align="right"><?=$rc2->num_encuestas3?></td>														
+																<td align="right"><?=$num?></td>														
 																<td align="right"><?=$indicador?></td>
 																<td align="left"><?=$calificacion?></td>																
-																<td align="right"><?=$rc2->num_encuestas3?></td>														
+																<td align="right"><?=$num2?></td>														
 																<td align="right"><?=$indicador2?></td>
 																<td align="left"><?=$calificacion2?></td>
 															</tr>
@@ -499,9 +461,8 @@
 													} );
 													</script>	
 												</div>
-										</div>
-										<div id="faq-tab-5" class="tab-pane fade">
-											<!-- star table -->														
+										</div> -->
+										<!-- <div id="faq-tab-5" class="tab-pane fade">													
 												<div class="col-xs-12">
 													<table align="center" id="example5" class="table table-striped table-bordered table-hover">
 														<thead>
@@ -547,10 +508,9 @@
 													} );
 													</script>	
 												</div>
-												<!-- end table -->
-										</div>
-										<div id="faq-tab-6" class="tab-pane fade">
-											<!-- star table -->														
+
+										</div> -->
+										<!-- <div id="faq-tab-6" class="tab-pane fade">												
 												<div class="col-xs-12">
 													<table align="center" id="example6" class="table table-striped table-bordered table-hover">
 														<thead>
@@ -563,7 +523,6 @@
 																<th>Afiliado</th>
 																<th>Usuario Gestiona</th>
 																<th>Usuario Califica</th>
-																<th>Fecha Califica</th>
 																<th>Estado Calificación</th>
 																<th>Indicador</th>
 																<th>Calificación</th>
@@ -618,7 +577,6 @@
 																<td style="color: <?=$color?>"><?=$ed->afiliado?></td>
 																<td style="color: <?=$color?>"><?=$ed->username?></td>
 																<td style="color: <?=$color?>"><?=$ed->medio_calificacion?></td>
-																<td style="color: <?=$color?>"><?=$ed->fecha_hora?></td>
 																<td style="color: <?=$color?>"><?=$estado?></td>
 																<td style="color: <?=$color?>"><?=$indicador?></td>
 																<td style="color: <?=$color?>"><?=$calificacion?></td>
@@ -636,7 +594,7 @@
 													} );
 													</script>	
 												</div>
-										</div>
+										</div> -->
 									</div>
 								</div>							
 

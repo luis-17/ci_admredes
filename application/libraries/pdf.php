@@ -10,7 +10,7 @@
         }
         // El encabezado del PDF
         public function Header(){
-            $this->Image(base_url().'public/assets/avatars/logo.jpg',10,8,80);
+            $this->Image(base_url().'public/assets/avatars/logo.jpg',10,8,60);
             $this->Ln('5');
             $this->SetFont('Arial','B',11);            
             $this->Cell(30);
@@ -20,11 +20,7 @@
             $this->Cell(30);
             $this->Cell(160,10,'Av. Jose Pardo Nro. 601 Int. 502 (Piso 5), Miraflores',12,0,'R');
             $this->Ln('5');
-            $this->SetFont('Arial','B',8);
-            $this->Cell(30);
-            $this->Cell(160,10,utf8_decode('Lima, Perú'),12,0,'R');
-            $this->Ln('5');
-            $this->Line(10, 40 , 200, 40); 
+            $this->Line(10, 30 , 200, 30); 
        }
 
        // El pie del pdf

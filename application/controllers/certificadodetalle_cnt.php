@@ -46,7 +46,6 @@ class Certificadodetalle_cnt extends CI_Controller {
 			$menuLista = $this->menu_mdl->getMenu($idusuario);
 			$data['menu1'] = $menuLista;
 
-
 			$submenuLista = $this->menu_mdl->getSubMenu($idusuario);
 			$data['menu2'] = $submenuLista;	
 
@@ -250,6 +249,7 @@ class Certificadodetalle_cnt extends CI_Controller {
 						</tr>
 					</table>
 					'.$c->cuerpo_mail.'
+					<p>Para acceder a nuestro sistema de proveedores ingresar a <a href="https://www.red-salud.com/redes">https://www.red-salud.com/redes</a></p>
 					<p>Para dudas &oacute; consultas comun&iacute;quese a nuestra central en Lima: 01-445-3019 &oacute; provincia: 0800-47676</p>
 					<p>Saludos Cordiales</p>
 					<p>Atte. '.$nombres_col.' '.$ap_paterno_col.' '.$ap_materno_col.'</p></div>';

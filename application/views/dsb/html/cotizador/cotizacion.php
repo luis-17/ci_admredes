@@ -37,6 +37,7 @@ extract($user);
 		<script type="text/javascript" src="<?=  base_url()?>public/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
 
 		<script>
+			
 			$(".fancybox")
 	    .attr('rel', 'gallery')
 	    .fancybox({
@@ -132,6 +133,7 @@ extract($user);
 									<table id="example" class="table table-striped table-bordered table-hover">
 										<thead>
 											<tr>
+												<th>ID</th>
 												<th>Cliente</th>
 												<th>Plan</th>
 												<th>Estado</th>
@@ -145,24 +147,25 @@ extract($user);
 											foreach($planes as $p){
 												if($p->idusuario==$idusuario){?>
 											<tr>
+												<td><?=$p->idcotizaciondetalle?></td>
 												<td><?=$p->nombre_comercial_cli?></td>
 												<td><?=$p->nombre_cotizacion?></td>
 												<td><?php
 													switch ($p->estado) {
 													 	case '1':
-													 		echo '<a href="#"><span class="label label-white middle">Generada</span></a>';
+													 		echo '<a href="'.base_url().'index.php/editar_cotizacion/'.$p->idcotizaciondetalle.'/'.$p->estado.'"><span class="label label-white middle">Generada</span></a>';
 													 		break;
 													 	case '2':
-													 		echo '<a href="#"><span class="label label-warning label-white middle">Esperando Aprobación</span></a>';
+													 		echo '<a href="'.base_url().'index.php/editar_cotizacion/'.$p->idcotizaciondetalle.'/'.$p->estado.'"><span class="label label-warning label-white middle">Esperando Aprobación</span></a>';
 													 		break;
 													 	case '3':
-													 		echo '<a href="#"><span class="label label-danger label-white middle">Rechazó Gerencia</span></a>';
+													 		echo '<a href="'.base_url().'index.php/cotizacion_rechazo/'.$p->idcotizaciondetalle.'"><span class="label label-danger label-white middle">Rechazó Gerencia</span></a>';
 													 		break;
 													 	case '4':
-													 		echo '<a href="#"><span class="label label-success label-white middle">Aprobó Gerencia</span></a>';
+													 		echo '<a href="'.base_url().'index.php/cotizacion_aprobacion/'.$p->idcotizaciondetalle.'"><span class="label label-success label-white middle">Aprobó Gerencia</span></a>';
 													 		break;
 													 	case '5':
-													 		echo '<a href="#"><span class="label label-danger label-white middle">Rechazó Cliente</span></a>';
+													 		echo '<a href="'.base_url().'index.php/cotizacion_rechazo/'.$p->idcotizaciondetalle.'"><span class="label label-danger label-white middle">Rechazó Cliente</span></a>';
 													 		break;
 													 	case '6':
 													 		echo '<a href="#"><span class="label label-info label-white middle">Aprobó Cliente</span></a>';
@@ -171,7 +174,7 @@ extract($user);
 													 		# code...
 													 		break;
 													 }
-													 ?>
+													?>
 												</td>
 												<td>
 													<div class="hidden-sm hidden-xs btn-group">
@@ -203,33 +206,34 @@ extract($user);
 													</tr>
 												<?php } }}else{
 													foreach($planes2 as $p){?>
-												<tr>
+												<tr>													
+												<td><?=$p->idcotizaciondetalle?></td>
 												<td><?=$p->nombre_comercial_cli?></td>
 												<td><?=$p->nombre_cotizacion?></td>
 												<td><?php
-													switch ($p->estado) {
-													 	case '1':
-													 		echo '<a href="#"><span class="label label-white middle">Generada</span></a>';
-													 		break;
-													 	case '2':
-													 		echo '<a href="#"><span class="label label-warning label-white middle">Esperando Aprobación</span></a>';
-													 		break;
-													 	case '3':
-													 		echo '<a href="#"><span class="label label-danger label-white middle">Rechazó Gerencia</span></a>';
-													 		break;
-													 	case '4':
-													 		echo '<a href="#"><span class="label label-success label-white middle">Aprobó Gerencia</span></a>';
-													 		break;
-													 	case '5':
-													 		echo '<a href="#"><span class="label label-danger label-white middle">Rechazó Cliente</span></a>';
-													 		break;
-													 	case '6':
-													 		echo '<a href="#"><span class="label label-info label-white middle">Aprobó Cliente</span></a>';
-													 		break;
-													 	default:
-													 		# code...
-													 		break;
-													 }
+														switch ($p->estado) {
+														 	case '1':
+														 		echo '<a href="'.base_url().'index.php/editar_cotizacion/'.$p->idcotizaciondetalle.'/'.$p->estado.'"><span class="label label-white middle">Generada</span></a>';
+														 		break;
+														 	case '2':
+														 		echo '<a href="'.base_url().'index.php/editar_cotizacion/'.$p->idcotizaciondetalle.'/'.$p->estado.'"><span class="label label-warning label-white middle">Esperando Aprobación</span></a>';
+														 		break;
+														 	case '3':
+														 		echo '<a href="'.base_url().'index.php/cotizacion_rechazo/'.$p->idcotizaciondetalle.'"><span class="label label-danger label-white middle">Rechazó Gerencia</span></a>';
+														 		break;
+														 	case '4':
+														 		echo '<a href="'.base_url().'index.php/cotizacion_aprobacion/'.$p->idcotizaciondetalle.'/'.$p->estado.'"><span class="label label-success label-white middle">Aprobó Gerencia</span></a>';
+														 		break;
+														 	case '5':
+														 		echo '<a href="'.base_url().'index.php/cotizacion_rechazo/'.$p->idcotizaciondetalle.'"><span class="label label-danger label-white middle">Rechazó Cliente</span></a>';
+														 		break;
+														 	case '6':
+														 		echo '<a href="#"><span class="label label-info label-white middle">Aprobó Cliente</span></a>';
+														 		break;
+														 	default:
+														 		# code...
+														 		break;
+														}
 													 ?>
 												</td>
 												<td>
@@ -241,26 +245,26 @@ extract($user);
 														</div>
 													</div>
 
-														<div class="hidden-md hidden-lg">
-															<div class="inline pos-rel">
-																<button class="btn btn-minier btn-info dropdown-toggle" data-toggle="dropdown" data-position="auto">
-																	<i class="ace-icon fa fa-cog icon-only bigger-110"></i>
-																</button>
+													<div class="hidden-md hidden-lg">
+														<div class="inline pos-rel">
+															<button class="btn btn-minier btn-info dropdown-toggle" data-toggle="dropdown" data-position="auto">
+																<i class="ace-icon fa fa-cog icon-only bigger-110"></i>
+															</button>
 
-																<ul class="dropdown-menu dropdown-only-icon dropdown-yellow dropdown-menu-right dropdown-caret dropdown-close">
-																		<li>
-																			<div title="Ver Detalle" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
-																				<a class="boton fancybox" href="<?=base_url()?>index.php/plan_cobertura/<?=$p->idcotizacion?>/<?=$p->nombre_cotizacion?>" data-fancybox-width="950" data-fancybox-height="690">
-																					<i class="ace-icon fa fa-eye bigger-120 blue"></i>
-																				</a>
-																			</div>
-																		</li>
-																	</ul>
-																</div>
-															</div>
-														</td>
-													</tr>
-												<?php }} ?>
+															<ul class="dropdown-menu dropdown-only-icon dropdown-yellow dropdown-menu-right dropdown-caret dropdown-close">
+																<li>
+																	<div title="Ver Detalle" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
+																		<a class="boton fancybox" href="<?=base_url()?>index.php/plan_cobertura/<?=$p->idcotizacion?>/<?=$p->nombre_cotizacion?>" data-fancybox-width="950" data-fancybox-height="690">
+																			<i class="ace-icon fa fa-eye bigger-120 blue"></i>
+																		</a>
+																	</div>
+																</li>
+															</ul>
+														</div>
+													</div>
+												</td>
+											</tr>
+											<?php }} ?>
 										</tbody>
 									</table>							
 								</div><!-- PAGE CONTENT ENDS -->	

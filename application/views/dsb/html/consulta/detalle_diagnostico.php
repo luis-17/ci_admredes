@@ -43,103 +43,131 @@
 		<script src="../assets/js/html5shiv.js"></script>
 		<script src="../assets/js/respond.js"></script>
 		<![endif]-->
-		<!-- para paginacion -->
-		<script src="<?=base_url()?>public/pagination/jquery.dataTables.min.css"></script>
-		<script src="<?=base_url()?>public/pagination/jquery-1.12.4.js"></script>
-		<script src="<?=base_url()?>public/pagination/jquery.dataTables.min.js"></script>
-		<script src="<?=base_url()?>public/pagination/dataTables.bootstrap.min.js"></script>
 	</head>
 
 	<body style="">	
-			<!-- /section:basics/sidebar -->
-			<div class="page-content">
-						<div class="page-header">
-							<h1>
-								<?=$nom?>: Bloqueos					
-							</h1>
-						</div>
-						<div class="row">
-							<div class="col-xs-12">
-								<!-- PAGE CONTENT BEGINS -->
-								<form class="form-horizontal" role="form" method="post" action="<?=base_url()?>index.php/reg_bloqueo_cot">
+		<!-- /section:basics/sidebar -->
+		<div class="page-content">
+			<div class="page-header">
+				<h1>
+						
+				</h1>
+			</div>
+			
+			<div class="row">
+				<div class="col-xs-12">
+					<form class="form-horizontal" role="form" method="post" action="">
+									<input type="hidden" name="iddiagnostico" id="iddiagnostico" value="<?=$iddiagnostico?>">
+
 									<div class="form-group">
-										<input type="hidden" name="id" id="id" value="<?=$id?>">
-										<label class="col-sm-3 control-label no-padding-right" for="form-field-1"> Cobertura: </label>
-										<div class="col-sm-5">
-											<select name="cob_bloqueada" id="cob_bloqueada" required="true">
-												<option>Seleccionar</option>
-												<?php foreach ($coberturas as $c) { ?>
-													<option value="<?=$c->idcotizacioncobertura?>"><?=$c->nombre_var?></option>
+										<label class="col-sm-2 control-label no-padding-right" for="form-field-1"> Código CIE: </label>
+
+										<div class="col-sm-9">
+											<input type="text" id="codigo_cie" name="codigo_cie" class="col-xs-10 col-sm-8" value="<?=$codigo_cie?>" disabled><label style="color: #FF0101;">&nbsp;*</label>
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label class="col-sm-2 control-label no-padding-right" for="form-field-1"> Descripción: </label>
+
+										<div class="col-sm-9">
+											<input type="text" id="descripcion_cie" name="descripcion_cie" class="col-xs-10 col-sm-8" value="<?=$descripcion_cie?>" disabled><label style="color: #FF0101;">&nbsp;*</label>
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label class="col-sm-2 control-label no-padding-right" for="form-field-1"> Tipo: </label>
+
+										<div class="col-sm-9">
+											<input type="text" id="tipo" name="tipo" class="col-xs-10 col-sm-8" value="<?=$tipo?>" disabled><label style="color: #FF0101;">&nbsp;*</label>
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label class="col-sm-2 control-label no-padding-right" for="form-field-1"> Medicamentos: </label>
+
+										<div class="col-sm-9">
+											<div id="serviciosT">
+												<br>
+											<table id="example" class="table table-striped table-bordered table-hover">
+												<thead>
+													<tr>
+														<th>ID</th>
+														<th>Medicamento</th>
+														<th>Presentación</th>
+													</tr>
+												</thead>
+												<tbody>
+												
+												<?php foreach($medicamentos as $m){?>
+													<tr>
+														<td><?=$m->idmedicamento?></td>
+														<td><?=$m->nombre_med?></td>
+														<td><?=$m->presentacion_med?></td>
+													</tr>
 												<?php } ?>
-											</select>
-										</div>
-									</div>				
-
-									<div class="clearfix form-actions">
-										<div class="col-md-offset-3 col-md-12">
-											<button class="btn btn-info" type="submit" id="guardar" name="guardar">
-												<i class="ace-icon fa fa-check bigger-110"></i>
-												Guardar
-											</button>
+												</tbody>
+											</table>
+										</div><!-- PAGE CONTENT ENDS -->	
+										<script>			
+												//para paginacion
+												$(document).ready(function() {
+												$('#example').DataTable( {
+												"pagingType": "full_numbers"
+												} );
+											} );
+											</script>	
 										</div>
 									</div>
+
+
+									<div class="form-group">
+										<label class="col-sm-2 control-label no-padding-right" for="form-field-1"> Productos: </label>
+
+										<div class="col-sm-9">
+											<div id="serviciosT">
+												<br>
+											<table id="exampledos" class="table table-striped table-bordered table-hover">
+												<thead>
+													<tr>
+														<th>ID</th>
+														<th>Tipo</th>
+														<th>Producto</th>
+													</tr>
+												</thead>
+												<tbody>
+												
+												<?php foreach($productos as $p){?>
+													<tr>
+														<td><?=$p->idproducto?></td>
+														<td><?=$p->nombre_var?></td>
+														<td><?=$p->descripcion_prod?></td>
+													</tr>
+												<?php } ?>
+												</tbody>
+											</table>
+										</div><!-- PAGE CONTENT ENDS -->	
+										<script>			
+												//para paginacion
+												$(document).ready(function() {
+												$('#exampledos').DataTable( {
+												"pagingType": "full_numbers"
+												} );
+											} );
+											</script>	
+										</div>
+									</div>
+
+									
 								</form>
-
-							</div><!-- /.col -->
-
-							<div class="col-xs-12">
-							<br>
-								<table id="example" class="table table-striped table-bordered table-hover"  style="font-size: 12px;">
-									<thead>
-										<th>Fecha y Hora</th>
-										<th>Cobertura Bloqueada</th>
-										<th>Usuario Bloqueó</th>
-										<th width="5%"></th>
-									</thead>
-									<tbody>
-										<?php foreach ($bloqueos as $b) { ?>
-											<tr>
-												<td><?=$b->fecha?></td>
-												<td><?=$b->nombre_var?></td>
-												<td><?=$b->username?></td>
-												<td width="5%"><a title="Eliminar BLoqueo" href="<?=base_url()?>index.php/anular_bloqueo_cot/<?=$b->idbloqueo?>/<?=$id?>"><i class="ace-icon glyphicon glyphicon-trash blue"></i></a></td>
-											</tr>
-										<?php } ?>
-									</tbody>
-								</table>
-								<script>			
-										//para paginacion
-										$(document).ready(function() {
-										$('#example').DataTable( {
-										"pagingType": "full_numbers"
-										} );
-									} );
-								</script>
-								<br>
-								<div class="clearfix form-actions">
-									<div class="col-md-offset-3 col-md-12">
-										<button class="btn btn-info" type="button" onclick="cerrar();">
-											<i class="ace-icon fa fa-check bigger-110"></i>
-												Cerrar
-										</button>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>			
-		<!-- basic scripts -->
-
+				</div><!-- /.col -->
+			</div>
+		</div>
+			
 		<!--[if !IE]> -->
 		<script type="text/javascript">
 			window.jQuery || document.write("<script src='<?=  base_url()?>public/assets/js/jquery.js'>"+"<"+"/script>");
 		</script><script src="<?=  base_url()?>public/assets/js/jquery.js"></script>
-		<script type="text/javascript">
-			function cerrar(){
-				parent.location.reload(true);
-  				parent.$.fancybox.close();
-  			}
-		</script>
-
 
 		<!-- <![endif]-->
 
@@ -195,5 +223,4 @@
 		<script src="<?=  base_url()?>public/docs/assets/js/language/html.js"></script>
 		<script src="<?=  base_url()?>public/docs/assets/js/language/css.js"></script>
 		<script src="<?=  base_url()?>public/docs/assets/js/language/javascript.js"></script>
-</body>
-</html>
+</body></html>

@@ -107,7 +107,7 @@
     function getProveedores(){
 		$this->db->select("idproveedor, nombre_comercial_pr");
 		$this->db->from("proveedor");
-		$this->db->where("estado_pr",1);
+		//$this->db->where("estado_pr",1);
 		$this->db->order_by("nombre_comercial_pr");
 
 	$proveedores=$this->db->get();

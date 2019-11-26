@@ -7,8 +7,7 @@
  }
  
 function getData() {
- $doctores = $this->db->get('doctor'); //obtenemos la tabla 'doctores'. db->get('nombre_tabla') equivale a SELECT * FROM nombre_tabla.
- 
+ $doctores = $this->db->get('doctor'); //obtenemos la tabla 'doctores'. db->get('nombre_tabla') equivale a SELECT * FROM nombre_tabla. 
  return $doctores->result(); //devolvemos el resultado de lanzar la query.
  }
 

@@ -73,7 +73,7 @@ $hora_fin = date("h:i", strtotime($hora_ini."+30 minute"));?>
 						<ul class="breadcrumb">
 							<li>
 								<i class="ace-icon fa fa-home home-icon"></i>
-								<a href="<?=base_url()?>index.php/index">Inicio</a>
+								<a href="">Inicio</a>
 							</li>
 							<?php foreach ($certificado as $c): ?>								
 							<li>

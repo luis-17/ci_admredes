@@ -48,9 +48,10 @@ defined('BASEPATH') OR exit('No direct script access allowed');
  	}
 
  	function getProductosDiagnosticos($id){
- 		$this->db->select('p.idproducto, descripcion_prod');
+ 		$this->db->select('p.idproducto, descripcion_prod, nombre_var');
  		$this->db->from('producto p');
  		$this->db->join('diagnostico_producto d','p.idproducto = d.idproducto');
+ 		$this->db->join('variable_plan vp','vp.idvariableplan=p.idvariableplan');
  		$this->db->where('d.iddiagnostico='.$id);
 
 	 $diagnosticos = $this->db->get();

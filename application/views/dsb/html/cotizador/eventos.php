@@ -57,8 +57,15 @@
 							<div class="col-xs-9">
 								<!-- PAGE CONTENT BEGINS -->
 								<form class="form-horizontal" role="form" method="post" action="<?=base_url()?>index.php/reg_evento_cotizacion">
+									<input type="hidden" name="id" id="id" value="<?=$id?>">
 									<div class="form-group">
-										<input type="hidden" name="id" id="id" value="<?=$id?>">
+										<label class="col-sm-3 control-label no-padding-right" for="form-field-1">Conteo: </label>
+										<div class="col-sm-5">
+											<input type="radio" name="fin" value="0"><label>Por Afiliado</label>&nbsp;&nbsp;&nbsp;
+											<input type="radio" name="fin" value="1"><label>Por Certificado</label>
+										</div>
+									</div>
+									<div class="form-group">
 										<label class="col-sm-3 control-label no-padding-right" for="form-field-1"> Período: </label>
 										<div class="col-sm-5">
 											<select name="periodo" id="periodo" required="true">

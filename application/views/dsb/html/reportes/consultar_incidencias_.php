@@ -87,7 +87,7 @@
 								<a href="<?=base_url()?>">Inicio</a>
 							</li>
 							<li>
-							<a href="<?=base_url()?>index.php/index">Reportes</a></li>
+							<a href="">Reportes</a></li>
 							<li class="active">Gestión de atenciones</li>
 						</ul><!-- /.breadcrumb -->
 
@@ -112,16 +112,15 @@
 								<!-- PAGE CONTENT BEGINS -->						
 								<div align="center">								
 									<div class="col-xs-9 col-sm-12">
-												<div class="profile-info-row">
-
-												<form name="form" id="form" method="post" action="<?=base_url()?>index.php/consulta_incidencias_buscar" class="form-horizontal">
-													<div class="profile-info-name"> Inicio: </div>
+										<div class="profile-info-row">
+											<form name="form" id="form" method="post" action="<?=base_url()?>index.php/consulta_incidencias_buscar" class="form-horizontal">
+												<div class="profile-info-name"> Inicio: </div>
 													<div class="profile-info-name">
 														<input class="form-control input-mask-date" type="date" id="fechainicio" name="fechainicio" required="Seleccione una fecha de inicio" value="<?=$fecinicio;?>" >
 													</div>
 													<div class="profile-info-name"> Fin: </div>
 													<div class="profile-info-name">
-														<input class="form-control input-mask-date" type="date" id="fechafin" name="fechafin" required="Seleccione una fecha de fin" value="<?=$fecfin;?>">														
+														<input class="form-control input-mask-date" type="date" id="fechafin" name="fechafin" required="Seleccione una fecha de fin" value="<?=$fecfin;?>">	
 													</div>
 													<div  class="profile-info-name">
 													<button type="submit" class="btn btn-info btn-xs" name="accion" value="buscar">Buscar 
@@ -132,9 +131,9 @@
 													<button class="btn btn-info btn-xs" type="submit" name="accion" value="exportar">Exportar
 														<i class="ace-icon fa fa-download bigger-110 icon-only"></i>
 													</button>
-													</div>
-													</form>	
 												</div>
+											</form>	
+										</div>
 									</div>			
 								
 								<br/>		
@@ -211,8 +210,7 @@
 													} );
 												</script>
 											</div>
-											<div id="faq-tab-2" class="tab-pane fade">								
-
+											<div id="faq-tab-2" class="tab-pane fade">	
 												<div  align="center" class="col-xs-12">
 													<table align="center" id="example2" class="table table-striped table-bordered table-hover">
 														<thead>

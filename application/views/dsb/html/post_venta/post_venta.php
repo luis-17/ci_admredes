@@ -145,8 +145,10 @@
 								<table id="example" class="table table-striped table-bordered table-hover">
 									<thead>
 										<th>Fecha</th>
+										<th>Plan</th>
 										<th>DNI</th>
 										<th>Afiliado</th>
+										<th>Fecha de Nacimiento</th>
 										<th>Teléfono</th>
 										<th></th>
 									</thead>
@@ -154,8 +156,10 @@
 									<?php foreach($getAtenciones as $ga){?>
 										<tr>
 											<td><?=$ga->fecha_atencion?></td>
+											<td><?=$ga->nombre_plan?></td>
 											<td><?=$ga->aseg_numDoc?></td>
 											<td><?=$ga->aseg_ape1?> <?=$ga->aseg_ape2?> <?=$ga->aseg_nom1?> <?=$ga->aseg_nom2?></td>
+											<td><?=$ga->aseg_fechNac?></td>
 											<td><?=$ga->aseg_telf?></td>
 											<td>
 												<div title="Calificar Atención" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">

@@ -105,7 +105,7 @@
 								<a href="<?=base_url()?>">Inicio</a>
 							</li>
 							<li>
-							<a href="<?=base_url()?>index.php/index">Reportes</a></li>
+							<a href="#">Reportes</a></li>
 							<li class="active">Consultar Afiliados</li>
 						</ul><!-- /.breadcrumb -->
 

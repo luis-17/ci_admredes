@@ -16,7 +16,7 @@
 	}
 
 	function getProveedores(){
-		$query = $this->db->query("select idproveedor, nombre_comercial_pr from proveedor order by nombre_comercial_pr asc");
+		$query = $this->db->query("select idproveedor, nombre_comercial_pr, razon_social_pr from proveedor where estado_pr=1 order by nombre_comercial_pr asc");
 		return $query->result();
 	}
 
@@ -64,8 +64,9 @@
 
 	function getRecibidos($data){
 		$query = $this->db->query("select idrecepcion, fecha_recepcion, coalesce(fecha_emision,fecha_recepcion) as fecha_emision, tipo_documento, coalesce(concat(serie,'-',numero), numero) as comprobante, importe, num_orden_atencion, case when tipo_recepcion=1 then 'CENTRO MÉDICO' else  CASE WHEN  tipo_recepcion=2 then 'OTRO PROVEEDOR' else 'OTRO COMPROBANTE' end end as tipo,
-			COALESCE(p.nombre_comercial_pr,pi.nombre_comercial_pr, remitente) as proveedor
+			COALESCE(p.nombre_comercial_pr,pi.nombre_comercial_pr, remitente) as proveedor, username
 			from mesa_partes mp
+			inner join usuario u on u.idusuario=mp.usuario_recepciona
 			left join proveedor p on mp.idproveedor=p.idproveedor
 			left join proveedor_int pi on pi.idproveedor_int=mp.idproveedor_int
 			left join siniestro s on s.idsiniestro=mp.idsiniestro
@@ -125,6 +126,11 @@
 		);
 		$this->db->where('idrecepcion',$data['idrecepcion']);
 		$this->db->update("mesa_partes",$array);
+	}
+
+	function getRuc($id){
+		$query = $this->db->query("select * from proveedor where idproveedor=$id");
+		return $query->row_array();
 	}
 }
 ?>

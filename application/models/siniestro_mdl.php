@@ -567,8 +567,8 @@
 		$this->db->join("plan_detalle pd","pd.idplan=c.plan_id");
 		$this->db->join("variable_plan vp","vp.idvariableplan=pd.idvariableplan");
 		$this->db->join("producto_detalle pr","pr.idplandetalle=pd.idplandetalle");
-		$this->db->join("certificado_asegurado ca","ca.aseg_id=s.idasegurado and ca.cert_id=s.idsiniestro");
-		$this->db->join("periodo_evento pe","pe.certase_id=ca.certase_id");
+		$this->db->join("certificado_asegurado ca","ca.aseg_id=s.idasegurado and ca.cert_id=s.idsiniestro","left");
+		$this->db->join("periodo_evento pe","pe.certase_id=ca.certase_id","left");
 		$this->db->where("idsiniestro=$id and vp.idvariableplan <> 1");
 
 		$query = $this->db->get();

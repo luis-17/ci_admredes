@@ -344,9 +344,10 @@
 													<table id="simple-table" class="table table-striped table-bordered table-hover">
 														<thead>
 															<tr>
-																<th colspan="2" width="60%">Cobertura</th>
-																<th width="20%">Copago/Coaseguro</th>
-																<th width="20%">Eventos</th>
+																<th colspan="2" width="55%">Cobertura</th>
+																<th width="15%">Copago/Coaseguro</th>
+																<th width="15%">Eventos</th>
+																<th width="15%">No Cubre</th>
 															</tr>
 														</thead>
 														<tbody>
@@ -399,16 +400,17 @@
 													            }
 															?>
 															<tr>
-																<td width="20%"><?=$co1->nombre_var?></td>
+																<td width="15%"><?=$co1->nombre_var?></td>
 																<td width="40%"><?=$co1->texto_web?></td>
-																<td width="20%"><?=$co1->coaseguro?></td>
-																<td width="20%"><?php echo $num_eve.' '.$men;?></td>
+																<td width="15%"><?=$co1->coaseguro?></td>
+																<td width="15%"><?php echo $num_eve.' '.$men;?></td>
+																<td width="15%"><?=$co1->bloqueos?></td>
 															</tr>
 															<?php } 
 															foreach($coberturas as $co2){?>
 															<tr>
 																<td><?=$co2->nombre_var?></td>
-																<td colspan="3"><?=$co2->texto_web?></td>
+																<td colspan="4"><?=$co2->texto_web?></td>
 															</tr>
 															<?php } ?>
 														</tbody>

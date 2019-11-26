@@ -7,13 +7,16 @@
  }
 
  function getAtenciones(){
- 	$query = $this->db->query("select idsiniestro, fecha_atencion, nombre_comercial_cli, nombre_plan, aseg_numDoc, aseg_ape1, aseg_ape2, aseg_nom1, aseg_nom2, aseg_telf  from siniestro s
+ 	$query = $this->db->query("select idsiniestro, fecha_atencion, nombre_comercial_cli, nombre_plan, concat(SUBSTR(aseg_fechNac,7,2),'/',SUBSTR(aseg_fechNac,5,2),'/',SUBSTR(aseg_fechNac,1,4))as aseg_fechNac, aseg_numDoc, aseg_ape1, aseg_ape2, aseg_nom1, aseg_nom2, aseg_telf  
+			from siniestro s
 			inner join asegurado a on s.idasegurado=a.aseg_id 
 			inner join certificado c on c.cert_id=s.idcertificado
 			inner join plan p on p.idplan=c.plan_id 
 			inner join cliente_empresa ce on ce.idclienteempresa=p.idclienteempresa
-			where (TIMESTAMPDIFF(day,fecha_atencion,DATE_FORMAT(now(),'%Y-%m-%d')))>2 and fecha_atencion>'2019-05-12' 
-			and idsiniestro not in (select idsiniestro from siniestro_encuesta) and estado_siniestro=1 and estado_atencion='O' and c.cert_num not like 'PR%'");
+			where (TIMESTAMPDIFF(day,fecha_atencion,DATE_FORMAT(now(),'%Y-%m-%d')))>2 and 
+			fecha_atencion>'2019-05-12' and 
+			not exists (SELECT * FROM siniestro_encuesta se WHERE se.idsiniestro = s.idsiniestro) and 
+			estado_siniestro=1 and estado_atencion='O' and c.cert_num not like 'PR%'");
 
  	return $query->result();
  }

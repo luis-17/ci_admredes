@@ -44,11 +44,13 @@
 	}
 
 	function getLiquidacionDet($id){
-		$this->db->select("lgd.liqdetallegrupo_id, lgd.liqgrupo_id, lgd.liqdetalleid, nombre_comercial_pr, liqdetalle_numfact, liqdetalle_monto, liqdetalle_neto,coalesce(nombre_var,'Gastos Aprobados') as nombre_var, num_orden_atencion, concat(coalesce(a.aseg_ape1,''),' ',coalesce(a.aseg_ape2,''),' ',coalesce(a.aseg_nom1,''),' ',coalesce(a.aseg_nom2,''))as afiliado, CONCAT('(', left(GROUP_CONCAT(descripcion_prod),40), case when CHAR_LENGTH(GROUP_CONCAT(descripcion_prod))>40 then '...)'else ')' end) as detalle");
+		$this->db->select("lgd.liqdetallegrupo_id, lgd.liqgrupo_id, lgd.liqdetalleid, nombre_comercial_pr, liqdetalle_numfact, liqdetalle_monto, liqdetalle_neto,coalesce(nombre_var,'Gastos Aprobados') as nombre_var, num_orden_atencion, concat(coalesce(a.aseg_ape1,''),' ',coalesce(a.aseg_ape2,''),' ',coalesce(a.aseg_nom1,''),' ',coalesce(a.aseg_nom2,''))as afiliado, CONCAT('(', left(GROUP_CONCAT(descripcion_prod),40), case when CHAR_LENGTH(GROUP_CONCAT(descripcion_prod))>40 then '...)'else ')' end) as detalle, centro_costo, nombre_plan");
 		$this->db->from("liquidacion_grupodetalle lgd");
 		$this->db->join("liquidacion_detalle ld","ld.liqdetalleid=lgd.liqdetalleid");
 		$this->db->join("liquidacion l","l.liquidacionId=ld.liquidacionId");
 		$this->db->join("siniestro s","s.idsiniestro=l.idsiniestro");
+		$this->db->join("certificado c","c.cert_id=s.idcertificado");
+		$this->db->join("plan p2","p2.idplan=c.plan_id");
 		$this->db->join("asegurado a","a.aseg_id=s.idasegurado");
 		$this->db->join("plan_detalle pd","ld.idplandetalle=pd.idplandetalle",'left');
 		$this->db->join("variable_plan vp","pd.idvariableplan=vp.idvariableplan",'left');
@@ -318,8 +320,10 @@
 	}
 
 	function getPagospendientes(){
-		$this->db->select("pd.idpago,concat('GR',lpad(pd.idpago,8,0))as grupo,  numero_documento_pr, razon_social_pr, GROUP_CONCAT(distinct  concat('L',lpad(lgd.liqgrupo_id,8,0))) as liquidaciones, GROUP_CONCAT(distinct ld.liqdetalle_numfact) as facturas, coalesce(importe,0) as importe, coalesce(importe_detraccion,0) as importe_detraccion");
+		$this->db->select("pd.idpago,concat('GR',lpad(pd.idpago,8,0))as grupo,  numero_documento_pr, razon_social_pr, GROUP_CONCAT(distinct  concat(' L',lpad(lgd.liqgrupo_id,8,0))) as liquidaciones, GROUP_CONCAT(distinct concat(' ',ld.liqdetalle_numfact)) as facturas, GROUP_CONCAT(DISTINCT concat(' OA',lpad(num_orden_atencion,6,0))) as atenciones, coalesce(importe,0) as importe, coalesce(importe_detraccion,0) as importe_detraccion");
 		$this->db->from("liquidacion_detalle ld");
+		$this->db->join("liquidacion l","ld.liquidacionId=l.liquidacionId");
+		$this->db->join("siniestro s","s.idsiniestro=l.idsiniestro");
 		$this->db->join("liquidacion_grupodetalle lgd","ld.liqdetalleid=lgd.liqdetalleid");
 		$this->db->join("pago_detalle pd","pd.liqgrupo_id=lgd.liqgrupo_id");
 		$this->db->join("pago p","p.idpago=pd.idpago");
@@ -344,8 +348,10 @@
 	}
 
 	function getPagosRealizados(){
-		$this->db->select("pd.idpago,concat('GR',lpad(pd.idpago,8,0))as grupo,  numero_documento_pr, razon_social_pr, GROUP_CONCAT(distinct  concat('L',lpad(lgd.liqgrupo_id,8,0))) as liquidaciones, GROUP_CONCAT(distinct ld.liqdetalle_numfact) as facturas, coalesce(importe,0) as importe, coalesce(importe_detraccion,0) as importe_detraccion");
-		$this->db->from("liquidacion_detalle ld");
+		$this->db->select("pd.idpago,concat('GR',lpad(pd.idpago,8,0))as grupo,  numero_documento_pr, razon_social_pr, GROUP_CONCAT(distinct  concat(' L',lpad(lgd.liqgrupo_id,8,0))) as liquidaciones, GROUP_CONCAT(distinct concat(' ',ld.liqdetalle_numfact)) as facturas, GROUP_CONCAT(DISTINCT concat(' OA',lpad(num_orden_atencion,6,0))) as atenciones, coalesce(importe,0) as importe, coalesce(importe_detraccion,0) as importe_detraccion");
+		$this->db->from("liquidacion_detalle ld");		
+		$this->db->join("liquidacion l","ld.liquidacionId=l.liquidacionId");
+		$this->db->join("siniestro s","s.idsiniestro=l.idsiniestro");
 		$this->db->join("liquidacion_grupodetalle lgd","ld.liqdetalleid=lgd.liqdetalleid");
 		$this->db->join("pago_detalle pd","pd.liqgrupo_id=lgd.liqgrupo_id");
 		$this->db->join("pago p","p.idpago=pd.idpago");

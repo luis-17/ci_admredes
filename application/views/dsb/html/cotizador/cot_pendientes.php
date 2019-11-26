@@ -169,7 +169,7 @@ extract($user);
 												<td>
 													<div class="hidden-sm hidden-xs btn-group">
 														<div title="Ver Cotización" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
-														<a href="<?=base_url()?>index.php/propuesta_comercial/<?=$p->idcotizacion?>/<?=$p->nombre_cotizacion?>">
+														<a href="<?=base_url()?>index.php/revision_propuesta/<?=$p->idcotizaciondetalle?>/<?=$p->nombre_cotizacion?>/<?=$p->prima_titular?>/<?=$p->prima_adicional?>">
 															<i class="ace-icon fa fa-eye bigger-120 blue"></i>
 														</a>
 														</div>
@@ -184,7 +184,7 @@ extract($user);
 																<ul class="dropdown-menu dropdown-only-icon dropdown-yellow dropdown-menu-right dropdown-caret dropdown-close">
 																		<li>
 																			<div title="Ver Cotización" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
-																				<a class="boton fancybox" href="<?=base_url()?>index.php/plan_cobertura/<?=$p->idcotizacion?>/<?=$p->nombre_cotizacion?>" data-fancybox-width="950" data-fancybox-height="690">
+																				<a class="boton fancybox" href="<?=base_url()?>index.php/revision_propuesta/<?=$p->idcotizaciondetalle?>/<?=$p->nombre_cotizacion?>/<?=$p->prima_titular?>/<?=$p->prima_adicional?>" data-fancybox-width="950" data-fancybox-height="690">
 																					<i class="ace-icon fa fa-eye bigger-120 blue"></i>
 																				</a>
 																			</div>

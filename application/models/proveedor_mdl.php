@@ -362,7 +362,7 @@
 	 	$this->db->join("ubigeo up","cod_provincia_pr=up.idprovincia and up.iddistrito='00' and up.iddepartamento=ud.iddepartamento",'left');
 	 	$this->db->join("ubigeo udi","cod_distrito_pr=udi.iddistrito and up.iddepartamento=udi.iddepartamento and udi.idprovincia=up.idprovincia",'left');
 	 	$this->db->where("estado_pr",1);
-	 	$this->db->where("idproveedor not in (182, 138)");
+	 	$this->db->where("idtipoproveedor",1);
 	 	$this->db->order_by("dep,prov,dist");
 	$proveedores = $this->db->get();
 	return $proveedores->result();

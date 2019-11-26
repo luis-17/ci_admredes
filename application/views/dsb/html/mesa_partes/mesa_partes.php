@@ -88,6 +88,20 @@
 	    });
 		</script>	
 
+		<script type="text/javascript">
+		 /*funcion ajax que llena el combo dependiendo de la categoria seleccionada*/
+		    $(document).ready(function(){
+		       $("#idproveedor").change(function () {
+		               $("#idproveedor option:selected").each(function () {
+		                idproveedor=$('#idproveedor').val();
+		                $.post("<?=base_url();?>index.php/ruc", { idproveedor: idproveedor}, function(data){
+		                $("#ruc").html(data);
+		                });            
+		            });
+		       })
+		    });
+		</script>	
+
 		<script>
 		   $(document).ready(function() {
 		   $(window).keydown(function(event){
@@ -239,17 +253,20 @@
 															</div>
 
 															<div class="form-group">
-																<label class="control-label col-xs-12 col-sm-4 no-padding-right" for="name">Centro Médico:</label>
+																<label class="control-label col-xs-12 col-sm-4 no-padding-right" for="name">Nombre Comercial:</label>
 																<div class="col-xs-12 col-sm-8">
 																	<div class="clearfix">
 																		<select  class="col-xs-12 col-sm-5" id="idproveedor" name="idproveedor" required="Seleccione una opción de la lista">
+																			<option>Seleccionar</option>
 																			<?php foreach ($getProveedores as $p) { ?>
-																				<option value="<?=$p->idproveedor?>" <?php if($o->idproveedor==$p->idproveedor){ echo 'selected'; }?>><?=$p->nombre_comercial_pr?></option>
+																				<option value="<?=$p->idproveedor?>" ><?=$p->nombre_comercial_pr?></option>
 																			<?php } ?>
 																		</select>
 																	</div>
 																</div>																
 															</div>
+
+															<div id="ruc"></div>
 
 															<div class="form-group">
 																<label class="control-label col-xs-12 col-sm-4 no-padding-right" for="name">Fecha de Recepción:</label>
@@ -508,7 +525,7 @@
 																	</div>
 																	<div class="col-sm-3">
 																		<div class="form-group">
-																			<input  type="text" id="numero" name="numero" class="col-xs-12 col-sm-11" value="" placeholder="Número" >
+																			<input maxlength="20"  type="text" id="numero" name="numero" class="col-xs-12 col-sm-11" value="" placeholder="Número" >
 																		</div>
 																	</div>	
 																</div>					
@@ -568,6 +585,7 @@
 																<th>ID</th>																
 																<th>Tipo</th>
 																<th>Proveedor</th>
+																<th>Rececpciona</th>
 																<th>Fecha Recepción</th>
 																<th>Fecha Emisión</th>
 																<th>Comprobante</th>
@@ -585,6 +603,7 @@
 																<td><?=$r->idrecepcion?></td>
 																<td><?=$r->tipo?></td>
 																<td><?=$r->proveedor?></td>
+																<td><?=$r->username?></td>
 																<td><?=$r->fecha_recepcion?></td>
 																<td><?=$r->fecha_emision?></td>
 																<td><?=$r->tipo_documento?>-<?=$r->comprobante?> <?php if($r->num_orden_atencion!=''){ echo '(OA'.$r->num_orden_atencion.')';} ?></td>

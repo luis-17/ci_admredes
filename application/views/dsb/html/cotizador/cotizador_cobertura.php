@@ -359,12 +359,12 @@
 														<td>
 															<div class="hidden-sm hidden-xs btn-group">
 																<div title="Editar Cobertura" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
-																	<a href="<?=base_url()?>index.php/seleccionar_cobertura/<?=$id?>/<?=$nom?>/<?=$c->idcotizacioncobertura;?>">
+																	<a href="<?=base_url()?>index.php/seleccionar_cobertura_cot/<?=$id?>/<?=$nom?>/<?=$c->idcotizacioncobertura;?>">
 																		<i class="ace-icon fa fa-pencil bigger-120 blue"></i>
 																	</a>
 																</div>
 																<div title="Bloquear Otras Coberturas" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
-																	&nbsp;<a class="boton fancybox"  data-fancybox-width="800" data-fancybox-height="700" href="<?=base_url()?>index.php/bloqueo/<?=$c->idcotizacioncobertura;?>">
+																	&nbsp;<a class="boton fancybox"  data-fancybox-width="800" data-fancybox-height="700" href="<?=base_url()?>index.php/bloqueo_cot/<?=$c->idcotizacioncobertura;?>">
 																		<i class="ace-icon fa fa-ban blue"></i>
 																	</a>
 																</div>
@@ -383,14 +383,14 @@
 																	<ul class="dropdown-menu dropdown-only-icon dropdown-yellow dropdown-menu-right dropdown-caret dropdown-close">
 																		<li>
 																			<div title="Editar Cobertura" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
-																				<a href="<?=base_url()?>index.php/seleccionar_cobertura/<?=$id?>/<?=$nom?>/<?=$c->idcotizacioncobertura;?>">
+																				<a href="<?=base_url()?>index.php/seleccionar_cobertura_cot/<?=$id?>/<?=$nom?>/<?=$c->idcotizacioncobertura;?>">
 																					<i class="ace-icon fa fa-pencil bigger-120 blue"></i>
 																				</a>
 																			</div>
 																		</li>
 																		<li>
 																			<div title="Bloquear Otras Coberturas" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
-																				&nbsp;<a class="boton fancybox"  data-fancybox-width="800" data-fancybox-height="700" href="<?=base_url()?>index.php/bloqueo/<?=$c->idcotizacioncobertura;?>">
+																				&nbsp;<a class="boton fancybox"  data-fancybox-width="800" data-fancybox-height="700" href="<?=base_url()?>index.php/bloqueo_cot/<?=$c->idcotizacioncobertura;?>">
 																					<i class="ace-icon fa fa-ban blue"></i>
 																				</a>
 																			</div>
