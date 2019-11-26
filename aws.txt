@@ -1,0 +1,21 @@
+BBDD
+
+Servidor: rdsinstancemysql.czvvckkesgis.us-east-2.rds.amazonaws.com
+
+Puerto: 3306
+
+Usuario: rsaws2019
+
+Pass: hcarsAcces2019$
+
+
+
+SFTP
+
+Con el archivo .pem configurar:
+
+Servidor: ec2-3-130-219-137.us-east-2.compute.amazonaws.com
+
+Usuario: ec2-user
+
+Puerto: 22
