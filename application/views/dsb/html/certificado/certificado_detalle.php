@@ -196,6 +196,7 @@
 														$can=$cert->fec_can;
 														$cliente = $cert->nombre_comercial_cli;
 														$plan = $cert->nombre_plan;
+														$plan_id=$cert->plan_id;
 														if($can==''){
 															$can='-';
 														}else{
@@ -640,7 +641,7 @@
 																				</div>																				
 																				<?php if($e==1&&$e2==1&&$hoy2>$fec2&&$estado_certase==1) { ?>
 																				<div title="Reservar Atención" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
-																					&nbsp;<a class="boton fancybox" href="<?=  base_url()?>index.php/seleccionar_proveedor/<?=$id?>/<?=$idaseg?>/<?=$certase?>/<?=$fin3?>" data-fancybox-width="1600" data-fancybox-height="1095">
+																					&nbsp;<a class="boton fancybox" href="<?=  base_url()?>index.php/validar_evento/<?=$plan_id?>/<?=$id?>/<?=$idaseg?>/<?=$certase?>/<?=$fin3?>" data-fancybox-width="1600" data-fancybox-height="1095">
 																						<i class="ace-icon fa fa-external-link bigger-120 blue"></i>
 																					</a>
 																				</div>
@@ -681,7 +682,7 @@
 																					<?php if($e==1&&$e2==1&&$hoy2>$fec2&&$estado_certase==1) { ?>
 																					<li>
 																						<div title="Reservar Atención" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
-																							&nbsp;<a class="boton fancybox" href="<?=  base_url()?>index.php/seleccionar_proveedor/<?=$id?>/<?=$idaseg?>/<?=$certase?>/<?=$fin3?>" data-fancybox-width="1600" data-fancybox-height="1095">
+																							&nbsp;<a class="boton fancybox" href="<?=  base_url()?>index.php/validar_evento/<?=$plan_id?>/<?=$id?>/<?=$idaseg?>/<?=$certase?>/<?=$fin3?>" data-fancybox-width="1600" data-fancybox-height="1095">
 																								<i class="ace-icon fa fa-external-link bigger-120 blue"></i>
 																							</a>
 																						</div>

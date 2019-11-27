@@ -8,7 +8,7 @@
 
  	function getCertificados($doc){
  		$this->db->distinct('cert.cert_id');
- 		$this->db->select('DATE_ADD(cert.cert_iniVig, INTERVAL pl.dias_carencia DAY) as cert_iniVig, DATE_ADD(cert.cert_finVig, INTERVAL pl.dias_mora DAY) AS cert_finVig, cert.cert_id, cont_numDoc, cert_num, nombre_plan, nombre_comercial_cli, cert_upProv, cert.cert_estado');
+ 		$this->db->select('DATE_ADD(cert.cert_iniVig, INTERVAL pl.dias_carencia DAY) as cert_iniVig, DATE_ADD(cert.cert_finVig, INTERVAL pl.dias_mora DAY) AS cert_finVig, cert.cert_id, cont_numDoc, cert_num, nombre_plan, nombre_comercial_cli, cert_upProv, cert.cert_estado, cert.plan_id');
  		$this->db->from('certificado cert');
  		$this->db->join('certificado_asegurado ca','ca.cert_id=cert.cert_id');
  		$this->db->join('asegurado a','ca.aseg_id=a.aseg_id');
@@ -108,6 +108,17 @@
 		$this->db->where('certase_id', $id);
 	$certificado_calendario = $this->db->get();
 	return $certificado_calendario->result();
+	}
+
+	function getPlanDetalle($plan_id){
+		$this->db->select("vp.nombre_var, vp.tipo_var, pl.*");
+		$this->db->from("plan_detalle pl");
+		$this->db->join("variable_plan vp","pl.idvariableplan=vp.idvariableplan");
+		$this->db->where("idplan",$plan_id);
+
+	$plandetalle = $this->db->get();
+	return $plandetalle->result();
+
 	}
 
 	function getAsegurado($id){
