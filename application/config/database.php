@@ -103,10 +103,10 @@ $query_builder = TRUE;
 	// $query_builder = TRUE;
 	$db['default'] = array(
 	'dsn'	=> '',
-	'hostname' => 'rdsinstancemysql.czvvckkesgis.us-east-2.rds.amazonaws.com:3306',
-	'username' => 'rsaws2019',
-	'password' => 'hcarsAcces2019$',
-	'database' => 'rspruebas',
+	'hostname' => '50.62.209.11:3306',
+	'username' => 'dev_user_rs',
+	'password' => 'redsaludRS@2018',
+	'database' => 'db_devrs',
 	'dbdriver' => 'mysqli',
 	'dbprefix' => '',
 	'pconnect' => FALSE,
@@ -121,7 +121,7 @@ $query_builder = TRUE;
 	'stricton' => FALSE,
 	'failover' => array(),
 	'save_queries' => TRUE
-);
+); 
 
 /* bbdd produccion godaddy producción redes new*/
 	
