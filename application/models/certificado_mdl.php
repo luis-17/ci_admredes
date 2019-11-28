@@ -111,10 +111,13 @@
 	}
 
 	function getPlanDetalle($plan_id){
-		$this->db->select("vp.nombre_var, vp.tipo_var, pl.*");
+		$this->db->select("GROUP_CONCAT(p.descripcion_prod) as descripcion_prod, vp.nombre_var, vp.tipo_var, pl.*");
 		$this->db->from("plan_detalle pl");
 		$this->db->join("variable_plan vp","pl.idvariableplan=vp.idvariableplan");
+		$this->db->join("producto_detalle pd","pl.idplandetalle = pd.idplandetalle");
+		$this->db->join("producto p","pd.idproducto=p.idproducto");
 		$this->db->where("idplan",$plan_id);
+		$this->db->group_by("idvariableplan");
 
 	$plandetalle = $this->db->get();
 	return $plandetalle->result();
@@ -157,6 +160,15 @@
 	return $cita->result();
 	}
 
+
+	function validarPeriodoEvento($idplandetalle){
+		$this->db->select("*");
+		$this->db->from("periodo_evento");
+		$this->db->where("idplandetalle",$idplandetalle);
+
+		$cita=$this->db->get();
+		return $cita->result();
+	}
 	// function getCitas($id){
 
 	// 	$this->db->select("num_orden_atencion, fecha_cita, fecha_atencion, nombre_comercial_pr, nombre_esp,estado_siniestro, 's' as procedencia");
