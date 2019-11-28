@@ -101,7 +101,7 @@ $query_builder = TRUE;
 	
 	// $active_group = 'default';
 	// $query_builder = TRUE;
-	$db['default'] = array(
+	/*$db['default'] = array(
 	'dsn'	=> '',
 	'hostname' => '50.62.209.11:3306',
 	'username' => 'dev_user_rs',
@@ -121,11 +121,11 @@ $query_builder = TRUE;
 	'stricton' => FALSE,
 	'failover' => array(),
 	'save_queries' => TRUE
-); 
+);*/
 
 /* bbdd produccion godaddy producción redes new*/
 	
-	/*
+	
 	$db['default'] = array(
 	'dsn'	=> '',
 	'hostname' => 'rdsinstancemysql.czvvckkesgis.us-east-2.rds.amazonaws.com:3306',
@@ -146,7 +146,7 @@ $query_builder = TRUE;
 	'stricton' => FALSE,
 	'failover' => array(),
 	'save_queries' => TRUE
-);  */
+);  
 
 
 
