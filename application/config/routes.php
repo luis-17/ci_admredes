@@ -139,6 +139,7 @@ $route['consulta_certificado'] = 'Certificado_cnt/consulta_certificado';
 $route['activar_certificado/(:any)/(:any)'] = 'Certificadodetalle_cnt/activar_certificado/$1/$2';
 $route['cancelar_certificado/(:any)/(:any)'] = 'Certificadodetalle_cnt/cancelar_certificado/$1/$2';
 $route['seleccionar_proveedor/(:any)/(:any)/(:any)/(:any)'] = 'Certificadodetalle_cnt/seleccionar_proveedor/$1/$2/$3/$4';
+$route['validar_evento/(:any)/(:any)/(:any)/(:any)/(:any)'] = 'Certificadodetalle_cnt/validar_evento/$1/$2/$3/$4/$5';
 $route['reservar_cita/(:any)/(:any)/(:any)/(:any)/(:any)/(:any)'] = 'Certificadodetalle_cnt/reservar_cita/$1/$2/$3/$4/$5/$6';
 $route['save_cita'] ='Certificadodetalle_cnt/save_cita';
 $route['notificacion_afiliado/(:any)'] = 'Reservas_cnt/notificacion_afiliado/$1';
