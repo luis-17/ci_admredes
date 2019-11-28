@@ -60,27 +60,52 @@
 					Servicios
 				</h1>
 			</div>
-
-			<div class="row">
-				<div class="form-group col-md-3">
-					<h4 class="blue">Seleccione el servicio:</h4>
+			<!--<form name="form1" id="form1" method="post" action='<?=base_url()."index.php/seleccionar_proveedor"?>'>-->
+				<div class="row">
+					<div class="form-group col-md-3">
+						<h4 class="blue">Seleccione el servicio:</h4>
+					</div>
 				</div>
-				<br>
-				<?php foreach ($plandetalle as $pl):
-					$num_eventos = $pl->num_eventos;
-					$estado_pd = $pl->prov;
-					$idplandetalle = $pl->idplandetalle;
-					$texto_web = $pl->texto_web;
-					$idvariableplan = $pl->idvariableplan;
-					$nombre_var = $pl->nombre_var;
-					$tipo_var = $pl->tipo_var;
+					<br>
+				<div class="row">
+					<div class="form-group">
+					<?php foreach ($plandetalle as $pl):
+						$num_eventos = $pl->num_eventos;
+						$estado_pd = $pl->estado_pd;
+						$idplandetalle = $pl->idplandetalle;
+						$texto_web = $pl->texto_web;
+						$idvariableplan = $pl->idvariableplan;
+						$nombre_var = $pl->nombre_var;
+						$tipo_var = $pl->tipo_var;
+						$descripcion_prod = $pl->descripcion_prod;
+						$id=$cert_id;
+						$idaseg=$aseg_id;
+						$certase_id=$certase_id;
+						$fin=$max;
 
-					if($idproveedor==$s->idproveedor){
-						echo '<img title="'.$s->serv_descripcion.': '.$s->hora_ini.' - '.$s->hora_fin.'" style="height: 30px;" src="https://www.red-salud.com/rsadmin/iconos/servicios/'.$s->id_servicio.'.png">&nbsp;';
-					}
+						if($estado_pd==1 && $tipo_var==1):?> 
+							<!--echo '<div class="col-md-3">
+									<div align="center"><button id="'.$idplandetalle.'" type="submit" value"">
+										<img title="'.$nombre_var.': '.$descripcion_prod.'" style="height: 30px;" src="https://www.red-salud.com/rsadmin/iconos/'.$idvariableplan.'.png">&nbsp;
+									</button>
+										<h5>'.$nombre_var.': '.$descripcion_prod.'</h5></div>
+								  </div>';-->
 
-				} ?>  
-			</div>
+					  		<div class="col-md-4">
+						  		<div align="center">
+									<a class="boton fancybox" href="<?=base_url().'index.php/certificadodetalle_cnt/seleccionar_proveedor/'.$idaseg.'/'.$id.'/'.$certase_id.'/'.$fin.'/'.$idplandetalle.'/'?>" data-fancybox-width="1600" data-fancybox-height="1095"><img title="<?$nombre_var?>: <?$descripcion_prod?>" style="height: 30px;" src="https://www.red-salud.com/rsadmin/iconos/<?=$idvariableplan?>.png">
+									</a>
+									<h5><?=$nombre_var?> : <?=$descripcion_prod?></h5>
+								</div>
+							</div> 
+
+						<?php endif;
+
+					endforeach;?> 
+					</div>
+				</div>
+			<!--</form>-->
+
 		</div>
 
 		<!--[if !IE]> -->

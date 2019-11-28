@@ -57,64 +57,17 @@
 		<div class="page-content">
 			<div class="page-header">
 				<h1>
-					Red Médica
+					Servicios
 				</h1>
 			</div>
 
 			<div class="row">
 				<div class="col-xs-12">
-						<div class="alert alert-info">
-							En el distrito / Ciudad de <b>(Nombre del distrito o ciudad)</b> contamos con las siguientes clínicas: <b>(menciona establecimientos de salud)</b>. ¿En cuál de ellas le gustaría reservar su cita?
-						</div>
-						<div class="alert alert-danger">
-							Respuesta del Afiliado. Si el afiliado menciona que tiene una clínica de su preferencia, validar la red.
-						</div>	
-						<br>
-						<!-- PAGE CONTENT BEGINS -->
-						<table id="example" style="font-size: 12px;" class="table table-striped table-bordered table-hover">
-							<thead>
-								<th>Centro Médico</th>
-								<th>Departamento</th>
-								<th>Provincia</th>
-								<th>Distrito</th>
-								<th>Dirección</th>
-								<th>Servicios</th>
-								<th></th>
-							</thead>
-							<tbody>
-							<?php foreach ($proveedores as $p) {
-								$idproveedor= $p->idproveedor;?>
-								<tr>
-									<td><?=$p->nombre_comercial_pr?></td>
-									<td><?=$p->dep?></td>
-									<td><?=$p->prov?></td>
-									<td><?=$p->dist?></td>
-									<td><?=$p->direccion_pr?></td>
-									<td><?php foreach($servicios as $s){
-										if($idproveedor==$s->idproveedor){
-											echo '<img title="'.$s->serv_descripcion.': '.$s->hora_ini.' - '.$s->hora_fin.'" style="height: 30px;" src="https://www.red-salud.com/rsadmin/iconos/servicios/'.$s->id_servicio.'.png">&nbsp;';
-											}
-										}?>
-									</td>
-									<td>
-										<div title="Seleccionar Proveedor" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
-											&nbsp;<a class="boton fancybox" href="<?=  base_url()?>index.php/reservar_cita/<?=$cert_id?>/<?=$aseg_id?>/0/<?=$certase_id?>/<?=$max?>/<?=$p->idproveedor?>" data-fancybox-width="950" data-fancybox-height="690">
-												<i class="ace-icon fa fa-hand-o-right icon-animated-hand-pointer blue bigger-120"></i>
-											</a>
-										</div>
-									</td>
-								</tr>
-							<?php } ?>
-							</tbody>
-						</table>
-						<script>
-							//para paginacion
-							$(document).ready(function() {
-								$('#example').DataTable( {
-									"pagingType": "full_numbers"
-								} );
-							} );
-						</script>
+				<!--<?php foreach ($periodo as $pr):
+						$total_vez = $pr->total_vez;
+						$vez_actual = $pr->vez_actual;?>-->
+					<h1 class="blue">Se han utilizado <?=$total_vez?> de <?=$total_vez?> eventos.</h1>
+				<!--<?php endforeach;?>-->
 				</div><!-- /.col -->
 			</div>
 		</div>

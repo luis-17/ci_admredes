@@ -132,24 +132,44 @@ class Certificadodetalle_cnt extends CI_Controller {
 
 		$plandetalle = $this->certificado_mdl->getPlanDetalle($plan_id);
 		$data['plandetalle'] = $plandetalle;
-		
+
 		$this->load->view('dsb/html/certificado/validar_evento.php',$data);
 
 		
 	}
 
-	public function seleccionar_proveedor($id, $idaseg, $certase_id, $fin){
-		$data['cert_id'] = $id;
-		$data['aseg_id'] =$idaseg;
+	public function seleccionar_proveedor($idaseg, $id, $certase_id, $fin, $idplandetalle){
+		$data['aseg_id'] = $idaseg;
+		$data['cert_id'] =$id;
 		$data['certase_id'] = $certase_id;
 		$data['max'] = $fin;
+		$data['idplandetalle'] = $idplandetalle;
 
 		$proveedores = $this->certificado_mdl->getProveedores();
 		$data['proveedores'] = $proveedores;
 		$data['servicios'] = $this->certificado_mdl->getServicios();
+		
+		$periodo = $this->certificado_mdl->validarPeriodoEvento($idplandetalle);
+		$data['periodo'] = $periodo;
+		if (!empty($periodo)) {
+			foreach ($periodo as $pr) {
+				if ($pr->total_vez == $pr->vez_actual) {
 
-		$this->load->view('dsb/html/certificado/seleccionar_proveedor.php',$data);
+					$data['total_vez'] = $pr->total_vez;
+					$data['vez_actual'] = $pr->vez_actual;
+					$this->load->view('dsb/html/certificado/mensajeconteo.php',$data);
+
+				} elseif ($pr->total_vez > $pr->vez_actual) {
+
+					$this->load->view('dsb/html/certificado/seleccionar_proveedor.php',$data);
+
+				}
+			}
+		} else {
+			$this->load->view('dsb/html/certificado/seleccionar_proveedor.php',$data);
+		}
 	}
+
 	public function reservar_cita($id, $idaseg, $cita, $certase_id, $fin, $idprov)
 	{
 		$data['cert_id'] = $id;
