@@ -122,22 +122,6 @@ class Certificadodetalle_cnt extends CI_Controller {
 		redirect ($ruta);
 	}
 
-	public function validar_evento($plan_id, $id, $idaseg, $certase_id, $fin){
-
-		$data['plan_id'] = $plan_id;
-		$data['cert_id'] = $id;
-		$data['aseg_id'] =$idaseg;
-		$data['certase_id'] = $certase_id;
-		$data['max'] = $fin;
-
-		$plandetalle = $this->certificado_mdl->getPlanDetalle($plan_id);
-		$data['plandetalle'] = $plandetalle;
-		
-		$this->load->view('dsb/html/certificado/validar_evento.php',$data);
-
-		
-	}
-
 	public function seleccionar_proveedor($id, $idaseg, $certase_id, $fin){
 		$data['cert_id'] = $id;
 		$data['aseg_id'] =$idaseg;
@@ -147,7 +131,6 @@ class Certificadodetalle_cnt extends CI_Controller {
 		$proveedores = $this->certificado_mdl->getProveedores();
 		$data['proveedores'] = $proveedores;
 		$data['servicios'] = $this->certificado_mdl->getServicios();
-
 		$this->load->view('dsb/html/certificado/seleccionar_proveedor.php',$data);
 	}
 	public function reservar_cita($id, $idaseg, $cita, $certase_id, $fin, $idprov)
