@@ -98,7 +98,7 @@
 									</td>
 									<td>
 										<div title="Seleccionar Proveedor" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
-											&nbsp;<a class="boton fancybox" href="<?=  base_url()?>index.php/reservar_cita/<?=$cert_id?>/<?=$aseg_id?>/0/<?=$certase_id?>/<?=$max?>/<?=$p->idproveedor?>" data-fancybox-width="950" data-fancybox-height="690">
+											&nbsp;<a class="boton fancybox" href="<?=base_url().'index.php/certificadodetalle_cnt/reservar_cita/'.$cert_id.'/'.$aseg_id.'/0/'.$certase_id.'/'.$max.'/'.$idproveedor.'/'.$idplandetalle.'/'?>" data-fancybox-width="950" data-fancybox-height="690">
 												<i class="ace-icon fa fa-hand-o-right icon-animated-hand-pointer blue bigger-120"></i>
 											</a>
 										</div>

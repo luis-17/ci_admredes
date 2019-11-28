@@ -62,11 +62,17 @@
 			</div>
 
 			<div class="row">
-				<div class="col-xs-12">
+				<div class="col-xs-12" align="center">
 				<!--<?php foreach ($periodo as $pr):
 						$total_vez = $pr->total_vez;
 						$vez_actual = $pr->vez_actual;?>-->
-					<h1 class="blue">Se han utilizado <?=$total_vez?> de <?=$total_vez?> eventos.</h1>
+					<h1 class="blue">Se han utilizado <?=$total_vez?> de <?=$total_vez?> eventos para el 
+						<?php if ($certase_id==null):?>
+						certificado.
+						<?php else:?>
+						afiliado.
+						<?php endif; ?>
+					</h1>
 				<!--<?php endforeach;?>-->
 				</div><!-- /.col -->
 			</div>

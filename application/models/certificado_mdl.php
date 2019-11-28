@@ -117,7 +117,7 @@
 		$this->db->join("producto_detalle pd","pl.idplandetalle = pd.idplandetalle");
 		$this->db->join("producto p","pd.idproducto=p.idproducto");
 		$this->db->where("idplan",$plan_id);
-		$this->db->group_by("idvariableplan");
+		$this->db->group_by("idplandetalle");
 
 	$plandetalle = $this->db->get();
 	return $plandetalle->result();
@@ -213,11 +213,11 @@
 		return $query->result();
 	}
 
-	function getProductos($id){
+	function getProductos($id, $idplandetalle){
 		$productos = $this->db->query("select idespecialidad, descripcion_prod from producto pr 
 										inner join producto_detalle prd on pr.idproducto=prd.idproducto
 										inner join plan_detalle pd on pd.idplandetalle=prd.idplandetalle
-										where pd.idvariableplan=1 and pd.idplan=(select plan_id from certificado where cert_id=$id)");
+										where pd.idvariableplan=1 and pd.idplan=(select plan_id from certificado where cert_id=$id) and pd.idplandetalle=$idplandetalle");
 	return $productos->result();
 	}
 

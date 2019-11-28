@@ -138,12 +138,13 @@ class Certificadodetalle_cnt extends CI_Controller {
 		
 	}
 
-	public function seleccionar_proveedor($idaseg, $id, $certase_id, $fin, $idplandetalle){
+	public function seleccionar_proveedor($idaseg, $id, $certase_id, $fin, $idplandetalle, $idvariableplan){
 		$data['aseg_id'] = $idaseg;
 		$data['cert_id'] =$id;
 		$data['certase_id'] = $certase_id;
 		$data['max'] = $fin;
 		$data['idplandetalle'] = $idplandetalle;
+		$data['idvariableplan'] = $idvariableplan;
 
 		$proveedores = $this->certificado_mdl->getProveedores();
 		$data['proveedores'] = $proveedores;
@@ -157,20 +158,28 @@ class Certificadodetalle_cnt extends CI_Controller {
 
 					$data['total_vez'] = $pr->total_vez;
 					$data['vez_actual'] = $pr->vez_actual;
-					$this->load->view('dsb/html/certificado/mensajeconteo.php',$data);
+					$data['certase_id'] = $pr->certase_id;
+					$data['cert_id'] = $pr->cert_id;
+					if ($idvariableplan==1) {
+						$this->load->view('dsb/html/certificado/mensajeconteo.php',$data);
+					}
 
 				} elseif ($pr->total_vez > $pr->vez_actual) {
 
-					$this->load->view('dsb/html/certificado/seleccionar_proveedor.php',$data);
+					if ($idvariableplan==1) {
+						$this->load->view('dsb/html/certificado/seleccionar_proveedor.php',$data);
+					}
 
 				}
 			}
 		} else {
-			$this->load->view('dsb/html/certificado/seleccionar_proveedor.php',$data);
+			if ($idvariableplan==1) {
+				$this->load->view('dsb/html/certificado/seleccionar_proveedor.php',$data);
+			}
 		}
 	}
 
-	public function reservar_cita($id, $idaseg, $cita, $certase_id, $fin, $idprov)
+	public function reservar_cita($id, $idaseg, $cita, $certase_id, $fin, $idprov, $idplandetalle)
 	{
 		$data['cert_id'] = $id;
 		$data['aseg_id'] =$idaseg;
@@ -178,6 +187,7 @@ class Certificadodetalle_cnt extends CI_Controller {
 		$data['certase_id'] = $certase_id;
 		$data['max'] = $fin;
 		$data['idprov'] = $idprov;
+		$data['idplandetalle'] = $idplandetalle;
 
 		$afiliado =  $this->certificado_mdl->getNomAfiliado2($idaseg);
 		$data['afiliado'] = $afiliado['asegurado'];
@@ -192,7 +202,7 @@ class Certificadodetalle_cnt extends CI_Controller {
 		$proveedores = $this->certificado_mdl->getProveedores();
 		$data['proveedores'] = $proveedores;
 
-		$productos = $this->certificado_mdl->getProductos($id);
+		$productos = $this->certificado_mdl->getProductos($id, $idplandetalle);
 		$data['productos'] = $productos;
 
 		if($cita==0){
