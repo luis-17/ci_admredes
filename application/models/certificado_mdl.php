@@ -118,6 +118,7 @@
 		$this->db->join("producto p","pd.idproducto=p.idproducto");
 		$this->db->where("idplan",$plan_id);
 		$this->db->group_by("idplandetalle");
+		$this->db->order_by("idvariableplan");
 
 	$plandetalle = $this->db->get();
 	return $plandetalle->result();
