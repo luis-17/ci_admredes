@@ -70,7 +70,7 @@
 			<!--<form name="form1" id="form1" method="post" action='<?=base_url()."index.php/seleccionar_proveedor"?>'>-->
 				<div class="row">
 					<div class="form-group col-xs-12">
-					<table id="example" style="font-size: 12px;" class="table table-striped table-bordered table-hover">
+					<table style="font-size: 12px;" class="table table-striped table-bordered table-hover">
 						<thead>
 			                <th colspan="2"><h4 class="blue">Seleccione el servicio:</h4></th>
 			                <th><div align="center"><i class="ace-icon fa fa-angle-double-down" style="font-size:36px"></i></div></th>

@@ -71,7 +71,7 @@
 						</div>	
 						<br>
 						<!-- PAGE CONTENT BEGINS -->
-						<table id="example" style="font-size: 12px;" class="table table-striped table-bordered table-hover">
+						<table id="proveedor" style="font-size: 12px;" class="table table-striped table-bordered table-hover">
 							<thead>
 								<th>Centro Médico</th>
 								<th>Departamento</th>
@@ -110,8 +110,9 @@
 						<script>
 							//para paginacion
 							$(document).ready(function() {
-								$('#example').DataTable( {
-									"pagingType": "full_numbers"
+								$('#proveedor').DataTable( {
+									"pagingType": "full_numbers",
+    								"bDestroy": true
 								} );
 							} );
 						</script>
