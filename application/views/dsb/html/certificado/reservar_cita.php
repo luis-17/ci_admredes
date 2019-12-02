@@ -109,6 +109,7 @@
 						<input type="hidden" id="idusuario" name="idusuario" value="<?=$idusuario;?>">
 						<input type="hidden" name="certase_id" name="certase_id" value="<?=$certase_id?>">
 						<input type="hidden" name="idsiniestro" id="idsiniestro" value="<?=$idsiniestro?>">
+						<input type="hidden" name="plandetalledos" id="plandetalledos" value="0">
 
 						<div class="form-group">
 							<label class="col-sm-3 control-label no-padding-right" for="form-field-1"> Proveedor: </label>

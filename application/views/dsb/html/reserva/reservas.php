@@ -221,7 +221,7 @@
 																<td>
 																	<div class="hidden-sm hidden-xs btn-group">
 																		<div title="Editar Reserva" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
-																			&nbsp;<a class="boton fancybox" href="<?=base_url()?>index.php/reservar_cita/<?=$mr->idcertificado?>/<?=$mr->idasegurado?>/<?=$mr->idcita?>/<?=$mr->idcertificadoasegurado?>/null/0" data-fancybox-width="950" data-fancybox-height="690">
+																			&nbsp;<a class="boton fancybox" href="<?=base_url()?>index.php/reservar_cita/<?=$mr->idcertificado?>/<?=$mr->idasegurado?>/<?=$mr->idcita?>/<?=$mr->idcertificadoasegurado?>/null/0/0" data-fancybox-width="950" data-fancybox-height="690">
 																				<i class="ace-icon fa fa-pencil bigger-120"></i>
 																			</a>
 																		</div>
@@ -242,7 +242,7 @@
 																			<ul class="dropdown-menu dropdown-only-icon dropdown-yellow dropdown-menu-right dropdown-caret dropdown-close">			
 																				<li>
 																					<div title="Editar Reserva" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
-																						&nbsp;<a class="boton fancybox" href="<?=base_url()?>index.php/reservar_cita/<?=$mr->idcertificado?>/<?=$mr->idasegurado?>/<?=$mr->idcita?>/<?=$mr->idcertificadoasegurado?>/null/0" data-fancybox-width="950" data-fancybox-height="690">
+																						&nbsp;<a class="boton fancybox" href="<?=base_url()?>index.php/reservar_cita/<?=$mr->idcertificado?>/<?=$mr->idasegurado?>/<?=$mr->idcita?>/<?=$mr->idcertificadoasegurado?>/null/0/0" data-fancybox-width="950" data-fancybox-height="690">
 																							<i class="ace-icon fa fa-pencil bigger-120"></i>
 																						</a>
 																					</div>
@@ -445,7 +445,7 @@
 																	<?php if($or->tipo2==1){?>
 																	<div class="hidden-sm hidden-xs btn-group">
 																				<div title="Editar Reserva" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
-																					&nbsp;<a class="boton fancybox" href="<?=base_url()?>index.php/reservar_cita/<?=$or->idcertificado?>/<?=$or->idasegurado?>/<?=$or->idcita?>/<?=$or->idcertificadoasegurado?>/null/0" data-fancybox-width="950" data-fancybox-height="690">
+																					&nbsp;<a class="boton fancybox" href="<?=base_url()?>index.php/reservar_cita/<?=$or->idcertificado?>/<?=$or->idasegurado?>/<?=$or->idcita?>/<?=$or->idcertificadoasegurado?>/null/0/0" data-fancybox-width="950" data-fancybox-height="690">
 																						<i class="ace-icon fa fa-pencil bigger-120"></i>
 																					</a>
 																				</div>
@@ -466,7 +466,7 @@
 																				<ul class="dropdown-menu dropdown-only-icon dropdown-yellow dropdown-menu-right dropdown-caret dropdown-close">			
 																					<li>
 																						<div title="Editar Reserva" style="float:left;cursor:pointer;" class="ui-pg-div ui-inline-edit" id="jEditButton_12" onclick="" data-original-title="Edit selected row">
-																							&nbsp;<a class="boton fancybox" href="<?=base_url()?>index.php/reservar_cita/<?=$or->idcertificado?>/<?=$or->idasegurado?>/<?=$or->idcita?>/<?=$or->idcertificadoasegurado?>/null/0" data-fancybox-width="950" data-fancybox-height="690">
+																							&nbsp;<a class="boton fancybox" href="<?=base_url()?>index.php/reservar_cita/<?=$or->idcertificado?>/<?=$or->idasegurado?>/<?=$or->idcita?>/<?=$or->idcertificadoasegurado?>/null/0/0" data-fancybox-width="950" data-fancybox-height="690">
 																								<i class="ace-icon fa fa-pencil bigger-120"></i>
 																							</a>
 																						</div>

@@ -149,9 +149,22 @@ class Certificadodetalle_cnt extends CI_Controller {
 		$proveedores = $this->certificado_mdl->getProveedores();
 		$data['proveedores'] = $proveedores;
 		$data['servicios'] = $this->certificado_mdl->getServicios();
-		
-		$periodo = $this->certificado_mdl->validarPeriodoEvento($idplandetalle);
-		$data['periodo'] = $periodo;
+
+		$tipoeventos = $this->certificado_mdl->getTipoEventos($idplandetalle);
+
+		$num_eventos = $tipoeventos['num_eventos'];
+		$tipo_evento = $tipoeventos['tipo_evento'];
+
+		if ($num_eventos>0) {
+			if ($tipo_evento==1) {
+				$periodo = $this->certificado_mdl->validarPeriodoEvento($idplandetalle, $certase_id);
+			} else {
+				$periodo = $this->certificado_mdl->validarPeriodoEventoDos($idplandetalle, $cert_id);
+			}
+		}
+
+		//$data['periodo'] = $periodo;
+
 		if (!empty($periodo)) {
 			foreach ($periodo as $pr) {
 				if ($pr->total_vez == $pr->vez_actual) {
@@ -202,7 +215,14 @@ class Certificadodetalle_cnt extends CI_Controller {
 		$proveedores = $this->certificado_mdl->getProveedores();
 		$data['proveedores'] = $proveedores;
 
-		$productos = $this->certificado_mdl->getProductos($id, $idplandetalle);
+		/*$productos = $this->certificado_mdl->getProductos($id, $idplandetalle);
+		$data['productos'] = $productos;*/
+		if ($idplandetalle>0) {
+			$productos = $this->certificado_mdl->getProductos($id, $idplandetalle);
+		} else {
+			$productos = $this->certificado_mdl->getProductosDos($id);
+		}
+		
 		$data['productos'] = $productos;
 
 		if($cita==0){

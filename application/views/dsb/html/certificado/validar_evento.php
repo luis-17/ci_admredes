@@ -100,7 +100,7 @@
 			            		</td>
 			            		<td>
 									<div align="center">
-										<a class="boton fancybox" href="<?=base_url().'index.php/certificadodetalle_cnt/seleccionar_proveedor/'.$idaseg.'/'.$id.'/'.$certase_id.'/'.$fin.'/'.$idplandetalle.'/'.$idvariableplan.'/'?>" data-fancybox-width="1600" data-fancybox-height="1095"><img title="<?=$nombre_var?>: <?=$descripcion_prod?>" style="height: 30px;" src="https://www.red-salud.com/rsadmin/iconos/<?=$idvariableplan?>.png">
+										<a class="boton fancybox" href="<?=base_url().'index.php/certificadodetalle_cnt/seleccionar_proveedor/'.$idaseg.'/'.$id.'/'.$certase_id.'/'.$fin.'/'.$idplandetalle.'/'.$idvariableplan?>" data-fancybox-width="1600" data-fancybox-height="1095"><img title="<?=$nombre_var?>: <?=$descripcion_prod?>" style="height: 30px;" src="https://www.red-salud.com/rsadmin/iconos/<?=$idvariableplan?>.png">
 										</a>
 									</div>
 			            		</td>

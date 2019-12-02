@@ -162,14 +162,36 @@
 	}
 
 
-	function validarPeriodoEvento($idplandetalle){
+	function validarPeriodoEvento($idplandetalle,$certase_id){
 		$this->db->select("*");
 		$this->db->from("periodo_evento");
 		$this->db->where("idplandetalle",$idplandetalle);
+		$this->db->where("certase_id",$certase_id);
+		$this->db->order_by("idperiodo", "DESC");
+		$this->db->limit(1);
 
 		$cita=$this->db->get();
 		return $cita->result();
 	}
+
+	function validarPeriodoEventoDos($idplandetalle,$cert_id){
+		$this->db->select("*");
+		$this->db->from("periodo_evento");
+		$this->db->where("idplandetalle",$idplandetalle);
+		$this->db->where("cert_id",$cert_id);
+		$this->db->order_by("idperiodo", "DESC");
+		$this->db->limit(1);
+
+		$cita=$this->db->get();
+		return $cita->result();
+	}
+
+	function getTipoEventos($idplandetalle){
+		$query=$this->db->query("select coalesce(num_eventos,0) as num_eventos, tipo_evento from plan_detalle where idplandetalle=$idplandetalle");
+
+		return $query->row_array();
+	}
+
 	// function getCitas($id){
 
 	// 	$this->db->select("num_orden_atencion, fecha_cita, fecha_atencion, nombre_comercial_pr, nombre_esp,estado_siniestro, 's' as procedencia");
@@ -219,6 +241,14 @@
 										inner join producto_detalle prd on pr.idproducto=prd.idproducto
 										inner join plan_detalle pd on pd.idplandetalle=prd.idplandetalle
 										where pd.idvariableplan=1 and pd.idplan=(select plan_id from certificado where cert_id=$id) and pd.idplandetalle=$idplandetalle");
+	return $productos->result();
+	}
+
+	function getProductosDos($id){
+		$productos = $this->db->query("select idespecialidad, descripcion_prod from producto pr 
+										inner join producto_detalle prd on pr.idproducto=prd.idproducto
+										inner join plan_detalle pd on pd.idplandetalle=prd.idplandetalle
+										where pd.idvariableplan=1 and pd.idplan=(select plan_id from certificado where cert_id=$id)");
 	return $productos->result();
 	}
 
