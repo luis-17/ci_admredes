@@ -168,12 +168,20 @@
 																<?php endforeach; ?>				
 														</select>
 													</div>
-													<div class="profile-info-name"> Estado: </div>
+													<!--<div class="profile-info-name"> Estado: </div>
 													<div class="profile-info-name">
 														<select name="tipo" id="tipo" required="Seleccione una opción de la lista"  class="form-control"   style="width: 200px;">											
 															<option value="1">Vigentes</option>
 															<option value="3">Cancelados</option>
 														</select>
+													</div>-->
+													<div class="profile-info-name"> Inicio: </div>
+													<div class="profile-info-name">
+														<input class="form-control input-mask-date" type="date" id="fecinicio" name="fecinicio" required="Seleccione una fecha de inicio" value="<?=$fecinicio;?>" >
+													</div>
+													<div class="profile-info-name"> Fin: </div>
+													<div class="profile-info-name">
+														<input class="form-control input-mask-date" type="date" id="fecfin" name="fecfin" required="Seleccione una fecha de fin" value="<?=$fecfin;?>">														
 													</div>
 													<div  class="profile-info-name">
 													<button type="submit" class="btn btn-info btn-xs" name="accion" value="buscar">Buscar 

@@ -597,12 +597,19 @@ class Reportes_cnt extends CI_Controller {
 			$data['plan'] = $_POST['plan'];
 			$datos['canal'] = $_POST['canal'];
 			$datos['plan'] = $_POST['plan'];
-			$datos['tipo'] = $_POST['tipo'];
+			//$datos['tipo'] = $_POST['tipo'];
 
 			$data['plan_id'] = $_POST['plan'];		
-			$data['tipo'] = $_POST['tipo'];
+			//$data['tipo'] = $_POST['tipo'];
 
-			$afiliados = $this->reportes_mdl->cons_afiliados($datos);
+			$data['fecinicio'] = $_POST['fecinicio'];		
+			$data['fecfin'] = $_POST['fecfin'];
+
+			$plan_id = $_POST['plan'];
+			$fecinicio = $_POST['fecinicio'];		
+			$fecfin = $_POST['fecfin'];
+
+			$afiliados = $this->reportes_mdl->cons_afiliados($plan_id, $fecinicio, $fecfin);
 			$data['afiliados'] = $afiliados;	
 
 			$data['canales'] = $this->reportes_mdl->getCanales();
@@ -631,16 +638,19 @@ class Reportes_cnt extends CI_Controller {
 
 		        $this->excel->setActiveSheetIndex(0);
 		        $this->excel->getActiveSheet()->setTitle('Afiliados');
-		        $this->excel->getActiveSheet()->setCellValue('A1', 'N° Certificado');
-		        $this->excel->getActiveSheet()->setCellValue('B1', 'N° Documento');
-		        $this->excel->getActiveSheet()->setCellValue('C1', 'Afiliado');
-		        $this->excel->getActiveSheet()->setCellValue('D1', 'N° Teléfono');
-		        $this->excel->getActiveSheet()->setCellValue('E1', 'Tipo');
-		        $this->excel->getActiveSheet()->setCellValue('F1', 'Estado');
-		        $this->excel->getActiveSheet()->setCellValue('G1', 'Afiliado por');
+		        $this->excel->getActiveSheet()->setCellValue('A1', 'N° Certificado')->getColumnDimension('A')->setWidth(15);
+		        $this->excel->getActiveSheet()->setCellValue('B1', 'N° Documento')->getColumnDimension('B')->setWidth(15);
+		        $this->excel->getActiveSheet()->setCellValue('C1', 'Afiliado')->getColumnDimension('C')->setWidth(35);
+		        $this->excel->getActiveSheet()->setCellValue('D1', 'N° Teléfono')->getColumnDimension('D')->setWidth(15);
+		        $this->excel->getActiveSheet()->setCellValue('E1', 'Correo')->getColumnDimension('E')->setWidth(30);
+		        $this->excel->getActiveSheet()->setCellValue('F1', 'Tipo')->getColumnDimension('F')->setWidth(15);
+		        $this->excel->getActiveSheet()->setCellValue('G1', 'Fecha de Registro')->getColumnDimension('G')->setWidth(20);
+		        $this->excel->getActiveSheet()->setCellValue('H1', 'Inicio de Vigencia')->getColumnDimension('H')->setWidth(15);
+		        $this->excel->getActiveSheet()->setCellValue('I1', 'Fin de Vingencia')->getColumnDimension('I')->setWidth(15);
+		        $this->excel->getActiveSheet()->setCellValue('J1', 'Afiliado por')->getColumnDimension('J')->setWidth(12);
 		        //$this->excel->getActiveSheet()->getStyle('A1')->getFont()->setSize(20);
-		        $this->excel->getActiveSheet()->getStyle('A1:G1')->getFont()->setBold(true);
-		        $this->excel->getActiveSheet()->getStyle('A1:G1')->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()->setRGB('E0E0E0');
+		        $this->excel->getActiveSheet()->getStyle('A1:J1')->getFont()->setBold(true);
+		        $this->excel->getActiveSheet()->getStyle('A1:J1')->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()->setRGB('E0E0E0');
 		        //$this->excel->getActiveSheet()->mergeCells('A1:D1');
 		        $nom_plan="";
 		        foreach ($planes as $p) {
@@ -648,11 +658,11 @@ class Reportes_cnt extends CI_Controller {
 		        		$nom_plan=$p->nombre_plan;
 		        }
 		        $cont=2;
-		        if($data['tipo']==1){
+		        /*if($data['tipo']==1){
 		        	$estado="Vigente";
 		        }else{
 		        	$estado="Cancelado";
-		        }
+		        }*/
 
 		        foreach ($afiliados as $a) {	
 
@@ -660,9 +670,12 @@ class Reportes_cnt extends CI_Controller {
 			        $this->excel->getActiveSheet()->setCellValue('B'.$cont, $a->aseg_numDoc);
 			        $this->excel->getActiveSheet()->setCellValue('C'.$cont, $a->asegurado);
 			        $this->excel->getActiveSheet()->setCellValue('D'.$cont, $a->aseg_telf);
-			        $this->excel->getActiveSheet()->setCellValue('E'.$cont, $a->tipo);
-			        $this->excel->getActiveSheet()->setCellValue('F'.$cont, $estado);
-			        $this->excel->getActiveSheet()->setCellValue('G'.$cont, $a->username);
+			        $this->excel->getActiveSheet()->setCellValue('E'.$cont, $a->aseg_email);
+			        $this->excel->getActiveSheet()->setCellValue('F'.$cont, $a->tipo);
+			        $this->excel->getActiveSheet()->setCellValue('G'.$cont, $a->fech_reg);
+			        $this->excel->getActiveSheet()->setCellValue('H'.$cont, $a->cert_iniVig);
+			        $this->excel->getActiveSheet()->setCellValue('I'.$cont, $a->cert_finVig);
+			        $this->excel->getActiveSheet()->setCellValue('J'.$cont, $a->username);
 			        $cont=$cont+1;
 		        }
 
@@ -674,6 +687,9 @@ class Reportes_cnt extends CI_Controller {
 		        	$this->excel->getActiveSheet()->getStyle('E'.$i)->applyFromArray($estilo);
 		        	$this->excel->getActiveSheet()->getStyle('F'.$i)->applyFromArray($estilo);
 		        	$this->excel->getActiveSheet()->getStyle('G'.$i)->applyFromArray($estilo);
+		        	$this->excel->getActiveSheet()->getStyle('H'.$i)->applyFromArray($estilo);
+		        	$this->excel->getActiveSheet()->getStyle('I'.$i)->applyFromArray($estilo);
+		        	$this->excel->getActiveSheet()->getStyle('J'.$i)->applyFromArray($estilo);
 		        }
 		 
 		        header('Content-Type: application/vnd.ms-excel');
