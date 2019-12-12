@@ -374,6 +374,9 @@ $route['reg_recepcion3'] = 'Mesa_partes_cnt/reg_recepcion3';
 $route['ruc'] = 'Mesa_partes_cnt/ruc';
 $route['siniestros'] = 'Siniestro_cnt/registrar_siniestro';
 $route['seleccionar_factura/(:any)/(:any)'] = 'Siniestro_cnt/seleccionar_factura/$1/$2';
+$route['detalle_cobertura/(:any)/(:any)/(:any)/(:any)/(:any)'] = 'Siniestro_cnt/detalle_cobertura/$1/$2/$3/$4/$5';
+$route['reg_triaje'] = 'Siniestro_cnt/reg_triaje';
+
 $route['cotizador'] = 'Cotizador_cnt/index';
 $route['nueva_cotizacion'] = 'Cotizador_cnt/nueva_cotizacion';
 $route['guardar_cotizacion'] = 'Cotizador_cnt/guardar_cotizacion';
