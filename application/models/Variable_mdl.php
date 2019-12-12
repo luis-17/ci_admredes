@@ -36,6 +36,11 @@
 	 return $canal->result();
  	}
 
+ 	function inEspecialidad($data){
+ 		$array = array('idtipoespecialidad' => 1, 'nombre_esp' => $data['descripcion']);
+ 		$this->db->insert('especialidad', $array);
+ 	}
+
  	function insert_variable($data){
  		$array = array(
  			'nombre_var' => $data['nombre_var'],
@@ -78,7 +83,7 @@
  		(
  			'descripcion_prod' => $data['descripcion_prod'] , 
  			'idvariableplan' => $data['idvariableplan'],
- 			'idespecialidad' => 4,
+ 			'idespecialidad' => $data['idespecialidad'],
  			'idtipoproducto' => 1
  		);
 

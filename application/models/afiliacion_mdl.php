@@ -429,5 +429,40 @@
     	$query = $this->db->get();
     	return $query->result();
     }
+
+    function getDatosContacto($cert_id){
+    	$query = $this->db->query("select co.cont_id, cont_numDoc, concat(coalesce(cont_ape1,''),' ',coalesce(cont_ape2,''),' ',coalesce(cont_nom1,''),' ',coalesce(cont_nom2,'')) as contratante, cont_email, cont_telf from contratante co inner join certificado c on co.cont_id=c.cont_id where cert_id=$cert_id");
+    	return $query->row_array();
+    }
+
+    function upContratante($data){
+    	$array = array('cont_email' => $data['cont_email'], 'cont_telf' => $data['cont_telf'] );
+    	$this->db->where('cont_id',$data['cont_id']);
+    	$this->db->update('contratante',$array);
+    }
+
+    function getPlan($cert_id){
+    	$query = $this->db->query("select nombre_plan, dias_carencia from plan where idplan=(select plan_id from certificado where cert_id=$cert_id);");
+    	return $query->row_array();
+    }
+
+    function ValidacionMensaje($data){
+    	$query = $this->db->query("select count(certase_id)as cant_afiliados, num_afiliados, plan_id
+				from certificado c
+				join certificado_asegurado ca on c.cert_id=ca.cert_id
+				join asegurado a on a.aseg_id=ca.aseg_id
+				join plan p on p.idplan=c.plan_id
+				where c.cert_id=".$data['cert']." and ca.cert_estado=1");
+    	return $query->row_array();
+    }
+
+    function getDependientes($cert_id){
+    	$query = $this->db->query("select a.aseg_numDoc, aseg_ape1, aseg_ape2, aseg_nom1, aseg_nom2, aseg_direcc, aseg_telf, aseg_email, DATE_FORMAT(ca.fech_reg,'%d/%m/%y') as fech_reg, DATE_FORMAT(ca.cert_iniVig,'%d/%m/%y')as iniVig
+				from certificado c
+				join certificado_asegurado ca on c.cert_id=ca.cert_id
+				join asegurado a on a.aseg_id=ca.aseg_id
+				where c.cert_id=$cert_id and ca.cert_estado=1");
+    	return $query->result();
+    }
 }
 ?>

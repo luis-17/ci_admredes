@@ -69,16 +69,13 @@
 
 						<div class="form-group">
 							<div class="col-sm-12">
-								<p><input type="radio" name="tipo" value="El plan de salud no le cubre una especialidad y cuando le vendieron el plan le mencionaron que sí cubría." id="1"> El plan de salud no le cubre una especialidad y cuando le vendieron el plan le mencionaron que sí cubría.</p>
-								<p><input type="radio" name="tipo" value="El plan de salud no le cubre los análisis clínicos del segundo diagnóstico y cuando le vendieron el plan le mencionaron que sí cubría." id="2"> El plan de salud no le cubre los análisis clínicos del segundo diagnóstico y cuando le vendieron el plan le mencionaron que sí cubría.</p>
-								<p><input type="radio" name="tipo" value="Le han negado la atención en el establecimiento de salud y le han dicho que no cuenta con plan activo en red salud." id="3"> Le han negado la atención en el establecimiento de salud y le han dicho que no cuenta con plan activo en red salud.</p>
-								<p><input type="radio" name="tipo" value="Inconvenientes en la entrega de sus medicamentos en el establecimiento de salud." id="4"> 	Inconvenientes en la entrega de sus medicamentos en el establecimiento de salud.</p>
-								<p><input type="radio" name="tipo" value="Insatisfacción con el establecimiento de salud." id="5"> Insatisfacción con el establecimiento de salud.</p>
-								<p><input type="radio" name="tipo" value="Insatisfacción con la coordinación de la cita." id="6"> Insatisfacción con la coordinación de la cita.</p>
-								<p><input type="radio" name="tipo" value="No le ha llegado la póliza de manera física o virtual." id="7"> No le ha llegado la póliza de manera física o virtual.</p>
-								<p><input type="radio" name="tipo" value="El afiliado desea retirarse del plan de salud porque no usa el plan de salud.." id="8"> El afiliado desea retirarse del plan de salud porque no usa el plan de salud..</p>
-								<p><input type="radio" name="tipo" value="El afiliado desea retirarse del plan de salud por una mala venta del canal donde se le prometió algo que no cubre el plan." id="9"> El afiliado desea retirarse del plan de salud por una mala venta del canal donde se le prometió algo que no cubre el plan.</p>
-								<p><input type="radio" name="tipo" value="El afiliado desea retirarse del plan de salud porque no sabía lo que había adquirido." id="10"> El afiliado desea retirarse del plan de salud porque no sabía lo que había adquirido.</p>
+								<p><input type="radio" name="tipo" value="Mala Venta" id="1"> Mala Venta.</p>								
+								<p><input type="radio" name="tipo" value="Inconvenientes en el centro médico" id="7"> Inconvenientes en el centro médico.</p>
+								<p><input type="radio" name="tipo" value="Inconvenientes con el call center" id="2"> Inconvenientes con el call center.</p>
+								<p><input type="radio" name="tipo" value="Entrega de medicamentos en el centro médico" id="3"> Entrega de medicamentos en el centro médico.</p>
+								<p><input type="radio" name="tipo" value="Entrega de medicamentos en Inkafarma" id="4"> Entrega de medicamentos en Inkafarma.</p>
+								<p><input type="radio" name="tipo" value="No le llegó póliza virtual" id="5"> No le llegó póliza virtual.</p>
+								<p><input type="radio" name="tipo" value="No le llegó póliza física" id="6"> No le llegó póliza física.</p>
 								<p><input type="radio" name="tipo" value="Otros." id="10"> Otros.</p>
 							</div>
 						</div>
