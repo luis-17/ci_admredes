@@ -128,13 +128,25 @@
  	return $query->result();
  	}
 
- 	function cons_afiliados($data){
+ 	/*function cons_afiliados($data){
  		$this->db->select("c.plan_id,c.cert_id, cert_num, a.aseg_numDoc, concat(COALESCE(a.aseg_ape1,''),' ',COALESCE(aseg_ape2,''),' ',COALESCE(aseg_nom1,''),' ',COALESCE(aseg_nom2,'')) as asegurado, aseg_telf, case when a.aseg_numDoc=co.cont_numDoc then 'Titular' else 'Dependiente' end as tipo, case when ca.idusuario is not null then (select username from usuario where idusuario=ca.idusuario) else case when ca.idusuario_afi is not null then (select username_afi from usuario_afi where idusuario_afi=ca.idusuario_afi)else 'sistemas' end end as username");
  		$this->db->from("asegurado a");
  		$this->db->join("certificado_asegurado ca","a.aseg_id=ca.aseg_id");
  		$this->db->join("certificado c","c.cert_id=ca.cert_id");
  		$this->db->join("contratante co","co.cont_id=c.cont_id");
  		$this->db->where("c.plan_id=".$data['plan']." and ca.cert_estado=".$data['tipo']." and c.cert_num not like 'PR%'");
+ 	$query = $this->db->get();
+ 	return $query->result();
+ 	}*/
+
+ 	function cons_afiliados($plan, $fecinicio, $fecfin){
+ 		$this->db->select("c.plan_id,c.cert_id, cert_num, a.aseg_numDoc, concat(COALESCE(a.aseg_ape1,''),' ',COALESCE(aseg_ape2,''),' ',COALESCE(aseg_nom1,''),' ',COALESCE(aseg_nom2,'')) as asegurado, aseg_telf, aseg_email, case when a.aseg_numDoc=co.cont_numDoc then 'Titular' else 'Dependiente' end as tipo, case when ca.idusuario is not null then (select username from usuario where idusuario=ca.idusuario) else case when ca.idusuario_afi is not null then (select username_afi from usuario_afi where idusuario_afi=ca.idusuario_afi)else 'sistemas' end end as username, ca.fech_reg, ca.cert_iniVig, ca.cert_finVig");
+ 		$this->db->from("asegurado a");
+ 		$this->db->join("certificado_asegurado ca","a.aseg_id=ca.aseg_id");
+ 		$this->db->join("certificado c","c.cert_id=ca.cert_id");
+ 		$this->db->join("contratante co","co.cont_id=c.cont_id");
+ 		$this->db->where("c.plan_id=".$plan." and ca.fech_reg>='".$fecinicio."' and ca.fech_reg<='".$fecfin."' and c.cert_num not like 'PR%'");
+
  	$query = $this->db->get();
  	return $query->result();
  	}
