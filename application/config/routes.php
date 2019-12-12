@@ -409,6 +409,8 @@ $route['bloqueo_cot/(:any)'] = 'Cotizador_cnt/bloqueo_cot/$1';
 $route['reg_bloqueo_cot'] = 'Cotizador_cnt/reg_bloqueo_cot';
 $route['anular_bloqueo_cot/(:any)/(:any)'] = 'Cotizador_cnt/anular_bloqueo_cot/$1/$2';
 $route['seleccionar_cobertura_cot/(:any)/(:any)/(:any)'] = 'Cotizador_cnt/seleccionar_cobertura_cot/$1/$2/$3';
+$route['terminar_afiliacion/(:any)'] = 'Afiliacion_cnt/terminar_afiliacion/$1';
+$route['notificar_afiliacion'] = 'Afiliacion_cnt/notificar_afiliacion';
 
 $route['eliminar_producto_cot/(:any)/(:any)/(:any)/(:any)'] = 'Cotizador_cnt/eliminar_producto/$1/$2/$3/$4';
 $route['insertar_producto_cot/(:any)/(:any)/(:any)/(:any)'] = 'Cotizador_cnt/insertar_producto/$1/$2/$3/$4';

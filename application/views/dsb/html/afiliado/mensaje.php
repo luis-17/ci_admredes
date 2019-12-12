@@ -85,12 +85,21 @@
 									</p>
 								</div>	
 								<div class="">
-									<div class="col-md-offset-3 col-md-9" style="text-align: right;">
-										<button class="btn btn-info" onclick="guardar()" >
-											<i class="ace-icon fa fa-check bigger-110"></i>
-												Cerrar
-										</button>
-									</div>
+									<form method="post" action="<?=base_url()?>index.php/terminar_afiliacion">
+										<?php if($num_afiliados>$cant_afiliados){?>
+										<div class="col-md-offset-3 col-md-9" style="text-align: right;">
+											<a  class="btn btn-info" href="<?=base_url()?>index.php/aseg_nuevo/<?=$cert?>/<?=$plan?>" type="submit">
+												<i class="ace-icon glyphicon glyphicon-plus"></i>
+													Agregar Afiliado
+											</a>
+										<?php } ?>
+											<input type="hidden" name="cert_id" id="cert_id" value="<?=$cert?>">
+											<a  class="btn btn-info" href="<?=base_url()?>index.php/terminar_afiliacion/<?=$cert?>" type="submit">
+												<i class="ace-icon fa fa-check bigger-110"></i>
+														Terminar
+											</a>
+										</div>
+									</form>
 								</div>							
 							</div><!-- /.col -->
 						</div>	

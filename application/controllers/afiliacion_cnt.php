@@ -333,8 +333,13 @@ class Afiliacion_cnt extends CI_Controller {
 				break;
 			}
 
+		$validacion = $this->afiliacion_mdl->ValidacionMensaje($data);
+		$data['cant_afiliados'] = $validacion['cant_afiliados'] ;
+		$data['num_afiliados'] = $validacion['num_afiliados'];
+		$data['plan'] = $validacion['plan_id'];
+
 		$data['mensaje'] = 1;
-		$this->load->view('dsb/html/mensaje.php',$data);
+		$this->load->view('dsb/html/afiliado/mensaje.php',$data);
 	}
 
 	public function verifica_dni(){
@@ -454,7 +459,7 @@ class Afiliacion_cnt extends CI_Controller {
 		$mail->Subject = "NOTIFICACION DE DESAFILIACION RED SALUD";
 		// El cuerpo del mail (puede ser HTML)
 		$mail->Body = '<!DOCTYPE html>
-<head>
+				<head>
                 <meta charset="UTF-8" />
                 </head>
                 <body style="font-size: 1.5vw; width: 100%; font-family: '.$tipo.', CenturyGothic, AppleGothic, sans-serif;">
@@ -489,5 +494,133 @@ class Afiliacion_cnt extends CI_Controller {
 		$mail->send(); 
 
 		$this->load->view('dsb/html/mensaje2.php', $data);
+	}
+
+	public function terminar_afiliacion($cert_id){
+
+		$getDatosContacto = $this->afiliacion_mdl->getDatosContacto($cert_id);
+		$data['cont_id'] = $getDatosContacto['cont_id'];
+		$data['dni'] = $getDatosContacto['cont_numDoc'];
+		$data['contratante'] = $getDatosContacto['contratante'];
+		$data['cont_email'] = $getDatosContacto['cont_email'];
+		$data['cont_telf'] = $getDatosContacto['cont_telf'];
+		$data['cert_id'] = $cert_id;
+
+		$this->load->view('dsb/html/afiliado/notificar_afiliacion.php', $data);
+
+	}
+
+	public function notificar_afiliacion(){
+
+
+		$user = $this->session->userdata('user');
+		extract($user);
+		$cert_id = $_POST['cert_id'];
+		$cont_id = $_POST['cont_id'];
+		$cont_telf = $_POST['cont_telf'];
+		$cont_email = $_POST['cont_email'];
+		$data['cert_id'] = $cert_id;
+		$data['cont_id'] = $cont_id;
+		$data['cont_telf'] = $cont_telf;
+		$data['cont_email'] = $cont_email;
+
+		$this->afiliacion_mdl->upContratante($data);
+		$getPlan = $this->afiliacion_mdl->getPlan($cert_id);
+		$dependientes = $this->afiliacion_mdl->getDependientes($cert_id);
+		$nombre_plan = $getPlan['nombre_plan'];
+		$carencia = $getPlan['dias_carencia'];
+
+		$tabla='';
+
+		foreach ($dependientes as $d) {
+			$tabla.='<tr>
+						<td>'.$d->aseg_numDoc.'</td>
+						<td>'.$d->aseg_ape1.' '.$d->aseg_ape2.' '.$d->aseg_nom1.' '.$d->aseg_nom2.'</td>
+						<td>'.$d->aseg_email.'</td>
+						<td>'.$d->aseg_telf.'</td>
+						<td>'.$d->fech_reg.'</td>
+						<td>'.$d->iniVig.'</td>
+					</tr>';
+		}
+
+		$mail = new PHPMailer;
+		$mail->isSMTP();
+	    //$mail->Host     = 'relay-hosting.secureserver.net';
+	    $mail->Host     = 'localhost';
+	    $mail->SMTPAuth = false;
+	    $mail->Username = '';
+	    $mail->Password = '';
+	    $mail->SMTPSecure = 'false';
+	    $mail->Port     = 25;
+
+		$tipo="'Century Gothic'";
+		// Armo el FROM y el TO
+		$mail->setFrom('contacto@red-salud.com', 'Red Salud');
+		$mail->addAddress($cont_email, $cont_email);
+		$mail->addAddress($correo_laboral, $nombres_col);
+		$mail->addAddress('pvigil@red-salud.com', 'Pilar');
+		// El asunto
+		$mail->Subject = "NOTIFICACION DE AFILIACION RED SALUD";
+		// El cuerpo del mail (puede ser HTML)
+		$mail->Body = '<!DOCTYPE html>
+				<head>
+                	<meta charset="UTF-8" />
+                </head>
+                <body style="font-size: 1.5vw; width: 100%; font-family: '.$tipo.', CenturyGothic, AppleGothic, sans-serif;">               
+                <div style="padding-top: 2%; text-align: right; padding-right: 15%;"><img src="https://www.red-salud.com/mail/logo.png" width="17%" style="text-align: right;"></img>
+                </div>
+
+
+                <div style="padding-right: 15%; padding-left: 8%;"><b><label style="color: #000000;"> </b></div>
+                <div  style="padding-right: 15%; padding-left: 8%; padding-bottom: 1%; color: #12283E;">
+                <p>Te informamos que tu solicitud de afiliaci&oacute;n de dependientes a '.$nombre_plan.' ha sido procesada, recuerda que tu plan de salud tiene una carencia de '.$carencia.' d&iacute;a(s) desde iniciada la vigencia de cada dependiente.</p>
+                <br>
+                <table border="1">
+                <thead>
+	                <tr>
+	                	<th colspan="6">DETALLE DE DEPENDIENTES</th>
+	                </tr>
+	                <tr>
+	                	<th>DNI</th>
+	                	<th>Nombre y Apellidos</th>
+	                	<th>Correo electr&oacute;nico</th>
+	                	<th>Tel&eacute;fono</th>
+	                	<th>Fecha Afiliaci&oacute;n</th>
+	                	<th>Inicio de Vigencia</th>
+	                </tr>
+	            </thead>
+	            <tbody>
+	            	'.$tabla.'
+	            </tbody
+                </table>
+
+                <p>&iexcl;Recuerda que siempre es momento de pensar en tu salud!</p>                
+                </div>
+                <br>
+                <br>
+                <br>
+                <br>
+                <br>
+                <div style="background-color: #BF3434; padding-top: 0.5%; padding-bottom: 0.5%">
+                <div style="text-align: center;"><b><a href="https://www.google.com/maps/place/Red+Salud/@-12.11922,-77.0370327,17z/data=!3m1!4b1!4m5!3m4!1s0x9105c83d49a4312b:0xf0959641cc08826!8m2!3d-12.11922!4d-77.034844" style="text-decoration-color: #FFFFFF; text-decoration: none; color:  #FFFFFF;">Av. Jos&eacute; Pardo Nro 601 Of. 502, Miraflores - Lima.</a></b></div>
+                <div style="text-align: center;"><b><a href="https://www.red-salud.com" style="text-decoration-color: #FFFFFF; text-decoration: none; color:  #FFFFFF;">www.red-salud.com</a></b></div>
+                </div>
+                <div style=""><img src="https://www.red-salud.com/mail/bottom.png" width="50%"></img></div>
+                </div>
+            </body>
+		</html>';
+		$mail->IsHTML(true);
+		// Los archivos adjuntos
+		//$mail->addAttachment('adjunto/'.$plan.'.pdf', 'Condicionado.pdf');
+		//$mail->addAttachment('adjunto/RED_MEDICA_2018.pdf', 'Red_Medica.pdf');
+		// Enviar
+		$mail->send(); 
+
+		echo "<script>
+				alert('Se envió el correo de notificación al contratante del plan.');
+				parent.location.reload(true);
+				parent.$.fancybox.close();
+				</script>";
+
 	}
 }

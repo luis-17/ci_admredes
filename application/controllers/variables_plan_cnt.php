@@ -183,10 +183,21 @@ class variables_plan_cnt extends CI_Controller {
 
 	public function save_producto(){
 		$data['idvariableplan'] = $_POST['idvar'];
+		$idvar = $_POST['idvar'];
 		$id = $_POST['idproducto'];
 		$data['descripcion_prod'] = $_POST['descripcion'];
+		$descripcion = $_POST['descripcion']; 
+		$data['idespecialidad'] = 4;
+
 
 		if($id==0){
+			if($idvar=1){
+				$descripcion = strtoupper($descripcion);
+				$data['descripcion'] = $descripcion;
+				$this->variable_mdl->inEspecialidad($data);
+				$data['idespecialidad'] = $this->db->insert_id();
+			}
+
 			$this->variable_mdl->insert_producto($data);
 			echo "<script>
 				alert('Se registró el detalle con éxito.');

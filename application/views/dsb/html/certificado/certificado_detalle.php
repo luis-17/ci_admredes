@@ -197,6 +197,7 @@
 														$cliente = $cert->nombre_comercial_cli;
 														$plan = $cert->nombre_plan;
 														$plan_id=$cert->plan_id;
+														$flg_dependientes = $cert->flg_dependientes;
 														if($can==''){
 															$can='-';
 														}else{
@@ -575,6 +576,15 @@
 														<i class="blue ace-icon fa fa-users bigger-110"></i>
 														Listado de Afiliados al Certificado
 													</h4>
+													<?php if($flg_dependientes=='S'){ ?>
+													<div class="form-group col-md-12" style="text-align: right;">	
+														<a  class="boton fancybox btn btn-info" data-fancybox-width="950" data-fancybox-height="690" href="<?=base_url()?>index.php/aseg_nuevo/<?=$id?>/<?=$plan_id?>" type="submit">
+															<i class="ace-icon glyphicon glyphicon-plus bigger-110"></i>
+																Agregar Afiliado
+														</a>
+													</div>													
+													<br><br><br>
+													<?php } ?>
 														<table id="example2" class="table table-striped table-bordered table-hover">
 															<thead>
 																<tr>
